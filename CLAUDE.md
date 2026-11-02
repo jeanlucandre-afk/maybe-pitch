@@ -39,12 +39,12 @@ This repo is the MAYBE hackathon presentation (Macromedia × CODE Hackathon). It
 | Where | URL | Who deploys |
 |---|---|---|
 | Production | https://maybe-pitch.vercel.app (Luc's Vercel project, branch `main`) | Automatic when Luc merges a PR |
-| Branch previews | A preview URL per pushed branch, shown on the pull request (Luc's project; fallback: Boris's own free Vercel project linked to this repo) | Automatic on push |
+| Boris's previews | Boris's own free Vercel project linked to this repo; a preview URL per push to `voice` | Automatic on push |
 | Local | `npx serve .` or `python3 -m http.server 8000` in the repo root; `vercel dev` to also run `api/` | The person themselves |
 
 **This repo is public.** Anyone can read every file, so a committed key is a leaked key: rotate it immediately if it happens.
 
-Previews: every push to a branch should also show up as a preview deployment on Luc's Vercel project; the link appears on the pull request. If Vercel blocks a preview because the commit author isn't on Luc's (free) account, Boris imports this repo into his own free Vercel account and uses that project's preview URLs instead. **Environment variables:** Luc's project needs them for production and previews; if Boris uses his own Vercel project, set them there too. Tell Luc which variable names to add; never send the values in chat or commits.
+**Boris's test environment:** Luc's Vercel project protects preview links behind Luc's own Vercel login, so Boris can't open them. Boris imports this repo into **his own free Vercel account** (vercel.com/new → Import `jeanlucandre-afk/maybe-pitch`, no build settings needed). Every push to `voice` then gets a preview URL in his account; paste it into the pull request so Luc can try it. **Environment variables:** Luc's project needs them for production and previews; if Boris uses his own Vercel project, set them there too. Tell Luc which variable names to add; never send the values in chat or commits.
 
 ## Pull request checklist
 
