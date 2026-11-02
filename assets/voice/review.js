@@ -1,6 +1,8 @@
-/* Agent review over the deck. When a call ends (call:ended), the transcript goes to the agents and
- * this screen shows their real opinions as they arrive. It does not touch the slides.
- * While open: → or Esc closes it, R replays it. While closed: A reopens the last review, or runs a
+/* Agent review over the deck. When a call ends (call:ended), the transcript goes to the agents in the
+ * background and nothing shows. window.MAYBE_REVIEW.show() opens this screen with their real opinions,
+ * animated whether they have already arrived or are still on their way. It returns false, and opens
+ * nothing, if no call has been reviewed. It does not touch the slides.
+ * While open: → or Esc closes it, R replays it. While closed: A opens the review of the last call, or a
  * labelled sample call if there has been none, for when the live voice fails on stage.
  * Other code can use window.MAYBE_REVIEW and the review:done event on document. */
 (function () {
@@ -24,12 +26,11 @@
   const SOURCES_START = 0.3, SOURCES_MAX_SECONDS = 1.2, SOURCE_STEP = 0.12;
   const AGENTS_START = 0.9, AGENT_STEP = 0.12, FIRST_REVIEW = 2.2, REVIEW_STEP = 1.1;
   const CROSS_TALK_DELAY = 0.55, COMPLETE_DELAY = 1.6, TYPE_SPEED = 110;
-  const OPEN_DELAY_MS = 800, TICK_MS = 40;
-  const MIN_WORDS_TO_REVIEW = 3; // passing through the slide must not open the review
+  const TICK_MS = 40;
+  const MIN_WORDS_TO_REVIEW = 3; // passing through the slide must not trigger a review
 
   const SAMPLE_TURNS = [
-    ['prospect', 'Oh, hi. Sorry, do I know you?'],
-    ['candidate', "Sorry to interrupt, I'll be quick. How's the hackathon going, have you eaten anything today?"],
+    ['candidate', "Hi, sorry to interrupt, I'll be quick. How's the hackathon going, have you eaten anything today?"],
     ['prospect', "Honestly, no. I've been at this laptop all day."],
     ['candidate', 'All day with no food? What has been stopping you from getting something?'],
     ['prospect', "I don't want to break my focus. Why would I buy a banana from you, though? I could get pizza."],
@@ -42,9 +43,9 @@
   const SVG = 'http://www.w3.org/2000/svg';
   const CENTER = 500, AGENT_RING = 385, SOURCE_RING = 158, SOURCE_RADIUS = 22;
 
-  let run = null;
-  let last = null;
-  let openTimer = null;
+  let run = null; // the screen, while it is open
+  let lastCall = null; // the analysis of the last call, running or finished
+  let sampleCall = null;
 
   const link = document.createElement('link');
   link.rel = 'stylesheet';
@@ -68,19 +69,19 @@
     return { x: CENTER + radius * Math.cos(angle), y: CENTER + radius * Math.sin(angle) };
   };
   const seconds = (r) => (performance.now() - r.startedAt) / 1000;
-  const reviewOf = (r, id) => r.arrivals[id]?.review;
+  const reviewOf = (r, id) => r.analysis.arrivals[id]?.review;
   const doneAt = (r, id) => {
-    const arrival = r.arrivals[id];
+    const arrival = r.analysis.arrivals[id];
     if (!arrival) return Number.POSITIVE_INFINITY;
-    // Never shown before its agent answers; if the agent is fast, the pacing is kept.
+    // Never shown before its agent answers; if the agent answered first, even before the screen opened, the pacing is kept.
     const index = PANEL.findIndex((agent) => agent.id === id);
-    return Math.max(FIRST_REVIEW + index * REVIEW_STEP, arrival.atSeconds);
+    return Math.max(FIRST_REVIEW + index * REVIEW_STEP, (arrival.at - r.startedAt) / 1000);
   };
 
   // Every sentence comes from the real result: a real call has no dialogue written in advance.
   function crossTalk(r) {
-    if (!r.result) return [];
-    const { strongest, focus, outcome, reviews } = r.result;
+    if (!r.analysis.result) return [];
+    const { strongest, focus, outcome, reviews } = r.analysis.result;
     const talk = [];
     if (strongest && focus && strongest.agentId !== focus.agentId) {
       talk.push({
@@ -104,7 +105,7 @@
   }
 
   function completeAt(r) {
-    if (!r.result) return Number.POSITIVE_INFINITY;
+    if (!r.analysis.result) return Number.POSITIVE_INFINITY;
     const times = PANEL.map((agent) => doneAt(r, agent.id)).concat(crossTalk(r).map((item) => item.at));
     return Math.max(...times) + COMPLETE_DELAY;
   }
@@ -240,7 +241,7 @@
     });
 
     if (!r.complete && now >= completeAt(r)) finish(r);
-    if (r.failed && !r.failureShown) showFailure(r);
+    if (r.analysis.failed && !r.failureShown) showFailure(r);
     if (r.complete && r.typing.length === 0) { clearInterval(r.timer); r.timer = null; }
   }
 
@@ -305,7 +306,7 @@
     r.complete = true;
     r.statusDot.classList.add('rv-dot--done');
     r.statusText.textContent = 'Review complete';
-    const { result } = r;
+    const { result } = r.analysis;
     const rating = RATING[result.rating];
     const card = el('aside', 'rv-panel rv-result');
     const score = el('div', 'rv-score');
@@ -320,7 +321,6 @@
     card.appendChild(el('p', 'rv-note', 'Practice feedback and evidence for human review.'));
     r.root.querySelector('.rv-stage').appendChild(card);
     if (!r.sample) document.dispatchEvent(new CustomEvent('review:done', { detail: { result, turns: r.turns } }));
-    last = r.sample ? last : { turns: r.turns, arrivals: r.arrivals, result };
   }
 
   function showFailure(r) {
@@ -334,16 +334,21 @@
     r.timer = null;
   }
 
-  // ---------- The request ----------
+  // ---------- The analysis, which does not need the screen ----------
 
-  async function request(r) {
-    const started = performance.now();
+  function analyse(turns) {
+    const analysis = { turns, arrivals: {}, result: null, failed: false };
+    request(analysis);
+    return analysis;
+  }
+
+  async function request(analysis) {
+    analysis.failed = false;
     try {
       const response = await fetch('/api/review-sales', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ turns: r.turns }),
-        signal: r.abort.signal,
+        body: JSON.stringify({ turns: analysis.turns }),
       });
       if (!response.ok || !response.body) throw new Error(`The review answered ${response.status}`);
       const reader = response.body.pipeThrough(new TextDecoderStream()).getReader();
@@ -356,54 +361,55 @@
         buffer = lines.pop();
         lines.filter((line) => line.trim()).forEach((line) => {
           const event = JSON.parse(line);
-          if (event.type === 'review') r.arrivals[event.review.agentId] = { review: event.review, atSeconds: (performance.now() - started) / 1000 };
-          if (event.type === 'result') r.result = event.result;
+          if (event.type === 'review') analysis.arrivals[event.review.agentId] = { review: event.review, at: performance.now() };
+          if (event.type === 'result') analysis.result = event.result;
           if (event.type === 'error') throw new Error(event.message);
         });
       }
-      if (!r.result) throw new Error('The review ended without a result');
+      if (!analysis.result) throw new Error('The review ended without a result');
     } catch (error) {
-      if (!r.abort.signal.aborted) {
-        console.warn('[review]', error.message);
-        r.failed = true;
-      }
+      console.warn('[review]', error.message);
+      analysis.failed = true;
     }
   }
 
   // ---------- Opening and closing ----------
 
-  function start(turns, options) {
+  function open(analysis, sample) {
     close();
+    if (analysis.failed) request(analysis); // one more try before showing a failure on stage
     const r = {
-      turns,
-      sample: Boolean(options.sample),
-      arrivals: options.arrivals || {},
-      result: options.result || null,
-      abort: new AbortController(),
+      analysis,
+      turns: analysis.turns,
+      sample,
       startedAt: performance.now(),
       posted: new Set(),
       typing: [],
       complete: false,
-      failed: false,
     };
     run = r;
     build(r);
-    if (!r.result) request(r);
     r.timer = setInterval(() => tick(r), TICK_MS);
     tick(r);
   }
 
+  function show() {
+    if (!lastCall) return false;
+    if (!run || run.analysis !== lastCall) open(lastCall, false);
+    return true;
+  }
+
+  function showSample() {
+    if (!sampleCall) sampleCall = analyse(SAMPLE_TURNS);
+    open(sampleCall, true);
+  }
+
   function replay() {
-    if (!run || !run.result) return;
-    const { turns, sample, result, arrivals } = run;
-    const instant = Object.fromEntries(Object.entries(arrivals).map(([id, arrival]) => [id, { ...arrival, atSeconds: 0 }]));
-    start(turns, { sample, result, arrivals: instant });
+    if (run && run.analysis.result) open(run.analysis, run.sample);
   }
 
   function close() {
-    clearTimeout(openTimer);
     if (!run) return;
-    run.abort.abort();
     clearInterval(run.timer);
     run.root.remove();
     run = null;
@@ -414,9 +420,7 @@
 
   document.addEventListener('call:ended', (event) => {
     const turns = event.detail?.turns || [];
-    if (run || wordsSpoken(turns) < MIN_WORDS_TO_REVIEW) return;
-    clearTimeout(openTimer);
-    openTimer = setTimeout(() => start(turns, {}), OPEN_DELAY_MS);
+    if (wordsSpoken(turns) >= MIN_WORDS_TO_REVIEW) lastCall = analyse(turns);
   });
 
   // In the capture phase, so the deck does not change slide behind the review.
@@ -437,14 +441,16 @@
       if ((key === 'a' || key === 'A') && !event.repeat && !/^(INPUT|TEXTAREA|SELECT)$/.test(event.target?.tagName || '')) {
         event.preventDefault();
         event.stopPropagation();
-        if (last) {
-          const instant = Object.fromEntries(Object.entries(last.arrivals).map(([id, arrival]) => [id, { ...arrival, atSeconds: 0 }]));
-          start(last.turns, { result: last.result, arrivals: instant });
-        } else start(SAMPLE_TURNS, { sample: true });
+        if (!show()) showSample();
       }
     },
     true,
   );
 
-  window.MAYBE_REVIEW = { open: (turns) => start(turns, {}), close, last: () => last };
+  window.MAYBE_REVIEW = {
+    show,
+    open: (turns) => { lastCall = analyse(turns); return show(); },
+    close,
+    last: () => (lastCall?.result ? lastCall : null),
+  };
 })();
