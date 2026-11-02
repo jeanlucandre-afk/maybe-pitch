@@ -146,9 +146,10 @@ ${sections.join('\n')}
 
 <script src="assets/live-call.js" defer></script>
 <script src="assets/voice/mara.js" defer></script>
-<script src="assets/agent-world.js" defer></script>
-<script src="assets/deck.js" defer></script>
 <script src="assets/voice/review.js" defer></script>
+<script src="assets/agent-world.js" defer></script>
+<script src="assets/voice/agent-world-live.js" defer></script>
+<script src="assets/deck.js" defer></script>
 </body>
 </html>
 `;

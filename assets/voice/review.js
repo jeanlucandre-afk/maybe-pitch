@@ -1,10 +1,9 @@
-/* Agent review over the deck. When a call ends (call:ended), the transcript goes to the agents in the
- * background and nothing shows. window.MAYBE_REVIEW.show() opens this screen with their real opinions,
- * animated whether they have already arrived or are still on their way. It returns false, and opens
- * nothing, if no call has been reviewed. It does not touch the slides.
- * While open: → or Esc closes it, R replays it. While closed: A opens the review of the last call, or a
- * labelled sample call if there has been none, for when the live voice fails on stage.
- * Other code can use window.MAYBE_REVIEW and the review:done event on document. */
+/* The agents' review of the call. When a call ends (call:ended), the transcript goes to the agents in the
+ * background and nothing shows; review:started fires on document with the analysis. The agent-world slide
+ * shows it (assets/voice/agent-world-live.js), through MAYBE_REVIEW.current(), sample() and retry().
+ * The overlay below is out of the presentation's flow. Only window.MAYBE_REVIEW.show() opens it, and that
+ * returns false, opening nothing, if no call has been reviewed. While open: → or Esc closes it, R replays
+ * it, and review:done fires on document when it finishes. */
 (function () {
   'use strict';
 
@@ -125,7 +124,6 @@
     r.statusText = el('span', '', 'Agents reviewing');
     status.append(r.statusDot, r.statusText);
     top.append(el('span', 'rv-chip rv-logo', 'MAYBE'), status);
-    if (r.sample) top.appendChild(el('span', 'rv-chip rv-chip--muted', 'Sample call'));
     stage.appendChild(top);
 
     const stream = el('section', 'rv-panel rv-stream');
@@ -320,7 +318,7 @@
     if (result.focus) card.appendChild(el('p', 'rv-focus', `Focus next: ${result.focus.label}. ${result.focus.suggestion}`));
     card.appendChild(el('p', 'rv-note', 'Practice feedback and evidence for human review.'));
     r.root.querySelector('.rv-stage').appendChild(card);
-    if (!r.sample) document.dispatchEvent(new CustomEvent('review:done', { detail: { result, turns: r.turns } }));
+    document.dispatchEvent(new CustomEvent('review:done', { detail: { result, turns: r.turns } }));
   }
 
   function showFailure(r) {
@@ -375,13 +373,12 @@
 
   // ---------- Opening and closing ----------
 
-  function open(analysis, sample) {
+  function open(analysis) {
     close();
     if (analysis.failed) request(analysis); // one more try before showing a failure on stage
     const r = {
       analysis,
       turns: analysis.turns,
-      sample,
       startedAt: performance.now(),
       posted: new Set(),
       typing: [],
@@ -395,17 +392,12 @@
 
   function show() {
     if (!lastCall) return false;
-    if (!run || run.analysis !== lastCall) open(lastCall, false);
+    if (!run || run.analysis !== lastCall) open(lastCall);
     return true;
   }
 
-  function showSample() {
-    if (!sampleCall) sampleCall = analyse(SAMPLE_TURNS);
-    open(sampleCall, true);
-  }
-
   function replay() {
-    if (run && run.analysis.result) open(run.analysis, run.sample);
+    if (run && run.analysis.result) open(run.analysis);
   }
 
   function close() {
@@ -420,34 +412,34 @@
 
   document.addEventListener('call:ended', (event) => {
     const turns = event.detail?.turns || [];
-    if (wordsSpoken(turns) >= MIN_WORDS_TO_REVIEW) lastCall = analyse(turns);
+    if (wordsSpoken(turns) < MIN_WORDS_TO_REVIEW) return;
+    lastCall = analyse(turns);
+    document.dispatchEvent(new CustomEvent('review:started', { detail: { analysis: lastCall } }));
   });
 
   // In the capture phase, so the deck does not change slide behind the review.
   document.addEventListener(
     'keydown',
     (event) => {
-      if (event.metaKey || event.ctrlKey || event.altKey) return;
+      if (!run || event.metaKey || event.ctrlKey || event.altKey) return;
       const key = event.key;
-      if (run) {
-        if (key === 'f' || key === 'F') return;
-        event.preventDefault();
-        event.stopPropagation();
-        if (event.repeat) return;
-        if (key === 'r' || key === 'R') replay();
-        else if (['ArrowRight', 'ArrowLeft', 'PageDown', 'PageUp', 'Escape', ' '].includes(key)) close();
-        return;
-      }
-      if ((key === 'a' || key === 'A') && !event.repeat && !/^(INPUT|TEXTAREA|SELECT)$/.test(event.target?.tagName || '')) {
-        event.preventDefault();
-        event.stopPropagation();
-        if (!show()) showSample();
-      }
+      if (key === 'f' || key === 'F') return;
+      event.preventDefault();
+      event.stopPropagation();
+      if (event.repeat) return;
+      if (key === 'r' || key === 'R') replay();
+      else if (['ArrowRight', 'ArrowLeft', 'PageDown', 'PageUp', 'Escape', ' '].includes(key)) close();
     },
     true,
   );
 
   window.MAYBE_REVIEW = {
+    /** The analysis of the last call, running or finished: {turns, arrivals, result, failed}. Null before any call. */
+    current: () => lastCall,
+    /** The same for the labelled sample call. Requested once per page load. */
+    sample: () => sampleCall || (sampleCall = analyse(SAMPLE_TURNS)),
+    /** Asks the agents again for an analysis that failed. */
+    retry: request,
     show,
     open: (turns) => { lastCall = analyse(turns); return show(); },
     close,
