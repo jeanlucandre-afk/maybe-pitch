@@ -1,0 +1,53 @@
+/* MAYBE presentation deck: one 1920x1080 slide at a time, scaled to the window. */
+:root {
+  --background: #ffffff; --foreground: #09090b; --muted: #f4f4f5; --muted-foreground: #71717a;
+  --border-default: #e4e4e7; --border-strong: #d4d4d8; --accent: #7c3aed; --accent-subtle: #ede9fe;
+  --shadow-float: 0 8px 24px -12px rgba(0,0,0,.25);
+  --font-sans: Geist, system-ui, -apple-system, "Segoe UI", sans-serif; --font-mono: "Geist Mono", ui-monospace, monospace;
+  --scale: 1;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: #f4f4f5; color: var(--foreground); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+a { color: #09090b; } a:hover { color: #52525b; }
+
+.deck { position: fixed; inset: 0; }
+.deck-slide { position: absolute; inset: 0; overflow: hidden; visibility: hidden; opacity: 0; transition: opacity .35s ease, visibility 0s linear .35s; }
+.deck-slide.is-active { visibility: visible; opacity: 1; transition: opacity .35s ease; z-index: 1; }
+.deck-stage { position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px; transform: translate(-50%, -50%) scale(var(--scale)); transform-origin: center center; box-shadow: 0 10px 40px -20px rgba(0,0,0,.25); background: #fff; }
+/* the board roots carry the anim-on class; pause animations on hidden slides */
+.deck-slide:not(.is-active) .deck-stage * { animation-play-state: paused !important; }
+
+/* live screens injected into [data-live] frames */
+[data-live] iframe { position: absolute; left: 0; top: 0; border: 0; transform-origin: 0 0; background: #fff; }
+[data-live].is-live > img { visibility: hidden; }
+.live-badge { position: absolute; right: 12px; bottom: 12px; z-index: 2; display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: rgba(9,9,11,.82); color: #fafafa; font: 500 13px var(--font-sans); pointer-events: none; }
+.live-badge::before { content: ""; width: 7px; height: 7px; border-radius: 999px; background: #22c55e; }
+
+/* controls */
+.deck-nav { position: fixed; right: 16px; bottom: 14px; z-index: 40; display: flex; align-items: center; gap: 6px; padding: 4px; border-radius: 12px; background: rgba(255,255,255,.92); border: 1px solid var(--border-default); box-shadow: var(--shadow-float); opacity: 0; transition: opacity .2s; }
+.deck-nav:hover, .deck-nav:focus-within, body.show-ui .deck-nav { opacity: 1; }
+.deck-btn { width: 40px; height: 40px; display: grid; place-items: center; border: 0; border-radius: 8px; background: transparent; color: var(--foreground); cursor: pointer; }
+.deck-btn:hover { background: var(--muted); }
+.deck-btn:focus-visible, .agent__btn:focus-visible { outline: 1.5px solid var(--accent); outline-offset: 2px; }
+.deck-btn:disabled { color: var(--border-strong); cursor: default; background: transparent; }
+.deck-count { font: 500 13px var(--font-mono); color: #52525b; padding: 0 6px; min-width: 64px; text-align: center; }
+
+/* speaker notes (P) */
+.deck-notes { position: fixed; left: 50%; bottom: 72px; transform: translateX(-50%); z-index: 50; width: min(760px, calc(100vw - 32px)); padding: 18px 20px; border-radius: 12px; background: #09090b; color: #fafafa; box-shadow: 0 20px 50px -20px rgba(0,0,0,.5); }
+.deck-notes__title { margin: 0 0 6px; font: 600 13px var(--font-mono); color: #c4b5fd; }
+.deck-notes__text { margin: 0; font-size: 17px; line-height: 1.5; }
+.deck-notes__hint { margin: 10px 0 0; font-size: 12px; color: #a1a1aa; }
+
+/* voice agent */
+.agent { position: fixed; left: 16px; bottom: 14px; z-index: 45; display: flex; align-items: center; gap: 10px; }
+.agent__btn { display: inline-flex; align-items: center; gap: 8px; height: 42px; padding: 0 16px 0 6px; border-radius: 999px; border: 1px solid var(--border-default); background: var(--background); box-shadow: var(--shadow-float); font: 500 14px var(--font-sans); color: var(--foreground); cursor: pointer; }
+.agent__btn img { width: 30px; height: 30px; border-radius: 999px; background: var(--accent-subtle); object-fit: cover; object-position: 50% 8%; }
+.agent__btn[aria-disabled="true"] { cursor: not-allowed; color: var(--muted-foreground); }
+.agent__btn[aria-disabled="true"] img { filter: grayscale(1); opacity: .7; }
+.agent__dot { width: 8px; height: 8px; border-radius: 999px; background: var(--border-strong); }
+.agent.is-on .agent__dot { background: #22c55e; }
+.agent__tip { font-size: 12px; color: var(--muted-foreground); background: var(--background); border: 1px solid var(--border-default); border-radius: 6px; padding: 4px 8px; opacity: 0; transition: opacity .2s; pointer-events: none; }
+.agent__btn:hover + .agent__tip, .agent__btn:focus-visible + .agent__tip { opacity: 1; }
+elevenlabs-convai { position: fixed; z-index: 46; }
+
+@media (prefers-reduced-motion: reduce) { .deck-slide { transition: none; } }

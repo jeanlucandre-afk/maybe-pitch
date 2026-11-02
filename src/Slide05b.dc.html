@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>MAYBE · Live call</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#09090B}a:hover{color:#52525B}
+@keyframes rv{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes rise{0%{transform:translateY(105%) rotate(4deg)}60%{transform:translateY(-6%) rotate(-2deg)}80%{transform:translateY(2%)}100%{transform:translateY(0) rotate(0)}}
+@keyframes frame-in{from{opacity:0;transform:translateY(40px) scale(.97)}to{opacity:1;transform:none}}
+.anim-on .rv{animation:rv calc(.7s * var(--spd)) cubic-bezier(.2,.7,.2,1) both}
+.anim-on .rise{animation:rise calc(.8s * var(--spd)) cubic-bezier(.3,.7,.2,1) both}
+.anim-on .fin{animation:frame-in calc(.9s * var(--spd)) cubic-bezier(.2,.7,.2,1) both}
+/* ---- voice orb (ChatGPT-style liquid sphere, MAYBE violet) ---- */
+@keyframes orb-wave{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes orb-breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.025)}}
+@keyframes orb-talk{0%{transform:scale(1) rotate(0)}100%{transform:scale(1.07) rotate(3deg)}}
+@keyframes orb-swirl{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.orb{position:relative;width:540px;height:540px;border-radius:50%;overflow:hidden;background:#F5F3FF;box-shadow:0 50px 100px -45px rgba(124,58,237,.6),inset 0 0 0 1px rgba(124,58,237,.14);transform:scale(calc(1 + var(--level,0) * .12));transition:transform .09s linear}
+.orb__body{position:absolute;inset:0;animation:orb-breathe 4.5s ease-in-out infinite}
+.orb__swirl{position:absolute;inset:-20%;background:radial-gradient(circle at 30% 35%,rgba(196,181,253,.9),rgba(196,181,253,0) 45%),radial-gradient(circle at 70% 65%,rgba(124,58,237,.55),rgba(124,58,237,0) 50%);filter:blur(30px);animation:orb-swirl 14s linear infinite}
+.orb__wave{position:absolute;left:0;width:200%;filter:blur(10px);animation:orb-wave 7s linear infinite}
+.orb__wave--a{height:62%;bottom:-6%;opacity:.95}
+.orb__wave--b{height:52%;bottom:-12%;opacity:.8;animation-duration:10s;animation-direction:reverse}
+.orb__wave svg{display:block;width:100%;height:100%}
+.orb__shine{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 32% 22%,rgba(255,255,255,.75),rgba(255,255,255,0) 32%)}
+.orb--you .orb__body{animation:orb-talk .42s ease-in-out infinite alternate}
+.orb--you .orb__wave--a{animation-duration:1.7s}
+.orb--you .orb__wave--b{animation-duration:2.4s}
+.orb--you .orb__swirl{animation-duration:4s}
+.orb--agent .orb__wave--a{animation-duration:3.6s}
+.orb--agent .orb__wave--b{animation-duration:5s}
+/* ---- talking character ---- */
+@keyframes talk-bob{0%{transform:translateY(0) rotate(0)}100%{transform:translateY(-6px) rotate(-1.6deg)}}
+@keyframes talk-arc{0%,100%{opacity:.15}50%{opacity:1}}
+.avatar img{transform-origin:50% 80%}
+.avatar--talking img{animation:talk-bob .32s ease-in-out infinite alternate}
+.avatar__arcs{opacity:0;transition:opacity .2s}
+.avatar--talking .avatar__arcs{opacity:1}
+.avatar--talking .avatar__arcs path{animation:talk-arc .6s ease-in-out infinite}
+.avatar--talking .avatar__arcs path:nth-child(2){animation-delay:.15s}
+.avatar--talking .avatar__arcs path:nth-child(3){animation-delay:.3s}
+/* ---- bubbles ---- */
+@keyframes bubble-in{from{opacity:0;transform:translateY(18px) scale(.96)}to{opacity:1;transform:none}}
+.bubble{animation:bubble-in .38s cubic-bezier(.2,.7,.2,1) both}
+@keyframes live-dot{0%,100%{opacity:1}50%{opacity:.25}}
+.live-dot{animation:live-dot 1.2s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){.rv,.rise,.fin,.orb__body,.orb__swirl,.orb__wave,.avatar img,.avatar__arcs path,.bubble,.live-dot{animation:none!important}}
+</style>
+</helmet>
+<div class="{{animClass}}" data-call style="--spd: {{spd}}; width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #FFFFFF; color: #09090B; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;" data-call-script='{{scriptJson}}'>
+
+  <!-- voice orb -->
+  <div class="fin" style="position: absolute; left: 200px; top: 50%; margin-top: -330px; width: 660px; height: 660px; display: grid; place-items: center; animation-delay: calc(var(--spd) * .1s);">
+    <div class="orb {{orbClass}}" data-orb role="img" aria-label="{{statusText}}" style="width: 660px; height: 660px;">
+      <div class="orb__body">
+        <div class="orb__swirl"></div>
+        <div class="orb__wave orb__wave--b"><svg viewBox="0 0 1200 300" preserveAspectRatio="none" aria-hidden="true"><path d="M0 120 C150 40 300 40 450 120 S750 200 900 120 S1050 40 1200 120 V300 H0 Z" fill="#A78BFA"></path></svg></div>
+        <div class="orb__wave orb__wave--a"><svg viewBox="0 0 1200 300" preserveAspectRatio="none" aria-hidden="true"><path d="M0 110 C150 190 300 190 450 110 S750 30 900 110 S1050 190 1200 110 V300 H0 Z" fill="#7C3AED"></path></svg></div>
+        <div class="orb__shine"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- conversation -->
+  <div data-bubbles aria-live="polite" style="position: absolute; left: 1060px; right: 120px; top: 60px; bottom: 470px; display: flex; flex-direction: column; justify-content: flex-end; gap: 16px; overflow: hidden; -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 90px); mask-image: linear-gradient(to bottom, transparent 0, #000 90px);">
+    <sc-for list="{{bubbles}}" as="b" hint-placeholder-count="3">
+      <div class="bubble" style="align-self: {{b.align}}; max-width: 600px; padding: 16px 22px; border-radius: {{b.radius}}; background: {{b.bg}}; color: {{b.fg}}; border: {{b.border}}; font-size: 26px; line-height: 1.4; box-shadow: 0 1px 2px rgba(0,0,0,.04); opacity: {{b.opacity}};">
+        <span style="display: block; font-size: 15px; font-weight: 600; letter-spacing: .02em; color: {{b.nameColor}}; margin-bottom: 4px;">{{b.name}}</span>{{b.text}}
+      </div>
+    </sc-for>
+  </div>
+
+  <!-- talking character, rising from the bottom edge -->
+  <div class="avatar {{avatarClass}}" data-avatar style="position: absolute; right: 150px; bottom: -250px; width: 460px; height: 660px;">
+    <img class="rise" src="/_blob/3d46dca5b85688403842bc1ae495d845" alt="Drawing of Mara, the AI buyer, on a headset" style="display: block; width: 460px; animation-delay: calc(var(--spd) * .4s);">
+    <svg class="avatar__arcs" width="100" height="134" viewBox="0 0 90 120" aria-hidden="true" style="position: absolute; left: -78px; top: 140px;"><path d="M70 40 Q50 60 70 80" fill="none" stroke="#7C3AED" stroke-width="5" stroke-linecap="round"></path><path d="M48 26 Q20 60 48 94" fill="none" stroke="#7C3AED" stroke-width="5" stroke-linecap="round"></path><path d="M26 12 Q-8 60 26 108" fill="none" stroke="#7C3AED" stroke-width="5" stroke-linecap="round"></path></svg>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"animate": {"editor": "boolean", "default": true, "section": "Motion"}, "speed": {"editor": "enum", "options": ["slow", "normal", "fast"], "default": "normal", "section": "Motion"}, "demo": {"editor": "boolean", "default": true, "section": "Demo"}, "$preview": {"width": 1920, "height": 1080}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { step: 1 };
+  }
+  componentDidMount() {
+    this.timer = setInterval(() => {
+      if (!(this.props.demo ?? true)) return;
+      const n = this.script().length;
+      this.setState({ step: this.state.step >= n + 1 ? 0 : this.state.step + 1 });
+    }, 2600);
+  }
+  componentWillUnmount() { clearInterval(this.timer); }
+  script() {
+    return [
+      { role: 'you', text: 'Hi Mara, it is Luc from Dr. Lipp. Do you have two minutes?' },
+      { role: 'agent', text: 'Two minutes, sure. But shelf space near the till is tight.' },
+      { role: 'you', text: 'Understood. What decides which brands get that space?' },
+      { role: 'agent', text: 'Sell-through. If it does not move in six weeks, it is gone.' },
+      { role: 'you', text: 'Then let us start small: a 24-unit display tray as a trial.' },
+      { role: 'agent', text: 'Twenty-four units I can do. Send me the offer.' }
+    ];
+  }
+  renderVals() {
+    const on = this.props.animate ?? true;
+    const spd = { slow: 1.5, normal: 1, fast: 0.6 }[this.props.speed ?? 'normal'] ?? 1;
+    const script = this.script();
+    const step = Math.min(this.state.step, script.length);
+    const shown = script.slice(0, step).slice(-4);
+    const current = step > 0 && step <= script.length ? script[step - 1].role : 'idle';
+    const bubbles = shown.map((m, i) => {
+      const you = m.role === 'you';
+      return {
+        text: m.text,
+        name: you ? 'You' : 'Mara',
+        align: you ? 'flex-end' : 'flex-start',
+        radius: you ? '20px 20px 6px 20px' : '20px 20px 20px 6px',
+        bg: you ? '#09090B' : '#FFFFFF',
+        fg: you ? '#FAFAFA' : '#09090B',
+        border: you ? '0' : '1px solid #E4E4E7',
+        nameColor: you ? '#A1A1AA' : '#5B21B6',
+        opacity: String(i === shown.length - 1 ? 1 : 0.55 + i * 0.12)
+      };
+    });
+    const status = { you: 'You are speaking', agent: 'Mara is speaking', idle: 'Listening…' }[current];
+    const secs = 252 + step * 6;
+    return {
+      animClass: on ? 'anim-on' : 'anim-off',
+      spd: String(spd),
+      bubbles,
+      orbClass: 'orb--' + current,
+      avatarClass: current === 'agent' ? 'avatar--talking' : '',
+      statusText: status,
+      timer: String(Math.floor(secs / 60)).padStart(2, '0') + ':' + String(secs % 60).padStart(2, '0'),
+      scriptJson: JSON.stringify(script).replace(/'/g, '\\u0027')
+    };
+  }
+}
+</script>
+</body>
+</html>

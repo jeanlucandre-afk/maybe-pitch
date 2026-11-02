@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dr. Lipp sales workspace · MAYBE</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#09090B}a:hover{color:#52525B}
+@keyframes crm-wave{0%,100%{transform:scaleY(.35)}50%{transform:scaleY(1)}}
+@media (prefers-reduced-motion:reduce){.crm-w{animation:none!important}}
+</style>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div id="dc-root"></div>
+<template id="dc-tpl">
+
+<div style="width: 100%; min-height: 1000px; box-sizing: border-box; background: #FFFFFF; color: #09090B; font-family: Geist, system-ui, sans-serif; display: flex; flex-direction: column;">
+  <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 7px 20px; background: #09090B; color: #FAFAFA; font-size: 12px;">
+    <span style="display: flex; align-items: center; gap: 6px; font-weight: 600;"><svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 4.5 L10.5 13 L10.5 20 M20.5 3.5 L11 14.5" fill="none" stroke="#FAFAFA" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>MAYBE trial</span>
+    <span style="color: #A1A1AA;">Simulated scenario · prospects are AI · not an official Dr. Lipp assessment</span>
+    <a href="dashboard.html" style="margin-left: auto; color: #FAFAFA; text-decoration: underline; text-underline-offset: 3px;">Save &amp; exit</a>
+  </div>
+
+  <div style="display: flex; flex-wrap: wrap; flex-grow: 1;">
+    <aside style="flex: 1 1 210px; max-width: 100%; box-sizing: border-box; border-right: 1px solid #E4E4E7; padding: 16px 12px; display: flex; flex-direction: column; gap: 2px; background: #FAFAFA;">
+      <img src="img/logo-drlipp.svg" alt="Dr. Lipp" style="height: 26px; align-self: flex-start; margin: 4px 8px 18px;">
+      <template data-for="{{nav}}" data-as="n">
+        <a href="#" style="display: flex; align-items: center; gap: 8px; padding: 7px 8px; border-radius: 6px; font-size: 14px; font-weight: {{n.weight}}; color: {{n.color}}; background: {{n.bg}}; text-decoration: none;">{{n.label}}<span style="margin-left: auto; font-size: 12px; color: #71717A;">{{n.count}}</span></a>
+      </template>
+      <div style="margin-top: 20px; border: 1px solid #E4E4E7; border-radius: 10px; background: #FFFFFF; padding: 12px; display: flex; flex-direction: column; gap: 8px;">
+        <p style="margin: 0; font-size: 13px; font-weight: 600;">Your goal</p>
+        <p style="margin: 0; font-size: 12px; color: #52525B; line-height: 1.5;">Complete 3 calls. Try to land at least one trial order of 24 units.</p>
+        <div style="display: flex; gap: 4px;"><span style="flex-grow: 1; height: 6px; border-radius: 999px; background: #7C3AED;"></span><span style="flex-grow: 1; height: 6px; border-radius: 999px; background: #7C3AED;"></span><span style="flex-grow: 1; height: 6px; border-radius: 999px; background: #E4E4E7;"></span></div>
+      </div>
+    </aside>
+
+    <main style="flex: 999 1 680px; min-width: 0; box-sizing: border-box; padding: 22px 28px 32px; display: flex; flex-direction: column; gap: 18px;">
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px;">
+        <div style="flex-grow: 1;"><h1 style="margin: 0; font-size: 26px; font-weight: 600; letter-spacing: -0.035em;">Sales Workspace</h1><p style="margin: 2px 0 0; font-size: 14px; color: #71717A;">Manage prospects, run calls, close deals.</p></div>
+        <div style="display: flex; flex-direction: column; gap: 6px; min-width: 220px;"><div style="display: flex; justify-content: space-between; font-size: 12px; color: #52525B;"><span>Session 2 of 3</span><span style="font-family: 'Geist Mono', monospace;">38 min left</span></div><div style="height: 6px; border-radius: 999px; background: #F4F4F5;"><div style="width: 62%; height: 6px; border-radius: 999px; background: #7C3AED;"></div></div></div>
+        <span style="width: 36px; height: 36px; border-radius: 999px; overflow: hidden; background: #EDE9FE; flex: none;"><img src="img/peep-student.svg" alt="You" style="width: 60px; margin: -2px 0 0 -12px; display: block;"></span>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 130px), 1fr)); gap: 10px;">
+        <template data-for="{{stages}}" data-as="s">
+          <button onClick="{{s.pick}}" style="text-align: left; padding: 12px 14px; border-radius: 10px; border: 1px solid {{s.border}}; background: {{s.bg}}; color: {{s.fg}}; cursor: pointer; display: flex; justify-content: space-between; align-items: baseline; font-family: Geist, sans-serif; box-shadow: {{s.shadow}};"><span style="font-size: 13px; font-weight: 500;">{{s.label}}</span><span style="font-family: 'Geist Mono', monospace; font-size: 15px;">{{s.n}}</span></button>
+        </template>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 16px; align-items: start;">
+        <!-- prospects -->
+        <section style="border: 1px solid #E4E4E7; border-radius: 12px; overflow: hidden;">
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-bottom: 1px solid #E4E4E7;"><span style="font-size: 14px; font-weight: 600;">Prospects</span><span style="font-size: 12px; color: #71717A;">{{stageLabel}}</span></div>
+          <template data-for="{{prospects}}" data-as="p">
+            <button onClick="{{p.pick}}" style="width: 100%; display: flex; align-items: center; gap: 10px; padding: 11px 14px; border: 0; border-bottom: 1px solid #F4F4F5; background: {{p.bg}}; text-align: left; cursor: pointer; font-family: Geist, sans-serif;">
+              <span style="width: 36px; height: 36px; border-radius: 999px; overflow: hidden; background: {{p.tint}}; flex: none;"><img src="{{p.peep}}" alt="" style="width: 60px; margin: -2px 0 0 -12px; display: block;"></span>
+              <span style="flex-grow: 1; min-width: 0;"><span style="display: block; font-size: 14px; font-weight: 500; color: #09090B;">{{p.name}}</span><span style="display: block; font-size: 12px; color: #71717A;">{{p.role}}</span></span>
+              <span style="padding: 1px 8px; border-radius: 999px; border: 1px solid #E4E4E7; font-size: 11px; color: #52525B;">{{p.mood}}</span>
+            </button>
+          </template>
+        </section>
+
+        <!-- live call -->
+        <section style="border: 1px solid #E4E4E7; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; box-shadow: 0 10px 30px -18px rgba(124,58,237,.45);">
+          <div style="width: 100%; display: flex; justify-content: space-between; align-items: center;"><span style="display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border-radius: 999px; border: 1px solid #FECACA; color: #B91C1C; font-size: 12px; font-weight: 500;"><span style="width: 6px; height: 6px; border-radius: 999px; background: #EF4444;"></span>{{callState}}</span><span style="font-family: 'Geist Mono', monospace; font-size: 12px; color: #71717A;">02:34</span></div>
+          <span style="width: 96px; height: 96px; border-radius: 999px; overflow: hidden; background: {{cur.tint}}; box-shadow: 0 0 0 4px #FFFFFF, 0 0 0 5px #E4E4E7;"><img src="{{cur.peep}}" alt="" style="width: 160px; margin: -4px 0 0 -32px; display: block;"></span>
+          <div><p style="margin: 0; font-size: 17px; font-weight: 600;">{{cur.name}}</p><p style="margin: 2px 0 0; font-size: 13px; color: #71717A;">{{cur.role}}</p></div>
+          <div style="display: flex; align-items: center; gap: 3px; height: 34px;" aria-hidden="true">
+            <template data-for="{{wave}}" data-as="w"><span class="crm-w" style="width: 3px; height: {{w.h}}; border-radius: 2px; background: {{w.c}}; animation: crm-wave {{w.d}} ease-in-out infinite; animation-play-state: {{wavePlay}};"></span></template>
+          </div>
+          <div style="width: 100%; padding: 10px 12px; border-radius: 10px; background: #F4F4F5; text-align: left; font-size: 13px; line-height: 1.45;"><span style="display: block; font-size: 11px; color: #71717A; margin-bottom: 2px;">{{cur.first}}</span>{{cur.says}}</div>
+          <div style="display: flex; gap: 10px;">
+            <button onClick="{{toggleMute}}" aria-label="Mute" style="width: 42px; height: 42px; border-radius: 999px; border: 1px solid #E4E4E7; background: {{muteBg}}; display: grid; place-items: center; cursor: pointer;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="{{muteFg}}" stroke-width="2" aria-hidden="true"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><path d="M12 19v3"></path></svg></button>
+            <button onClick="{{togglePause}}" aria-label="Pause" style="width: 42px; height: 42px; border-radius: 999px; border: 0; background: #09090B; display: grid; place-items: center; cursor: pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="#FFFFFF" aria-hidden="true"><rect x="6" y="4" width="4" height="16" rx="1"></rect><rect x="14" y="4" width="4" height="16" rx="1"></rect></svg></button>
+            <button aria-label="End call" style="width: 42px; height: 42px; border-radius: 999px; border: 0; background: #EF4444; display: grid; place-items: center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" aria-hidden="true"><path d="M10.7 13.3a16 16 0 0 0 3.4 2.6l1.3-1.3a2 2 0 0 1 2.1-.4 12.8 12.8 0 0 0 2.8.7 2 2 0 0 1 1.7 2v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.4 19.4 0 0 1-3.3-2.7m-2.7-3.3a19.8 19.8 0 0 1-3.1-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.9.7 2.8a2 2 0 0 1-.4 2.1L8.1 9.9"></path><path d="M22 2 2 22"></path></svg></button>
+            <button aria-label="Notes" style="width: 42px; height: 42px; border-radius: 999px; border: 1px solid #E4E4E7; background: #FFFFFF; display: grid; place-items: center;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#09090B" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"></path><path d="M14 2v6h6"></path><path d="M16 13H8"></path><path d="M16 17H8"></path></svg></button>
+          </div>
+        </section>
+
+        <!-- notes + deal -->
+        <section style="border: 1px solid #E4E4E7; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: inline-flex; align-self: flex-start; padding: 3px; border-radius: 8px; background: #F4F4F5;">
+            <template data-for="{{tabs}}" data-as="t"><button onClick="{{t.pick}}" style="border: 0; padding: 4px 10px; border-radius: 6px; background: {{t.bg}}; box-shadow: {{t.shadow}}; color: {{t.fg}}; font: 500 13px Geist, sans-serif; cursor: pointer;">{{t.label}}</button></template>
+          </div>
+          <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; font-size: 13px;">
+            <template data-for="{{tabItems}}" data-as="i"><li style="display: flex; gap: 8px; line-height: 1.45;"><span style="width: 6px; height: 6px; border-radius: 999px; background: #7C3AED; margin-top: 7px; flex: none;"></span>{{i.text}}</li></template>
+          </ul>
+          <div style="padding: 10px 12px; border-radius: 8px; background: #F5F3FF; font-size: 12px; line-height: 1.45; color: #4C1D95;"><strong style="font-weight: 600;">AI coach:</strong> she asked about minimum order twice. Offer the 24-unit display tray as a 6-week trial.</div>
+          <div style="height: 1px; background: #E4E4E7;"></div>
+          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 500;">Deal stage<select style="height: 34px; padding: 0 10px; border: 1px solid #E4E4E7; border-radius: 8px; font: 400 13px Geist, sans-serif; background: #FFFFFF;"><option>Negotiation</option><option>Contacted</option><option>Closed won</option><option>Closed lost</option></select></label>
+          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 500;">Next step<input value="Send trial offer: 24 units + tester" style="height: 34px; padding: 0 10px; border: 1px solid #E4E4E7; border-radius: 8px; font: 400 13px Geist, sans-serif;"></label>
+          <button onClick="{{save}}" style="height: 36px; border: 0; border-radius: 8px; background: #09090B; color: #FAFAFA; font: 500 14px Geist, sans-serif; cursor: pointer;">{{saveLabel}}</button>
+        </section>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 16px;">
+        <section style="border: 1px solid #E4E4E7; border-radius: 12px; overflow: hidden; display: flex;">
+          <img src="img/drlipp-skincare.jpg" alt="Dr. Lipp balm tubes (AI-generated image)" style="width: 130px; object-fit: cover; flex: none;">
+          <div style="padding: 14px; display: flex; flex-direction: column; gap: 8px; flex-grow: 1;">
+            <div style="display: flex; justify-content: space-between; align-items: baseline;"><span style="font-size: 14px; font-weight: 600;">Product sheet</span><span style="font-size: 11px; color: #A1A1AA;">Illustrative figures</span></div>
+            <p style="margin: 0; font-size: 13px; color: #52525B;">Original multi-purpose balm · 15 ml</p>
+            <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; font-size: 12px;">
+              <div><p style="margin: 0; color: #71717A;">Wholesale</p><p style="margin: 2px 0 0; font-family: 'Geist Mono', monospace; font-size: 14px;">€8.90</p></div>
+              <div><p style="margin: 0; color: #71717A;">RRP</p><p style="margin: 2px 0 0; font-family: 'Geist Mono', monospace; font-size: 14px;">€16.95</p></div>
+              <div><p style="margin: 0; color: #71717A;">Margin</p><p style="margin: 2px 0 0; font-family: 'Geist Mono', monospace; font-size: 14px;">47%</p></div>
+              <div><p style="margin: 0; color: #71717A;">MOQ</p><p style="margin: 2px 0 0; font-family: 'Geist Mono', monospace; font-size: 14px;">24</p></div>
+            </div>
+          </div>
+        </section>
+        <section style="border: 1px solid #E4E4E7; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 8px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;"><span style="font-size: 14px; font-weight: 600;">Live transcript</span><span style="padding: 1px 8px; border-radius: 999px; border: 1px solid #A5D8E6; color: #0E6680; font-size: 11px; font-weight: 500;">Saved for evaluation</span></div>
+          <p style="margin: 0; font-size: 13px; line-height: 1.5;"><span style="color: #71717A; font-family: 'Geist Mono', monospace; font-size: 11px;">02:12</span> <strong style="font-weight: 600;">You:</strong> What decides which brands get space near the till?</p>
+          <p style="margin: 0; font-size: 13px; line-height: 1.5;"><span style="color: #71717A; font-family: 'Geist Mono', monospace; font-size: 11px;">02:20</span> <strong style="font-weight: 600;">{{cur.first}}:</strong> {{cur.says}}</p>
+        </section>
+      </div>
+    </main>
+  </div>
+</div>
+</template>
+<p class="app-note">Simulated hackathon prototype · not an official company assessment · mockup only, no partnership implied. Images are AI-generated.</p>
+<script src="dc-lite.js"></script>
+<script>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { stage: 'call', pid: 'bk', tab: 'Notes', mute: false, paused: false, saved: false }; }
+  renderVals() {
+    const P = {
+      student: 'img/peep-student.svg', designer: 'img/peep-designer.svg',
+      seller: 'img/peep-seller.svg', recruiter: 'img/peep-recruiter.svg', thinker: 'img/peep-thinker.svg'
+    };
+    const st = this.state;
+    const nav = ['CRM', 'Prospects', 'Product', 'Playbook', 'AI Coach'].map((l, i) => ({ label: l, count: i === 1 ? '24' : '', weight: i === 0 ? 500 : 400, color: i === 0 ? '#09090B' : '#52525B', bg: i === 0 ? '#F4F4F5' : 'transparent' }));
+    const stageDefs = [['leads', 'Leads', 12], ['contacted', 'Contacted', 6], ['call', 'In call', 1], ['neg', 'Negotiation', 3], ['closed', 'Closed', 2]];
+    const stages = stageDefs.map(([id, label, n]) => {
+      const on = st.stage === id;
+      return { label, n, bg: on ? '#7C3AED' : '#FFFFFF', fg: on ? '#FFFFFF' : '#09090B', border: on ? '#7C3AED' : '#E4E4E7', shadow: on ? '0 8px 20px -10px rgba(124,58,237,.7)' : 'none', pick: () => this.setState({ stage: id }) };
+    });
+    const people = [
+      { id: 'bk', name: 'Bettina Keller', first: 'Bettina', role: 'Retail buyer · Lindenhof Drogerie', mood: 'Price-careful', peep: P.seller, tint: '#FDF2F8', says: 'Our shelf space is tight. What is the smallest order you would accept?' },
+      { id: 'ts', name: 'Tobias Schmidt', first: 'Tobias', role: 'Owner · Grünzeug Biomarkt', mood: 'Skeptical', peep: P.recruiter, tint: '#F4F4F5', says: 'Honestly, I do not think my customers will pay seventeen euros for a balm.' },
+      { id: 'lr', name: 'Lara Reuter', first: 'Lara', role: 'Category manager · Hansen Apotheken', mood: 'Busy', peep: P.designer, tint: '#EDE9FE', says: 'I have five minutes and we already have a supplier. Why switch?' },
+      { id: 'mk', name: 'Marko Kasten', first: 'Marko', role: 'Founder · Natural Goods Co.', mood: 'Curious', peep: P.thinker, tint: '#ECFDF5', says: 'Interesting. Is the formula really single-ingredient?' }
+    ];
+    const prospects = people.map((p) => ({ ...p, bg: st.pid === p.id ? '#F5F3FF' : '#FFFFFF', pick: () => this.setState({ pid: p.id, saved: false }) }));
+    const cur = people.find((p) => p.id === st.pid) || people[0];
+    const tabsContent = {
+      Notes: ['Interested in clean ingredients', 'Concerned about shelf space', 'Asked about minimum order'],
+      Objections: ['Price vs current brand', 'Shelf space near the till', 'Minimum order too high'],
+      Playbook: ['Ask about their best-selling care line', 'Lead with margin at RRP (47%)', 'Offer a 6-week trial tray']
+    };
+    const tabs = Object.keys(tabsContent).map((label) => {
+      const on = st.tab === label;
+      return { label, bg: on ? '#FFFFFF' : 'transparent', fg: on ? '#09090B' : '#71717A', shadow: on ? '0 1px 3px rgba(0,0,0,.1)' : 'none', pick: () => this.setState({ tab: label }) };
+    });
+    const hs = [30, 55, 80, 45, 95, 60, 35, 70, 100, 50, 25, 65, 85, 40, 55, 30, 75, 45, 90, 60, 35, 70, 50, 30];
+    const wave = hs.map((h, i) => ({ h: h + '%', c: i < 14 ? '#7C3AED' : '#D4D4D8', d: (0.6 + (i % 5) * 0.12).toFixed(2) + 's' }));
+    return {
+      nav, stages, prospects, cur, tabs, wave,
+      stageLabel: stageDefs.find((s) => s[0] === st.stage)[1],
+      tabItems: tabsContent[st.tab].map((text) => ({ text })),
+      callState: st.paused ? 'Paused' : (st.mute ? 'Live · muted' : 'Live call'),
+      wavePlay: st.paused || st.mute ? 'paused' : 'running',
+      muteBg: st.mute ? '#09090B' : '#FFFFFF', muteFg: st.mute ? '#FFFFFF' : '#09090B',
+      toggleMute: () => this.setState({ mute: !st.mute }),
+      togglePause: () => this.setState({ paused: !st.paused }),
+      saveLabel: st.saved ? 'Saved to CRM ✓' : 'Update deal',
+      save: () => this.setState({ saved: true })
+    };
+  }
+}
+DC.mount(Component);
+</script>
+</body>
+</html>

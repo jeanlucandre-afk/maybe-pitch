@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DICE design editor · MAYBE</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#09090B}a:hover{color:#52525B}
+</style>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div id="dc-root"></div>
+<template id="dc-tpl">
+
+<div style="width: 100%; min-height: 1320px; box-sizing: border-box; background: #FFFFFF; color: #09090B; font-family: Geist, system-ui, sans-serif; display: flex; flex-direction: column;">
+  <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 7px 20px; background: #09090B; color: #FAFAFA; font-size: 12px;">
+    <span style="display: flex; align-items: center; gap: 6px; font-weight: 600;"><svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 4.5 L10.5 13 L10.5 20 M20.5 3.5 L11 14.5" fill="none" stroke="#FAFAFA" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></svg>MAYBE trial</span>
+    <span style="color: #A1A1AA;">Simulated design brief · not an official DICE assessment</span>
+    <a href="dashboard.html" style="margin-left: auto; color: #FAFAFA; text-decoration: underline; text-underline-offset: 3px;">Save &amp; exit</a>
+  </div>
+
+  <!-- toolbar -->
+  <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 14px; padding: 10px 18px; border-bottom: 1px solid #E4E4E7;">
+    <img src="img/logo-dice.svg" alt="DICE" style="height: 20px;">
+    <span style="width: 1px; height: 20px; background: #E4E4E7;"></span>
+    <span style="font-size: 14px; font-weight: 600;">Redesign: Festival Ticketing Flow</span>
+    <div style="display: inline-flex; padding: 3px; border-radius: 8px; background: #F4F4F5; margin-left: 10px;">
+      <template data-for="{{modes}}" data-as="m"><button onClick="{{m.pick}}" style="border: 0; padding: 4px 12px; border-radius: 6px; background: {{m.bg}}; color: {{m.fg}}; box-shadow: {{m.shadow}}; font: 500 13px Geist, sans-serif; cursor: pointer;">{{m.label}}</button></template>
+    </div>
+    <span style="margin-left: auto; display: flex; gap: 8px; align-items: center;">
+      <span style="font-size: 12px; color: #71717A;">Version 3 · saved</span>
+      <button aria-label="Preview prototype" style="width: 34px; height: 34px; border-radius: 8px; border: 1px solid #E4E4E7; background: #FFFFFF; display: grid; place-items: center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="#09090B" aria-hidden="true"><path d="M6 4l14 8-14 8Z"/></svg></button>
+      <button style="height: 34px; padding: 0 14px; border-radius: 8px; border: 0; background: #09090B; color: #FAFAFA; font: 500 13px Geist, sans-serif;">Submit design</button>
+    </span>
+  </div>
+
+  <!-- editor -->
+  <div style="display: flex; flex-wrap: wrap; min-height: 700px; border-bottom: 1px solid #E4E4E7;">
+    <aside style="flex: 1 1 220px; max-width: 100%; box-sizing: border-box; border-right: 1px solid #E4E4E7; padding: 12px 10px; display: flex; flex-direction: column; gap: 2px;">
+      <div style="display: flex; gap: 14px; padding: 0 6px 10px; font-size: 13px;"><span style="font-weight: 600; border-bottom: 2px solid #09090B; padding-bottom: 6px;">Layers</span><span style="color: #71717A;">Components</span></div>
+      <template data-for="{{layers}}" data-as="l">
+        <button onClick="{{l.pick}}" style="display: flex; align-items: center; gap: 8px; padding: 6px 8px 6px {{l.indent}}; border: 0; border-radius: 6px; background: {{l.bg}}; color: {{l.fg}}; font: {{l.weight}} 13px Geist, sans-serif; text-align: left; cursor: pointer;"><span style="width: 12px; height: 12px; border: 1.5px solid {{l.fg}}; border-radius: 3px; box-sizing: border-box; flex: none;"></span>{{l.label}}</button>
+      </template>
+      <div style="margin-top: auto; border: 1px dashed #D4D4D8; border-radius: 10px; padding: 10px; font-size: 12px; color: #52525B; line-height: 1.45;">Brief: fans abandon checkout. Show fees early, make the CTA clear, keep it accessible.</div>
+    </aside>
+
+    <!-- canvas -->
+    <div style="flex: 999 1 420px; min-width: 0; background-color: #FAFAFA; background-image: radial-gradient(#E4E4E7 1px, transparent 1px); background-size: 16px 16px; display: flex; align-items: center; justify-content: center; padding: 28px 16px; gap: 28px; flex-wrap: wrap;">
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+        <span style="font-size: 11px; color: #71717A; font-family: 'Geist Mono', monospace;">Original</span>
+        <div style="width: 200px; border-radius: 24px; border: 6px solid #18181B; overflow: hidden; background: #FFFFFF; opacity: .9;">
+          <div style="background: #111111; padding: 8px 10px;"><img src="img/logo-dice-white.svg" alt="" style="height: 12px; display: block;"></div>
+          <img src="img/dice-festival.jpg" alt="AI-generated image" style="width: 100%; height: 80px; object-fit: cover; display: block;">
+          <div style="padding: 10px; display: flex; flex-direction: column; gap: 6px;">
+            <p style="margin: 0; font-size: 11px; font-weight: 700;">Berlin Summer Festival</p>
+            <p style="margin: 0; font-size: 8px; color: #A1A1AA;">Price excl. service fee</p>
+            <div style="display: flex; justify-content: space-between; font-size: 9px; border: 1px solid #F4F4F5; border-radius: 4px; padding: 5px;"><span>General Admission</span><span>€89</span></div>
+            <span style="height: 24px; border-radius: 4px; background: #E4E4E7; color: #A1A1AA; font-size: 9px; display: grid; place-items: center;">Continue</span>
+          </div>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+        <span style="font-size: 11px; color: #7C3AED; font-family: 'Geist Mono', monospace;">Your redesign · 360 × 740</span>
+        <div style="width: 300px; border-radius: 34px; border: 8px solid #18181B; overflow: hidden; background: #FFFFFF; box-shadow: 0 24px 50px -24px rgba(0,0,0,.45);">
+          <div style="background: #0A0A0B; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; outline: {{o.header}}; outline-offset: -2px;"><img src="img/logo-dice-white.svg" alt="DICE" style="height: 16px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div>
+          <div style="position: relative; height: 150px; outline: {{o.hero}}; outline-offset: -2px;"><img src="img/dice-festival.jpg" alt="Festival crowd (AI-generated image)" style="width: 100%; height: 150px; object-fit: cover; display: block;"><div style="position: absolute; inset: auto 0 0 0; padding: 30px 14px 10px; background: linear-gradient(transparent, rgba(0,0,0,.75)); color: #FFFFFF;"><p style="margin: 0; font-size: 17px; font-weight: 700;">Berlin Summer Festival</p><p style="margin: 2px 0 0; font-size: 11px; opacity: .85;">Tempelhof · 12–14 Jul</p></div></div>
+          <div style="padding: 12px; display: flex; flex-direction: column; gap: 8px; outline: {{o.selector}}; outline-offset: -2px;">
+            <template data-for="{{tickets}}" data-as="t">
+              <div style="display: flex; align-items: center; gap: 8px; padding: 10px; border: 1px solid #E4E4E7; border-radius: 10px; outline: {{t.outline}}; outline-offset: 1px;">
+                <div style="flex-grow: 1;"><p style="margin: 0; font-size: 13px; font-weight: 600;">{{t.name}}</p><p style="margin: 0; font-size: 11px; color: #71717A;">{{t.price}}</p></div>
+                <button onClick="{{t.dec}}" aria-label="Fewer {{t.name}}" style="width: 28px; height: 28px; border-radius: 8px; border: 1px solid #E4E4E7; background: #FFFFFF; font: 500 15px Geist, sans-serif; cursor: pointer;">−</button>
+                <span style="width: 16px; text-align: center; font-family: 'Geist Mono', monospace; font-size: 13px;">{{t.qty}}</span>
+                <button onClick="{{t.inc}}" aria-label="More {{t.name}}" style="width: 28px; height: 28px; border-radius: 8px; border: 1px solid #E4E4E7; background: #FFFFFF; font: 500 15px Geist, sans-serif; cursor: pointer;">+</button>
+              </div>
+            </template>
+            <div style="display: flex; justify-content: space-between; font-size: 12px; color: #52525B; padding: 0 2px;"><span>{{feeLabel}}</span><span style="font-family: 'Geist Mono', monospace; color: #09090B;">{{total}}</span></div>
+            <template data-if="{{noTickets}}"><p style="margin: 0; font-size: 11px; color: #B91C1C;">Choose at least one ticket to continue.</p></template>
+            <span style="height: 44px; border-radius: 10px; background: #7C3AED; color: #FFFFFF; font-size: 14px; font-weight: 600; display: grid; place-items: center; outline: {{o.cta}}; outline-offset: 2px;">Buy {{count}} tickets · {{total}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- properties -->
+    <aside style="flex: 1 1 270px; max-width: 100%; box-sizing: border-box; border-left: 1px solid #E4E4E7; padding: 14px; display: flex; flex-direction: column; gap: 14px; font-size: 13px;">
+      <div style="display: flex; justify-content: space-between; align-items: center;"><span style="font-weight: 600;">{{selName}}</span><span style="font-size: 11px; color: #71717A; font-family: 'Geist Mono', monospace;">Frame</span></div>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px;">
+        <label style="display: flex; align-items: center; gap: 6px; height: 30px; padding: 0 8px; border: 1px solid #E4E4E7; border-radius: 6px;"><span style="color: #A1A1AA;">X</span><input value="{{f.x}}" aria-label="X" style="border: 0; outline: 0; width: 100%; font: 400 13px 'Geist Mono', monospace;"></label>
+        <label style="display: flex; align-items: center; gap: 6px; height: 30px; padding: 0 8px; border: 1px solid #E4E4E7; border-radius: 6px;"><span style="color: #A1A1AA;">Y</span><input value="{{f.y}}" aria-label="Y" style="border: 0; outline: 0; width: 100%; font: 400 13px 'Geist Mono', monospace;"></label>
+        <label style="display: flex; align-items: center; gap: 6px; height: 30px; padding: 0 8px; border: 1px solid #E4E4E7; border-radius: 6px;"><span style="color: #A1A1AA;">W</span><input value="{{f.w}}" aria-label="Width" style="border: 0; outline: 0; width: 100%; font: 400 13px 'Geist Mono', monospace;"></label>
+        <label style="display: flex; align-items: center; gap: 6px; height: 30px; padding: 0 8px; border: 1px solid #E4E4E7; border-radius: 6px;"><span style="color: #A1A1AA;">H</span><input value="{{f.h}}" aria-label="Height" style="border: 0; outline: 0; width: 100%; font: 400 13px 'Geist Mono', monospace;"></label>
+      </div>
+      <div style="display: flex; align-items: center; justify-content: space-between;"><span>Auto layout</span><span style="width: 34px; height: 20px; border-radius: 999px; background: #7C3AED; display: flex; justify-content: flex-end; padding: 2px; box-sizing: border-box;"><span style="width: 16px; height: 16px; border-radius: 999px; background: #FFFFFF;"></span></span></div>
+      <div style="display: flex; align-items: center; gap: 8px;"><span style="flex-grow: 1;">Fill</span><span style="width: 18px; height: 18px; border-radius: 4px; background: #7C3AED;"></span><span style="font-family: 'Geist Mono', monospace; font-size: 12px;">#7C3AED</span></div>
+      <div style="display: flex; align-items: center; gap: 8px;"><span style="flex-grow: 1;">Radius</span><span style="font-family: 'Geist Mono', monospace; font-size: 12px; padding: 4px 8px; border: 1px solid #E4E4E7; border-radius: 6px;">10</span></div>
+      <button onClick="{{toggleFees}}" style="display: flex; align-items: center; justify-content: space-between; padding: 10px; border: 1px solid #E4E4E7; border-radius: 8px; background: #FFFFFF; font: 400 13px Geist, sans-serif; cursor: pointer; text-align: left;"><span>Show fees in price</span><span style="width: 34px; height: 20px; border-radius: 999px; background: {{feesTrack}}; display: flex; justify-content: {{feesJustify}}; padding: 2px; box-sizing: border-box;"><span style="width: 16px; height: 16px; border-radius: 999px; background: #FFFFFF;"></span></span></button>
+      <div style="height: 1px; background: #E4E4E7;"></div>
+      <div style="display: flex; justify-content: space-between; align-items: center;"><span style="font-weight: 600;">Checks</span><span style="padding: 1px 8px; border-radius: 999px; border: 1px solid #A5D8E6; color: #0E6680; font-size: 11px; font-weight: 500;">Rule-based</span></div>
+      <template data-for="{{checks}}" data-as="c">
+        <div style="display: flex; align-items: center; gap: 8px;"><span style="width: 18px; height: 18px; border-radius: 999px; background: {{c.bg}}; color: #FFFFFF; font-size: 11px; display: grid; place-items: center;">{{c.icon}}</span><span style="flex-grow: 1;">{{c.label}}</span><span style="font-family: 'Geist Mono', monospace; font-size: 12px; color: #52525B;">{{c.value}}</span></div>
+      </template>
+      <button style="height: 38px; border: 0; border-radius: 8px; background: #7C3AED; color: #FFFFFF; font: 500 14px Geist, sans-serif; display: inline-flex; align-items: center; justify-content: center; gap: 8px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M10 2v7.3"/><path d="M14 9.3V2"/><path d="M8.5 2h7"/><path d="M14 9.3a6.5 6.5 0 1 1-4 0"/></svg>Run 1,000 synthetic sessions</button>
+    </aside>
+  </div>
+
+  <!-- case study -->
+  <section style="padding: 26px 28px 36px; display: flex; flex-direction: column; gap: 18px;">
+    <div style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px;"><div style="flex-grow: 1;"><p style="margin: 0; font-size: 12px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: #71717A;">Case study · results</p><h2 style="margin: 4px 0 0; font-size: 24px; font-weight: 600; letter-spacing: -0.03em;">Checkout redesign, version 3 vs original</h2></div><span style="display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; border: 1px solid #FDE68A; background: #FFFBEB; color: #92400E; font-size: 12px; font-weight: 500;">Synthetic estimates · not real fans</span></div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr)); gap: 14px;">
+      <div style="border: 1px solid #E4E4E7; border-radius: 12px; padding: 14px;"><p style="margin: 0; font-size: 13px; color: #71717A;">Checkout completion</p><p style="margin: 6px 0 8px; display: flex; align-items: baseline; gap: 8px;"><span style="font-size: 28px; font-weight: 600;">78%</span><span style="font-size: 13px; color: #A1A1AA; text-decoration: line-through;">41%</span></p><div style="display: flex; flex-direction: column; gap: 4px;"><div style="height: 6px; border-radius: 999px; background: #F4F4F5;"><div style="width: 41%; height: 6px; border-radius: 999px; background: #D4D4D8;"></div></div><div style="height: 6px; border-radius: 999px; background: #F4F4F5;"><div style="width: 78%; height: 6px; border-radius: 999px; background: #7C3AED;"></div></div></div></div>
+      <div style="border: 1px solid #E4E4E7; border-radius: 12px; padding: 14px;"><p style="margin: 0; font-size: 13px; color: #71717A;">Median time to buy</p><p style="margin: 6px 0 0; display: flex; align-items: baseline; gap: 8px;"><span style="font-size: 28px; font-weight: 600;">1:42</span><span style="font-size: 13px; color: #A1A1AA; text-decoration: line-through;">3:10</span></p><p style="margin: 6px 0 0; font-size: 12px; color: #71717A;">1,000 sessions · 5 user profiles</p></div>
+      <div style="border: 1px solid #E4E4E7; border-radius: 12px; padding: 14px;"><p style="margin: 0; font-size: 13px; color: #71717A;">Rule-based checks</p><p style="margin: 6px 0 0; display: flex; align-items: baseline; gap: 8px;"><span style="font-size: 28px; font-weight: 600;">7 / 7</span><span style="font-size: 13px; color: #A1A1AA; text-decoration: line-through;">3 / 7</span></p><p style="margin: 6px 0 0; font-size: 12px; color: #71717A;">Contrast, tap targets, fees, errors</p></div>
+      <div style="border: 1px solid #E4E4E7; border-radius: 12px; padding: 14px;"><p style="margin: 0; font-size: 13px; color: #71717A;">Overall evaluation</p><p style="margin: 6px 0 0; display: flex; align-items: baseline; gap: 8px;"><span style="font-size: 28px; font-weight: 600;">92</span><span style="font-size: 13px; color: #71717A;">/ 100</span></p><p style="margin: 6px 0 0; font-size: 12px; color: #71717A;">Rubric + AI review</p></div>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 14px;">
+      <div style="border: 1px solid #E4E4E7; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 10px;">
+        <p style="margin: 0; font-size: 14px; font-weight: 600;">What you changed</p>
+        <div style="display: flex; flex-direction: column; gap: 10px; font-size: 13px;">
+          <div style="display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 8px;"><span style="font-family: 'Geist Mono', monospace; color: #7C3AED;">v1</span><span>Raised CTA contrast from 1.6:1 to 4.6:1 and renamed it from “Continue” to “Buy tickets”.</span></div>
+          <div style="display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 8px;"><span style="font-family: 'Geist Mono', monospace; color: #7C3AED;">v2</span><span>Showed the service fee in every price, not at the last step.</span></div>
+          <div style="display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 8px;"><span style="font-family: 'Geist Mono', monospace; color: #7C3AED;">v3</span><span>Added inline error for zero tickets and removed the forced account step.</span></div>
+        </div>
+      </div>
+      <div style="border: 1px solid #E4E4E7; border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;"><p style="margin: 0; font-size: 14px; font-weight: 600;">Failed sessions to review</p><span style="font-size: 12px; color: #71717A;">220 of 1,000</span></div>
+        <div style="display: flex; flex-direction: column; gap: 8px; font-size: 13px;">
+          <div style="display: flex; gap: 10px; padding: 8px 10px; border-radius: 8px; background: #FAFAFA;"><span style="font-family: 'Geist Mono', monospace; font-size: 12px; color: #71717A;">#0412</span><span style="flex-grow: 1;">Low-vision · dropped at seat map: labels too small</span></div>
+          <div style="display: flex; gap: 10px; padding: 8px 10px; border-radius: 8px; background: #FAFAFA;"><span style="font-family: 'Geist Mono', monospace; font-size: 12px; color: #71717A;">#0587</span><span style="flex-grow: 1;">First-timer · unsure if VIP includes entry</span></div>
+          <div style="display: flex; gap: 10px; padding: 8px 10px; border-radius: 8px; background: #F5F3FF; color: #4C1D95;"><span style="font-size: 12px; font-weight: 600;">AI review</span><span style="flex-grow: 1;">Add a one-line “What VIP includes” under the price.</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+</template>
+<p class="app-note">Simulated hackathon prototype · not an official company assessment · mockup only, no partnership implied. Images are AI-generated.</p>
+<script src="dc-lite.js"></script>
+<script>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { mode: 'Design', sel: 'cta', ga: 2, vip: 0, fees: true }; }
+  renderVals() {
+    const st = this.state;
+    const modes = ['Design', 'Test', 'Results'].map((label) => {
+      const on = st.mode === label;
+      return { label, bg: on ? '#FFFFFF' : 'transparent', fg: on ? '#09090B' : '#71717A', shadow: on ? '0 1px 3px rgba(0,0,0,.1)' : 'none', pick: () => this.setState({ mode: label }) };
+    });
+    const layerDefs = [
+      ['flow', 'Ticket flow', 8], ['header', 'Header', 22], ['hero', 'Event hero', 22], ['selector', 'Ticket selector', 22],
+      ['ga', 'General Admission', 36], ['vip', 'VIP', 36], ['cta', 'Buy button', 36], ['footer', 'Footer', 22]
+    ];
+    const layers = layerDefs.map(([id, label, ind]) => {
+      const on = st.sel === id;
+      return { label, indent: ind + 'px', bg: on ? '#F5F3FF' : 'transparent', fg: on ? '#6D28D9' : '#3F3F46', weight: on ? 500 : 400, pick: () => this.setState({ sel: id }) };
+    });
+    const sel = '2px solid #7C3AED';
+    const o = { header: st.sel === 'header' ? sel : 'none', hero: st.sel === 'hero' ? sel : 'none', selector: st.sel === 'selector' ? sel : 'none', cta: st.sel === 'cta' ? sel : 'none' };
+    const fee = 4.5;
+    const defs = [['ga', 'General Admission', 89], ['vip', 'VIP · fast lane + lounge', 149]];
+    const tickets = defs.map(([id, name, p]) => ({
+      name, qty: st[id],
+      price: st.fees ? '€' + (p + fee).toFixed(2).replace('.00', '') + ' incl. fees' : '€' + p + ' + fees',
+      outline: st.sel === id ? sel : 'none',
+      dec: () => this.setState({ [id]: Math.max(0, st[id] - 1) }),
+      inc: () => this.setState({ [id]: Math.min(9, st[id] + 1) })
+    }));
+    const count = st.ga + st.vip;
+    const sum = st.ga * 89 + st.vip * 149 + (st.fees ? count * fee : 0);
+    const frames = { flow: [0, 0, 360, 740], header: [0, 0, 360, 48], hero: [0, 48, 360, 180], selector: [0, 228, 360, 300], ga: [16, 244, 328, 64], vip: [16, 318, 328, 64], cta: [16, 470, 328, 52], footer: [0, 700, 360, 40] };
+    const fr = frames[st.sel];
+    const names = Object.fromEntries(layerDefs.map(([id, l]) => [id, l]));
+    const checks = [
+      { label: 'CTA contrast', value: '4.6:1', ok: true },
+      { label: 'Tap targets ≥ 44 px', value: '48 px', ok: true },
+      { label: 'Fees shown upfront', value: st.fees ? 'yes' : 'no', ok: st.fees },
+      { label: 'Empty-cart error', value: 'inline', ok: true }
+    ].map((c) => ({ ...c, bg: c.ok ? '#16A34A' : '#DC2626', icon: c.ok ? '✓' : '!' }));
+    return {
+      modes, layers, o, tickets, checks, count,
+      total: '€' + sum.toFixed(2).replace('.00', ''),
+      feeLabel: st.fees ? 'Total incl. €4.50 fee per ticket' : 'Total (fees added at payment)',
+      noTickets: count === 0,
+      selName: names[st.sel],
+      f: { x: fr[0], y: fr[1], w: fr[2], h: fr[3] },
+      feesTrack: st.fees ? '#7C3AED' : '#E4E4E7', feesJustify: st.fees ? 'flex-end' : 'flex-start',
+      toggleFees: () => this.setState({ fees: !st.fees })
+    };
+  }
+}
+DC.mount(Component);
+</script>
+</body>
+</html>

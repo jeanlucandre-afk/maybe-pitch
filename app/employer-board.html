@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Candidate board · MAYBE</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;family=Fraunces:opsz,wght@9..144,500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#09090B}a:hover{color:#52525B}
+.sh-row{transition:background .12s ease}
+.sh-row:hover{background:#FAFAFA}
+</style>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div id="dc-root"></div>
+<template id="dc-tpl">
+
+<div style="width: 100%; min-height: 1040px; box-sizing: border-box; background: #FFFFFF; color: #09090B; font-family: Geist, system-ui, sans-serif; display: flex; flex-wrap: wrap;">
+  <aside style="flex: 1 1 232px; max-width: 100%; box-sizing: border-box; border-right: 1px solid #E4E4E7; padding: 16px 12px; display: flex; flex-direction: column; gap: 2px; background: #FAFAFA;">
+    <div style="display: flex; align-items: center; gap: 8px; padding: 4px 8px 4px; font-size: 17px; font-weight: 700; letter-spacing: -0.03em;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 4.5 L10.5 13 L10.5 20 M20.5 3.5 L11 14.5" fill="none" stroke="#09090B" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>MAYBE</div>
+    <span style="padding: 0 8px 12px 36px; font-size: 12px; color: #71717A;">for Employers</span>
+    <button style="display: flex; align-items: center; gap: 10px; padding: 8px; margin-bottom: 12px; border: 1px solid #E4E4E7; border-radius: 8px; background: #FFFFFF; text-align: left; cursor: pointer;"><span style="width: 56px; height: 28px; border-radius: 6px; background: #F7EDE6; display: grid; place-items: center;"><img src="img/logo-drlipp.svg" alt="" style="width: 46px;"></span><span style="flex-grow: 1;"><span style="display: block; font-size: 13px; font-weight: 500;">Dr. Lipp</span><span style="display: block; font-size: 11px; color: #71717A;">Hiring team · 4 seats</span></span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#71717A" stroke-width="2" aria-hidden="true"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg></button>
+    <a href="#" style="display: flex; align-items: center; gap: 8px; padding: 7px 8px; border-radius: 6px; font-size: 14px; color: #52525B; text-decoration: none;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>Overview</a>
+    <a href="employer-board.html" style="display: flex; align-items: center; gap: 8px; padding: 7px 8px; border-radius: 6px; font-size: 14px; font-weight: 500; background: #F4F4F5; text-decoration: none;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.1a4 4 0 0 1 0 7.8"/></svg>Candidates<span style="margin-left: auto; font-size: 12px; color: #71717A;">42</span></a>
+    <a href="#" style="display: flex; align-items: center; gap: 8px; padding: 7px 8px; border-radius: 6px; font-size: 14px; color: #52525B; text-decoration: none;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>Jobs &amp; challenges</a>
+    <a href="#" style="display: flex; align-items: center; gap: 8px; padding: 7px 8px; border-radius: 6px; font-size: 14px; color: #52525B; text-decoration: none;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>Interviews<span style="margin-left: auto; padding: 0 6px; border-radius: 999px; background: #7C3AED; color: #FFFFFF; font-size: 11px;">3</span></a>
+    <div style="margin-top: 20px; border: 1px solid #E4E4E7; border-radius: 10px; background: #FFFFFF; padding: 12px; font-size: 12px; color: #52525B; line-height: 1.5;"><strong style="color: #09090B; font-weight: 500;">Privacy</strong><br>You only see evidence students chose to share with Dr. Lipp.</div>
+  </aside>
+
+  <main style="flex: 999 1 640px; min-width: 0; box-sizing: border-box; padding: 24px 32px 40px; display: flex; flex-direction: column; gap: 22px;">
+    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px;">
+      <div style="flex-grow: 1;"><p style="margin: 0; font-size: 13px; color: #71717A;">Jobs &amp; challenges / Junior Sales Representative</p><h1 style="margin: 2px 0 0; font-size: 28px; font-weight: 600; letter-spacing: -0.035em;">Candidate overview</h1></div>
+      <button style="height: 36px; padding: 0 14px; border: 1px solid #E4E4E7; border-radius: 8px; background: #FFFFFF; font: 500 14px Geist, sans-serif; display: inline-flex; align-items: center; gap: 6px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>Export</button>
+      <button style="height: 36px; padding: 0 14px; border: 0; border-radius: 8px; background: #09090B; color: #FAFAFA; font: 500 14px Geist, sans-serif; display: inline-flex; align-items: center; gap: 6px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>Invite {{shortCount}} shortlisted</button>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 14px;">
+      <div style="border: 1px solid #E4E4E7; border-radius: 12px; padding: 14px 16px; box-shadow: 0 1px 2px rgba(0,0,0,.04);"><p style="margin: 0; font-size: 13px; color: #71717A;">Completed challenge</p><div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 8px; margin-top: 6px;"><div><p style="margin: 0; font-size: 28px; font-weight: 600; letter-spacing: -0.03em;">128</p><p style="margin: 0; font-size: 12px; color: #15803D;">+24% vs last month</p></div><svg width="80" height="32" viewBox="0 0 80 32" aria-hidden="true"><path d="M0 26 L12 22 L24 24 L36 16 L48 18 L60 9 L72 11 L80 4 L80 32 L0 32 Z" fill="#EDE9FE"/><path d="M0 26 L12 22 L24 24 L36 16 L48 18 L60 9 L72 11 L80 4" fill="none" stroke="#7C3AED" stroke-width="2"/><circle cx="80" cy="4" r="2.5" fill="#7C3AED"/></svg></div></div>
+      <div style="border: 1px solid #E4E4E7; border-radius: 12px; padding: 14px 16px; box-shadow: 0 1px 2px rgba(0,0,0,.04);"><p style="margin: 0; font-size: 13px; color: #71717A;">Shared with you</p><div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 8px; margin-top: 6px;"><div><p style="margin: 0; font-size: 28px; font-weight: 600; letter-spacing: -0.03em;">42</p><p style="margin: 0; font-size: 12px; color: #71717A;">33% of completions</p></div><svg width="80" height="32" viewBox="0 0 80 32" aria-hidden="true"><path d="M0 24 L16 22 L32 20 L48 14 L64 15 L80 10 L80 32 L0 32 Z" fill="#F4F4F5"/><path d="M0 24 L16 22 L32 20 L48 14 L64 15 L80 10" fill="none" stroke="#09090B" stroke-width="2"/></svg></div></div>
+      <div style="border: 1px solid #E4E4E7; border-radius: 12px; padding: 14px 16px; box-shadow: 0 1px 2px rgba(0,0,0,.04);"><p style="margin: 0; font-size: 13px; color: #71717A;">Median rubric score</p><div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 8px; margin-top: 6px;"><div><p style="margin: 0; font-size: 28px; font-weight: 600; letter-spacing: -0.03em;">74</p><p style="margin: 0; font-size: 12px; color: #71717A;">Top 10% ≥ 86</p></div><svg width="80" height="32" viewBox="0 0 80 32" aria-hidden="true"><rect x="0" y="22" width="10" height="10" rx="2" fill="#E4E4E7"/><rect x="14" y="16" width="10" height="16" rx="2" fill="#E4E4E7"/><rect x="28" y="8" width="10" height="24" rx="2" fill="#E4E4E7"/><rect x="42" y="4" width="10" height="28" rx="2" fill="#D4D4D8"/><rect x="56" y="12" width="10" height="20" rx="2" fill="#E4E4E7"/><rect x="70" y="20" width="10" height="12" rx="2" fill="#7C3AED"/></svg></div></div>
+      <div style="border: 1px solid #E4E4E7; border-radius: 12px; padding: 14px 16px; box-shadow: 0 1px 2px rgba(0,0,0,.04);"><p style="margin: 0; font-size: 13px; color: #71717A;">Shortlisted</p><div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 8px; margin-top: 6px;"><div><p style="margin: 0; font-size: 28px; font-weight: 600; letter-spacing: -0.03em;">{{shortCount}}</p><p style="margin: 0; font-size: 12px; color: #71717A;">3 interviews booked</p></div><div style="display: flex;"><span style="width: 28px; height: 28px; border-radius: 999px; overflow: hidden; background: #EDE9FE; border: 2px solid #FFFFFF;"><img src="img/peep-seller.svg" alt="" style="width: 46px; margin: -1px 0 0 -9px; display: block;"></span><span style="width: 28px; height: 28px; border-radius: 999px; overflow: hidden; background: #F4F4F5; border: 2px solid #FFFFFF; margin-left: -8px;"><img src="img/peep-student.svg" alt="" style="width: 46px; margin: -1px 0 0 -9px; display: block;"></span></div></div></div>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start;">
+      <section style="flex: 999 1 520px; min-width: 0; border: 1px solid #E4E4E7; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,.04);">
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 12px 14px; border-bottom: 1px solid #E4E4E7;">
+          <label style="flex: 1 1 200px; display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 10px; border: 1px solid #E4E4E7; border-radius: 8px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#71717A" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input aria-label="Filter candidates" placeholder="Filter candidates…" style="border: 0; outline: 0; flex-grow: 1; min-width: 0; font: 400 13px Geist, sans-serif; background: transparent;"></label>
+          <span style="display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 10px; border: 1px dashed #D4D4D8; border-radius: 8px; font-size: 13px; color: #52525B;">Score ≥ 80</span>
+          <span style="display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 10px; border: 1px dashed #D4D4D8; border-radius: 8px; font-size: 13px; color: #52525B;">Berlin</span>
+        </div>
+        <div style="overflow-x: auto;">
+          <div style="min-width: 600px;">
+            <div style="display: grid; grid-template-columns: 34px minmax(0, 1.7fr) minmax(0, 1fr) 130px 120px; gap: 12px; align-items: center; padding: 9px 14px; border-bottom: 1px solid #E4E4E7; font-size: 12px; font-weight: 500; color: #71717A;"><span></span><span>Candidate</span><span>Outcome</span><span>Rubric score</span><span>Evidence</span></div>
+            <template data-for="{{rows}}" data-as="r">
+              <div class="sh-row" onClick="{{r.select}}" style="display: grid; grid-template-columns: 34px minmax(0, 1.7fr) minmax(0, 1fr) 130px 120px; gap: 12px; align-items: center; padding: 10px 14px; border-bottom: 1px solid #F4F4F5; background: {{r.rowBg}}; cursor: pointer;">
+                <button onClick="{{r.toggle}}" aria-label="Shortlist {{r.name}}" style="width: 28px; height: 28px; border-radius: 6px; border: 1px solid {{r.starBorder}}; background: {{r.starBg}}; color: {{r.starFg}}; font-size: 14px; cursor: pointer; display: grid; place-items: center;">{{r.star}}</button>
+                <div style="display: flex; align-items: center; gap: 10px; min-width: 0;"><span style="width: 32px; height: 32px; border-radius: 999px; overflow: hidden; background: {{r.tint}}; flex: none;"><img src="{{r.peep}}" alt="" style="width: 54px; margin: -2px 0 0 -11px; display: block;"></span><div style="min-width: 0;"><p style="margin: 0; font-size: 14px; font-weight: 500;">{{r.name}}</p><p style="margin: 0; font-size: 12px; color: #71717A;">{{r.meta}}</p></div></div>
+                <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px;"><span style="width: 7px; height: 7px; border-radius: 999px; background: {{r.dot}};"></span>{{r.outcome}}</span>
+                <div style="display: flex; align-items: center; gap: 8px;"><div style="flex-grow: 1; height: 6px; border-radius: 999px; background: #F4F4F5;"><div style="width: {{r.pct}}; height: 6px; border-radius: 999px; background: #09090B;"></div></div><span style="font-family: 'Geist Mono', monospace; font-size: 13px;">{{r.score}}</span></div>
+                <span style="display: inline-flex; align-items: center; gap: 5px; padding: 1px 8px; border-radius: 999px; border: 1px solid #A5D8E6; color: #0E6680; font-size: 11px; font-weight: 500; justify-self: start;">{{r.calls}} · rubric</span>
+              </div>
+            </template>
+          </div>
+        </div>
+      </section>
+
+      <!-- detail -->
+      <section style="flex: 1 1 320px; min-width: 0; border: 1px solid #E4E4E7; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 24px -16px rgba(0,0,0,.25);">
+        <div style="height: 96px; background: #F4F4F5; position: relative; overflow: hidden; border-bottom: 1px solid #E4E4E7;"><img src="{{sel.peep}}" alt="" style="position: absolute; left: 18px; bottom: -78px; width: 110px;"><span style="position: absolute; right: 14px; top: 14px; display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border-radius: 999px; background: #FFFFFF; border: 1px solid #E4E4E7; font-size: 12px;"><img src="img/logo-drlipp.svg" alt="Dr. Lipp" style="height: 13px;"> sales challenge</span></div>
+        <div style="padding: 16px; display: flex; flex-direction: column; gap: 14px;">
+          <div><p style="margin: 0; font-size: 17px; font-weight: 600;">{{sel.name}}</p><p style="margin: 2px 0 0; font-size: 13px; color: #71717A;">{{sel.meta}}</p></div>
+          <div style="display: flex; align-items: center; gap: 14px;">
+            <div style="position: relative; width: 76px; height: 76px; flex: none;"><svg width="76" height="76" viewBox="0 0 36 36" aria-hidden="true" style="transform: rotate(-90deg);"><circle cx="18" cy="18" r="15.5" fill="none" stroke="#F4F4F5" stroke-width="3"/><circle cx="18" cy="18" r="15.5" fill="none" stroke="#7C3AED" stroke-width="3" stroke-linecap="round" pathLength="100" stroke-dasharray="{{sel.dash}}"/></svg><span style="position: absolute; inset: 0; display: grid; place-content: center; font-family: 'Geist Mono', monospace; font-size: 20px;">{{sel.score}}</span></div>
+            <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 7px; font-size: 12px;">
+              <template data-for="{{sel.crit}}" data-as="k">
+                <div style="display: grid; grid-template-columns: 82px minmax(0, 1fr) 22px; gap: 8px; align-items: center;"><span style="color: #71717A;">{{k.label}}</span><div style="height: 5px; border-radius: 999px; background: #F4F4F5;"><div style="width: {{k.pct}}; height: 5px; border-radius: 999px; background: #09090B;"></div></div><span style="font-family: 'Geist Mono', monospace; text-align: right;">{{k.v}}</span></div>
+              </template>
+            </div>
+          </div>
+          <figure style="margin: 0; border-left: 2px solid #7C3AED; padding: 2px 0 2px 12px;"><blockquote style="margin: 0; font-size: 14px; line-height: 1.5;">{{sel.quote}}</blockquote><figcaption style="margin-top: 6px; font-size: 12px; color: #71717A;">{{sel.when}}</figcaption></figure>
+          <div style="display: flex; flex-wrap: wrap; gap: 6px;"><span style="padding: 1px 8px; border-radius: 999px; border: 1px solid #A5D8E6; color: #0E6680; font-size: 11px; font-weight: 500;">Rubric · transcript</span><span style="padding: 1px 8px; border-radius: 999px; border: 1px solid #D6C6FB; color: #5B21B6; font-size: 11px; font-weight: 500;">AI coach notes</span><span style="padding: 1px 8px; border-radius: 999px; border: 1px solid #E4E4E7; color: #52525B; font-size: 11px; font-weight: 500;">Outcome: {{sel.outcome}}</span></div>
+          <div style="display: flex; gap: 8px;"><button onClick="{{sel.toggle}}" style="flex: 1 1 0; height: 36px; border: 1px solid #E4E4E7; border-radius: 8px; background: #FFFFFF; font: 500 14px Geist, sans-serif; cursor: pointer;">{{sel.shortLabel}}</button><button style="flex: 1 1 0; height: 36px; border: 0; border-radius: 8px; background: #7C3AED; color: #FFFFFF; font: 500 14px Geist, sans-serif;">Invite to interview</button></div><a href="candidate-evidence.html" style="display: flex; align-items: center; justify-content: center; height: 36px; margin-top: 8px; border: 1px solid #E4E4E7; border-radius: 8px; font: 500 14px Geist, sans-serif; color: #09090B; text-decoration: none;">View full evidence</a>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+</template>
+<p class="app-note">Fictional candidates · simulated evidence · mockup only, no partnership implied.</p>
+<script src="dc-lite.js"></script>
+<script>
+class Component extends DCLogic {
+  constructor(props) { super(props); this.state = { short: { jla: true, sm: true }, sel: 'jla' }; }
+  renderVals() {
+    const P = {
+      student: 'img/peep-student.svg', designer: 'img/peep-designer.svg',
+      seller: 'img/peep-seller.svg', recruiter: 'img/peep-recruiter.svg', thinker: 'img/peep-thinker.svg'
+    };
+    const data = [
+      { id: 'sm', name: 'Sofia Marino', meta: 'Hamburg · Business Admin', peep: P.seller, tint: '#FEF3C7', score: 91, calls: '3 calls', outcome: 'Trial order', dot: '#22C55E', crit: [94, 90, 88, 92], quote: '“Before I talk price, can I ask how you decide what gets the eye-level shelf?”', when: 'Call 1 · Bettina Keller · 01:12' },
+      { id: 'jla', name: 'Jean-Luc Andre', meta: 'Berlin · Product & Business', peep: P.student, tint: '#EDE9FE', score: 89, calls: '3 calls', outcome: 'Trial order', dot: '#22C55E', crit: [92, 84, 88, 82], quote: '“Totally fair on shelf space. What if we start with one 24-unit tray next to the till for six weeks?”', when: 'Call 1 · Bettina Keller · 03:47' },
+      { id: 'nr', name: 'Noah Richter', meta: 'Munich · Economics', peep: P.thinker, tint: '#F4F4F5', score: 84, calls: '2 calls', outcome: 'Follow-up booked', dot: '#F59E0B', crit: [80, 86, 85, 79], quote: '“Your current supplier ships weekly. We can match that from our Berlin warehouse.”', when: 'Call 2 · Lara Reuter · 02:05' },
+      { id: 'ad', name: 'Aylin Demir', meta: 'Berlin · Marketing', peep: P.designer, tint: '#DCFCE7', score: 81, calls: '3 calls', outcome: 'No deal', dot: '#A1A1AA', crit: [86, 74, 83, 72], quote: '“I hear you on price. Let me show you what the margin looks like at the recommended price.”', when: 'Call 3 · Tobias Schmidt · 04:30' },
+      { id: 'fb', name: 'Felix Braun', meta: 'Cologne · Sports Management', peep: P.recruiter, tint: '#F4F4F5', score: 80, calls: '1 call', outcome: 'Follow-up booked', dot: '#F59E0B', crit: [78, 80, 84, 76], quote: '“Would a call with your category team next Tuesday work?”', when: 'Call 1 · Lara Reuter · 05:10' }
+    ];
+    const labels = ['Discovery', 'Objections', 'Product', 'Closing'];
+    const short = this.state.short;
+    const rows = data.map((d) => {
+      const on = !!short[d.id];
+      const isSel = this.state.sel === d.id;
+      return {
+        ...d, pct: d.score + '%', star: on ? '★' : '☆',
+        starBg: on ? '#7C3AED' : '#FFFFFF', starFg: on ? '#FFFFFF' : '#71717A', starBorder: on ? '#7C3AED' : '#E4E4E7',
+        rowBg: isSel ? '#F5F3FF' : '#FFFFFF',
+        toggle: (e) => { if (e && e.stopPropagation) e.stopPropagation(); this.setState({ short: { ...short, [d.id]: !on } }); },
+        select: () => this.setState({ sel: d.id })
+      };
+    });
+    const s = data.find((d) => d.id === this.state.sel) || data[1];
+    const sOn = !!short[s.id];
+    const sel = {
+      ...s, dash: s.score + ' 100',
+      crit: s.crit.map((v, i) => ({ label: labels[i], v, pct: v + '%' })),
+      shortLabel: sOn ? 'Remove from shortlist' : 'Shortlist',
+      toggle: () => this.setState({ short: { ...short, [s.id]: !sOn } })
+    };
+    const shortCount = Object.values(short).filter(Boolean).length;
+    return { rows, sel, shortCount };
+  }
+}
+DC.mount(Component);
+</script>
+</body>
+</html>

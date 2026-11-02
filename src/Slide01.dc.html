@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>MAYBE · Title</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#09090B}a:hover{color:#52525B}
+@keyframes rv{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes rise{0%{transform:translateY(105%) rotate(4deg)}60%{transform:translateY(-6%) rotate(-2deg)}80%{transform:translateY(2%)}100%{transform:translateY(0) rotate(0)}}
+@keyframes drift{from{transform:scale(1.08) translateY(0)}to{transform:scale(1.08) translateY(-4%)}}
+@keyframes frame-in{from{opacity:0;transform:translateY(40px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes scroll-shot{0%,15%{transform:translateY(0)}55%,70%{transform:translateY(var(--shot-scroll,-18%))}100%{transform:translateY(0)}}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.anim-on .rv{animation:rv calc(.7s * var(--spd)) cubic-bezier(.2,.7,.2,1) both}
+.anim-on .rise{animation:rise calc(.8s * var(--spd)) cubic-bezier(.3,.7,.2,1) both}
+.anim-on .drift{animation:drift calc(9s * var(--spd)) ease-in-out infinite alternate}
+.anim-on .fin{animation:frame-in calc(.9s * var(--spd)) cubic-bezier(.2,.7,.2,1) both}
+.anim-on .shot{animation:scroll-shot calc(14s * var(--spd)) ease-in-out 1.4s infinite}
+.anim-on .grow{transform-origin:left center;animation:grow calc(.9s * var(--spd)) cubic-bezier(.2,.7,.2,1) both}
+@media (prefers-reduced-motion:reduce){.rv,.rise,.drift,.fin,.shot,.grow{animation:none!important}}
+</style>
+</helmet>
+<div class="{{animClass}}" style="--spd: {{spd}}; width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #FFFFFF; color: #09090B; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
+  <div style="position: absolute; left: 72px; top: 32px; display: flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 700; letter-spacing: -0.035em; color: #09090B;"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 4.5 L10.5 13 L10.5 20 M20.5 3.5 L11 14.5" fill="none" stroke="#09090B" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>MAYBE</div>
+  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 9.1%; background: #7C3AED;"></div>
+  <div style="position: absolute; right: 72px; bottom: 32px; font-family: 'Geist Mono', monospace; font-size: 16px; color: #71717A;">1 / 11</div>
+  <div style="position: absolute; left: 120px; right: 120px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; right: auto; width: 1000px;">
+    <p class="rv" style="margin: 0 0 18px; font-family: 'Geist Mono', monospace; font-size: 18px; font-weight: 500; letter-spacing: .02em; color: #71717A; animation-delay: calc(var(--spd) * 0.00s);"><span style="color: #5B21B6;">Macromedia × CODE Hackathon</span> · 2026</p>
+    <h1 class="rv" style="margin: 0; font-size: 220px; font-weight: 700; line-height: .9; letter-spacing: -0.06em; animation-delay: calc(var(--spd) * 0.09s);">MAYBE</h1>
+    <p class="rv" style="margin: 28px 0 0; font-size: 48px; font-weight: 500; letter-spacing: -0.03em; line-height: 1.15; max-width: 18ch; animation-delay: calc(var(--spd) * 0.18s);">Try real work before you choose it.</p>
+    <div class="rv" style="margin-top: 52px; display: flex; gap: 12px 36px; flex-wrap: wrap; font-size: 22px; color: #52525B; animation-delay: calc(var(--spd) * 0.27s);"><span><strong style="color: #09090B; font-weight: 600;">Jean-Luc Andre Navarro</strong> · co-founder</span><span><strong style="color: #09090B; font-weight: 600;">Friederike Wirz</strong> · co-founder</span></div>
+  </div>
+  <div aria-hidden="true" style="position: absolute; right: 120px; bottom: 0; height: 640px; display: flex; align-items: flex-end;">
+    <div style="position: relative; width: 260px; height: 72%; overflow: hidden;"><img class="rise" src="/_blob/783a98b6d04d4f677ad5b680bc02635b" alt="" style="position: absolute; left: 0; bottom: -18%; width: 100%; animation-delay: calc(var(--spd) * .45s);"></div>
+    <div style="position: relative; width: 330px; height: 100%; overflow: hidden;"><img class="rise" src="/_blob/213175625e1003990abdd16ec3dd7643" alt="" style="position: absolute; left: 0; bottom: -18%; width: 100%; animation-delay: calc(var(--spd) * .25s);"></div>
+    <div style="position: relative; width: 260px; height: 72%; overflow: hidden;"><img class="rise" src="/_blob/3d46dca5b85688403842bc1ae495d845" alt="" style="position: absolute; left: 0; bottom: -18%; width: 100%; animation-delay: calc(var(--spd) * .6s);"></div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"animate": {"editor": "boolean", "default": true, "section": "Motion"}, "speed": {"editor": "enum", "options": ["slow", "normal", "fast"], "default": "normal", "section": "Motion"}, "$preview": {"width": 1920, "height": 1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const on = this.props.animate ?? true;
+    const spd = { slow: 1.5, normal: 1, fast: 0.6 }[this.props.speed ?? 'normal'] ?? 1;
+    return {
+      animClass: on ? 'anim-on' : 'anim-off',
+      spd: String(spd),
+    };
+  }
+}
+</script>
+</body>
+</html>
