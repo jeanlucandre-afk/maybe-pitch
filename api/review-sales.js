@@ -54,10 +54,11 @@ module.exports = async (req, res) => {
   if (!originAllowed(req.headers.origin)) return sendJson(res, 403, { error: 'Origin not allowed' });
   if (tooManyRequests(req)) return sendJson(res, 429, { error: 'Too many requests. Try again shortly.' });
 
-  let body = req.body;
-  if (typeof body === 'string') {
-    try { body = JSON.parse(body); } catch (_) { body = null; }
-  }
+  let body = null;
+  try {
+    // On Vercel, reading req.body throws if the JSON is invalid.
+    body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+  } catch (_) { /* answered below as a bad request */ }
   const turns = parseTurns(body?.turns);
   if (!turns) return sendJson(res, 400, { error: 'Send { turns: [...] }' });
 

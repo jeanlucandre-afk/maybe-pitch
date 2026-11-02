@@ -8,7 +8,9 @@ const { reviewSalesCall } = require('./engine');
 const { clampWords, verifyQuote } = require('./evidence');
 const { askOpenAI } = require('./openai');
 const { SALES_CHECKS, SALES_PANEL } = require('./rubric');
-const { SAMPLE_CALLS } = require('./sample-calls');
+const { OUTCOME_PAIR, SAMPLE_CALLS } = require('./sample-calls');
+const http = require('node:http');
+const reviewEndpoint = require('../review-sales');
 
 const sample = (id) => SAMPLE_CALLS.find((item) => item.id === id).turns;
 const YES = "Okay, I'll take the banana.";
@@ -107,6 +109,29 @@ describe('rubric and points', () => {
     assert.equal(result.focus.agentId, 'next_step');
   });
 
+  it('a closed sale does not raise the score: the outcome goes apart', async () => {
+    const points = (result) => result.reviews.map((review) => review.points);
+    const closed = await reviewSalesCall({ turns: sample('excellent'), ask: fakeAi() });
+    const lost = await reviewSalesCall({ turns: sample('excellent'), ask: fakeAi({ audit: { outcome: 'no_agreement' } }) });
+    assert.equal(closed.outcome, 'sale_agreed');
+    assert.equal(lost.outcome, 'no_agreement');
+    assert.deepEqual(points(closed), points(lost));
+    assert.equal(closed.totalPoints, lost.totalPoints);
+  });
+
+  it('a weak call gets no strongest area', async () => {
+    const result = await reviewSalesCall({
+      turns: sample('injection'),
+      ask: fakeAi({
+        audit: { outcome: 'no_agreement', outcomeTurnId: 't4', outcomeQuote: 'Goodbye', askedProblem: { passed: false, turnId: null, quote: null }, price: { status: 'not_stated', turnId: null, quote: null }, nextStep: { passed: false, turnId: null, quote: null } },
+        agent: (id) => (id === 'integrity' ? allMet(id) : { ...allMet(id), checks: allMet(id).checks.map((item) => ({ ...item, status: 'missed', quote: null })) }),
+      }),
+    });
+    assert.equal(result.rating, 'needs_work');
+    assert.equal(findReview(result, 'integrity').points, 10);
+    assert.equal(result.strongest, null);
+  });
+
   it('keeps text short enough for the cards', async () => {
     const long = 'word '.repeat(60);
     const result = await reviewSalesCall({
@@ -187,6 +212,18 @@ describe('the AI cannot make things up', () => {
     assert.doesNotMatch(communication.finding, /^Fact check/);
   });
 
+  it('a card with an invented number or quote is not shown', async () => {
+    const card = async (finding, suggestion = 'Ask how long it has been.') => findReview(
+      await reviewSalesCall({ turns: sample('excellent'), ask: fakeAi({ agent: (id) => ({ ...allMet(id), finding, suggestion }) }) }),
+      'discovery',
+    );
+    assert.match((await card('Talked for 87% of the call.')).finding, /^Quick check/);
+    assert.match((await card('Asked "whether she likes apples every single morning".')).finding, /^Quick check/);
+    assert.match((await card('Asked about food.', 'Ask within 30 seconds.')).finding, /^Quick check/);
+    assert.equal((await card('Asked "What have you had to eat today".')).finding, 'Asked "What have you had to eat today".');
+    assert.equal((await card('Asked about food.', 'Say "would you like one?" sooner.')).suggestion, 'Say "would you like one?" sooner.');
+  });
+
   it('what is said in the call cannot close the transcript block', async () => {
     let prompt = '';
     await reviewSalesCall({
@@ -241,6 +278,11 @@ describe('OpenAI connection', () => {
     await assert.rejects(askOpenAI(request, signal), /OPENAI_API_KEY/);
   });
 
+  it('never repeats a key in the error it logs', async () => {
+    answerWith(401, { error: { message: 'Incorrect API key provided: sk-proj-abc123****xyz' } });
+    await assert.rejects(askOpenAI(request, signal), (error) => !error.message.includes('sk-') && error.message.includes('[key]'));
+  });
+
   it("the schemas follow strict mode's rules", async () => {
     const schemas = [];
     await reviewSalesCall({
@@ -289,10 +331,96 @@ describe('speed', () => {
     assert.equal(findReview(result, 'objections').provenance, 'Rule-based');
   });
 
+  it('a stuck request gets a backup, and the card keeps its AI opinion', async () => {
+    const attempts = new Map();
+    const stuckOnce = async (request, signal) => {
+      const key = request.name === 'sales_call_facts' ? 'facts' : agentIn(request.input);
+      attempts.set(key, (attempts.get(key) || 0) + 1);
+      if (attempts.get(key) === 1) await new Promise(() => {});
+      return fakeAi()(request, signal);
+    };
+    const result = await reviewSalesCall({ turns: sample('excellent'), deadlineMs: 2000, backupAfterMs: 50, ask: stuckOnce });
+    assert.deepEqual(result.fallbackAgents, []);
+    assert.equal(result.provenance, 'AI review');
+    assert.ok(result.elapsedMs < 500, `took ${result.elapsedMs} ms`);
+  });
+
+  it('a failed request is tried once more, at once', async () => {
+    const attempts = new Map();
+    const failsOnce = async (request, signal) => {
+      const key = request.name === 'sales_call_facts' ? 'facts' : agentIn(request.input);
+      attempts.set(key, (attempts.get(key) || 0) + 1);
+      if (attempts.get(key) === 1) throw new Error('OpenAI answered 500');
+      return fakeAi()(request, signal);
+    };
+    const result = await reviewSalesCall({ turns: sample('excellent'), ask: failsOnce });
+    assert.deepEqual(result.fallbackAgents, []);
+    assert.ok(result.elapsedMs < 500, `took ${result.elapsedMs} ms`);
+  });
+
+  it('a request that answers in time sends no backup', async () => {
+    let requests = 0;
+    const counted = async (request, signal) => {
+      requests += 1;
+      return fakeAi()(request, signal);
+    };
+    await reviewSalesCall({ turns: sample('excellent'), backupAfterMs: 20, ask: counted });
+    await new Promise((resolve) => setTimeout(resolve, 60));
+    assert.equal(requests, 7);
+  });
+
   it('each card arrives as soon as its agent finishes', async () => {
     const seen = [];
     await reviewSalesCall({ turns: sample('excellent'), ask: fakeAi(), onReview: (review) => seen.push(review.agentId) });
     assert.equal(seen.length, 6);
+  });
+
+  it('the endpoint sends each card over HTTP as soon as it is ready', async () => {
+    const realFetch = globalThis.fetch;
+    const realKey = process.env.OPENAI_API_KEY;
+    process.env.OPENAI_API_KEY = 'test-key';
+    globalThis.fetch = async (url, init) => {
+      if (!String(url).includes('api.openai.com')) return realFetch(url, init);
+      const { input, text } = JSON.parse(init.body);
+      const isAudit = text.format.name === 'sales_call_facts';
+      const id = isAudit ? null : agentIn(input);
+      const wait = isAudit ? 10 : (SALES_PANEL.findIndex((agent) => agent.id === id) + 1) * 80;
+      await new Promise((resolve) => setTimeout(resolve, wait));
+      const answer = JSON.stringify(isAudit ? honestAudit : allMet(id));
+      return new Response(JSON.stringify({ status: 'completed', output: [{ type: 'message', content: [{ type: 'output_text', text: answer }] }] }));
+    };
+    const server = http.createServer((req, res) => {
+      let raw = '';
+      req.on('data', (chunk) => { raw += chunk; });
+      req.on('end', () => { req.body = JSON.parse(raw); reviewEndpoint(req, res); });
+    });
+    await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
+    const origin = `http://127.0.0.1:${server.address().port}`;
+
+    try {
+      const started = Date.now();
+      const response = await realFetch(`${origin}/api/review-sales`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Origin: origin },
+        body: JSON.stringify({ turns: sample('excellent') }),
+      });
+      assert.equal(response.headers.get('content-type'), 'application/x-ndjson');
+      const arrivals = [];
+      let buffer = '';
+      for await (const chunk of response.body.pipeThrough(new TextDecoderStream())) {
+        buffer += chunk;
+        const lines = buffer.split('\n');
+        buffer = lines.pop();
+        lines.filter(Boolean).forEach((line) => arrivals.push({ type: JSON.parse(line).type, atMs: Date.now() - started }));
+      }
+      assert.deepEqual(arrivals.map((event) => event.type), [...new Array(6).fill('review'), 'result']);
+      assert.ok(arrivals[5].atMs - arrivals[0].atMs >= 200, `all at once: ${JSON.stringify(arrivals)}`);
+    } finally {
+      await new Promise((resolve) => server.close(resolve));
+      globalThis.fetch = realFetch;
+      if (realKey === undefined) delete process.env.OPENAI_API_KEY;
+      else process.env.OPENAI_API_KEY = realKey;
+    }
   });
 
   it('an empty call spends no AI', async () => {
@@ -329,6 +457,14 @@ describe('local fallback', () => {
     assert.ok(excellent.totalPoints > pushy.totalPoints);
     assert.ok(solid.totalPoints > pushy.totalPoints);
     assert.ok(solid.totalPoints > injection.totalPoints);
+  });
+
+  it('a closed sale does not raise the score here either', async () => {
+    const score = (turns) => quiet(() => reviewSalesCall({ turns, ask: offline }));
+    const [sale, noSale] = await Promise.all([score(OUTCOME_PAIR.sale), score(OUTCOME_PAIR.noSale)]);
+    assert.equal(sale.outcome, 'sale_agreed');
+    assert.equal(noSale.outcome, 'no_agreement');
+    assert.equal(sale.totalPoints, noSale.totalPoints);
   });
 
   it('marks that it was not the AI', async () => {

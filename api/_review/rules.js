@@ -108,7 +108,7 @@ function ruleChecks(agentId, ctx, audit) {
         cited('asked_next_step', ask ? 'met' : 'missed', ask),
         cited('fitting_step', ask && firstQuestion ? 'partial' : 'missed', ask),
         cited('concrete_details', concrete ? 'met' : 'missed', concrete),
-        cited('explicit_agreement', 'missed'),
+        { id: 'clear_answer', status: ask && audit.outcomeQuote ? 'met' : 'missed', turnId: audit.outcomeTurnId, quote: audit.outcomeQuote },
       ];
     }
     case 'integrity': {

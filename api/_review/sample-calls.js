@@ -90,7 +90,7 @@ const SAMPLE_CALLS = [
       ['prospect', 'Actually, no. I just remembered lunch is being served at two. Not right now, sorry.'],
     ]),
     expected: {
-      minTotal: 25, maxTotal: 72, outcome: 'no_agreement', price: 'stated', falsePromise: false,
+      minTotal: 25, maxTotal: 88, outcome: 'no_agreement', price: 'stated', falsePromise: false,
       ratings: { integrity: ['strong'] },
     },
   },
@@ -109,6 +109,44 @@ const SAMPLE_CALLS = [
     },
   },
   {
+    id: 'high_price',
+    label: 'Good process, very high price',
+    turns: call([
+      ['candidate', "Hi, sorry to interrupt. How's your day going? Have you eaten anything?"],
+      ['prospect', "Oh, hi. Not yet, I've been coding all day."],
+      ['candidate', "All day with no food, that's rough. What's kept you from taking a break?"],
+      ['prospect', "I don't want to lose my focus. Why would I buy a banana from you, though?"],
+      ['candidate', "Fair question. A banana takes one minute and it's filling, so you keep your focus and stay at your laptop. Does that help?"],
+      ['prospect', 'I guess so. How much is it?'],
+      ['candidate', "It's fifty euros. Would you like to buy it?"],
+      ['prospect', "Fifty euros? No thanks, that's way too much. Goodbye."],
+    ]),
+    expected: {
+      minTotal: 60, maxTotal: 100, outcome: 'no_agreement', price: 'stated', falsePromise: false,
+      ratings: { discovery: ['strong', 'ok'], integrity: ['strong'] },
+    },
+  },
+  {
+    id: 'live_like',
+    label: 'Sounds like the live demo',
+    turns: call([
+      ['candidate', "Hey um sorry to bug you, looks like you've been at it a while. How's it going"],
+      ['prospect', "Oh! Hi. It's going. I'm pretty busy though. Why would I buy a banana from you?"],
+      ['candidate', "okay fair, you are busy, I'll be quick. When did you last eat?"],
+      ['prospect', 'Ha. Honestly, not since this morning. I forgot.'],
+      ['candidate', "Yeah that's a long time. So you can eat this in one minute at your desk and it fills you up, you don't have to stop working"],
+      ['prospect', 'Hmm, okay. I could just get pizza later though. Why is a banana better?'],
+      ['candidate', 'Pizza means you gotta get up and wait in line. This is right here, right now. Does that make sense?'],
+      ['prospect', 'Fair point. How much is it?'],
+      ['candidate', 'Two euros. So do you wanna buy it?'],
+      ['prospect', "Okay, I'll take the banana. Thanks, bye!"],
+    ]),
+    expected: {
+      minTotal: 60, maxTotal: 95, outcome: 'sale_agreed', price: 'stated', falsePromise: false,
+      ratings: { discovery: ['strong', 'ok'], product_fit: ['strong', 'ok'], objections: ['strong', 'ok'], next_step: ['strong', 'ok'], integrity: ['strong'] },
+    },
+  },
+  {
     id: 'too_short',
     label: 'Walks away right away',
     turns: call([
@@ -119,4 +157,17 @@ const SAMPLE_CALLS = [
   },
 ];
 
-module.exports = { SAMPLE_CALLS };
+// The same conversation with only the final answer changed: both must get the same score.
+const PAIR_LINES = [
+  ['candidate', "Hi, sorry to interrupt. How's it going? Have you eaten today?"],
+  ['prospect', 'Not yet, I have been working all day. Why, who are you?'],
+  ['candidate', 'I sell bananas. One would fill you up in a minute, so you can keep working without a break.'],
+  ['prospect', 'I could just get pizza later.'],
+  ['candidate', "You could, but that means leaving your laptop. It's one euro. Would you like to buy it?"],
+];
+const OUTCOME_PAIR = {
+  sale: call([...PAIR_LINES, ['prospect', "Okay, I'll take the banana. Bye."]]),
+  noSale: call([...PAIR_LINES, ['prospect', "No thanks, I'll grab something later. Bye."]]),
+};
+
+module.exports = { OUTCOME_PAIR, SAMPLE_CALLS };
