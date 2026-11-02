@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>MAYBE · The screening</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#09090B}a:hover{color:#52525B}
+@keyframes rv{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes rise{0%{transform:translateY(105%) rotate(4deg)}60%{transform:translateY(-6%) rotate(-2deg)}80%{transform:translateY(2%)}100%{transform:translateY(0) rotate(0)}}
+@keyframes drift{from{transform:scale(1.08) translateY(0)}to{transform:scale(1.08) translateY(-4%)}}
+@keyframes frame-in{from{opacity:0;transform:translateY(40px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes scroll-shot{0%,15%{transform:translateY(0)}55%,70%{transform:translateY(var(--shot-scroll,-18%))}100%{transform:translateY(0)}}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.anim-on .rv{animation:rv calc(.7s * var(--spd)) cubic-bezier(.2,.7,.2,1) both}
+.anim-on .rise{animation:rise calc(.8s * var(--spd)) cubic-bezier(.3,.7,.2,1) both}
+.anim-on .drift{animation:drift calc(9s * var(--spd)) ease-in-out infinite alternate}
+.anim-on .fin{animation:frame-in calc(.9s * var(--spd)) cubic-bezier(.2,.7,.2,1) both}
+.anim-on .shot{animation:scroll-shot calc(14s * var(--spd)) ease-in-out 1.4s infinite}
+.anim-on .grow{transform-origin:left center;animation:grow calc(.9s * var(--spd)) cubic-bezier(.2,.7,.2,1) both}
+@media (prefers-reduced-motion:reduce){.rv,.rise,.drift,.fin,.shot,.grow{animation:none!important}}
+</style>
+</helmet>
+<div class="{{animClass}}" style="--spd: {{spd}}; width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #FAFAFA; color: #09090B; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
+  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 0.0%; background: #7C3AED;"></div>
+  <div style="position: absolute; right: 72px; bottom: 32px; font-family: 'Geist Mono', monospace; font-size: 16px; color: #71717A;">0 / 0</div>
+  <div style="position: absolute; left: 120px; right: 120px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center;">
+    <p class="rv" style="margin: 0 0 18px; font-family: 'Geist Mono', monospace; font-size: 18px; font-weight: 500; letter-spacing: .02em; color: #71717A; animation-delay: calc(var(--spd) * 0.00s);"><span style="color: #5B21B6;">00</span> · The screening</p>
+    <h2 class="rv" style="margin: 0; font-size: 80px; font-weight: 700; line-height: 1; letter-spacing: -0.045em; max-width: 24ch; animation-delay: calc(var(--spd) * 0.09s);">What if the right person never gets through the screening process?</h2>
+    <div style="display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 72px; margin-top: 64px; align-items: start;">
+      <div>
+        <p class="rv" style="margin: 0; font-size: 220px; font-weight: 700; line-height: .86; letter-spacing: -0.065em; color: {{accent}}; animation-delay: calc(var(--spd) * 0.30s);">40,000</p>
+        <p class="rv" style="margin: 24px 0 0; font-size: 30px; line-height: 1.35; color: #3F3F46; max-width: 34ch; animation-delay: calc(var(--spd) * 0.40s);">more applications from Black and Asian candidates were estimated to advance if every group had been recommended at the same rate.</p>
+        <p class="rv" style="margin: 16px 0 0; font-size: 20px; line-height: 1.45; color: #71717A; max-width: 52ch; animation-delay: calc(var(--spd) * 0.50s);">Stanford study of about 4 million applications from 3 million people, screened by one vendor’s algorithms. Estimated recommendations, not proven missed hires.</p>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        <div class="rv" style="background: #FFFFFF; border: 1px solid #E4E4E7; border-radius: 14px; box-shadow: 0 1px 2px rgba(0,0,0,.04); padding: 30px 32px; display: flex; align-items: baseline; gap: 24px; animation-delay: calc(var(--spd) * 0.70s);"><span style="font-size: 72px; font-weight: 700; letter-spacing: -0.05em; line-height: 1; color: #09090B; flex: none;">81%</span><span style="font-size: 23px; line-height: 1.4; color: #3F3F46;">of U.S. job seekers were rejected at least once last year without speaking to anyone at the company.</span></div>
+        <div class="rv" style="background: #FFFFFF; border: 1px solid #E4E4E7; border-radius: 14px; box-shadow: 0 1px 2px rgba(0,0,0,.04); padding: 30px 32px; display: flex; align-items: baseline; gap: 24px; animation-delay: calc(var(--spd) * 0.80s);"><span style="font-size: 72px; font-weight: 700; letter-spacing: -0.05em; line-height: 1; color: #09090B; flex: none;">96%</span><span style="font-size: 23px; line-height: 1.4; color: #3F3F46;">wish they could show employers something their application doesn’t.</span></div>
+      </div>
+    </div>
+  </div>
+  <p class="rv" style="position: absolute; left: 120px; bottom: 84px; margin: 0; max-width: 1440px; font-size: 16px; line-height: 1.45; color: #71717A; animation-delay: calc(var(--spd) * 0.90s);">Sources: Stanford, Algorithmic Monocultures in Hiring (2026) · Greenhouse, Candidate Survey (October 2026).</p>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"animate": {"editor": "boolean", "default": true, "section": "Motion"}, "speed": {"editor": "enum", "options": ["slow", "normal", "fast"], "default": "normal", "section": "Motion"}, "accent": {"editor": "color", "options": ["#7C3AED", "#09090B", "#5B21B6"], "default": "#7C3AED", "section": "Look"}, "$preview": {"width": 1920, "height": 1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const on = this.props.animate ?? true;
+    const spd = { slow: 1.5, normal: 1, fast: 0.6 }[this.props.speed ?? 'normal'] ?? 1;
+    const accent = this.props.accent ?? "#7C3AED";
+    return {
+      animClass: on ? 'anim-on' : 'anim-off',
+      spd: String(spd),
+      accent,
+    };
+  }
+}
+</script>
+</body>
+</html>
