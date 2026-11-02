@@ -23,7 +23,7 @@ This repo is the MAYBE hackathon presentation (Macromedia × CODE Hackathon). It
 ## How the voice pieces connect to the page (contract; don't break it)
 
 - **Q&A agent (the "Talk to MAYBE" button, all slides):** set `AGENT_ID` in `assets/deck.js`. The page registers ElevenLabs client tools `goToSlide`, `nextSlide`, `prevSlide`, `openScreen` and `getCurrentSlide`. Spec: `agent-prompt.md`.
-- **Live-call slide (slide 6: orb, bubbles, Mara):** drive it with `window.MAYBE_CALL`:
+- **Live-call slide (`#slide-9`, right after the title: orb, bubbles, Mara):** drive it with `window.MAYBE_CALL`:
   - `connect()` / `disconnect()`
   - `setMode('you'|'agent'|'idle')`
   - `setLevel(0..1)`
@@ -31,7 +31,7 @@ This repo is the MAYBE hackathon presentation (Macromedia × CODE Hackathon). It
   - `clear()`
 
   Listen for `deck:slidechange` on `document` to start and stop the session. Full spec and example: `LIVE-CALL.md`.
-- **Agent-world slide (slide 7, after the live call: the ball of simulated agents reviewing the call):** drive it with `window.MAYBE_SWARM`:
+- **Agent-world slide (`#slide-10`, after the live call: the ball of simulated agents reviewing the call):** drive it with `window.MAYBE_SWARM`:
   - `connect()` / `disconnect()`, `setAgents([...])`, `setPhase('spawn'|'talk'|'think'|'result')`
   - `say(id, text, {to})`, `think(id, text)`, `setVerdict(id, 'yes'|'maybe'|'no')`
   - review panel (left): `setCandidate({name, meta})`, `addPoint('pro'|'con', text, {by})`, `addQualification(text, {gap, by})`, `setConclusion({wanted, summary, list})`, `setDeal(text)`
@@ -55,7 +55,7 @@ This repo is the MAYBE hackathon presentation (Macromedia × CODE Hackathon). It
 ## Pull request checklist
 
 - [ ] Branch is up to date with `main`; `node tools/build-deck.mjs` runs with no warnings you introduced
-- [ ] Opens locally, ← → work, slide 6 works with and without the agent connected
+- [ ] Opens locally, ← → work, the live-call slide works with and without the agent connected
 - [ ] No keys in the diff (`git diff origin/main | grep -iE "sk-|api[_-]?key|secret"` is empty)
 - [ ] The PR description says which env vars Luc must add in his Vercel project, by name
 - [ ] Preview URL from your Vercel project pasted in the PR
@@ -80,7 +80,7 @@ Design source of truth: the **MAYBE Final** design canvas, https://claude.ai/art
 2. Read `project/canvas.json` and every `project/Slide*.dc.html` from the canvas with the Artifact tool, and copy them into `src/`. Luc edits by hand, so always re-read; never reuse old copies.
 3. New images or videos: list the canvas assets (sha256 per id). Download any new one with Artifact read `path: <asset id>`, put it in `deck/img/`, then add `id → sha256` to `src/assets.json` and `sha256 → img/<file>` to `tools/blob-map.json`.
 4. `node tools/build-deck.mjs`. It must finish with no unmapped-image warnings.
-5. Quick check: serve the folder locally and step through the slides with ← →. Slide 6 must play the demo, and the title's intro video must start.
+5. Quick check: serve the folder locally and step through the slides with ← →. The live-call slide must play the demo, and the title's intro video must start.
 6. Commit with a clear message and `git push origin main`. Vercel deploys in about a minute.
 
 ### Merging Boris's pull request (voice → main)
@@ -90,4 +90,4 @@ Design source of truth: the **MAYBE Final** design canvas, https://claude.ai/art
    - `window.MAYBE_CALL` and the slide markers (`data-call`, `data-orb`, `data-bubbles`, `data-avatar`) are intact
 2. Merge into main. If `index.html` conflicts, take either side, then run `node tools/build-deck.mjs` and commit the regenerated file.
 3. Before or right after the merge, Luc adds the env vars the PR names (e.g. `OPENAI_API_KEY`) in Vercel → maybe-pitch → Settings → Environment Variables (Production + Preview). Values never go in chat or git.
-4. Push main, and tell Luc to test slide 6 out loud on https://maybe-pitch.vercel.app.
+4. Push main, and tell Luc to test the live-call slide (`#slide-9`) out loud on https://maybe-pitch.vercel.app.

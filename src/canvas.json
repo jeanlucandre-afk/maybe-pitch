@@ -105,40 +105,8 @@
       "page": "presentation",
       "title": "01 · Title (intro plays when shown)",
       "w": 1920,
-      "x": 0,
-      "y": 0
-    },
-    "Slide02.dc.html": {
-      "h": 1080,
-      "page": "presentation",
-      "title": "02 · Problem",
-      "w": 1920,
-      "x": 2040,
-      "y": 0
-    },
-    "Slide03.dc.html": {
-      "h": 1080,
-      "page": "presentation",
-      "title": "03 · Idea",
-      "w": 1920,
-      "x": 0,
+      "x": 6120,
       "y": 1500
-    },
-    "Slide04.dc.html": {
-      "h": 1080,
-      "page": "presentation",
-      "title": "04 · Live marketplace",
-      "w": 1920,
-      "x": 2040,
-      "y": 1500
-    },
-    "Slide05.dc.html": {
-      "h": 1080,
-      "page": "presentation",
-      "title": "05 · Dr. Lipp sales trial",
-      "w": 1920,
-      "x": 0,
-      "y": 3000
     },
     "Slide05b.dc.html": {
       "h": 1080,
@@ -146,63 +114,15 @@
       "page": "presentation",
       "title": "05b · Live call (voice agent)",
       "w": 1920,
-      "x": 4080,
+      "x": 0,
       "y": 3000
-    },
-    "Slide06.dc.html": {
-      "h": 1080,
-      "page": "presentation",
-      "title": "06 · DICE design trial",
-      "w": 1920,
-      "x": 2040,
-      "y": 3000
-    },
-    "Slide07.dc.html": {
-      "h": 1080,
-      "page": "presentation",
-      "title": "07 · Honest scoring",
-      "w": 1920,
-      "x": 0,
-      "y": 4500
-    },
-    "Slide08.dc.html": {
-      "h": 1080,
-      "page": "presentation",
-      "title": "08 · Student side",
-      "w": 1920,
-      "x": 2040,
-      "y": 4500
-    },
-    "Slide09.dc.html": {
-      "h": 1080,
-      "page": "presentation",
-      "title": "09 · Employer side",
-      "w": 1920,
-      "x": 0,
-      "y": 6000
-    },
-    "Slide10.dc.html": {
-      "h": 1080,
-      "page": "presentation",
-      "title": "10 · Under the hood",
-      "w": 1920,
-      "x": 2040,
-      "y": 6000
-    },
-    "Slide11.dc.html": {
-      "h": 1080,
-      "page": "presentation",
-      "title": "11 · What's next",
-      "w": 1920,
-      "x": 0,
-      "y": 7500
     },
     "Slide00.dc.html": {
       "h": 1080,
       "page": "presentation",
       "title": "00 · Black (press next to start the intro)",
       "w": 1920,
-      "x": -2040,
+      "x": 0,
       "y": 0
     },
     "Slide00a.dc.html": {
@@ -210,48 +130,48 @@
       "page": "presentation",
       "title": "00a · The question",
       "w": 1920,
-      "x": -2040,
-      "y": 1500
+      "x": 2040,
+      "y": 0
     },
     "Slide00b.dc.html": {
       "h": 1080,
       "page": "presentation",
       "title": "00b · The experience gap",
       "w": 1920,
-      "x": -2040,
-      "y": 3000
+      "x": 4080,
+      "y": 0
     },
     "Slide00c.dc.html": {
       "h": 1080,
       "page": "presentation",
       "title": "00c · The human cost",
       "w": 1920,
-      "x": -2040,
-      "y": 4500
+      "x": 6120,
+      "y": 0
     },
     "Slide00d.dc.html": {
       "h": 1080,
       "page": "presentation",
       "title": "00d · The other side",
       "w": 1920,
-      "x": -2040,
-      "y": 6000
+      "x": 0,
+      "y": 1500
     },
     "Slide00e.dc.html": {
       "h": 1080,
       "page": "presentation",
       "title": "00e · The screening",
       "w": 1920,
-      "x": -2040,
-      "y": 7500
+      "x": 2040,
+      "y": 1500
     },
     "Slide00f.dc.html": {
       "h": 1080,
       "page": "presentation",
       "title": "00f · The turn",
       "w": 1920,
-      "x": -2040,
-      "y": 9000
+      "x": 4080,
+      "y": 1500
     },
     "Slide10a.dc.html": {
       "h": 1080,
@@ -259,7 +179,7 @@
       "title": "10a · The market",
       "w": 1920,
       "x": 4080,
-      "y": 6000
+      "y": 3000
     },
     "Slide10b.dc.html": {
       "h": 1080,
@@ -267,39 +187,39 @@
       "title": "10b · Why now",
       "w": 1920,
       "x": 6120,
-      "y": 6000
+      "y": 3000
     },
     "Slide10c.dc.html": {
       "h": 1080,
       "page": "presentation",
       "title": "10c · The European opportunity",
       "w": 1920,
-      "x": 8160,
-      "y": 6000
+      "x": 0,
+      "y": 4500
     },
     "Slide10d.dc.html": {
       "h": 1080,
       "page": "presentation",
       "title": "10d · The business",
       "w": 1920,
-      "x": 10200,
-      "y": 6000
+      "x": 2040,
+      "y": 4500
     },
     "Slide12.dc.html": {
       "h": 1080,
       "page": "presentation",
       "title": "12 · Back to the start",
       "w": 1920,
-      "x": 2040,
-      "y": 7500
+      "x": 4080,
+      "y": 4500
     },
     "Slide13.dc.html": {
       "h": 1080,
       "page": "presentation",
       "title": "13 · Try it. Prove it.",
       "w": 1920,
-      "x": 4080,
-      "y": 7500
+      "x": 6120,
+      "y": 4500
     },
     "Slide05c.dc.html": {
       "h": 1080,
@@ -307,7 +227,7 @@
       "page": "presentation",
       "title": "05c · Agent world (market reviews the call)",
       "w": 1920,
-      "x": 6120,
+      "x": 2040,
       "y": 3000
     }
   },
@@ -332,16 +252,6 @@
     "livetitle",
     "prestitle",
     "notes01",
-    "notes02",
-    "notes03",
-    "notes04",
-    "notes05",
-    "notes06",
-    "notes07",
-    "notes08",
-    "notes09",
-    "notes10",
-    "notes11",
     "notes05b",
     "dev05b",
     "notes00a",
@@ -365,7 +275,7 @@
       "page": "presentation",
       "text": "For the developer · live call\nDrive this slide with window.MAYBE_CALL: setMode('you'|'agent'|'idle'), setLevel(0–1) for mic/agent volume, addMessage('you'|'agent', text), clear(). Full spec: maybe/pitch/LIVE-CALL.md.",
       "w": 600,
-      "x": 4720,
+      "x": 640,
       "y": 4100
     },
     "livetitle": {
@@ -382,100 +292,20 @@
       "page": "presentation",
       "text": "Notes · 01 · Title\nHi, we're Luc and Friederike. MAYBE lets students try real work from real companies for about an hour before they choose a degree or a job. Everything you'll see is a working prototype; the companies are examples, not partners.",
       "w": 600,
-      "x": 0,
-      "y": 1100
-    },
-    "notes02": {
-      "fill": "gray",
-      "page": "presentation",
-      "text": "Notes · 02 · Problem\nAt Stuzubi we asked students who named a dream career one question: have you actually tried it? Almost nobody had. They choose from descriptions, rankings and what their parents know. The cost of a wrong choice shows up years later.",
-      "w": 600,
-      "x": 2040,
-      "y": 1100
-    },
-    "notes03": {
-      "fill": "gray",
-      "page": "presentation",
-      "text": "Notes · 03 · Idea\nThe idea: a marketplace of one-hour work trials, each branded by a company. You call AI retail buyers for Dr. Lipp, or redesign the DICE festival checkout and test it on synthetic fans. You leave with scored evidence, not a personality label.",
-      "w": 600,
-      "x": 0,
+      "x": 6120,
       "y": 2600
-    },
-    "notes04": {
-      "fill": "gray",
-      "page": "presentation",
-      "text": "Notes · 04 · Live marketplace\nThis is the live marketplace. Two trials are playable today: DICE product design and Dr. Lipp sales. You can scroll and click inside the frame. The other companies are coming-soon previews.",
-      "w": 600,
-      "x": 2040,
-      "y": 2600
-    },
-    "notes05": {
-      "fill": "gray",
-      "page": "presentation",
-      "text": "Notes · 05 · Dr. Lipp sales trial\nIn the Dr. Lipp trial you're a sales rep. You call three AI retail buyers by voice, handle objections about price and shelf space, and update the CRM. The black strip on top always says it's a simulated MAYBE trial.",
-      "w": 600,
-      "x": 0,
-      "y": 4100
     },
     "notes05b": {
       "fill": "gray",
       "page": "presentation",
       "text": "Notes · 05b · Live call\nNow let's call a buyer for real. I'll talk to Mara, our AI retail buyer, live. Watch the orb react to my voice and her answers appear on the right.",
       "w": 600,
-      "x": 4080,
+      "x": 0,
       "y": 4100
-    },
-    "notes06": {
-      "fill": "gray",
-      "page": "presentation",
-      "text": "Notes · 06 · DICE design trial\nIn the DICE trial you're a product designer. The festival checkout loses fans; you redesign it in the editor and run it against 1,000 synthetic fans. Those results are clearly labelled as synthetic estimates, not real users.",
-      "w": 600,
-      "x": 2040,
-      "y": 4100
-    },
-    "notes07": {
-      "fill": "gray",
-      "page": "presentation",
-      "text": "Notes · 07 · Honest scoring\nEvery number on MAYBE says where it came from. Rule-based checks are deterministic. Synthetic estimates come from simulated users or buyers. AI review is a model grading against a rubric you can read. And whether you closed the deal is shown on its own, never mixed into your score.",
-      "w": 600,
-      "x": 0,
-      "y": 5600
-    },
-    "notes08": {
-      "fill": "gray",
-      "page": "presentation",
-      "text": "Notes · 08 · Student side\nAfter a trial, the student keeps the evidence: scores with provenance, transcripts, design files. They decide what goes into the portfolio and whether employers can see it.",
-      "w": 600,
-      "x": 2040,
-      "y": 5600
-    },
-    "notes09": {
-      "fill": "gray",
-      "page": "presentation",
-      "text": "Notes · 09 · Employer side\nCompanies get a candidate board built from work they can inspect: call transcripts, design files and test results, each score linked to the rubric. From there they open the evidence and invite someone to interview.",
-      "w": 600,
-      "x": 0,
-      "y": 7100
-    },
-    "notes10": {
-      "fill": "gray",
-      "page": "presentation",
-      "text": "Notes · 10 · Under the hood\nUnder the hood: each trial is a scenario with a brief, tools and a rubric. Voice agents play the buyers, synthetic users test designs, and three kinds of scoring produce evidence with provenance. It's all built on one design system, shadcn with zinc and a single violet.",
-      "w": 600,
-      "x": 2040,
-      "y": 7100
-    },
-    "notes11": {
-      "fill": "gray",
-      "page": "presentation",
-      "text": "Notes · 11 · What's next\nNext: we start with parents, run pilots, then bring it to schools. What we'd love from you is in the three boxes. And if you have questions, ask our agent right here, it knows the project and can move the slides.",
-      "w": 600,
-      "x": 0,
-      "y": 8600
     },
     "prestitle": {
       "kind": "title1",
-      "maxW": 3960,
+      "maxW": 8040,
       "page": "presentation",
       "text": "MAYBE · Hackathon presentation",
       "w": 240,
@@ -487,48 +317,48 @@
       "page": "presentation",
       "text": "Notes · 00a · The question\nPause on the black screen first, then let the question land. Don't answer it. Let the room think about how they chose their own degree or first job.",
       "w": 600,
-      "x": -2040,
-      "y": 2600
+      "x": 2040,
+      "y": 1100
     },
     "notes00b": {
       "fill": "gray",
       "page": "presentation",
       "text": "Notes · 00b · The experience gap\nOnly 26% of recent U.S. graduates in ZipRecruiter's 2026 survey say they're on their ideal career path. And the obstacle they name most, 66.8%, is lack of experience. We prepare for years for work we have never actually done.",
       "w": 600,
-      "x": -2040,
-      "y": 4100
+      "x": 4080,
+      "y": 1100
     },
     "notes00c": {
       "fill": "gray",
       "page": "presentation",
       "text": "Notes · 00c · The human cost\nHalf of recent graduates call their job a stepping stone; almost one in five took a bridge job just to pay the bills. In the UK, 29% of students and recent graduates reported mental-health difficulties and 64% worry about money every day or week. These are pressures, not proof that career uncertainty causes them.",
       "w": 600,
-      "x": -2040,
-      "y": 5600
+      "x": 6120,
+      "y": 1100
     },
     "notes00d": {
       "fill": "gray",
       "page": "presentation",
       "text": "Notes · 00d · The other side\nBut what about those who already know what they want to do? Those who have the skills and are ready to work? Surely they get the chance to prove themselves. Right? (Pause before 'Right?')",
       "w": 600,
-      "x": -2040,
-      "y": 7100
+      "x": 0,
+      "y": 2600
     },
     "notes00e": {
       "fill": "gray",
       "page": "presentation",
       "text": "Notes · 00e · The screening\nStanford looked at about 4 million applications screened by one vendor's algorithms. With equal recommendation rates, an estimated 40,000 more applications from Black and Asian candidates would have moved forward. That's an estimate of recommendations, not 40,000 proven missed hires. And 81% of U.S. job seekers were rejected last year without talking to a single person, while 96% wish they could show something their application can't. Optional: the attributed @its_ken04 AI-interviewer clip, as a public concern, not a typical case.",
       "w": 600,
-      "x": -2040,
-      "y": 8600
+      "x": 2040,
+      "y": 2600
     },
     "notes00f": {
       "fill": "gray",
       "page": "presentation",
       "text": "Notes · 00f · The turn\nWe have people who haven't had the chance to discover what they can do, and people who struggle to get the chance to show it. What if we used AI to create opportunities, instead of only filtering applications? Next slide: MAYBE.",
       "w": 600,
-      "x": -2040,
-      "y": 10100
+      "x": 4080,
+      "y": 2600
     },
     "notes10a": {
       "fill": "gray",
@@ -536,7 +366,7 @@
       "text": "Notes · 10a · The market\nRecruitment is big and under pressure. AI recruitment software alone is estimated at $5.1 billion in 2026, forecast to roughly double by 2035. In iHire's survey, more than half of employers say they get too many unqualified applicants, and a third want skills assessments. The $34B and $71B figures are separate categories, not our addressable market.",
       "w": 600,
       "x": 4080,
-      "y": 7100
+      "y": 4100
     },
     "notes10b": {
       "fill": "gray",
@@ -544,46 +374,46 @@
       "text": "Notes · 10b · Why now\nGreenhouse customers now get 244 applications per job, more than double 2022, with fewer than half the recruiters. Europe shows the same: 99 to 183 per vacancy. These are Greenhouse benchmarks, not the whole labour market. At the same time, 70% of employers in NACE's survey hire on skills. Applications don't show skills. Work does.",
       "w": 600,
       "x": 6120,
-      "y": 7100
+      "y": 4100
     },
     "notes10c": {
       "fill": "gray",
       "page": "presentation",
       "text": "Notes · 10c · The European opportunity\nFrom 2 December 2027, high-risk AI used in hiring faces stricter EU AI Act requirements: transparency, documentation, risk management, data governance, human oversight, and checks for unfair outcomes. MAYBE is designed around transparent, human-reviewed work evidence. We're not claiming to be exempt or compliant; our own evaluations may be high-risk too.",
       "w": 600,
-      "x": 8160,
-      "y": 7100
+      "x": 0,
+      "y": 5600
     },
     "notes10d": {
       "fill": "gray",
       "page": "presentation",
       "text": "Notes · 10d · The business\nExploring stays free or accessible for students. Employers pay for job-specific simulations, work-sample review and recruiting workflows, evidence-based assessment, and possibly a subscription. We haven't set prices or proven hiring ROI yet; that's what the pilots are for.",
       "w": 600,
-      "x": 10200,
-      "y": 7100
+      "x": 2040,
+      "y": 5600
     },
     "notes12": {
       "fill": "gray",
       "page": "presentation",
       "text": "Notes · 12 · Back to the start\nBack to where we started. How are you supposed to know what you want to do if you've never tried it? And how are employers supposed to recognize your potential if you never get the chance to demonstrate it?",
       "w": 600,
-      "x": 2040,
-      "y": 8600
+      "x": 4080,
+      "y": 5600
     },
     "notes13": {
       "fill": "gray",
       "page": "presentation",
       "text": "Notes · 13 · Try it. Prove it.\nFor years, technology has helped companies decide who deserves a chance. We're building technology that gives more people the chance to prove themselves. MAYBE. Try it. Prove it. Thank you.",
       "w": 600,
-      "x": 4080,
-      "y": 8600
+      "x": 6120,
+      "y": 5600
     },
     "notes05c": {
       "fill": "gray",
       "page": "presentation",
       "text": "Notes · 05c · Agent world\nRight after that call, MAYBE builds a small market of simulated people: buyers, parents, teenagers, rivals. They argue about the call, then each one decides on its own. On the left you see the result: what worked, what didn't, the qualifications they found, and whether I land on Dr. Lipp's wanted-candidates list. It's a synthetic estimate, kept apart from the real deal outcome.",
       "w": 600,
-      "x": 6120,
+      "x": 2040,
       "y": 4100
     },
     "dev05c": {
@@ -591,7 +421,7 @@
       "page": "presentation",
       "text": "For the developer · agent world\nDrive this slide with window.MAYBE_SWARM: connect(), setAgents([...]), setPhase('spawn'|'talk'|'think'|'result'), say(id, text, {to}), think(id, text), setVerdict(id, 'yes'|'maybe'|'no'), plus the review panel: addPoint('pro'|'con', text, {by}), addQualification(text, {gap}), setConclusion({wanted, summary, list}), setDeal(text). Full spec: AGENT-WORLD.md. The animation itself runs from assets/agent-world.js in the deck, not on this canvas.",
       "w": 600,
-      "x": 6760,
+      "x": 2680,
       "y": 4100
     }
   },
@@ -607,18 +437,8 @@
     "CreateExperience.dc.html",
     "Slide00.dc.html",
     "Slide01.dc.html",
-    "Slide02.dc.html",
-    "Slide03.dc.html",
-    "Slide04.dc.html",
-    "Slide05.dc.html",
     "Slide05b.dc.html",
     "Slide05c.dc.html",
-    "Slide06.dc.html",
-    "Slide07.dc.html",
-    "Slide08.dc.html",
-    "Slide09.dc.html",
-    "Slide10.dc.html",
-    "Slide11.dc.html",
     "Slide00a.dc.html",
     "Slide00b.dc.html",
     "Slide00c.dc.html",
