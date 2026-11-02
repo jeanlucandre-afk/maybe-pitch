@@ -60,6 +60,11 @@
 
   // Intro video on a slide (canvas boards with video.mb-intro): play when the slide opens, reset when it closes.
   function setIntro(slide, on) {
+    // Other slide videos (video[data-play], e.g. the product walkthrough): restart on open, pause on close.
+    slide && slide.querySelectorAll('video[data-play]').forEach((pv) => {
+      if (on) { try { pv.currentTime = 0; } catch (e) {} const p = pv.play(); if (p && p.catch) p.catch(() => {}); }
+      else pv.pause();
+    });
     const v = slide && slide.querySelector('video.mb-intro');
     if (!v) return;
     const root = slide.querySelector('.deck-stage > *');

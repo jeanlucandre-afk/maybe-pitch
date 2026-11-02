@@ -124,51 +124,6 @@
 .sw-prov{display:flex;justify-content:space-between;gap:16px;padding-top:12px;border-top:2px solid #F4F4F5;font:13px 'Geist Mono',monospace;color:#71717A}
 .sw-prov span:last-child{text-align:right}
 @media (prefers-reduced-motion:reduce){.rv,.sw-list li,.sw-chips span,.sw-stamp,.sw-summary,.sw-row{animation:none!important}}
-@keyframes wk-s1{0%,32%{opacity:1}33%,99%{opacity:0}100%{opacity:1}}
-.anim-on .wk-s1{animation:wk-s1 calc(18s * var(--spd)) linear infinite}
-.anim-off .wk-s1{opacity:1}
-@keyframes wk-s2{0%,33%{opacity:0}34%,65%{opacity:1}66%,100%{opacity:0}}
-.anim-on .wk-s2{animation:wk-s2 calc(18s * var(--spd)) linear infinite}
-.anim-off .wk-s2{opacity:0}
-@keyframes wk-s3{0%,66%{opacity:0}67%,98.5%{opacity:1}100%{opacity:0}}
-.anim-on .wk-s3{animation:wk-s3 calc(18s * var(--spd)) linear infinite}
-.anim-off .wk-s3{opacity:0}
-@keyframes wk-r1{0%,10%{opacity:0;transform:scale(1.03)}11.5%,32%{opacity:1;transform:none}33%,100%{opacity:0}}
-.anim-on .wk-r1{animation:wk-r1 calc(18s * var(--spd)) ease infinite}
-.wk-r1{opacity:0}
-@keyframes wk-r2{0%,37%{opacity:0;transform:scale(1.03)}38.5%,51%{opacity:1;transform:none}52%,100%{opacity:0}}
-.anim-on .wk-r2{animation:wk-r2 calc(18s * var(--spd)) ease infinite}
-.wk-r2{opacity:0}
-@keyframes wk-r3{0%,52%{opacity:0;transform:scale(1.03)}53.5%,65%{opacity:1;transform:none}66%,100%{opacity:0}}
-.anim-on .wk-r3{animation:wk-r3 calc(18s * var(--spd)) ease infinite}
-.wk-r3{opacity:0}
-@keyframes wk-r4{0%,70%{opacity:0;transform:scale(1.03)}71.5%,85%{opacity:1;transform:none}86%,100%{opacity:0}}
-.anim-on .wk-r4{animation:wk-r4 calc(18s * var(--spd)) ease infinite}
-.wk-r4{opacity:0}
-@keyframes wk-r5{0%,86%{opacity:0;transform:scale(1.03)}87.5%,98%{opacity:1;transform:none}99%,100%{opacity:0}}
-.anim-on .wk-r5{animation:wk-r5 calc(18s * var(--spd)) ease infinite}
-.wk-r5{opacity:0}
-@keyframes wk-c1{0%,26%{opacity:0;transform:scale(.2)}26.4%{opacity:.55;transform:scale(.5)}30%,100%{opacity:0;transform:scale(2.4)}}
-.anim-on .wk-c1{animation:wk-c1 calc(18s * var(--spd)) ease-out infinite}
-.wk-c1{opacity:0}
-@keyframes wk-c2{0%,59%{opacity:0;transform:scale(.2)}59.4%{opacity:.55;transform:scale(.5)}63%,100%{opacity:0;transform:scale(2.4)}}
-.anim-on .wk-c2{animation:wk-c2 calc(18s * var(--spd)) ease-out infinite}
-.wk-c2{opacity:0}
-@keyframes wk-c3{0%,92%{opacity:0;transform:scale(.2)}92.4%{opacity:.55;transform:scale(.5)}96%,100%{opacity:0;transform:scale(2.4)}}
-.anim-on .wk-c3{animation:wk-c3 calc(18s * var(--spd)) ease-out infinite}
-.wk-c3{opacity:0}
-@keyframes wk-cur{0%{transform:translate(726px,612px)}6%{transform:translate(730px,615px)}14%{transform:translate(1099px,535px)}24%{transform:translate(1283px,760px)}25.8%{transform:translate(1283px,760px) scale(.85)}28%{transform:translate(1283px,760px)}36%{transform:translate(1280px,755px)}44%{transform:translate(788px,535px)}50%{transform:translate(793px,540px)}57%{transform:translate(1167px,540px)}58.8%{transform:translate(1167px,540px) scale(.85)}61%{transform:translate(1167px,540px)}70%{transform:translate(1051px,382px)}84%{transform:translate(1056px,387px)}90%{transform:translate(1274px,449px)}91.8%{transform:translate(1274px,449px) scale(.85)}94%{transform:translate(1274px,449px)}100%{transform:translate(726px,612px)}}
-.anim-on .wk-cur{animation:wk-cur calc(18s * var(--spd)) cubic-bezier(.45,0,.25,1) infinite}
-@keyframes wk-ch1{0%,0%{color:#A1A1AA;border-color:#E4E4E7;background:#FFFFFF}0.5%,33%{color:#FFFFFF;border-color:#09090B;background:#09090B}33.5%,100%{color:#A1A1AA;border-color:#E4E4E7;background:#FFFFFF}}
-.anim-on .wk-ch1{animation:wk-ch1 calc(18s * var(--spd)) linear infinite}
-@keyframes wk-ch2{0%,33%{color:#A1A1AA;border-color:#E4E4E7;background:#FFFFFF}33.5%,66%{color:#FFFFFF;border-color:#09090B;background:#09090B}66.5%,100%{color:#A1A1AA;border-color:#E4E4E7;background:#FFFFFF}}
-.anim-on .wk-ch2{animation:wk-ch2 calc(18s * var(--spd)) linear infinite}
-@keyframes wk-ch3{0%,66%{color:#A1A1AA;border-color:#E4E4E7;background:#FFFFFF}66.5%,99.5%{color:#FFFFFF;border-color:#09090B;background:#09090B}100.0%,100%{color:#A1A1AA;border-color:#E4E4E7;background:#FFFFFF}}
-.anim-on .wk-ch3{animation:wk-ch3 calc(18s * var(--spd)) linear infinite}
-@keyframes wk-prog{from{transform:scaleX(0)}to{transform:scaleX(1)}}
-.anim-on .wk-prog{animation:wk-prog calc(18s * var(--spd)) linear infinite}
-.wk-prog{transform-origin:left center}
-@media (prefers-reduced-motion:reduce){[class*="wk-"]{animation:none!important}}
 @keyframes em-s1{0%,51%{opacity:1}52%,99%{opacity:0}100%{opacity:1}}
 .anim-on .em-s1{animation:em-s1 calc(16s * var(--spd)) linear infinite}
 .anim-off .em-s1{opacity:1}
@@ -399,12 +354,10 @@
 </div>
 </div>
 </section>
-<section class="deck-slide" id="slide-11" data-title="Platform demo (walkthrough video)" data-notes="Let me show you the whole flow in twenty seconds. A student opens the marketplace and picks the Dr. Lipp sales trial. They read the brief and start. They call Mara, an AI buyer, while the CRM fills in. At the end they get evidence: every score says where it came from, and the deal outcome is shown on its own. It goes into their portfolio, and they decide who sees it." aria-roledescription="slide" aria-label="11 of 19: Platform demo (walkthrough video)">
+<section class="deck-slide" id="slide-11" data-title="Product walkthrough (video)" data-notes="So basically, this is it. A student opens MAYBE and picks a real job, here the Dr. Lipp sales trial. They call an AI buyer, handle her objection and update the CRM, like a real sales rep. Afterwards the evidence lands on their dashboard: every score says where it came from. And on the other side, the employer sees exactly that work, opens the evidence and invites them to an interview." aria-roledescription="slide" aria-label="11 of 19: Product walkthrough (video)">
 <div class="deck-stage">
-<div class="anim-on" style="--spd: 1; width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #F4F4F5; color: #09090B; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
-  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 55.6%; background: #7C3AED;"></div>
-  <div class="fin" style="position: absolute; left: 271px; top: 56px; width: 1378px; box-sizing: border-box; border: 1px solid #E4E4E7; border-radius: 16px; background: #FFFFFF; box-shadow: 0 40px 90px -40px rgba(9,9,11,.45); overflow: hidden; animation-delay: calc(var(--spd) * 0.10s);"><div style="height: 52px; box-sizing: border-box; display: flex; align-items: center; gap: 12px; padding: 0 16px; border-bottom: 1px solid #E4E4E7; background: #FAFAFA;"><span style="display: flex; gap: 7px;" aria-hidden="true"><span style="width: 12px; height: 12px; border-radius: 999px; background: #D4D4D8;"></span><span style="width: 12px; height: 12px; border-radius: 999px; background: #D4D4D8;"></span><span style="width: 12px; height: 12px; border-radius: 999px; background: #D4D4D8;"></span></span><span style="position: relative; flex-grow: 1; height: 30px; border-radius: 7px; border: 1px solid #E4E4E7; background: #FFFFFF; font-family: 'Geist Mono', monospace; font-size: 14px; color: #71717A;"><span class="wk-s1" style="position: absolute; inset: 0; display: flex; align-items: center; padding: 0 12px;">maybe.center/explore</span><span class="wk-s2" style="position: absolute; inset: 0; display: flex; align-items: center; padding: 0 12px; opacity: 0;">maybe.center/trial/dr-lipp/sales</span><span class="wk-s3" style="position: absolute; inset: 0; display: flex; align-items: center; padding: 0 12px; opacity: 0;">maybe.center/home</span></span><span style="font-size: 14px; font-weight: 500; padding: 5px 10px; border-radius: 7px; border: 1px solid #E4E4E7; background: #FFFFFF; white-space: nowrap;">Prototype · demo data</span></div><div role="img" aria-label="Walkthrough on the MAYBE prototype: a student picks the Dr. Lipp sales trial, works a live call in the sales workspace, then sees the completed trial and scores with provenance on their dashboard" style="position: relative; width: 1376px; height: 860px; overflow: hidden; background: #FFFFFF;"><img class="wk-s1" src="deck/img/screen-marketplace.jpg" alt="MAYBE marketplace" style="position: absolute; left: 0; top: 0; width: 100%; height: auto; display: block; "><img class="wk-s2" src="deck/img/screen-sales-crm.jpg" alt="Dr. Lipp sales workspace with a live call" style="position: absolute; left: 0; top: 0; width: 100%; height: auto; display: block; opacity: 0;"><img class="wk-s3" src="deck/img/screen-dashboard.jpg" alt="Student dashboard with the completed Dr. Lipp trial and scores" style="position: absolute; left: 0; top: 0; width: 100%; height: auto; display: block; opacity: 0;"><span class="wk-r1" aria-hidden="true" style="position: absolute; left: 803px; top: 362px; width: 543px; height: 439px; box-sizing: border-box; border: 3px solid #7C3AED; border-radius: 18px; box-shadow: 0 0 0 8px rgba(124,58,237,.16); pointer-events: none;"></span><span class="wk-r2" aria-hidden="true" style="position: absolute; left: 602px; top: 174px; width: 374px; height: 401px; box-sizing: border-box; border: 3px solid #7C3AED; border-radius: 18px; box-shadow: 0 0 0 8px rgba(124,58,237,.16); pointer-events: none;"></span><span class="wk-r3" aria-hidden="true" style="position: absolute; left: 981px; top: 380px; width: 373px; height: 197px; box-sizing: border-box; border: 3px solid #7C3AED; border-radius: 18px; box-shadow: 0 0 0 8px rgba(124,58,237,.16); pointer-events: none;"></span><span class="wk-r4" aria-hidden="true" style="position: absolute; left: 803px; top: 108px; width: 543px; height: 382px; box-sizing: border-box; border: 3px solid #7C3AED; border-radius: 18px; box-shadow: 0 0 0 8px rgba(124,58,237,.16); pointer-events: none;"></span><span class="wk-r5" aria-hidden="true" style="position: absolute; left: 251px; top: 541px; width: 1097px; height: 119px; box-sizing: border-box; border: 3px solid #7C3AED; border-radius: 18px; box-shadow: 0 0 0 8px rgba(124,58,237,.16); pointer-events: none;"></span><span class="wk-c1" aria-hidden="true" style="position: absolute; left: 1259px; top: 736px; width: 48px; height: 48px; border-radius: 999px; background: #7C3AED;"></span><span class="wk-c2" aria-hidden="true" style="position: absolute; left: 1143px; top: 516px; width: 48px; height: 48px; border-radius: 999px; background: #7C3AED;"></span><span class="wk-c3" aria-hidden="true" style="position: absolute; left: 1250px; top: 425px; width: 48px; height: 48px; border-radius: 999px; background: #7C3AED;"></span><span class="wk-cur" style="position: absolute; left: -4px; top: -3px; transform: translate(726px,612px);"><svg width="34" height="40" viewBox="0 0 24 28" aria-hidden="true" style="display: block; filter: drop-shadow(0 4px 6px rgba(0,0,0,.3));"><path d="M3 2 L3 22 L8.5 17 L12.5 26 L16 24.5 L12 15.8 L19.5 15.8 Z" fill="#09090B" stroke="#FFFFFF" stroke-width="1.6" stroke-linejoin="round"/></svg></span></div></div>
-  <div class="rv" style="position: absolute; left: 271px; top: 994px; width: 1378px; display: flex; align-items: center; gap: 12px; animation-delay: calc(var(--spd) * 0.30s);"><span class="wk-ch1" style="padding: 8px 16px; border-radius: 999px; border: 1.5px solid #E4E4E7; font-family: 'Geist Mono', monospace; font-size: 16px; color: #A1A1AA; white-space: nowrap;">1 Choose a trial</span><span class="wk-ch2" style="padding: 8px 16px; border-radius: 999px; border: 1.5px solid #E4E4E7; font-family: 'Geist Mono', monospace; font-size: 16px; color: #A1A1AA; white-space: nowrap;">2 Do the real work</span><span class="wk-ch3" style="padding: 8px 16px; border-radius: 999px; border: 1.5px solid #E4E4E7; font-family: 'Geist Mono', monospace; font-size: 16px; color: #A1A1AA; white-space: nowrap;">3 Keep the evidence</span><span style="flex: 1; height: 4px; border-radius: 999px; background: #E4E4E7; overflow: hidden; margin-left: 12px;"><span class="wk-prog" style="display: block; height: 4px; background: #09090B;"></span></span></div>
+<div style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #7C3AED;">
+  <video data-play src="deck/img/walkthrough.mp4" autoplay="" muted="" loop="" playsinline="" preload="auto" aria-label="Product walkthrough on the MAYBE prototype: choosing the Dr. Lipp sales trial, working a call and updating the CRM, the student dashboard with scores and their provenance, then the employer candidate board and evidence page. Demo data; companies are examples, no partnership implied." style="position: absolute; inset: 0; width: 1920px; height: 1080px; display: block; object-fit: cover;"></video>
 </div>
 </div>
 </section>

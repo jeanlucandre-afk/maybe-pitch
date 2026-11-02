@@ -233,7 +233,7 @@
     "Slide05d.dc.html": {
       "h": 1080,
       "page": "presentation",
-      "title": "05d · Platform demo (walkthrough video)",
+      "title": "05d · Product walkthrough (video)",
       "w": 1920,
       "x": 4080,
       "y": 3000
@@ -454,7 +454,7 @@
     "notes05d": {
       "fill": "gray",
       "page": "presentation",
-      "text": "Notes · 05d · Platform demo\nLet me show you the whole flow in twenty seconds. A student opens the marketplace and picks the Dr. Lipp sales trial. They read the brief and start. They call Mara, an AI buyer, while the CRM fills in. At the end they get evidence: every score says where it came from, and the deal outcome is shown on its own. It goes into their portfolio, and they decide who sees it.",
+      "text": "Notes · 05d · Product walkthrough\nSo basically, this is it. A student opens MAYBE and picks a real job, here the Dr. Lipp sales trial. They call an AI buyer, handle her objection and update the CRM, like a real sales rep. Afterwards the evidence lands on their dashboard: every score says where it came from. And on the other side, the employer sees exactly that work, opens the evidence and invites them to an interview.",
       "w": 600,
       "x": 4080,
       "y": 4100

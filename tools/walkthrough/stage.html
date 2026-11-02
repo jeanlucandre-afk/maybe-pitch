@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>MAYBE walkthrough stage</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* 1920×1080 recording stage: the live prototype in a browser window on a flat violet ground.
+     record.mjs drives it: cam() zooms the whole window, cursorTo()/ripple() fake the pointer,
+     caption() shows the step label. */
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #7C3AED; font-family: Geist, system-ui, sans-serif; }
+  .cam { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 0 0; transition: transform 1.1s cubic-bezier(.65,0,.25,1); }
+  .win { position: absolute; left: 240px; top: 68px; width: 1440px; border-radius: 18px; overflow: hidden; background: #FFFFFF;
+         box-shadow: 0 60px 120px -40px rgba(20,4,60,.65), 0 0 0 1px rgba(255,255,255,.18); }
+  .bar { height: 44px; display: flex; align-items: center; gap: 12px; padding: 0 16px; background: #FAFAFA; border-bottom: 1px solid #E4E4E7; }
+  .dots { display: flex; gap: 7px; } .dots i { width: 12px; height: 12px; border-radius: 50%; background: #D4D4D8; display: block; }
+  .url { flex: 1; height: 28px; border-radius: 7px; border: 1px solid #E4E4E7; background: #FFF; display: flex; align-items: center; padding: 0 12px; font: 14px 'Geist Mono', monospace; color: #71717A; }
+  iframe { display: block; width: 1440px; height: 900px; border: 0; background: #FFF; }
+  .cursor { position: absolute; left: 0; top: 0; z-index: 5; pointer-events: none; transition: transform .75s cubic-bezier(.45,0,.25,1); }
+  .cursor svg { display: block; filter: drop-shadow(0 3px 5px rgba(0,0,0,.3)); }
+  .cursor.down svg { transform: scale(.82); transform-origin: 3px 2px; }
+  .ripple { position: absolute; z-index: 4; width: 44px; height: 44px; margin: -22px 0 0 -22px; border-radius: 50%; background: rgba(124,58,237,.45); pointer-events: none; animation: rp .6s ease-out forwards; }
+  @keyframes rp { from { transform: scale(.3); opacity: 1; } to { transform: scale(2.2); opacity: 0; } }
+  .cap { position: absolute; left: 64px; top: 52px; z-index: 10; display: flex; align-items: center; gap: 14px; padding: 12px 22px 12px 14px; border-radius: 999px; background: #09090B; color: #FAFAFA;
+         font-size: 26px; font-weight: 600; letter-spacing: -0.02em; box-shadow: 0 20px 40px -20px rgba(0,0,0,.5); transition: opacity .45s ease, transform .45s cubic-bezier(.2,.7,.2,1); }
+  .cap b { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: #FAFAFA; color: #09090B; font: 600 20px 'Geist Mono', monospace; }
+  .cap.hide { opacity: 0; transform: translateY(-12px); }
+</style>
+</head>
+<body>
+<div class="cam" id="cam">
+  <div class="win" id="win">
+    <div class="bar"><span class="dots"><i></i><i></i><i></i></span><span class="url" id="url">maybe.center/explore</span></div>
+    <iframe id="app" title="MAYBE prototype"></iframe>
+    <div class="cursor" id="cursor"><svg width="30" height="36" viewBox="0 0 24 28" aria-hidden="true"><path d="M3 2 L3 22 L8.5 17 L12.5 26 L16 24.5 L12 15.8 L19.5 15.8 Z" fill="#09090B" stroke="#FFFFFF" stroke-width="1.6" stroke-linejoin="round"/></svg></div>
+  </div>
+</div>
+<div class="cap hide" id="cap"><b id="capn">1</b><span id="capt"></span></div>
+<script>
+  const WIN = { x: 240, y: 68 + 44 };            // iframe origin inside the camera layer
+  const URLS = { 'marketplace.html': 'maybe.center/explore', 'sales-crm.html': 'maybe.center/trial/dr-lipp/sales',
+                 'dashboard.html': 'maybe.center/home', 'employer-board.html': 'maybe.center/employer/candidates',
+                 'candidate-evidence.html': 'maybe.center/employer/candidates/lena-hoffmann' };
+  const app = document.getElementById('app');
+  app.addEventListener('load', () => {
+    const f = (app.contentWindow.location.pathname.split('/').pop()) || '';
+    document.getElementById('url').textContent = URLS[f] || 'maybe.center';
+  });
+  window.go = (file) => { app.src = '../../app/' + file; };
+  window.cam = (x, y, s, ms = 1100) => {           // centre iframe point (x, y) on screen at scale s; s = 1 → wide shot
+    const c = document.getElementById('cam');
+    c.style.transitionDuration = ms + 'ms';
+    if (s === 1) { c.style.transform = 'none'; return; }
+    let tx = 960 - s * (WIN.x + x), ty = 540 - s * (WIN.y + y);
+    // keep the zoomed window covering the screen: no background showing at the edges
+    tx = Math.min(-s * 240, Math.max(1920 - s * (240 + 1440), tx));
+    ty = Math.min(-s * 68, Math.max(1080 - s * (68 + 944), ty));
+    c.style.transform = `translate(${tx}px, ${ty}px) scale(${s})`;
+  };
+  window.cursorTo = (x, y, ms = 750) => {
+    const k = document.getElementById('cursor');
+    k.style.transitionDuration = ms + 'ms';
+    k.style.transform = `translate(${x - 3}px, ${44 + y - 2}px)`;
+  };
+  window.press = (x, y) => {
+    const k = document.getElementById('cursor'); k.classList.add('down'); setTimeout(() => k.classList.remove('down'), 160);
+    const r = document.createElement('span'); r.className = 'ripple'; r.style.left = x + 'px'; r.style.top = (44 + y) + 'px';
+    document.getElementById('win').appendChild(r); setTimeout(() => r.remove(), 700);
+  };
+  window.caption = (n, text) => {
+    const c = document.getElementById('cap');
+    if (!text) { c.classList.add('hide'); return; }
+    document.getElementById('capn').textContent = n; document.getElementById('capt').textContent = text; c.classList.remove('hide');
+  };
+  cursorTo(900, 600, 0);
+</script>
+</body>
+</html>
