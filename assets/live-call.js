@@ -147,22 +147,14 @@
     };
   }
 
-  // Run a DOM change and animate every existing bubble from its old to its new position.
-  function glide(change) {
-    const kids = Array.from(bubbles.children);
-    const before = new Map(kids.map((el) => [el, el.getBoundingClientRect().top]));
-    change();
-    const scale = root.getBoundingClientRect().height / root.offsetHeight || 1; // deck scales the stage
-    Array.from(bubbles.children).forEach((el) => {
-      if (!before.has(el) || REDUCED) return;
-      const dy = (before.get(el) - el.getBoundingClientRect().top) / scale;
-      if (Math.abs(dy) < 0.5) return;
-      el.animate([{ transform: `translateY(${dy}px)` }, { transform: 'translateY(0)' }], { duration: 420, easing: 'cubic-bezier(.2,.7,.2,1)' });
-    });
-  }
+  // ---- smooth bubbles ----
+  // New bubbles grow open (height + fade), so the column slides up gradually instead of jumping.
+  // Words fade in place; when a streamed line wraps, the bubble's height eases to the new size.
+  const GROW_MS = 800, WORD_MS = 480, EASE = 'cubic-bezier(.45,.05,.25,1)';
+  bubbles.style.gap = '0px';
 
   function fadeOld() {
-    const all = Array.from(bubbles.children);
+    const all = Array.from(bubbles.children).filter((el) => !el.dataset.leaving);
     all.forEach((el, i) => { el.style.opacity = i === all.length - 1 ? '1' : String(0.5 + (i / Math.max(1, all.length - 1)) * 0.4); });
   }
 
@@ -171,53 +163,115 @@
     const b = document.createElement('div');
     b.className = 'bubble-live';
     b.dataset.role = role;
-    b.setAttribute('style', st.wrap);
+    b.setAttribute('style', st.wrap + '; margin-top: 16px; overflow: hidden; box-sizing: border-box');
     const name = document.createElement('span');
     name.setAttribute('style', st.name);
     name.textContent = role === 'you' ? 'You' : AGENT_NAME;
     const t = document.createElement('span');
     t.dataset.text = '';
     b.append(name, t);
+    b._words = [];
     return b;
   }
 
+  // Append words as spans that fade in; keep already shown words untouched (no flicker).
+  function setWords(b, text, { instant = false, stagger = 0 } = {}) {
+    const holder = b.querySelector('[data-text]');
+    const words = String(text).trim().split(/\s+/).filter(Boolean);
+    const old = b._words;
+    let same = 0;
+    while (same < old.length && same < words.length && old[same] === words[same]) same++;
+    if (same < old.length) { // text was revised: rebuild from the first changed word
+      while (holder.childNodes.length > same) holder.removeChild(holder.lastChild);
+    }
+    const added = [];
+    for (let i = same; i < words.length; i++) {
+      const w = document.createElement('span');
+      w.textContent = (i ? ' ' : '') + words[i];
+      holder.appendChild(w);
+      added.push(w);
+    }
+    b._words = words;
+    if (!instant && !REDUCED) {
+      added.forEach((w, i) => w.animate(
+        [{ opacity: 0, filter: 'blur(4px)' }, { opacity: 1, filter: 'blur(0)' }],
+        { duration: WORD_MS, delay: i * stagger, easing: 'ease-out', fill: 'backwards' }));
+    }
+    return added.length;
+  }
+
+  // Ease a bubble's height from its old size to its new size after a text change.
+  function easeHeight(b, change) {
+    if (REDUCED) { change(); return; }
+    const from = b.offsetHeight;
+    change();
+    const to = b.offsetHeight;
+    if (Math.abs(to - from) < 1 || b._growing) return;
+    b.animate([{ height: from + 'px' }, { height: to + 'px' }], { duration: 380, easing: EASE });
+  }
+
+  function growIn(b) {
+    if (REDUCED) return;
+    const h = b.offsetHeight;
+    b._growing = true;
+    const anim = b.animate([
+      { height: '0px', marginTop: '0px', paddingTop: '0px', paddingBottom: '0px', opacity: 0, transform: 'translateY(10px) scale(.985)' },
+      { height: h + 'px', marginTop: '16px', paddingTop: '16px', paddingBottom: '16px', opacity: 1, transform: 'none' }
+    ], { duration: GROW_MS, easing: EASE });
+    anim.onfinish = anim.oncancel = () => { b._growing = false; };
+  }
+
+  function trimOld() {
+    const kids = Array.from(bubbles.children).filter((el) => !el.dataset.leaving);
+    kids.slice(0, Math.max(0, kids.length - MAX_BUBBLES)).forEach((el) => {
+      el.dataset.leaving = '1';
+      if (REDUCED) { el.remove(); return; }
+      el.animate([{ opacity: el.style.opacity || 1 }, { opacity: 0 }], { duration: 500, easing: 'ease-out', fill: 'forwards' }).onfinish = () => el.remove();
+    });
+  }
+
   // Adds a bubble, or updates the last one when it is the same speaker still talking (streaming transcripts).
-  function addMessage(role, text, { replaceLast = false } = {}) {
+  function addMessage(role, text, { replaceLast = false, instant = false } = {}) {
     role = role === 'you' ? 'you' : 'agent';
-    const lastB = bubbles.lastElementChild;
+    const kids = Array.from(bubbles.children).filter((el) => !el.dataset.leaving);
+    const lastB = kids[kids.length - 1];
     if (replaceLast && lastB && lastB.dataset.role === role) {
-      glide(() => { lastB.querySelector('[data-text]').textContent = text; });
+      easeHeight(lastB, () => setWords(lastB, text, { instant }));
       return lastB;
     }
     const b = makeBubble(role);
-    b.querySelector('[data-text]').textContent = text;
-    glide(() => {
-      bubbles.appendChild(b);
-      while (bubbles.children.length > MAX_BUBBLES) bubbles.removeChild(bubbles.firstElementChild);
-    });
-    if (!REDUCED) b.animate([{ opacity: 0, transform: 'translateY(14px) scale(.98)' }, { opacity: 1, transform: 'none' }], { duration: 380, easing: 'cubic-bezier(.2,.7,.2,1)' });
+    bubbles.appendChild(b);
+    setWords(b, text, { instant, stagger: 60 });
+    growIn(b);
+    trimOld();
     fadeOld();
     return b;
   }
 
-  // Demo helper: reveal a line word by word over `ms`, like live speech-to-text. Returns a stop function.
+  // Demo helper: reveal a line word by word over `ms`, like live speech-to-text.
   function streamLine(role, text, ms) {
     const words = text.split(' ');
-    let i = 0, stopped = false, timer = null;
+    let i = 1, stopped = false, timer = null;
     addMessage(role, words[0] || '');
-    const step = Math.max(90, ms / Math.max(1, words.length));
+    const step = Math.max(120, ms / Math.max(1, words.length));
     const next = () => {
-      if (stopped) return;
+      if (stopped || i >= words.length) return;
       i += 1;
-      if (i >= words.length) return;
-      addMessage(role, words.slice(0, i + 1).join(' '), { replaceLast: true });
+      addMessage(role, words.slice(0, i).join(' '), { replaceLast: true });
       timer = setTimeout(next, step);
     };
     timer = setTimeout(next, step);
     return { finish() { stopped = true; clearTimeout(timer); addMessage(role, text, { replaceLast: true }); } };
   }
 
-  function clear() { bubbles.innerHTML = ''; setMode('idle'); }
+  function clear({ fade = false } = {}) {
+    setMode('idle');
+    if (!fade || REDUCED) { bubbles.innerHTML = ''; return; }
+    Array.from(bubbles.children).forEach((el) => {
+      el.dataset.leaving = '1';
+      el.animate([{ opacity: el.style.opacity || 1 }, { opacity: 0 }], { duration: 700, easing: 'ease-out', fill: 'forwards' }).onfinish = () => el.remove();
+    });
+  }
 
   // ---------- demo conversation ----------
   let demoTimers = [], demoStep = 0, current = null, demoOn = false;
@@ -227,21 +281,21 @@
     if (!demoOn) return;
     if (demoStep >= script.length) {
       setMode('idle');
-      later(() => { clear(); demoStep = 0; nextTurn(); }, 4200);
+      later(() => { clear({ fade: true }); demoStep = 0; later(nextTurn, 1100); }, 4500);
       return;
     }
     const m = script[demoStep];
     if (m.role === 'you') {
       if (mic) { setMode('idle'); return; } // wait for the presenter to actually speak (see onSpeech)
       setMode('you');
-      current = streamLine('you', m.text, 2000);
-      later(() => { current.finish(); current = null; demoStep++; setMode('idle'); later(nextTurn, 700); }, 2300);
+      current = streamLine('you', m.text, 2600);
+      later(() => { current.finish(); current = null; demoStep++; setMode('idle'); later(nextTurn, 1000); }, 2900);
     } else {
       // Mara answers: her text appears only while she speaks
       setMode('agent');
-      const ms = Math.max(1600, m.text.split(' ').length * 260);
+      const ms = Math.max(2200, m.text.split(' ').length * 330);
       current = streamLine('agent', m.text, ms);
-      later(() => { current.finish(); current = null; demoStep++; setMode('idle'); later(nextTurn, mic ? 300 : 800); }, ms + 250);
+      later(() => { current.finish(); current = null; demoStep++; setMode('idle'); later(nextTurn, mic ? 400 : 1100); }, ms + 350);
     }
   }
 
@@ -251,7 +305,7 @@
     if (!m || m.role !== 'you') return;
     if (ev === 'start' && !current) {
       setMode('you');
-      current = streamLine('you', m.text, Math.max(1800, m.text.split(' ').length * 300));
+      current = streamLine('you', m.text, Math.max(2200, m.text.split(' ').length * 330));
     } else if (ev === 'stop' && current) {
       current.finish(); current = null; demoStep++;
       setMode('idle');

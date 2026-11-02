@@ -59,8 +59,8 @@
 .avatar--talking .avatar__arcs path:nth-child(2){animation-delay:.15s}
 .avatar--talking .avatar__arcs path:nth-child(3){animation-delay:.3s}
 /* ---- bubbles ---- */
-@keyframes bubble-in{from{opacity:0;transform:translateY(18px) scale(.96)}to{opacity:1;transform:none}}
-.bubble{animation:bubble-in .38s cubic-bezier(.2,.7,.2,1) both}
+@keyframes bubble-in{0%{opacity:0;transform:translateY(26px) scale(.97);filter:blur(6px)}60%{opacity:1;filter:blur(0)}100%{opacity:1;transform:none;filter:blur(0)}}
+.bubble{animation:bubble-in .85s cubic-bezier(.22,.8,.24,1) both;transition:opacity .6s ease}
 @keyframes live-dot{0%,100%{opacity:1}50%{opacity:.25}}
 .live-dot{animation:live-dot 1.2s ease-in-out infinite}
 @media (prefers-reduced-motion:reduce){.rv,.rise,.fin,.orb__body,.orb__swirl,.orb__wave,.avatar img,.avatar__arcs path,.bubble,.live-dot{animation:none!important}}
