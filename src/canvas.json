@@ -204,6 +204,102 @@
       "w": 1920,
       "x": -2040,
       "y": 0
+    },
+    "Slide00a.dc.html": {
+      "h": 1080,
+      "page": "presentation",
+      "title": "00a · Opening question",
+      "w": 1920,
+      "x": -2040,
+      "y": 1500
+    },
+    "Slide00b.dc.html": {
+      "h": 1080,
+      "page": "presentation",
+      "title": "00b · The experience gap",
+      "w": 1920,
+      "x": -2040,
+      "y": 3000
+    },
+    "Slide00c.dc.html": {
+      "h": 1080,
+      "page": "presentation",
+      "title": "00c · The human cost",
+      "w": 1920,
+      "x": -2040,
+      "y": 4500
+    },
+    "Slide00d.dc.html": {
+      "h": 1080,
+      "page": "presentation",
+      "title": "00d · Transition: ready to work",
+      "w": 1920,
+      "x": -2040,
+      "y": 6000
+    },
+    "Slide00e.dc.html": {
+      "h": 1080,
+      "page": "presentation",
+      "title": "00e · The screening",
+      "w": 1920,
+      "x": -2040,
+      "y": 7500
+    },
+    "Slide00f.dc.html": {
+      "h": 1080,
+      "page": "presentation",
+      "title": "00f · Transition: create opportunities",
+      "w": 1920,
+      "x": -2040,
+      "y": 9000
+    },
+    "Slide10a.dc.html": {
+      "h": 1080,
+      "page": "presentation",
+      "title": "10a · The market",
+      "w": 1920,
+      "x": 4080,
+      "y": 6000
+    },
+    "Slide10b.dc.html": {
+      "h": 1080,
+      "page": "presentation",
+      "title": "10b · Why now",
+      "w": 1920,
+      "x": 6120,
+      "y": 6000
+    },
+    "Slide10c.dc.html": {
+      "h": 1080,
+      "page": "presentation",
+      "title": "10c · The European opportunity",
+      "w": 1920,
+      "x": 8160,
+      "y": 6000
+    },
+    "Slide10d.dc.html": {
+      "h": 1080,
+      "page": "presentation",
+      "title": "10d · The business",
+      "w": 1920,
+      "x": 10200,
+      "y": 6000
+    },
+    "Slide12.dc.html": {
+      "h": 1080,
+      "page": "presentation",
+      "title": "12 · Closing questions",
+      "w": 1920,
+      "x": 2040,
+      "y": 7500
+    },
+    "Slide13.dc.html": {
+      "h": 1080,
+      "page": "presentation",
+      "title": "13 · Try it. Prove it.",
+      "w": 1920,
+      "x": 4080,
+      "y": 7500
     }
   },
   "createdOnFiles": {
@@ -238,7 +334,19 @@
     "notes10",
     "notes11",
     "notes05b",
-    "dev05b"
+    "dev05b",
+    "notes00a",
+    "notes00b",
+    "notes00c",
+    "notes00d",
+    "notes00e",
+    "notes00f",
+    "notes10a",
+    "notes10b",
+    "notes10c",
+    "notes10d",
+    "notes12",
+    "notes13"
   ],
   "notes": {
     "dev05b": {
@@ -362,6 +470,102 @@
       "w": 240,
       "x": 0,
       "y": -300
+    },
+    "notes00a": {
+      "fill": "gray",
+      "page": "presentation",
+      "text": "Notes · 00a · Opening question\nPause on the black screen first, then let the question land. Don't answer it. Let the room think about how they chose their own degree or first job.",
+      "w": 600,
+      "x": -2040,
+      "y": 2600
+    },
+    "notes00b": {
+      "fill": "gray",
+      "page": "presentation",
+      "text": "Notes · 00b · The experience gap\nOnly 26% of recent U.S. graduates in ZipRecruiter's 2026 survey say they're on their ideal career path. And the obstacle they name most, 66.8%, is lack of experience. We prepare for years for work we have never actually done.",
+      "w": 600,
+      "x": -2040,
+      "y": 4100
+    },
+    "notes00c": {
+      "fill": "gray",
+      "page": "presentation",
+      "text": "Notes · 00c · The human cost\nHalf of recent graduates call their job a stepping stone; almost one in five took a bridge job just to pay the bills. In the UK, 29% of students and recent graduates reported mental-health difficulties and 64% worry about money every day or week. These are pressures, not proof that career uncertainty causes them.",
+      "w": 600,
+      "x": -2040,
+      "y": 5600
+    },
+    "notes00d": {
+      "fill": "gray",
+      "page": "presentation",
+      "text": "Notes · 00d · Transition: ready to work\nBut what about those who already know what they want to do? Those who have the skills and are ready to work? Surely they get the chance to prove themselves. Right? (Pause before 'Right?')",
+      "w": 600,
+      "x": -2040,
+      "y": 7100
+    },
+    "notes00e": {
+      "fill": "gray",
+      "page": "presentation",
+      "text": "Notes · 00e · The screening\nStanford looked at about 4 million applications screened by one vendor's algorithms. With equal recommendation rates, an estimated 40,000 more applications from Black and Asian candidates would have moved forward. That's an estimate of recommendations, not 40,000 proven missed hires. And 81% of U.S. job seekers were rejected last year without talking to a single person, while 96% wish they could show something their application can't. Optional: the attributed @its_ken04 AI-interviewer clip, as a public concern, not a typical case.",
+      "w": 600,
+      "x": -2040,
+      "y": 8600
+    },
+    "notes00f": {
+      "fill": "gray",
+      "page": "presentation",
+      "text": "Notes · 00f · Transition: create opportunities\nWe have people who haven't had the chance to discover what they can do, and people who struggle to get the chance to show it. What if we used AI to create opportunities, instead of only filtering applications? Next slide: MAYBE.",
+      "w": 600,
+      "x": -2040,
+      "y": 10100
+    },
+    "notes10a": {
+      "fill": "gray",
+      "page": "presentation",
+      "text": "Notes · 10a · The market\nRecruitment is big and under pressure. AI recruitment software alone is estimated at $5.1 billion in 2026, forecast to roughly double by 2035. In iHire's survey, more than half of employers say they get too many unqualified applicants, and a third want skills assessments. The $34B and $71B figures are separate categories, not our addressable market.",
+      "w": 600,
+      "x": 4080,
+      "y": 7100
+    },
+    "notes10b": {
+      "fill": "gray",
+      "page": "presentation",
+      "text": "Notes · 10b · Why now\nGreenhouse customers now get 244 applications per job, more than double 2022, with fewer than half the recruiters. Europe shows the same: 99 to 183 per vacancy. These are Greenhouse benchmarks, not the whole labour market. At the same time, 70% of employers in NACE's survey hire on skills. Applications don't show skills. Work does.",
+      "w": 600,
+      "x": 6120,
+      "y": 7100
+    },
+    "notes10c": {
+      "fill": "gray",
+      "page": "presentation",
+      "text": "Notes · 10c · The European opportunity\nFrom 2 December 2027, high-risk AI used in hiring faces stricter EU AI Act requirements: transparency, documentation, risk management, data governance, human oversight, and checks for unfair outcomes. MAYBE is designed around transparent, human-reviewed work evidence. We're not claiming to be exempt or compliant; our own evaluations may be high-risk too.",
+      "w": 600,
+      "x": 8160,
+      "y": 7100
+    },
+    "notes10d": {
+      "fill": "gray",
+      "page": "presentation",
+      "text": "Notes · 10d · The business\nExploring stays free or accessible for students. Employers pay for job-specific simulations, work-sample review and recruiting workflows, evidence-based assessment, and possibly a subscription. We haven't set prices or proven hiring ROI yet; that's what the pilots are for.",
+      "w": 600,
+      "x": 10200,
+      "y": 7100
+    },
+    "notes12": {
+      "fill": "gray",
+      "page": "presentation",
+      "text": "Notes · 12 · Closing questions\nBack to where we started. How are you supposed to know what you want to do if you've never tried it? And how are employers supposed to recognize your potential if you never get the chance to demonstrate it?",
+      "w": 600,
+      "x": 2040,
+      "y": 8600
+    },
+    "notes13": {
+      "fill": "gray",
+      "page": "presentation",
+      "text": "Notes · 13 · Try it. Prove it.\nFor years, technology has helped companies decide who deserves a chance. We're building technology that gives more people the chance to prove themselves. MAYBE. Try it. Prove it. Thank you.",
+      "w": 600,
+      "x": 4080,
+      "y": 8600
     }
   },
   "order": [
@@ -387,6 +591,18 @@
     "Slide09.dc.html",
     "Slide10.dc.html",
     "Slide11.dc.html",
+    "Slide00a.dc.html",
+    "Slide00b.dc.html",
+    "Slide00c.dc.html",
+    "Slide00d.dc.html",
+    "Slide00e.dc.html",
+    "Slide00f.dc.html",
+    "Slide10a.dc.html",
+    "Slide10b.dc.html",
+    "Slide10c.dc.html",
+    "Slide10d.dc.html",
+    "Slide12.dc.html",
+    "Slide13.dc.html",
     "Piece-r56u.dc.html"
   ],
   "pages": [
