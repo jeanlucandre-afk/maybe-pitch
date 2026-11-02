@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>MAYBE · Why now</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#09090B}a:hover{color:#52525B}
+@keyframes rv{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes rise{0%{transform:translateY(105%) rotate(4deg)}60%{transform:translateY(-6%) rotate(-2deg)}80%{transform:translateY(2%)}100%{transform:translateY(0) rotate(0)}}
+@keyframes drift{from{transform:scale(1.08) translateY(0)}to{transform:scale(1.08) translateY(-4%)}}
+@keyframes frame-in{from{opacity:0;transform:translateY(40px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes scroll-shot{0%,15%{transform:translateY(0)}55%,70%{transform:translateY(var(--shot-scroll,-18%))}100%{transform:translateY(0)}}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.anim-on .rv{animation:rv calc(.7s * var(--spd)) cubic-bezier(.2,.7,.2,1) both}
+.anim-on .rise{animation:rise calc(.8s * var(--spd)) cubic-bezier(.3,.7,.2,1) both}
+.anim-on .drift{animation:drift calc(9s * var(--spd)) ease-in-out infinite alternate}
+.anim-on .fin{animation:frame-in calc(.9s * var(--spd)) cubic-bezier(.2,.7,.2,1) both}
+.anim-on .shot{animation:scroll-shot calc(14s * var(--spd)) ease-in-out 1.4s infinite}
+.anim-on .grow{transform-origin:left center;animation:grow calc(.9s * var(--spd)) cubic-bezier(.2,.7,.2,1) both}
+@media (prefers-reduced-motion:reduce){.rv,.rise,.drift,.fin,.shot,.grow{animation:none!important}}
+</style>
+<style>
+@keyframes growy{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@keyframes pop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+.anim-on .growy{transform-origin:center bottom;animation:growy calc(1s * var(--spd)) cubic-bezier(.2,.7,.2,1) both}
+.anim-on .draw{stroke-dasharray:1;stroke-dashoffset:1;animation:draw calc(1.4s * var(--spd)) cubic-bezier(.4,0,.2,1) both}
+.anim-on .pop{animation:pop calc(.5s * var(--spd)) cubic-bezier(.2,.7,.2,1.2) both}
+@media (prefers-reduced-motion:reduce){.growy,.draw,.pop{animation:none!important;stroke-dashoffset:0}}
+</style>
+</helmet>
+<div class="{{animClass}}" style="--spd: {{spd}}; width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #FFFFFF; color: #09090B; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
+  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 0.0%; background: #7C3AED;"></div>
+  <div style="position: absolute; left: 160px; top: 120px; width: 1600px;">
+    <h2 class="rv" style="margin: 0px 0 0; font-size: 76px; font-weight: 700; line-height: 1.02; letter-spacing: -0.045em; max-width: 30ch; animation-delay: calc(var(--spd) * 0.05s);">More applicants. Fewer recruiters. A shift to <span style="color: {{accent}};">skills</span>.</h2>
+  </div>
+  <div class="rv" style="position: absolute; left: 160px; top: 330px; animation-delay: calc(var(--spd) * 0.20s);"><svg width="1000" height="520" viewBox="0 0 1000 520" role="img" aria-label="Applications per job rose from 116 to 244 while recruiters per organization fell from 10.43 to 4.62, 2022 to 2025" style="display: block; overflow: visible;">
+      <line x1="40" y1="490" x2="900" y2="490" stroke="#E4E4E7" stroke-width="2"/>
+      <path class="draw" pathLength="1" d="M40 285 L900 82" fill="none" stroke="#7C3AED" stroke-width="8" stroke-linecap="round" style="animation-delay: calc(var(--spd) * 0.40s);"/>
+      <path class="draw" pathLength="1" d="M40 285 L900 389" fill="none" stroke="#09090B" stroke-width="8" stroke-linecap="round" style="animation-delay: calc(var(--spd) * 0.40s);"/>
+      <circle cx="40" cy="285" r="12" fill="#09090B"/>
+      <circle class="pop" cx="900" cy="82" r="14" fill="#7C3AED" style="transform-origin: 900px 82px; animation-delay: calc(var(--spd) * 1.60s);"/>
+      <circle class="pop" cx="900" cy="389" r="14" fill="#09090B" style="transform-origin: 900px 389px; animation-delay: calc(var(--spd) * 1.60s);"/>
+      <text x="40" y="520" font-family="Geist Mono, monospace" font-size="20" fill="#52525B">2022</text>
+      <text x="900" y="520" font-family="Geist Mono, monospace" font-size="20" fill="#52525B" text-anchor="end">2025</text>
+    </svg></div>
+  <div class="rv" style="position: absolute; left: 1120px; top: 330px; display: flex; flex-direction: column; gap: 4px; animation-delay: calc(var(--spd) * 1.70s);"><span style="font-family: 'Geist Mono', monospace; font-size: 64px; font-weight: 500; letter-spacing: -0.05em; line-height: 1; color: {{accent}};">244</span><span style="font-size: 24px; color: #52525B;">applications per job, up from 116</span></div>
+  <div class="rv" style="position: absolute; left: 1120px; top: 700px; display: flex; flex-direction: column; gap: 4px; animation-delay: calc(var(--spd) * 1.80s);"><span style="font-family: 'Geist Mono', monospace; font-size: 64px; font-weight: 500; letter-spacing: -0.05em; line-height: 1; color: #09090B;">4<span style="margin: 0 -0.22em;">.</span>62</span><span style="font-size: 24px; color: #52525B;">recruiters per company, down from 10.43</span></div>
+  <div class="rv" style="position: absolute; left: 1120px; top: 500px; display: flex; align-items: baseline; gap: 16px; padding: 14px 20px; border-radius: 12px; background: #F4F4F5; animation-delay: calc(var(--spd) * 2.00s);"><span style="font-family: 'Geist Mono', monospace; font-size: 36px; font-weight: 500; letter-spacing: -0.04em;">3×</span><span style="font-size: 22px; color: #52525B;">applications per recruiter: 1,610 → 4,890 a year</span></div>
+  <p class="rv" style="position: absolute; left: 1120px; top: 870px; margin: 0; font-size: 22px; color: #52525B; animation-delay: calc(var(--spd) * 2.20s);"><span style="font-family: 'Geist Mono', monospace; font-size: 28px; color: #09090B;">70%</span> of employers now hire on skills (NACE, up from 65%)</p>
+  <p class="rv" style="position: absolute; right: 72px; bottom: 32px; margin: 0; max-width: 1100px; text-align: right; font-size: 16px; line-height: 1.45; color: #71717A; animation-delay: calc(var(--spd) * 2.30s);">Greenhouse, Hiring Benchmarks 2026 (640M+ applications, Greenhouse customers, not the whole market) · NACE 2026</p>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"animate": {"editor": "boolean", "default": true, "section": "Motion"}, "speed": {"editor": "enum", "options": ["slow", "normal", "fast"], "default": "normal", "section": "Motion"}, "accent": {"editor": "color", "options": ["#7C3AED", "#09090B", "#5B21B6"], "default": "#7C3AED", "section": "Look"}, "$preview": {"width": 1920, "height": 1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const on = this.props.animate ?? true;
+    const spd = { slow: 1.5, normal: 1, fast: 0.6 }[this.props.speed ?? 'normal'] ?? 1;
+    return {
+      animClass: on ? 'anim-on' : 'anim-off',
+      spd: String(spd),
+      accent: this.props.accent ?? "#7C3AED",
+    };
+  }
+}
+</script>
+</body>
+</html>

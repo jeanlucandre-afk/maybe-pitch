@@ -31,6 +31,12 @@ This repo is the MAYBE hackathon presentation (Macromedia × CODE Hackathon). It
   - `clear()`
 
   Listen for `deck:slidechange` on `document` to start and stop the session. Full spec and example: `LIVE-CALL.md`.
+- **Agent-world slide (slide 7, after the live call: the ball of simulated agents reviewing the call):** drive it with `window.MAYBE_SWARM`:
+  - `connect()` / `disconnect()`, `setAgents([...])`, `setPhase('spawn'|'talk'|'think'|'result')`
+  - `say(id, text, {to})`, `think(id, text)`, `setVerdict(id, 'yes'|'maybe'|'no')`
+  - review panel (left): `setCandidate({name, meta})`, `addPoint('pro'|'con', text, {by})`, `addQualification(text, {gap, by})`, `setConclusion({wanted, summary, list})`, `setDeal(text)`
+
+  It loops a demo until connected. The call transcript is available from `MAYBE_CALL.getTranscript()`. Full spec and suggested backend: `AGENT-WORLD.md`.
 - Put new voice code in `assets/voice/*.js` and load it with one `<script>` tag. Ask Luc to add the tag to the canvas export, or add it in `tools/build-deck.mjs` next to `live-call.js`, so a rebuild doesn't drop it.
 - **Server code:** Vercel functions in `api/*.js`, Node 20, CommonJS `module.exports = (req, res) => { … }` (no package.json needed; add one with `"type": "module"` if you prefer ESM). For example, `api/elevenlabs-signed-url.js` reads `process.env.ELEVENLABS_API_KEY` and returns a signed conversation URL, so no key ever reaches the browser.
 
@@ -61,3 +67,27 @@ This repo is the MAYBE hackathon presentation (Macromedia × CODE Hackathon). It
 - Every score shows its provenance: Rule-based, Synthetic estimate or AI review. The deal outcome stays separate from the score.
 - No invented numbers, prices, user counts or testimonials. Label AI-generated images.
 - Agents must say they're AI if asked.
+
+
+## For Luc's sessions: rebuild from the canvas, deploy, merge Boris's PR
+
+Design source of truth: the **MAYBE Final** design canvas, https://claude.ai/artifact/7ffQa8sB7mqJyxWByXgztf. Page "Presentation" holds the slide boards `SlideNN.dc.html` (`Slide00` = black pre-show, not counted; `Slide05b` = live call). Page "Live system" holds the product screens. The design system is "MAYBE Product", https://claude.ai/artifact/D8md6vL8PavrLisCW86kaN.
+
+**Deploying = pushing to `main`.** Vercel project `maybe-pitch` is Git-connected; production branch `main` goes to https://maybe-pitch.vercel.app automatically. Never deploy by hand unless the Git link breaks.
+
+### "Rebuild the deck" (after Luc edits slides on the canvas)
+1. `git pull --rebase origin main`.
+2. Read `project/canvas.json` and every `project/Slide*.dc.html` from the canvas with the Artifact tool, and copy them into `src/`. Luc edits by hand, so always re-read; never reuse old copies.
+3. New images or videos: list the canvas assets (sha256 per id). Download any new one with Artifact read `path: <asset id>`, put it in `deck/img/`, then add `id → sha256` to `src/assets.json` and `sha256 → img/<file>` to `tools/blob-map.json`.
+4. `node tools/build-deck.mjs`. It must finish with no unmapped-image warnings.
+5. Quick check: serve the folder locally and step through the slides with ← →. Slide 6 must play the demo, and the title's intro video must start.
+6. Commit with a clear message and `git push origin main`. Vercel deploys in about a minute.
+
+### Merging Boris's pull request (voice → main)
+1. `git fetch origin` and review the PR diff:
+   - no secrets (`git diff origin/main...origin/voice | grep -iE "sk-|api[_-]?key|secret"` is empty)
+   - only Boris's lane is touched (api/, assets/voice/, docs, the script tag in tools/build-deck.mjs)
+   - `window.MAYBE_CALL` and the slide markers (`data-call`, `data-orb`, `data-bubbles`, `data-avatar`) are intact
+2. Merge into main. If `index.html` conflicts, take either side, then run `node tools/build-deck.mjs` and commit the regenerated file.
+3. Before or right after the merge, Luc adds the env vars the PR names (e.g. `OPENAI_API_KEY`) in Vercel → maybe-pitch → Settings → Environment Variables (Production + Preview). Values never go in chat or git.
+4. Push main, and tell Luc to test slide 6 out loud on https://maybe-pitch.vercel.app.

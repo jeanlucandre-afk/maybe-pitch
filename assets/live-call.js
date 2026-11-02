@@ -231,14 +231,20 @@
   }
 
   // Adds a bubble, or updates the last one when it is the same speaker still talking (streaming transcripts).
+  // Every line of the call so far (the agent-world slide sends this to the simulation). Reset by clear().
+  let transcript = [];
   function addMessage(role, text, { replaceLast = false, instant = false } = {}) {
     role = role === 'you' ? 'you' : 'agent';
     const kids = Array.from(bubbles.children).filter((el) => !el.dataset.leaving);
     const lastB = kids[kids.length - 1];
     if (replaceLast && lastB && lastB.dataset.role === role) {
+      if (transcript.length && transcript[transcript.length - 1].role === role) transcript[transcript.length - 1].text = text;
+      root.dispatchEvent(new CustomEvent('call:message', { detail: { role, text, replaceLast: true } }));
       easeHeight(lastB, () => setWords(lastB, text, { instant }));
       return lastB;
     }
+    transcript.push({ role, text });
+    root.dispatchEvent(new CustomEvent('call:message', { detail: { role, text, replaceLast: false } }));
     const b = makeBubble(role);
     bubbles.appendChild(b);
     setWords(b, text, { instant, stagger: 60 });
@@ -266,6 +272,7 @@
 
   function clear({ fade = false } = {}) {
     setMode('idle');
+    transcript = [];
     if (!fade || REDUCED) { bubbles.innerHTML = ''; return; }
     Array.from(bubbles.children).forEach((el) => {
       el.dataset.leaving = '1';
@@ -370,6 +377,8 @@
     /** role 'you' | 'agent'. Pass {replaceLast: true} to update the last bubble while a transcript streams in; the column glides smoothly. */
     addMessage,
     clear,
+    /** [{role: 'you'|'agent', text}] for the current call; the agent-world slide reviews this. Also fires call:message on root. */
+    getTranscript() { return transcript.map((m) => ({ ...m })); },
     startClock, stopClock,
     get muted() { return muted; },
     root
