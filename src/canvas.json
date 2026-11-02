@@ -208,7 +208,7 @@
     "Slide00a.dc.html": {
       "h": 1080,
       "page": "presentation",
-      "title": "00a · Opening question",
+      "title": "00a · The question",
       "w": 1920,
       "x": -2040,
       "y": 1500
@@ -232,7 +232,7 @@
     "Slide00d.dc.html": {
       "h": 1080,
       "page": "presentation",
-      "title": "00d · Transition: ready to work",
+      "title": "00d · The other side",
       "w": 1920,
       "x": -2040,
       "y": 6000
@@ -248,7 +248,7 @@
     "Slide00f.dc.html": {
       "h": 1080,
       "page": "presentation",
-      "title": "00f · Transition: create opportunities",
+      "title": "00f · The turn",
       "w": 1920,
       "x": -2040,
       "y": 9000
@@ -288,7 +288,7 @@
     "Slide12.dc.html": {
       "h": 1080,
       "page": "presentation",
-      "title": "12 · Closing questions",
+      "title": "12 · Back to the start",
       "w": 1920,
       "x": 2040,
       "y": 7500
@@ -474,7 +474,7 @@
     "notes00a": {
       "fill": "gray",
       "page": "presentation",
-      "text": "Notes · 00a · Opening question\nPause on the black screen first, then let the question land. Don't answer it. Let the room think about how they chose their own degree or first job.",
+      "text": "Notes · 00a · The question\nPause on the black screen first, then let the question land. Don't answer it. Let the room think about how they chose their own degree or first job.",
       "w": 600,
       "x": -2040,
       "y": 2600
@@ -498,7 +498,7 @@
     "notes00d": {
       "fill": "gray",
       "page": "presentation",
-      "text": "Notes · 00d · Transition: ready to work\nBut what about those who already know what they want to do? Those who have the skills and are ready to work? Surely they get the chance to prove themselves. Right? (Pause before 'Right?')",
+      "text": "Notes · 00d · The other side\nBut what about those who already know what they want to do? Those who have the skills and are ready to work? Surely they get the chance to prove themselves. Right? (Pause before 'Right?')",
       "w": 600,
       "x": -2040,
       "y": 7100
@@ -514,7 +514,7 @@
     "notes00f": {
       "fill": "gray",
       "page": "presentation",
-      "text": "Notes · 00f · Transition: create opportunities\nWe have people who haven't had the chance to discover what they can do, and people who struggle to get the chance to show it. What if we used AI to create opportunities, instead of only filtering applications? Next slide: MAYBE.",
+      "text": "Notes · 00f · The turn\nWe have people who haven't had the chance to discover what they can do, and people who struggle to get the chance to show it. What if we used AI to create opportunities, instead of only filtering applications? Next slide: MAYBE.",
       "w": 600,
       "x": -2040,
       "y": 10100
@@ -554,7 +554,7 @@
     "notes12": {
       "fill": "gray",
       "page": "presentation",
-      "text": "Notes · 12 · Closing questions\nBack to where we started. How are you supposed to know what you want to do if you've never tried it? And how are employers supposed to recognize your potential if you never get the chance to demonstrate it?",
+      "text": "Notes · 12 · Back to the start\nBack to where we started. How are you supposed to know what you want to do if you've never tried it? And how are employers supposed to recognize your potential if you never get the chance to demonstrate it?",
       "w": 600,
       "x": 2040,
       "y": 8600

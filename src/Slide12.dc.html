@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>MAYBE · Closing questions</title>
+<title>MAYBE · Back to the start</title>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -28,22 +28,24 @@ a{color:#09090B}a:hover{color:#52525B}
 </style>
 </helmet>
 <div class="{{animClass}}" style="--spd: {{spd}}; width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #09090B; color: #FAFAFA; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
-  <div style="position: absolute; left: 160px; right: 160px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; gap: 72px;">
-    <p class="rv" style="margin: 0; max-width: 27ch; font-size: 88px; font-weight: 700; line-height: 1.04; letter-spacing: -0.045em; animation-delay: calc(var(--spd) * 0.30s);">How are you supposed to know what you want to do if you’ve never <span style="color: {{accent}};">tried</span> it?</p>
-    <p class="rv" style="margin: 0; max-width: 30ch; font-size: 72px; font-weight: 700; line-height: 1.06; letter-spacing: -0.045em; color: #D4D4D8; animation-delay: calc(var(--spd) * 1.60s);">And how are employers supposed to recognize your potential if you never get the chance to <span style="color: {{accent}};">demonstrate</span> it?</p>
+  <div style="position: absolute; left: 72px; top: 32px; display: flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 700; letter-spacing: -0.035em; color: #FAFAFA;"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 4.5 L10.5 13 L10.5 20 M20.5 3.5 L11 14.5" fill="none" stroke="#FAFAFA" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>MAYBE</div>
+  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 0.0%; background: #7C3AED;"></div>
+  <div style="position: absolute; right: 72px; bottom: 32px; font-family: 'Geist Mono', monospace; font-size: 16px; color: #A1A1AA;">0 / 0</div>
+  <div style="position: absolute; left: 120px; right: 120px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center;">
+    <p class="rv" style="margin: 0 0 18px; font-family: 'Geist Mono', monospace; font-size: 18px; font-weight: 500; letter-spacing: .02em; color: #A1A1AA; animation-delay: calc(var(--spd) * 0.00s);"><span style="color: #C4B5FD;">00</span> · Back to the start</p>
+    <h2 class="rv" style="margin: 0; font-size: 80px; font-weight: 700; line-height: 1; letter-spacing: -0.045em; font-size: 88px; max-width: 24ch; animation-delay: calc(var(--spd) * 0.20s);">How are you supposed to know what you want to do if you’ve never <span style="color: #C4B5FD;">tried</span> it?</h2>
+    <h2 class="rv" style="margin: 56px 0 0; font-size: 80px; font-weight: 600; line-height: 1; letter-spacing: -0.045em; font-size: 64px; max-width: 32ch; animation-delay: calc(var(--spd) * 1.40s);">And how are employers supposed to recognize your potential if you never get the chance to <span style="color: #C4B5FD;">demonstrate</span> it?</h2>
   </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"animate": {"editor": "boolean", "default": true, "section": "Motion"}, "speed": {"editor": "enum", "options": ["slow", "normal", "fast"], "default": "normal", "section": "Motion"}, "accent": {"editor": "color", "options": ["#A78BFA", "#FAFAFA", "#C4B5FD"], "default": "#A78BFA", "section": "Look"}, "$preview": {"width": 1920, "height": 1080}}'>
+<script type="text/x-dc" data-dc-script data-props='{"animate": {"editor": "boolean", "default": true, "section": "Motion"}, "speed": {"editor": "enum", "options": ["slow", "normal", "fast"], "default": "normal", "section": "Motion"}, "$preview": {"width": 1920, "height": 1080}}'>
 class Component extends DCLogic {
   renderVals() {
     const on = this.props.animate ?? true;
     const spd = { slow: 1.5, normal: 1, fast: 0.6 }[this.props.speed ?? 'normal'] ?? 1;
-    const accent = this.props.accent ?? "#A78BFA";
     return {
       animClass: on ? 'anim-on' : 'anim-off',
       spd: String(spd),
-      accent,
     };
   }
 }

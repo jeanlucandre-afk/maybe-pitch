@@ -85,7 +85,7 @@ function renumber(body, n, total) {
     .replace(/>\s*\d+\s*\/\s*\d+\s*<\/div>/, `>${n} / ${total}</div>`)
     .replace(/(height: 4px; width: )[\d.]+%(; background: #7C3AED;)/, `$1${(n / total * 100).toFixed(1)}%$2`)
     // the eyebrow number ("<span …>02</span> · The problem") follows the slide's position in the deck
-    .replace(/(<span style="color: #5B21B6;">)\d+(<\/span> · )/, `$1${String(n).padStart(2, '0')}$2`);
+    .replace(/(<span style="color: #(?:5B21B6|C4B5FD);">)\d+(<\/span> · )/, `$1${String(n).padStart(2, '0')}$2`);
 }
 
 const seenStyles = new Set();
