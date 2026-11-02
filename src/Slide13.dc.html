@@ -26,13 +26,21 @@ a{color:#09090B}a:hover{color:#52525B}
 .anim-on .grow{transform-origin:left center;animation:grow calc(.9s * var(--spd)) cubic-bezier(.2,.7,.2,1) both}
 @media (prefers-reduced-motion:reduce){.rv,.rise,.drift,.fin,.shot,.grow{animation:none!important}}
 </style>
+<style>
+@keyframes growy{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@keyframes pop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+.anim-on .growy{transform-origin:center bottom;animation:growy calc(1s * var(--spd)) cubic-bezier(.2,.7,.2,1) both}
+.anim-on .draw{stroke-dasharray:1;stroke-dashoffset:1;animation:draw calc(1.4s * var(--spd)) cubic-bezier(.4,0,.2,1) both}
+.anim-on .pop{animation:pop calc(.5s * var(--spd)) cubic-bezier(.2,.7,.2,1.2) both}
+@media (prefers-reduced-motion:reduce){.growy,.draw,.pop{animation:none!important;stroke-dashoffset:0}}
+</style>
 </helmet>
 <div class="{{animClass}}" style="--spd: {{spd}}; width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #FFFFFF; color: #09090B; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
   <div style="position: absolute; left: 0; top: 0; height: 4px; width: 0.0%; background: #7C3AED;"></div>
-  <div style="position: absolute; right: 72px; bottom: 34px; font-family: 'Geist Mono', monospace; font-size: 16px; color: #71717A;">0 / 0</div>
   <div style="position: absolute; left: 120px; right: 120px; top: 112px; display: flex; flex-direction: column; gap: 20px;">
-    <p class="rv" style="margin: 0; font-size: 32px; line-height: 1.4; color: #52525B; max-width: 46ch; animation-delay: calc(var(--spd) * 0.10s);">For years, technology has helped companies decide who deserves a chance.</p>
-    <p class="rv" style="margin: 0; font-size: 68px; font-weight: 600; line-height: 1.05; letter-spacing: -0.04em; max-width: 24ch; animation-delay: calc(var(--spd) * 0.80s);">We’re building technology that gives more people the chance to prove themselves.</p>
+    <p class="rv" style="margin: 0; font-size: 32px; line-height: 1.4; color: #52525B; max-width: 46ch; animation-delay: calc(var(--spd) * 0.10s);">Technology has long helped companies decide who deserves a chance.</p>
+    <p class="rv" style="margin: 0; font-size: 68px; font-weight: 600; line-height: 1.05; letter-spacing: -0.04em; max-width: 22ch; animation-delay: calc(var(--spd) * 0.80s);">We’re building technology that gives more people the chance to prove themselves.</p>
   </div>
   <div style="position: absolute; left: 120px; right: 120px; bottom: 120px; display: flex; justify-content: space-between; align-items: flex-end; gap: 48px;">
     <h1 class="rv" style="margin: 0 0 0 -14px; font-size: 360px; font-weight: 700; line-height: .78; letter-spacing: -0.065em; animation-delay: calc(var(--spd) * 1.60s);">MAYBE<span style="color: {{accent}};">.</span></h1>
