@@ -8,7 +8,9 @@ const { reviewSalesCall } = require('./engine');
 const { clampWords, verifyQuote } = require('./evidence');
 const { askOpenAI } = require('./openai');
 const { SALES_CHECKS, SALES_PANEL } = require('./rubric');
+const { ruleAgent, ruleAudit } = require('./rules');
 const { OUTCOME_PAIR, SAMPLE_CALLS } = require('./sample-calls');
+const { activeScenario } = require('./scenario');
 const http = require('node:http');
 const reviewEndpoint = require('../review-sales');
 
@@ -470,5 +472,150 @@ describe('local fallback', () => {
   it('marks that it was not the AI', async () => {
     const result = await run('solid');
     result.reviews.forEach((review) => assert.equal(review.provenance, 'Rule-based'));
+  });
+});
+
+describe('detecting the sale without the AI', () => {
+  const outcomeOf = (...lines) => ruleAudit({
+    turns: lines.map((text, index) => ({ id: `t${index + 1}`, speaker: 'prospect', text, atMs: index })),
+  }).outcome;
+
+  const sales = [
+    YES,
+    "Ok, I'll take the banana.",
+    "I’ll take the banana.",
+    "I will take the banana.",
+    "Okay, I'll take the banana, you convinced me.",
+    "I'll take it.",
+    "I'll take one, thanks.",
+    "I'll take that one.",
+    "Sure, I'll buy one.",
+    "I'll have one.",
+    'Give me one.',
+    'Deal.',
+    "It's a deal.",
+    "You've got a deal.",
+    'Sold!',
+    "I'm sold.",
+    "Okay, I'll take the banana. Thanks, goodbye!",
+    "Well, I'm hungry, and one euro is fine. Okay, I'll take the banana. Bye.",
+  ];
+  sales.forEach((line) => it(`a sale: ${line}`, () => assert.equal(outcomeOf(line), 'sale_agreed')));
+
+  const notSales = [
+    "No thanks, I'll pass.",
+    "No thanks, I’ll pass.",
+    "No, thanks, I'll pass.",
+    "I'm not sold yet.",
+    "Hmm, I'm not sold yet.",
+    'Not sold.',
+    "You haven't sold me.",
+    "You've not sold me on it.",
+    'You sold me nothing.',
+    'No deal.',
+    "That's not a deal.",
+    "That's no deal.",
+    "That's a fair deal.",
+    "What's the deal with that?",
+    'Big deal.',
+    "I won't take it.",
+    "I won't buy it.",
+    "I won't take the banana.",
+    'I will not take it.',
+    "I'll never buy it.",
+    "I'll not take it.",
+    "I don't think I'll take it.",
+    "I doubt I'll take it.",
+    "I can't take it.",
+    "I wouldn't take it.",
+    "I'm not going to buy it.",
+    "I'm not buying it.",
+    "I don't want it.",
+    "I'll take a pass.",
+    "I'll take a break.",
+    "I'll take my chances.",
+    "I'll take that as a no.",
+    "I'll have pizza instead.",
+    "I think I'll have pizza instead, why a banana?",
+    "I'll buy pizza.",
+    "Okay, I'll hear you out.",
+    "Okay, I'll think about it.",
+    "Okay, I'll grab something later.",
+    "Okay, I'll get back to work.",
+    "I'll take it if it's under a euro.",
+    "I'll take the banana if it's under a euro.",
+    "I'll take it later.",
+    "I'll take the banana later.",
+    "Maybe I'll take it.",
+    'I might take one.',
+    "If it's one euro, I'll take it.",
+    "Okay, I'll take the banana?",
+    "So I'll take it, is that what you want?",
+    'Give me one reason.',
+    'Give me one good reason to buy it.',
+    'Give me one second.',
+    'No.',
+    'Nope.',
+  ];
+  notSales.forEach((line) => it(`not a sale: ${line}`, () => assert.equal(outcomeOf(line), 'no_agreement')));
+
+  const takenBack = [
+    "Actually, I won't take it.",
+    'Actually, no.',
+    'No deal.',
+    "I'm not sold yet.",
+    'I changed my mind.',
+    'Forget it.',
+    'Never mind.',
+    "Wait, I don't want it.",
+    "I'll have pizza instead.",
+    'No.',
+    'Nope.',
+  ];
+  takenBack.forEach((line) => it(`a yes taken back: ${line}`, () => assert.equal(outcomeOf(YES, line), 'no_agreement')));
+
+  ["No thanks, I'll pass.", "I'm not sold yet.", 'No deal.', "I won't take it."].forEach((line) => {
+    it(`a no that became a yes: ${line}`, () => assert.equal(outcomeOf(line, YES), 'sale_agreed'));
+  });
+
+  ['Thanks, goodbye!', 'Bye.', 'No bag needed.', 'No need to wrap it.', "Don't worry about the change.", 'Now let me get back to work.'].forEach((line) => {
+    it(`a remark after the yes does not undo it: ${line}`, () => assert.equal(outcomeOf(YES, line), 'sale_agreed'));
+  });
+
+  it("Mara's scripted objection is not an answer to the sale", () => {
+    const audit = ruleAudit({ turns: [{ id: 't1', speaker: 'prospect', text: 'I could just get pizza later, though. Why a banana?', atMs: 0 }] });
+    assert.equal(audit.outcome, 'no_agreement');
+    assert.equal(audit.outcomeQuote, null);
+  });
+
+  it('cites the literal words, even with a curly apostrophe', () => {
+    const audit = ruleAudit({ turns: [{ id: 't1', speaker: 'prospect', text: 'Okay, I’ll take the banana.', atMs: 0 }] });
+    assert.equal(audit.outcomeTurnId, 't1');
+    assert.equal(audit.outcomeQuote, 'Okay, I’ll take the banana.');
+  });
+});
+
+describe("Mara's scene", () => {
+  it('she raises one objection, the pizza', () => {
+    assert.match(activeScenario.brief, /raises one objection/);
+    assert.match(activeScenario.brief, /pizza/);
+    assert.doesNotMatch(activeScenario.brief, /two objections|from a stranger/);
+  });
+
+  it('being busy is not the objection: the answer to pizza is what gets judged', () => {
+    const turns = [
+      ['candidate', 'Hi, sorry to interrupt.'],
+      ['prospect', 'Oh, hi. I am pretty busy.'],
+      ['candidate', 'A banana is quick and filling.'],
+      ['prospect', 'I could just get pizza later.'],
+      ['candidate', 'Pizza means a queue and a break.'],
+    ].map(([speaker, text], index) => ({ id: `t${index + 1}`, speaker, text, atMs: index }));
+    const { checks } = ruleAgent('objections', { turns, scenario: activeScenario, metrics: {} }, {});
+    assert.equal(checks.find((item) => item.id === 'acknowledged').quote, 'Pizza means a queue and a break.');
+  });
+
+  it('the student speaks first in every practice call', () => {
+    SAMPLE_CALLS.forEach((call) => assert.equal(call.turns[0].speaker, 'candidate', call.id));
+    Object.values(OUTCOME_PAIR).forEach((turns) => assert.equal(turns[0].speaker, 'candidate'));
   });
 });
