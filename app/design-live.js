@@ -1,64 +1,88 @@
-/* MAYBE live design editor: three moves on a DICE checkout, each by drag or by click, in any order.
+/* MAYBE live design editor: three moves on a DICE checkout, each by drag or by click, in any order, and a final.
  * The deck shows it in an iframe at 1440x810, so ← → Space and the numbers stay with the deck.
- * Finish fires design:finish on document, and on the parent's document when it is same-origin.
- * detail.moves lists the moves made, in order: 'price-with-fees', 'buy-button', 'remove-account'.
- * Nothing is stored: a reload returns to the first state. */
+ * Finish completes whatever is missing, plays the final and only then fires design:finish, once, on document and on
+ * the parent's document when it is same-origin. detail.moves lists the moves the person made, in order:
+ * 'price-with-fees', 'buy-button', 'remove-account'. The ones the final completed are not in the list.
+ * window.MAYBE_EDITOR.reset() returns to the first state without a reload. */
 (function () {
   'use strict';
   const $ = (s, root = document) => root.querySelector(s);
   const $$ = (s, root = document) => Array.from(root.querySelectorAll(s));
   const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const D = (ms) => (calm ? Math.min(ms, 90) : ms);
 
   const NEAR = 130; // a drop this close to its place counts
   const CAPTURE = 52; // this close, the piece snaps to its place like a magnet
   const EDGE = 60; // the account step counts as out once its centre is this close to the edge of the phone
   const TRASH_NEAR = 56;
-  const FINISH_DELAY = 900; // the confirmation shows this long before the event goes out
-  const FINISH_HOLD = 2400;
+  const PRICE_ENTRY = 1.45; // the price lands this big and settles
+  const DROP = 74; // the button falls from this high
+  const CEO_DELAY = 2000;
+  const STRIP = 28;
+  const CLOSE_UP = 1.5; // how close the final gets to the button
+  const TICKET_OVER = 16; // how far the landed ticket lies over the phone: over the edge, never over its words
+  const BUY_LABEL = 'Buy ticket · €93.50';
+  const EASE_OUT = 'cubic-bezier(.16,1,.3,1)';
+  const EASE_MOVE = 'cubic-bezier(.3,.7,.2,1)';
+  // The final, in ms: under 4 s from the click even with moves to complete.
+  const BEATS = calm
+    ? { auto: 140, push: 100, enter: 100, tap: 140, feed: 160, head: 120, land: 100, hold: 560 }
+    : { auto: 400, push: 620, enter: 400, tap: 300, feed: 720, head: 520, land: 340, hold: 600 };
 
   const root = document.documentElement;
-  const app = $('#app'), phone = $('#phone'), scr = $('#screen'), overlay = $('#overlay');
-  const ticket = $('#ticket'), oldPrice = $('#old-price'), newPrice = $('#new-price');
-  const account = $('#account'), continueBtn = $('#continue'), buy = $('#buy');
-  const trash = $('#trash'), finishBtn = $('#finish'), layersBox = $('#layers'), inspect = $('#inspect');
+  const app = $('#app'), rig = $('#rig'), phone = $('#phone'), scr = $('#screen'), overlay = $('#overlay');
+  const ticketRow = $('#ticket-row'), oldPrice = $('#old-price'), newPrice = $('#new-price');
+  const account = $('#account'), continueBtn = $('#continue'), buy = $('#buy'), buyLabel = $('#buy-label');
+  const trash = $('#trash'), finishBtn = $('#finish'), layersBox = $('#layers'), components = $('#components');
   const selBox = $('#sel'), selTag = $('#sel-tag'), hovBox = $('#hov'), zoneBox = $('#zone'), guides = $('#guides');
-  const saved = $('#saved'), savedText = $('#saved-text'), toast = $('#toast');
-  const frameLabel = $('#frame-label'), original = $('#original');
+  const saved = $('#saved'), savedText = $('#saved-text');
+  const frameLabel = $('#frame-label'), comment = $('#comment'), commentText = $('#comment-text');
+  const ceo = $('#ceo'), ceoInner = $('#ceo-inner'), phoneDim = $('#phone-dim');
+  const slot = $('#slot'), ticket = $('#ticket'), ticketCover = $('#ticket-cover'), ticketFlash = $('#ticket-flash');
 
+  const IDS = ['price', 'buy', 'account'];
   const PIECES = {
-    price: { label: 'Price with fees', move: 'price-with-fees', layer: 'price', tile: $('#tile-price'), target: newPrice, zone: ticket, dim: oldPrice },
+    price: { label: 'Price with fees', move: 'price-with-fees', layer: 'price', tile: $('#tile-price'), target: newPrice, zone: ticketRow, dim: oldPrice },
     buy: { label: 'Buy button', move: 'buy-button', layer: 'cta', tile: $('#tile-buy'), target: buy, zone: buy, dim: continueBtn },
     account: { label: 'Create an account', move: 'remove-account', layer: 'account', target: account }
   };
   PIECES.price.mini = $('.mini', PIECES.price.tile);
   PIECES.buy.mini = $('.mini', PIECES.buy.tile);
+  const TILE_LABELS = { price: PIECES.price.tile.getAttribute('aria-label'), buy: PIECES.buy.tile.getAttribute('aria-label') };
 
   const LAYERS = [
-    { id: 'frame', name: 'Redesign', icon: 'i-frame', type: 'Frame', depth: 0 },
-    { id: 'header', name: 'Header', icon: 'i-frame', type: 'Frame', depth: 1 },
-    { id: 'hero', name: 'Event hero', icon: 'i-image', type: 'Image', depth: 1 },
-    { id: 'ticket', name: 'Ticket row', icon: 'i-frame', type: 'Frame', depth: 1 },
-    { id: 'ticket-name', name: 'General admission', icon: 'i-type', type: 'Text', depth: 2 },
-    { id: 'price', name: 'Price', icon: 'i-type', type: 'Text', depth: 2 },
-    { id: 'account', name: 'Create an account', icon: 'i-frame', type: 'Frame', depth: 1 },
-    { id: 'details', name: 'Event details', icon: 'i-frame', type: 'Frame', depth: 1 },
-    { id: 'cta', name: 'Continue', icon: 'i-rect', type: 'Rectangle', depth: 1 },
-    { id: 'original', name: 'Original', icon: 'i-frame', type: 'Frame', depth: 0 }
+    { id: 'frame', name: 'Redesign', icon: 'i-frame' },
+    { id: 'price', name: 'Price', icon: 'i-type' },
+    { id: 'account', name: 'Create an account', icon: 'i-frame' },
+    { id: 'cta', name: 'Continue', icon: 'i-rect' }
   ];
-  const layerById = Object.fromEntries(LAYERS.map((l) => [l.id, l]));
 
-  const done = { price: false, buy: false, account: false }; // the move counts
-  const shown = { price: false, buy: false, account: false }; // the move is on the phone
-  const moves = [];
-  const flights = {}; // ghosts on their way back, by piece
+  let done = {}; // the move counts
+  let shown = {}; // the move is on the phone
+  let moves = []; // only the moves the person made
+  let layerById = {};
+  let flights = {}; // ghosts on their way back, by piece
   let scale = 1;
-  let selected = 'frame';
+  let selected = null;
   let hovered = null;
   let focus = null; // the ghost the selection frame follows
   let focusLabel = '';
   let press = null; // the pointer is down on a piece
   let drag = null; // the piece is moving
-  let finishing = false;
+  let finale = false;
+  let fired = false;
+
+  // Every timer goes through here, so reset() can stop them all.
+  const timers = new Set();
+  function later(fn, ms) {
+    const id = setTimeout(() => { timers.delete(id); fn(); }, ms);
+    timers.add(id);
+    return id;
+  }
+  function stopLater(id) {
+    clearTimeout(id);
+    timers.delete(id);
+  }
 
   // ---------- geometry, in stage pixels ----------
   function rect(el) {
@@ -82,64 +106,60 @@
 
   // ---------- layers ----------
   function buildLayers() {
-    LAYERS.forEach((l) => {
+    layersBox.textContent = '';
+    layerById = {};
+    LAYERS.forEach((def) => {
+      const l = { ...def };
       const row = document.createElement('button');
       row.type = 'button';
       row.className = 'layer';
-      row.style.setProperty('--depth', l.depth);
-      row.hidden = l.id === 'original';
       row.innerHTML = `<svg class="i"><use href="#${l.icon}"/></svg><span>${l.name}</span>`;
       row.addEventListener('click', () => select(l.id));
       row.addEventListener('pointerenter', () => setHover(l.id));
       row.addEventListener('pointerleave', () => setHover(null));
       layersBox.appendChild(row);
       l.row = row;
+      layerById[l.id] = l;
     });
   }
 
   function flipRows(mutate) {
-    const rows = LAYERS.filter((l) => l.row.isConnected).map((l) => l.row);
+    const rows = Object.values(layerById).filter((l) => l.row.isConnected).map((l) => l.row);
     const before = new Map(rows.map((row) => [row, row.getBoundingClientRect().top]));
-    rows.forEach((row) => row.getAnimations().forEach((a) => { if (a.id === 'flip') a.cancel(); }));
     mutate();
     rows.forEach((row) => {
       if (!row.isConnected) return;
       const dy = (before.get(row) - row.getBoundingClientRect().top) / scale;
       if (Math.abs(dy) < 0.5) return;
-      const a = row.animate([{ transform: `translateY(${dy}px)` }, { transform: 'none' }], { duration: calm ? 1 : 320, easing: 'cubic-bezier(.2,.8,.2,1)' });
-      a.id = 'flip';
+      row.animate([{ transform: `translateY(${dy}px)` }, { transform: 'none' }], { duration: D(320), easing: EASE_MOVE });
     });
-  }
-
-  function flashRow(row) {
-    row.animate([{ backgroundColor: '#ede9fe' }, { backgroundColor: 'transparent' }], { duration: calm ? 1 : 900, easing: 'ease-out' });
   }
 
   function turnIntoInstance(id, name) {
     const l = layerById[id];
     l.name = name;
-    l.icon = 'i-diamond';
-    l.type = 'Instance';
     l.row.classList.add('is-instance');
     l.row.innerHTML = `<svg class="i"><use href="#i-diamond"/></svg><span>${name}</span>`;
-    flashRow(l.row);
+    l.row.animate([{ backgroundColor: '#7c3aed' }, {}], { duration: D(700), easing: 'ease-out' });
   }
 
-  // ---------- selection, hover, inspector ----------
+  // ---------- selection and hover ----------
   function layerEl(id) {
     if (id === 'frame') return scr;
-    if (id === 'original') return original;
     if (id === 'price') return shown.price ? newPrice : oldPrice;
     if (id === 'cta') return shown.buy ? buy : continueBtn;
-    if (id === 'account') return shown.account ? null : account;
-    return $(`[data-layer="${id}"]`, scr);
+    return shown.account ? null : account;
+  }
+
+  function frameOf(id) {
+    const el = layerEl(id);
+    return el ? rect(el) : null;
   }
 
   function select(id) {
     selected = id;
-    LAYERS.forEach((l) => l.row.classList.toggle('is-selected', l.id === id));
+    Object.values(layerById).forEach((l) => l.row.classList.toggle('is-selected', l.id === id));
     paint();
-    paintInspector();
   }
 
   function setHover(id) {
@@ -148,22 +168,20 @@
   }
 
   function paintSelection() {
-    const el = focus ? focus.el : selected && layerEl(selected);
-    selBox.classList.toggle('on', Boolean(el));
+    const r = focus ? rect(focus.el) : selected && frameOf(selected);
+    selBox.classList.toggle('on', Boolean(r));
     frameLabel.style.visibility = !focus && selected === 'frame' ? 'hidden' : 'visible';
-    if (!el) return;
-    const r = rect(el);
+    if (!r) return;
     setBox(selBox, r.left, r.top, r.width, r.height);
     selTag.textContent = focus ? focusLabel : layerById[selected].name;
   }
 
   function paintHover() {
-    const el = hovered && !press && !drag && hovered !== selected && layerEl(hovered);
-    hovBox.classList.toggle('on', Boolean(el));
-    if (!el) return;
-    const r = rect(el);
+    const r = hovered && !press && !drag && !finale && hovered !== selected && frameOf(hovered);
+    hovBox.classList.toggle('on', Boolean(r));
+    if (!r) return;
     setBox(hovBox, r.left, r.top, r.width, r.height);
-    hovBox.style.borderRadius = getComputedStyle(el).borderTopLeftRadius;
+    hovBox.style.borderRadius = getComputedStyle(layerEl(hovered)).borderTopLeftRadius;
   }
 
   function paint() {
@@ -171,59 +189,18 @@
     paintHover();
   }
 
-  function toHex(color) {
-    const m = color.match(/rgba?\(([^)]+)\)/);
-    if (!m) return null;
-    const [r, g, b, a] = m[1].split(/[ ,/]+/).map(Number);
-    if (a === 0) return null;
-    return `#${[r, g, b].map((n) => n.toString(16).padStart(2, '0')).join('')}`.toUpperCase();
-  }
-
-  function writeInspector(name, type, el, left, top, width, height) {
-    const origin = rect(scr);
-    const style = getComputedStyle(el);
-    const fill = el.tagName === 'IMG' ? null : type === 'Text' ? toHex(getComputedStyle(el.querySelector('b') || el).color) : toHex(style.backgroundColor);
-    inspect.classList.remove('is-page');
-    $('#ins-name').textContent = name;
-    $('#ins-type').textContent = type;
-    $('#ins-x').textContent = Math.round(left - origin.left);
-    $('#ins-y').textContent = Math.round(top - origin.top);
-    $('#ins-w').textContent = Math.round(width);
-    $('#ins-h').textContent = Math.round(height);
-    $('#ins-fill').textContent = el.tagName === 'IMG' ? 'Image' : fill || 'None';
-    $('#ins-swatch').style.background = fill || 'transparent';
-    $('#ins-radius').textContent = Math.round(parseFloat(style.borderTopLeftRadius) || 0);
-  }
-
-  function paintInspector() {
-    if (drag) return; // the moving piece writes its own numbers
-    const el = selected && layerEl(selected);
-    if (!el || !rect(el).width) { // nothing selected: the page itself, as in Figma
-      const fill = toHex(getComputedStyle($('.canvas')).backgroundColor);
-      inspect.classList.add('is-page');
-      $('#ins-name').textContent = 'Page 1';
-      $('#ins-type').textContent = 'Page';
-      $('#ins-fill').textContent = fill;
-      $('#ins-swatch').style.background = fill;
-      return;
-    }
-    const source = selected === 'hero' ? $('img', el) : selected === 'original' ? $('.screen', el) : el;
-    const r = rect(selected === 'hero' ? el : source);
-    writeInspector(layerById[selected].name, layerById[selected].type, source, r.left, r.top, r.width, r.height);
-  }
-
   // Keep the frames on the moving elements while the layout animates.
-  let trackUntil = 0, tracking = false;
+  let trackUntil = 0, tracking = false, trackTimer = 0;
   function track(ms) {
     trackUntil = Math.max(trackUntil, performance.now() + ms);
     if (!tracking) { tracking = true; requestAnimationFrame(trackTick); }
-    clearTimeout(track.timer);
-    track.timer = setTimeout(() => { paint(); paintInspector(); }, ms + 40);
+    stopLater(trackTimer);
+    trackTimer = later(paint, ms + 40);
   }
   function trackTick(now) {
     paint();
     if (now < trackUntil) requestAnimationFrame(trackTick);
-    else { tracking = false; paintInspector(); }
+    else tracking = false;
   }
 
   // ---------- saved ----------
@@ -232,79 +209,82 @@
     saved.classList.add('is-saving');
     saved.classList.remove('is-fresh');
     savedText.textContent = 'Saving…';
-    clearTimeout(savedTimer);
-    clearTimeout(freshTimer);
-    savedTimer = setTimeout(() => {
+    stopLater(savedTimer);
+    stopLater(freshTimer);
+    savedTimer = later(() => {
       saved.classList.remove('is-saving');
       saved.classList.add('is-fresh');
       savedText.textContent = 'Saved';
-      freshTimer = setTimeout(() => saved.classList.remove('is-fresh'), 900);
+      freshTimer = later(() => saved.classList.remove('is-fresh'), 900);
     }, calm ? 1 : 520);
   }
 
-  // ---------- the phone rearranges itself ----------
-  function flip(mutate) {
-    const items = $$('[data-flip]', scr);
-    const before = new Map(items.map((el) => {
-      const r = el.getBoundingClientRect();
-      return [el, r.height ? r.top : null];
-    }));
-    items.forEach((el) => el.getAnimations().forEach((a) => { if (a.id === 'flip') a.cancel(); }));
-    mutate();
-    items.forEach((el) => {
-      const r = el.getBoundingClientRect();
-      if (!r.height) return;
-      const was = before.get(el);
-      let a;
-      if (was === null) a = el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: calm ? 1 : 220, easing: 'ease-out' });
-      else {
-        const dy = (was - r.top) / scale;
-        if (Math.abs(dy) < 0.5) return;
-        a = el.animate([{ transform: `translateY(${dy}px)` }, { transform: 'none' }], { duration: calm ? 1 : 440, easing: 'cubic-bezier(.2,.8,.2,1)' });
-      }
-      a.id = 'flip';
-    });
-    track(480);
+  // ---------- effects ----------
+  // A brief violet flash around an element. In the final it rides on the rig, in the rig's own units.
+  function flash(el, delay = 0) {
+    const onRig = app.classList.contains('is-finale');
+    const r = rect(el);
+    const base = onRig ? rect(rig) : { left: 0, top: 0, width: 1 };
+    const k = onRig ? base.width / rig.offsetWidth : 1;
+    const f = document.createElement('div');
+    f.className = 'flash';
+    f.style.cssText = `left:${(r.left - base.left) / k}px;top:${(r.top - base.top) / k}px;width:${r.width / k}px;height:${r.height / k}px;border-radius:${getComputedStyle(el).borderTopLeftRadius}`;
+    (onRig ? rig : overlay).appendChild(f);
+    f.animate([{ opacity: 0, transform: 'scale(.98)' }, { opacity: 1, offset: 0.24 }, { opacity: 0, transform: 'scale(1.09)' }], { duration: D(640), delay: D(delay), easing: 'ease-out', fill: 'both' });
+    later(() => f.remove(), D(delay) + D(640) + 60);
   }
 
-  function pop(el) {
-    el.animate([{ transform: 'scale(1.035)' }, { transform: 'scale(1)' }], { duration: calm ? 1 : 260, easing: 'cubic-bezier(.2,.8,.2,1)' });
+  function enterPrice() {
+    newPrice.animate([{ transform: `scale(${PRICE_ENTRY})` }, { transform: 'none' }], { duration: D(440), easing: EASE_OUT });
+  }
+
+  function dropButton() {
+    flash(buy, 240); // measured first: the fall moves the button
+    buy.animate([
+      { transform: `translateY(${-DROP}px)`, easing: 'cubic-bezier(.55,0,1,.7)' },
+      { transform: 'translateY(0) scale(1.03,.92)', offset: 0.48, easing: 'cubic-bezier(0,.6,.5,1)' },
+      { transform: 'translateY(-11px)', offset: 0.7, easing: 'cubic-bezier(.5,0,1,.6)' },
+      { transform: 'translateY(0) scale(1.01,.98)', offset: 0.86, easing: 'cubic-bezier(0,.5,.5,1)' },
+      { transform: 'none' }
+    ], { duration: D(500) });
   }
 
   // ---------- the moves ----------
+  function placeTile(id) {
+    const tile = PIECES[id].tile;
+    if (!tile) return;
+    tile.classList.add('is-placed');
+    tile.removeAttribute('aria-label');
+    if (done.price && done.buy) components.classList.add('is-spent');
+  }
+
   function decide(id) {
     if (done[id]) return;
     done[id] = true;
     moves.push(PIECES[id].move);
-    if (PIECES[id].tile) {
-      PIECES[id].tile.classList.add('is-placed');
-      PIECES[id].tile.removeAttribute('aria-label');
-    }
+    placeTile(id);
   }
 
   // Puts a decided move on the phone.
   function apply(id) {
     if (shown[id]) return;
-    flip(() => {
-      shown[id] = true;
-      scr.classList.add(`done-${id}`);
-    });
-    original.classList.add('on');
-    layerById.original.row.hidden = false;
+    shown[id] = true;
+    scr.classList.add(`done-${id}`);
+    if (IDS.every((m) => shown[m])) comment.classList.add('is-resolved');
     if (id === 'price') {
       turnIntoInstance('price', 'Price with fees');
-      pop(newPrice);
-      select('price');
+      enterPrice();
+      if (!finale) select('price');
     } else if (id === 'buy') {
       turnIntoInstance('cta', 'Buy button');
-      pop(buy);
-      select('cta');
+      dropButton();
+      if (!finale) select('cta');
     } else {
       flipRows(() => layerById.account.row.remove());
       if (selected === 'account') select(null);
-      else paint();
     }
     markSaved();
+    track(720);
   }
 
   // ---------- ghosts: the copy of a piece that moves over everything ----------
@@ -312,7 +292,7 @@
     const target = PIECES[id].target;
     const r = rect(target);
     const el = target.cloneNode(true);
-    ['id', 'data-layer', 'data-flip', 'role', 'tabindex', 'aria-label'].forEach((a) => el.removeAttribute(a));
+    ['id', 'data-layer', 'role', 'tabindex', 'aria-label'].forEach((a) => el.removeAttribute(a));
     el.classList.remove('is-lifted');
     el.classList.add('ghost');
     el.style.width = `${r.width}px`;
@@ -334,29 +314,35 @@
   function fly(g, to, ms, easing, fade, end) {
     const from = g.el.style.transform;
     const frames = fade ? [{ transform: from, opacity: 1 }, { transform: to, opacity: 0 }] : [{ transform: from }, { transform: to }];
-    const anim = g.el.animate(frames, { duration: calm ? 1 : ms, easing, fill: 'forwards' });
+    const anim = g.el.animate(frames, { duration: D(ms), easing, fill: 'forwards' });
     let over = false;
     const finish = () => {
       if (over) return;
       over = true;
-      clearTimeout(timer);
+      stopLater(timer);
       if (focus === g) focus = null;
       g.el.remove();
       end();
       paint();
     };
-    const timer = setTimeout(finish, ms + 90);
+    const timer = later(finish, ms + 90);
     anim.onfinish = finish;
     track(ms + 40);
-    return { stop() { over = true; clearTimeout(timer); anim.cancel(); if (focus === g) focus = null; g.el.remove(); } };
+    return { stop() { over = true; stopLater(timer); anim.cancel(); if (focus === g) focus = null; g.el.remove(); } };
+  }
+
+  // Where a piece flies before the real one takes over: the price big, the button up in the air.
+  function landingPose(id, g) {
+    const t = rect(PIECES[id].target);
+    return id === 'price' ? transformFor(g, t.cx - (t.width * (PRICE_ENTRY - 1)) / 2, t.cy, PRICE_ENTRY) : transformFor(g, t.cx, t.cy - DROP, 1);
   }
 
   function land(id, g) {
     const p = PIECES[id];
-    const t = rect(p.target);
     g.el.classList.add('is-landing');
     follow(g, p.label);
-    fly(g, transformFor(g, t.cx, t.cy, 1), 190, 'cubic-bezier(.16,1,.3,1)', false, () => {
+    if (id === 'price') flash(ticketRow);
+    fly(g, landingPose(id, g), 170, EASE_OUT, false, () => {
       apply(id);
       p.mini.classList.remove('is-lifted');
     });
@@ -365,15 +351,16 @@
   function goBack(id, g) {
     const p = PIECES[id];
     if (id === 'account') {
-      if (scr.classList.contains('done-account')) flip(() => scr.classList.remove('done-account'));
+      scr.classList.remove('done-account');
+      track(600);
       const t = rect(account);
-      flights[id] = fly(g, transformFor(g, t.cx, t.cy, 1), 240, 'cubic-bezier(.2,.8,.2,1)', false, () => {
+      flights[id] = fly(g, transformFor(g, t.cx, t.cy, 1), 240, EASE_MOVE, false, () => {
         delete flights[id];
         account.classList.remove('is-lifted');
       });
     } else {
       const t = rect(p.mini);
-      flights[id] = fly(g, transformFor(g, t.cx, t.cy, t.width / g.w), 260, 'cubic-bezier(.2,.8,.2,1)', false, () => {
+      flights[id] = fly(g, transformFor(g, t.cx, t.cy, t.width / g.w), 260, EASE_MOVE, false, () => {
         delete flights[id];
         p.mini.classList.remove('is-lifted');
       });
@@ -392,6 +379,7 @@
 
   // A click does the same move a drag does.
   function perform(id) {
+    if (finale) return;
     if (done[id]) {
       if (shown[id] && id !== 'account') select(PIECES[id].layer);
       return;
@@ -408,25 +396,18 @@
       return;
     }
     const p = PIECES[id];
-    const from = rect(p.mini), to = rect(p.zone), t = rect(p.target);
+    const from = rect(p.mini);
     const g = makeGhost(id);
     place(g, from.cx, from.cy, from.width / g.w);
     decide(id);
-    const zone = zoneBox.cloneNode(false);
-    zone.removeAttribute('id');
-    zone.classList.add('on', 'is-near');
-    setBox(zone, to.left, to.top, to.width, to.height);
-    overlay.appendChild(zone);
     follow(g, p.label);
-    fly(g, transformFor(g, t.cx, t.cy, 1), 340, 'cubic-bezier(.3,.9,.3,1)', false, () => {
-      zone.remove();
-      apply(id);
-    });
+    if (id === 'price') flash(ticketRow, 170);
+    fly(g, landingPose(id, g), 320, 'cubic-bezier(.3,.9,.3,1)', false, () => apply(id));
   }
 
   // ---------- drag ----------
   function pressPiece(e, id) {
-    if (e.button !== 0) return;
+    if (e.button !== 0 || finale) return;
     if (press) {
       if (press.pointerId !== e.pointerId) return;
       cancelGesture(); // its release never arrived: a lost gesture must not block the next one
@@ -475,14 +456,14 @@
       const out = nearTrash || !inside(rect(phone), fx, fy, EDGE);
       if (out !== d.out) {
         d.out = out;
-        flip(() => scr.classList.toggle('done-account', out));
+        scr.classList.toggle('done-account', out);
       }
       trash.classList.toggle('is-near', nearTrash);
       focusLabel = out ? 'Release to remove' : p.label;
       sx = t.cx;
       sy = t.cy;
       pullTo = nearTrash ? 1 : 0;
-      kTo = nearTrash ? 0.6 : 1;
+      kTo = nearTrash ? 0.36 : 1;
     } else {
       const z = rect(p.zone), t = rect(p.target);
       const dist = distTo(z, fx, fy);
@@ -499,11 +480,9 @@
 
     d.pull += (pullTo - d.pull) * (calm ? 1 : 0.3);
     d.k += (kTo - d.k) * (calm ? 1 : 0.28);
-    const gx = fx + (sx - fx) * d.pull, gy = fy + (sy - fy) * d.pull;
-    place(d.g, gx, gy, d.k);
+    place(d.g, fx + (sx - fx) * d.pull, fy + (sy - fy) * d.pull, d.k);
     d.g.el.classList.toggle('is-landing', d.snapped);
     paintSelection();
-    writeInspector(p.label, d.id === 'account' ? 'Frame' : 'Instance', d.g.el, gx - d.g.w / 2, gy - d.g.h / 2, d.g.w, d.g.h);
     requestAnimationFrame(tick);
   }
 
@@ -599,8 +578,37 @@
     release();
   }
 
+  // ---------- the CEO in the room ----------
+  function moveCeo(x, y, ms, easing) {
+    const from = getComputedStyle(ceo).transform;
+    const to = `translate(${x}px, ${y}px)`;
+    ceo.getAnimations().filter((a) => a.id === 'ceo-move').forEach((a) => a.cancel());
+    ceo.style.transform = to;
+    const a = ceo.animate([{ transform: from === 'none' ? to : from }, { transform: to }], { duration: D(ms), easing });
+    a.id = 'ceo-move';
+  }
+
+  // The cursor waits off the stage, to the left, at the height of the place it is going to.
+  function startCeo() {
+    const y = comment.offsetTop + comment.offsetHeight + 7;
+    ceo.style.transform = `translate(${-rect(rig).left - 70}px, ${y}px)`;
+    ceo.classList.remove('on', 'is-idle');
+    later(() => {
+      if (finale) return;
+      ceo.classList.add('on');
+      moveCeo(comment.offsetLeft + 3, y, 860, EASE_OUT);
+      later(() => {
+        if (finale) return;
+        comment.classList.add('on');
+        ceo.classList.add('is-idle');
+      }, D(700));
+    }, CEO_DELAY);
+  }
+
   // ---------- finish ----------
   function fireFinish() {
+    if (fired) return;
+    fired = true;
     const detail = { moves: moves.slice() };
     document.dispatchEvent(new CustomEvent('design:finish', { detail }));
     if (window.parent === window) return;
@@ -609,36 +617,210 @@
     } catch (err) { /* a parent on another origin has no document to reach */ }
   }
 
+  // The final completes a move the person left undone, quickly and off the record.
+  function autoMove(id) {
+    if (flights[id]) { flights[id].stop(); delete flights[id]; }
+    (PIECES[id].mini || account).classList.remove('is-lifted');
+    done[id] = true;
+    placeTile(id);
+    if (id === 'account') {
+      const r = rect(account);
+      const g = makeGhost('account');
+      place(g, r.cx, r.cy, 1);
+      fly(g, transformFor(g, r.cx, r.cy, 0.92), 220, 'ease-out', true, () => {});
+    }
+    if (id === 'price') flash(ticketRow);
+    apply(id);
+  }
+
+  function setBuyLabel(html) {
+    buyLabel.innerHTML = html;
+    buyLabel.animate([{ opacity: 0 }, { opacity: 1 }], { duration: D(180), easing: 'ease-out' });
+  }
+
+  function tapBuy(x, y) {
+    ceo.classList.remove('is-idle');
+    ceoInner.animate([{ transform: 'scale(1)' }, { transform: 'scale(.72)', offset: 0.4 }, { transform: 'scale(1)' }], { duration: D(280), easing: 'ease-out' });
+    const ring = document.createElement('i');
+    ring.className = 'tap-ring';
+    ring.style.left = `${x}px`;
+    ring.style.top = `${y}px`;
+    rig.appendChild(ring);
+    ring.animate([{ opacity: 1, transform: 'scale(.3)' }, { opacity: 1, offset: 0.35 }, { opacity: 0, transform: 'scale(4.6)' }], { duration: D(600), easing: 'ease-out', fill: 'forwards' });
+    later(() => ring.remove(), D(600) + 40);
+    flash(buy);
+    buy.animate([{ transform: 'none' }, { transform: 'scale(.92)', offset: 0.3 }, { transform: 'scale(1.05)', offset: 0.65 }, { transform: 'none' }], { duration: D(380), easing: 'ease-out' });
+    later(() => setBuyLabel('Printing ticket…'), D(140));
+    later(() => {
+      moveCeo(x - 300, y + 300, 460, 'ease-in');
+      ceo.classList.remove('on');
+    }, D(280));
+  }
+
+  // Blank paper feeds out of the phone in short bursts, as a printer does.
+  function feedPaper() {
+    slot.classList.add('on');
+    if (calm) {
+      ticket.style.transform = 'none';
+      ticket.animate([{ opacity: 0 }, { opacity: 1 }], { duration: BEATS.feed, easing: 'ease-out' });
+      return;
+    }
+    const steps = 6;
+    const frames = [{ transform: 'translateX(-100%)', offset: 0, easing: 'cubic-bezier(.3,0,.3,1)' }];
+    for (let i = 1; i <= steps; i++) {
+      const at = `translateX(${-100 + (100 * i) / steps}%)`;
+      if (i < steps) frames.push({ transform: at, offset: (i - 0.2) / steps, easing: 'linear' }, { transform: at, offset: i / steps, easing: 'cubic-bezier(.3,0,.3,1)' });
+      else frames.push({ transform: at, offset: 1 });
+    }
+    ticket.animate(frames, { duration: BEATS.feed, fill: 'forwards' });
+  }
+
+  // A violet print head writes the ticket, in reading order.
+  function printInk() {
+    ticketCover.animate([{ transform: 'none' }, { transform: 'translateX(102%)' }], { duration: BEATS.head, easing: 'cubic-bezier(.4,0,.7,1)', fill: 'forwards' });
+  }
+
+  // The ticket comes free, drops in front of the phone and takes the light.
+  function landTicket() {
+    slot.classList.add('is-free');
+    slot.animate([
+      { transform: 'rotate(-2.5deg)' },
+      { transform: `translateX(${-TICKET_OVER - 12}px) rotate(.9deg) scale(1.02)`, offset: 0.58 },
+      { transform: `translateX(${-TICKET_OVER}px) rotate(-1deg)` }
+    ], { duration: BEATS.land, easing: 'ease-out', fill: 'forwards' });
+    phoneDim.animate([{ opacity: 0 }, { opacity: 0.45 }], { duration: BEATS.land, easing: 'ease-out', fill: 'forwards' }); // its words stay above 4.5:1
+    ticketFlash.animate([{ opacity: 0 }, { opacity: 1, offset: 0.25 }, { opacity: 0 }], { duration: D(600), easing: 'ease-out' });
+    setBuyLabel('<svg class="i"><use href="#i-check"/></svg>Ticket printed');
+  }
+
+  function stageFinale() {
+    focus = null;
+    hovered = null;
+    paint();
+    app.classList.add('is-finale');
+    const W = app.offsetWidth, H = app.offsetHeight, w = rig.offsetWidth, h = rig.offsetHeight;
+    const r = rect(rig), b = rect(buy);
+    const pose = (cx, cy, k) => `translate(${cx - r.cx}px, ${cy - r.cy}px) scale(${k})`;
+    // First a close-up on the button. Then the camera pulls back, for the phone whole and the ticket.
+    const closeUp = pose(W / 2, H * 0.72 - (b.cy - r.cy) * CLOSE_UP, CLOSE_UP);
+    const kAside = (H - STRIP - 24) / h;
+    const pair = (w + slot.offsetWidth - 14 - TICKET_OVER) * kAside;
+    const aside = pose((W - pair) / 2 + (w * kAside) / 2, STRIP + (H - STRIP) / 2, kAside);
+    const tapX = b.cx - r.left, tapY = b.cy - r.top + 16;
+
+    rig.animate([{ transform: 'none' }, { transform: closeUp }], { duration: BEATS.push, easing: EASE_OUT, fill: 'forwards' });
+    ceo.classList.add('on');
+    ceo.classList.remove('is-idle');
+
+    let t = Math.max(0, BEATS.push - 140);
+    later(() => moveCeo(tapX, tapY, BEATS.enter, EASE_MOVE), t);
+    t += BEATS.enter;
+    later(() => tapBuy(tapX, tapY), t);
+    t += BEATS.tap;
+    later(() => {
+      feedPaper();
+      rig.animate([{ transform: closeUp }, { transform: aside }], { duration: BEATS.feed + 80, easing: EASE_MOVE, fill: 'forwards' });
+    }, t);
+    t += BEATS.feed;
+    later(printInk, t);
+    t += BEATS.head;
+    later(landTicket, t);
+    t += BEATS.land + BEATS.hold;
+    later(fireFinish, t);
+  }
+
   function finish() {
-    if (finishing) return;
-    finishing = true;
+    if (finale) return;
+    finale = true;
+    app.classList.add('is-locked');
+    cancelGesture();
     select(null);
-    toast.classList.add('on');
-    finishBtn.textContent = 'Finished';
-    finishBtn.classList.add('is-done');
-    setTimeout(fireFinish, calm ? 300 : FINISH_DELAY);
-    setTimeout(() => {
-      toast.classList.remove('on');
-      finishBtn.textContent = 'Finish';
-      finishBtn.classList.remove('is-done');
-      finishing = false;
-    }, FINISH_HOLD);
+    const missing = IDS.filter((id) => !done[id]);
+    missing.forEach(autoMove);
+    const settling = missing.length > 0 || IDS.some((id) => !shown[id]);
+    if (settling) later(stageFinale, BEATS.auto);
+    else stageFinale();
+  }
+
+  // ---------- back to the first state, without a reload ----------
+  function reset() {
+    timers.forEach((id) => clearTimeout(id));
+    timers.clear();
+    app.classList.add('no-anim');
+    document.getAnimations().forEach((a) => a.cancel());
+    Object.values(flights).forEach((f) => f.stop());
+    $$('.ghost,.flash,.tap-ring', app).forEach((el) => el.remove());
+    done = {};
+    shown = {};
+    moves = [];
+    flights = {};
+    press = null;
+    drag = null;
+    focus = null;
+    hovered = null;
+    finale = false;
+    fired = false;
+    trackUntil = 0;
+
+    root.classList.remove('is-dragging');
+    app.classList.remove('is-finale', 'is-locked');
+    IDS.forEach((id) => scr.classList.remove(`done-${id}`));
+    comment.classList.remove('on', 'is-resolved');
+    slot.classList.remove('on', 'is-free');
+    ticket.style.transform = '';
+    buyLabel.textContent = BUY_LABEL;
+    components.classList.remove('is-spent');
+    trash.classList.remove('is-armed', 'is-near');
+    zoneBox.classList.remove('on', 'is-near');
+    guides.classList.remove('on');
+    oldPrice.classList.remove('is-dim');
+    continueBtn.classList.remove('is-dim');
+    account.classList.remove('is-lifted');
+    ['price', 'buy'].forEach((id) => {
+      PIECES[id].tile.classList.remove('is-placed');
+      PIECES[id].tile.setAttribute('aria-label', TILE_LABELS[id]);
+      PIECES[id].mini.classList.remove('is-lifted');
+    });
+    saved.classList.remove('is-saving', 'is-fresh');
+    savedText.textContent = 'Saved';
+
+    buildLayers();
+    select(null);
+    startCeo();
+    void app.offsetWidth; // the first state lands at once, with nothing animating back
+    app.classList.remove('no-anim');
   }
 
   // ---------- wiring ----------
-  // The frame beside the phone keeps the first state in view, so the before and the after sit side by side.
-  function buildOriginal() {
-    const copy = scr.cloneNode(true);
-    [copy, ...$$('*', copy)].forEach((el) => ['id', 'data-layer', 'data-flip', 'role', 'tabindex', 'aria-label'].forEach((a) => el.removeAttribute(a)));
-    $('.orig-phone', original).appendChild(copy);
+  function buildComment() {
+    commentText.setAttribute('aria-label', commentText.textContent);
+    commentText.innerHTML = commentText.textContent.split(' ').map((word, i) => `<span style="--i:${i}">${word}</span>`).join(' ');
   }
 
-  buildOriginal();
+  // A pattern that reads as a QR code and encodes nothing.
+  function buildQR() {
+    const n = 29;
+    const finder = (x, y) => `M${x} ${y}h7v7h-7zM${x + 1} ${y + 1}v5h5v-5zM${x + 2} ${y + 2}h3v3h-3z`;
+    let d = finder(0, 0) + finder(n - 7, 0) + finder(0, n - 7);
+    let seed = 0x5a3c;
+    for (let y = 0; y < n; y++) {
+      for (let x = 0; x < n; x++) {
+        const inFinder = (x < 8 && y < 8) || (x >= n - 8 && y < 8) || (x < 8 && y >= n - 8);
+        seed = (seed >> 1) ^ (seed & 1 ? 0xb400 : 0);
+        if (!inFinder && seed & 1) d += `M${x} ${y}h1v1h-1z`;
+      }
+    }
+    $('#qr-path').setAttribute('d', d);
+  }
+
+  buildComment();
+  buildQR();
   buildLayers();
 
   Object.keys(PIECES).forEach((id) => {
     const el = PIECES[id].tile || account;
     el.addEventListener('pointerdown', (e) => {
+      if (finale) return;
       if (id === 'account' && !done.account) select('account');
       else if (done[id] && shown[id] && id !== 'account') select(PIECES[id].layer);
       pressPiece(e, id);
@@ -662,7 +844,7 @@
     const hit = e.target.closest('[data-layer]');
     if (hit && hit !== account) select(hit.dataset.layer);
   });
-  $('.canvas').addEventListener('pointerdown', (e) => { if (e.target === e.currentTarget) select(null); });
+  $('#canvas').addEventListener('pointerdown', (e) => { if (e.target === e.currentTarget) select(null); });
   finishBtn.addEventListener('click', finish);
 
   window.addEventListener('pointermove', onPointerMove);
@@ -682,8 +864,11 @@
     if (e.key === ' ' && e.target.closest && e.target.closest('button,[role="button"]')) e.preventDefault();
   }, true));
 
+  window.MAYBE_EDITOR = { reset };
+
   fit();
-  select('frame');
+  select(null);
+  startCeo();
   // The fonts never hold up the first paint on a slow network; when they arrive, the frames fit themselves again.
-  if (document.fonts) document.fonts.addEventListener('loadingdone', () => { paint(); paintInspector(); });
+  if (document.fonts) document.fonts.addEventListener('loadingdone', paint);
 })();
