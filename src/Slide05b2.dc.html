@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>MAYBE · Careers</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div class="cr" data-careers>
+
+  <!-- the list sits under the cards, so a card passing by covers its text -->
+  <div class="cr-list" data-cr-home>
+    <ol class="cr-list__track" data-cr-list>
+      <sc-for list="{{careers}}" as="c" hint-placeholder-count="6">
+        <li class="cr-item" data-career="{{c.id}}" data-name="{{c.name}}" data-status="{{c.status}}" data-state="{{c.state}}" data-duration="{{c.duration}}" data-does="{{c.does}}" data-evidence="{{c.evidence}}" data-opens="{{c.opens}}" data-image="{{c.image}}" data-focus="{{c.focus}}" data-swatches="{{c.swatches}}">
+          <span class="cr-item__status">{{c.status}}</span>
+          <span class="cr-item__name">{{c.name}}</span>
+          <span class="cr-item__dash" aria-hidden="true"></span>
+          <span class="cr-item__line">{{c.line}}</span>
+          <span class="cr-item__open" aria-hidden="true">Open →</span>
+        </li>
+      </sc-for>
+    </ol>
+  </div>
+
+  <canvas class="cr-canvas" data-cr-canvas width="1920" height="1080" aria-hidden="true"></canvas>
+
+  <!-- everything below blends with the cards passing behind it -->
+  <div class="cr-blend cr-logo" data-cr-enter>
+    <svg class="cr-logo__mark" viewBox="0 0 26 28" aria-hidden="true"><path d="M3.5 5.5 L11.5 15 L11.5 23 M22.5 4.5 L12 17" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+    <span>MAYBE</span>
+  </div>
+  <div class="cr-blend cr-logo-note" data-cr-enter>
+    <span>Try real work</span>
+    <span class="cr-mute">before you choose it</span>
+  </div>
+
+  <nav class="cr-blend cr-menu" data-cr-enter aria-label="Menu">
+    <p class="cr-mute">Menu</p>
+    <ul>
+      <li class="is-on"><span aria-hidden="true">→</span>Explore careers</li>
+      <li>My experiences</li>
+      <li>Portfolio</li>
+    </ul>
+  </nav>
+
+  <p class="cr-blend cr-note" data-cr-enter>All trials are simulated<br><span class="cr-mute">AI people, synthetic data</span></p>
+
+  <p class="cr-blend cr-keys" data-cr-enter>
+    <span class="cr-keys__open"><span class="cr-mute">Open</span><kbd>Enter</kbd></span><span class="cr-mute">Browse</span><kbd>↑ ↓</kbd>
+  </p>
+
+  <dl class="cr-blend cr-data cr-data--duration" data-cr-home data-cr-enter>
+    <dt class="cr-mute">Duration</dt>
+    <dd class="cr-mono" data-cr-duration>{{first.duration}}</dd>
+  </dl>
+  <dl class="cr-blend cr-data cr-data--main" data-cr-home data-cr-enter aria-live="polite">
+    <div><dt class="cr-mute">What you do</dt><dd data-cr-does>{{first.does}}</dd></div>
+    <div><dt class="cr-mute">Evidence</dt><dd data-cr-evidence>{{first.evidence}}</dd></div>
+  </dl>
+
+  <div class="cr-blend cr-count" data-cr-home data-cr-enter>
+    <span class="cr-count__label cr-mute">Careers</span>
+    <span class="cr-count__num" data-cr-num aria-label="01">O1</span>
+    <span class="cr-count__total">/{{total}}</span>
+  </div>
+
+  <p class="cr-blend cr-scroll cr-mute" data-cr-enter>Scroll or drag</p>
+  <p class="cr-blend cr-credit cr-mute" data-cr-enter>Covers: AI-generated or provisional montage</p>
+
+  <!-- the palette of the active card -->
+  <div class="cr-swatches" data-cr-home data-cr-swatches aria-hidden="true"><i></i><i></i><i></i></div>
+
+  <!-- the page a career opens fills the stage; assets/careers.js adds its iframe when the slide opens -->
+  <section class="cr-editor" data-cr-editor aria-hidden="true">
+    <div class="cr-editor__notice">
+      <div>
+        <p class="cr-editor__tag">Provisional</p>
+        <h2 class="cr-editor__title">The design editor opens here</h2>
+        <p class="cr-editor__text">The live editor is not in this build yet.</p>
+        <p class="cr-editor__keys"><span>Back</span>Esc</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- curtain between the cards and the editor -->
+  <div class="cr-curtain" data-cr-curtain hidden>
+    <div class="cr-curtain__in" data-cr-curtain-in><p class="cr-curtain__title" data-cr-curtain-title></p></div>
+  </div>
+
+  <!-- intro: a peep pushes the black wall away, and the name appears behind it -->
+  <div class="cr-veil" data-cr-veil hidden aria-hidden="true"><p class="cr-veil__word" data-cr-veil-word>MAYBE</p></div>
+  <div class="cr-wall" data-cr-wall hidden aria-hidden="true">
+    <div class="cr-wall__peep" data-cr-wall-peep>
+      <svg class="cr-wall__arm" viewBox="0 0 850 1200" aria-hidden="true"><g transform="translate(-30 -74)"><path d="M640 640 C740 610 850 586 962 560 L988 662 C880 690 780 730 690 812 Z" fill="#fff" stroke="#09090B" stroke-width="14" stroke-linejoin="round"></path><path d="M962 568 C988 544 1004 516 1022 488 C1034 472 1054 482 1048 500 L1036 532 L1062 490 C1074 474 1094 486 1088 504 L1070 552 L1094 526 C1106 514 1122 528 1114 544 C1100 578 1088 612 1072 640 C1050 672 1012 680 986 660 Z" fill="#fff" stroke="#09090B" stroke-width="14" stroke-linejoin="round"></path></g></svg>
+      <img src="app/img/peep-student.svg" alt="">
+      <svg class="cr-wall__arm" viewBox="0 0 850 1200" aria-hidden="true"><g><path d="M640 640 C740 610 850 586 962 560 L988 662 C880 690 780 730 690 812 Z" fill="#fff" stroke="#09090B" stroke-width="14" stroke-linejoin="round"></path><path d="M962 568 C988 544 1004 516 1022 488 C1034 472 1054 482 1048 500 L1036 532 L1062 490 C1074 474 1094 486 1088 504 L1070 552 L1094 526 C1106 514 1122 528 1114 544 C1100 578 1088 612 1072 640 C1050 672 1012 680 986 660 Z" fill="#fff" stroke="#09090B" stroke-width="14" stroke-linejoin="round"></path></g><path d="M700 190 L738 168 M722 246 L768 240 M676 142 L694 104" fill="none" stroke="#09090B" stroke-width="13" stroke-linecap="round"></path></svg>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview": {"width": 1920, "height": 1080}}'>
+class Component extends DCLogic {
+  // Everything on this slide that can change is here.
+  // state: 'tried' (Just tried), 'open' (opens the page in `opens`), 'soon' (Coming soon). Only 'open' cards open.
+  careers() {
+    return [
+      { id: 'sales', name: 'Sales', status: 'Just tried', state: 'tried', duration: '~60 min',
+        line: 'Persuade a buyer who can say no.',
+        does: 'Call an AI buyer by voice and ask for the deal.',
+        evidence: 'Call transcript and an AI review.',
+        opens: '', image: 'app/img/drlipp-skincare.jpg', focus: '0.72 0.5', swatches: '#2E1A22,#EBD9CF,#F7EDE6' },
+      { id: 'marketing', name: 'Marketing', status: 'Coming soon', state: 'soon', duration: '~60 min',
+        line: 'Get a message to the right people.',
+        does: 'Write a launch brief and test it on synthetic users.',
+        evidence: 'Campaign brief and an AI review.',
+        opens: '', image: 'assets/careers/marketing.jpg', focus: '0.5 0.5', swatches: '#09090B,#E4E4E7,#7C3AED' },
+      { id: 'product', name: 'Product', status: 'Coming soon', state: 'soon', duration: '~60 min',
+        line: 'Decide what gets built next.',
+        does: 'Read simulated feedback and choose what to build.',
+        evidence: 'Product brief and an AI review.',
+        opens: '', image: 'assets/careers/product.jpg', focus: '0.5 0.5', swatches: '#18181B,#3F3F46,#FAFAFA' },
+      { id: 'ux-ui', name: 'UX/UI Design', status: 'Available', state: 'open', duration: '~60 min',
+        line: 'Make a checkout people can finish.',
+        does: 'Redesign a checkout and test it on synthetic users.',
+        evidence: 'Your redesign and an AI review.',
+        opens: 'app/design-live.html', image: 'app/img/dice-festival.jpg', focus: '0.52 0.5', swatches: '#0A0A0B,#7C3AED,#EDE9FE' },
+      { id: 'data', name: 'Data', status: 'Coming soon', state: 'soon', duration: '~60 min',
+        line: 'Find what the data is hiding.',
+        does: 'Clean a simulated dataset and find the answer.',
+        evidence: 'Your charts and an AI review.',
+        opens: '', image: 'assets/careers/data.jpg', focus: '0.5 0.5', swatches: '#FAFAFA,#E4E4E7,#7C3AED' },
+      { id: 'finance', name: 'Finance', status: 'Coming soon', state: 'soon', duration: '~60 min',
+        line: 'Make the numbers add up.',
+        does: 'Build a budget and defend it to an AI CFO.',
+        evidence: 'Budget model and an AI review.',
+        opens: '', image: 'assets/careers/finance.jpg', focus: '0.5 0.5', swatches: '#09090B,#3F3F46,#FFFFFF' }
+    ];
+  }
+  renderVals() {
+    const careers = this.careers();
+    return { careers, first: careers[0], total: String(careers.length).padStart(2, '0') };
+  }
+}
+</script>
+</body>
+</html>

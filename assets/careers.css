@@ -1,0 +1,100 @@
+/* MAYBE careers slide. Runtime: assets/careers.js. Brand: MAYBE Product. Structure and motion: docs/careers-reference.md.
+ * Text blends with the cards through mix-blend-mode, so white text reads as ink on the zinc ground. */
+.cr { position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: hidden; background: #F4F4F5; color: #09090B; font-family: Geist, system-ui, -apple-system, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; cursor: grab; user-select: none; }
+.cr.is-dragging { cursor: grabbing; }
+.cr p, .cr h2, .cr dl, .cr dd, .cr ul, .cr ol { margin: 0; padding: 0; }
+.cr ul, .cr ol { list-style: none; }
+.cr-canvas { position: absolute; inset: 0; width: 1920px; height: 1080px; display: block; pointer-events: none; }
+.cr-blend { position: absolute; color: #FFFFFF; mix-blend-mode: difference; pointer-events: none; font-size: 20px; font-weight: 500; line-height: 1.26; letter-spacing: -.01em; }
+.cr-mute { color: rgba(255, 255, 255, .56); }
+.cr-mono { font-family: "Geist Mono", ui-monospace, monospace; }
+
+/* ---------- logo and top line ---------- */
+.cr-logo { left: 22px; top: 208px; display: flex; align-items: center; gap: 6px; font-size: 44px; font-weight: 700; line-height: 1; letter-spacing: -.035em; transform: rotate(-90deg); transform-origin: 0 0; }
+.cr-logo__mark { width: 40px; height: 43px; flex: none; }
+.cr-logo-note { left: 70px; top: 20px; height: 188px; display: flex; flex-direction: column; gap: 2px; font-size: 18px; line-height: 1.15; writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; }
+.cr-menu { left: 258px; top: 20px; }
+.cr-menu ul { margin-top: 18px; font-size: 32px; font-weight: 500; line-height: 1.08; letter-spacing: -.035em; }
+.cr-menu li { color: rgba(255, 255, 255, .56); }
+.cr-menu li.is-on { color: #FFFFFF; }
+.cr-menu li span { display: inline-block; width: 42px; }
+.cr-note { left: 620px; top: 20px; white-space: nowrap; }
+.cr-keys { right: 28px; top: 20px; white-space: nowrap; }
+.cr-keys kbd { margin-left: 9px; font-family: "Geist Mono", ui-monospace, monospace; font-size: 20px; }
+.cr-keys__open { margin-right: 22px; opacity: 0; transition: opacity .3s ease; }
+.cr.can-open .cr-keys__open { opacity: 1; }
+
+/* ---------- data on the left ---------- */
+.cr-data dt { font-weight: 500; }
+.cr-data dd { font-weight: 500; }
+.cr-data--duration { left: 28px; top: 450px; width: 200px; }
+.cr-data--duration dd { margin-top: 6px; font-size: 28px; line-height: 1.1; letter-spacing: -.03em; }
+.cr-data--main { left: 258px; top: 450px; width: 432px; }
+.cr-data--main > div { display: grid; grid-template-columns: 116px 1fr; column-gap: 20px; }
+.cr-data--main dt { padding-top: 5px; }
+.cr-data--main > div + div { margin-top: 30px; }
+.cr-data--main dd { font-size: 27px; line-height: 1.2; letter-spacing: -.02em; }
+
+/* ---------- the big number ---------- */
+.cr-count { left: 258px; top: 860px; height: 200px; width: 560px; }
+.cr-count__label { position: absolute; left: 0; top: 24px; }
+.cr-count__num { position: absolute; left: 92px; top: 0; font-family: "Geist Mono", ui-monospace, monospace; font-size: 236px; font-weight: 400; line-height: 200px; letter-spacing: -.06em; }
+.cr-count__total { position: absolute; left: 372px; top: 24px; font-family: "Geist Mono", ui-monospace, monospace; font-size: 20px; letter-spacing: 0; }
+.cr-scroll { left: 204px; top: 1034px; white-space: nowrap; }
+.cr-credit { right: 28px; bottom: 20px; font-size: 18px; letter-spacing: 0; white-space: nowrap; }
+
+/* ---------- list on the right ---------- */
+.cr-list { position: absolute; left: 1152px; top: 0; width: 768px; height: 1080px; overflow: hidden; }
+.cr-list__track { position: absolute; inset: 0; -webkit-mask-image: linear-gradient(to bottom, transparent 3%, #000 24%, #000 76%, transparent 95%); mask-image: linear-gradient(to bottom, transparent 3%, #000 24%, #000 76%, transparent 95%); }
+.cr-item { position: absolute; left: 150px; top: 0; width: 470px; display: flex; flex-direction: column; align-items: center; text-align: center; opacity: .24; transition: opacity .3s ease; will-change: transform; cursor: pointer; }
+.cr-item.is-active { opacity: 1; }
+.cr-item__status { font-size: 20px; font-weight: 500; line-height: 1.2; color: #52525B; }
+.cr-item[data-state="tried"] .cr-item__status::before { content: ""; display: inline-block; width: 11px; height: 11px; margin-right: 8px; border: 2px solid #52525B; border-radius: 50%; box-sizing: border-box; vertical-align: 1px; }
+.cr-item[data-state="open"] .cr-item__status { color: #5B21B6; }
+.cr-item[data-state="open"] .cr-item__status::before { content: ""; display: inline-block; width: 11px; height: 11px; margin-right: 8px; border-radius: 50%; background: #7C3AED; vertical-align: 1px; }
+.cr-item__name { margin-top: 4px; font-size: 46px; font-weight: 500; line-height: 1.12; letter-spacing: -.035em; color: #09090B; white-space: nowrap; }
+.cr-item__dash { width: 22px; height: 2px; margin: 13px 0 12px; background: #09090B; }
+.cr-item__line { font-size: 24px; font-weight: 500; line-height: 1.22; letter-spacing: -.015em; color: #09090B; max-width: 420px; text-wrap: balance; }
+.cr-item__open { position: absolute; top: 100%; margin-top: 16px; font-size: 26px; font-weight: 600; letter-spacing: -.02em; color: #09090B; text-decoration: underline; text-underline-offset: 6px; text-decoration-thickness: 2px; opacity: 0; transition: opacity .3s ease; }
+.cr-item[data-state="open"].is-active .cr-item__open { opacity: 1; }
+
+/* ---------- the palette ---------- */
+.cr-swatches { position: absolute; right: 28px; top: 530px; display: flex; gap: 4px; pointer-events: none; }
+.cr-swatches i { display: block; width: 20px; height: 20px; box-shadow: inset 0 0 0 1px rgba(9, 9, 11, .1); transition: background-color .52s cubic-bezier(.22, .61, .36, 1); }
+
+/* ---------- the editor a career opens: a 1440x810 iframe scaled to the whole stage ---------- */
+.cr-editor { position: absolute; inset: 0; z-index: 4; overflow: hidden; background: #FFFFFF; visibility: hidden; cursor: default; }
+.cr.is-editor .cr-editor { visibility: visible; }
+.cr-editor__frame { position: absolute; left: 0; top: 0; width: 1440px; height: 810px; display: block; border: 0; background: #FFFFFF; transform: scale(1.33333333); transform-origin: 0 0; }
+.cr-probe { position: absolute; left: 0; top: 0; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.cr-editor__notice { position: absolute; inset: 0; display: none; place-items: center; text-align: center; background: #F4F4F5; }
+.cr-editor.is-missing .cr-editor__notice { display: grid; }
+.cr-editor .cr-editor__tag { display: inline-block; padding: 7px 16px; border: 2px dashed #A1A1AA; border-radius: 999px; font-size: 22px; font-weight: 500; color: #52525B; }
+.cr-editor .cr-editor__title { margin-top: 26px; font-size: 76px; font-weight: 600; line-height: 1.06; letter-spacing: -.045em; }
+.cr-editor .cr-editor__text { margin-top: 18px; font-size: 28px; font-weight: 500; line-height: 1.3; color: #52525B; }
+.cr-editor .cr-editor__keys { margin-top: 44px; font-family: "Geist Mono", ui-monospace, monospace; font-size: 22px; color: #09090B; }
+.cr-editor__keys span { color: #71717A; margin-right: 8px; }
+
+/* ---------- curtain ---------- */
+.cr-curtain { position: absolute; inset: 0; overflow: hidden; background: #09090B; z-index: 5; transform: translateY(100%); will-change: transform; }
+.cr-curtain[hidden] { display: none; }
+.cr-curtain__in { position: absolute; inset: 0; display: grid; place-items: center; transform: translateY(-100%); will-change: transform; }
+.cr-curtain__title { font-size: 96px; font-weight: 600; line-height: 1.1; letter-spacing: -.04em; color: #FAFAFA; opacity: 0; }
+
+/* ---------- intro wall ---------- */
+.cr-veil { position: absolute; inset: 0; z-index: 6; display: flex; align-items: center; padding-left: 196px; background: #F4F4F5; }
+.cr-veil[hidden] { display: none; }
+.cr .cr-veil__word { font-size: 300px; font-weight: 700; line-height: 1; letter-spacing: -.055em; color: #7C3AED; }
+.cr-wall { position: absolute; inset: 0; background: #09090B; z-index: 7; will-change: transform; }
+.cr-wall[hidden] { display: none; }
+.cr-wall__peep { position: absolute; right: 100%; bottom: -130px; width: 480px; height: 677px; margin-right: 172px; transform-origin: 50% 100%; will-change: transform; }
+.cr-wall__peep img, .cr-wall__arm { position: absolute; left: 0; top: 0; width: 480px; height: 677px; display: block; overflow: visible; }
+
+/* The "Talk to MAYBE" pill and the deck controls stay out of the black moments and the full-stage editor.
+ * On this slide the mouse is busy with the cards, so the controls wait until it reaches their corner. */
+body.cr-black .agent, body.cr-full .agent, body.cr-black .deck-nav, body.cr-full .deck-nav { opacity: 0; pointer-events: none; }
+body.cr-on.show-ui .deck-nav:not(:hover):not(:focus-within) { opacity: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cr-item, .cr-swatches i { transition: none; }
+}

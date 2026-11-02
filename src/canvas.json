@@ -309,6 +309,15 @@
       "w": 1920,
       "x": 6120,
       "y": 3000
+    },
+    "Slide05b2.dc.html": {
+      "h": 1080,
+      "is_interactive": true,
+      "page": "presentation",
+      "title": "05b2 · Careers",
+      "w": 1920,
+      "x": 8160,
+      "y": 3000
     }
   },
   "createdOnFiles": {
@@ -357,7 +366,9 @@
     "notes12",
     "notes13",
     "notes05c",
-    "dev05c"
+    "dev05c",
+    "notes05b2",
+    "dev05b2"
   ],
   "notes": {
     "dev05b": {
@@ -593,6 +604,22 @@
       "w": 600,
       "x": 6760,
       "y": 4100
+    },
+    "notes05b2": {
+      "fill": "gray",
+      "page": "presentation",
+      "text": "Notes · 05b2 · Careers\nI don't want to be a salesperson anymore, I want to try UX/UI design. Scroll or drag through the careers, stop on UX/UI Design and open it: the design editor takes the whole screen. Sales is marked Just tried and the others are coming soon. Every trial is simulated.",
+      "w": 600,
+      "x": 8160,
+      "y": 4100
+    },
+    "dev05b2": {
+      "fill": "purple",
+      "page": "presentation",
+      "text": "For the developer · careers\nRuntime: assets/careers.js and assets/careers.css. All copy and images are in this board (careers() in its script). UX/UI Design opens app/design-live.html in a 1440x810 iframe scaled to the stage, preloaded when the slide opens. It fires career:open on document with detail {id}; design:finish on document moves to the next slide. How the reference works: docs/careers-reference.md.",
+      "w": 600,
+      "x": 8800,
+      "y": 4100
     }
   },
   "order": [
@@ -612,6 +639,7 @@
     "Slide04.dc.html",
     "Slide05.dc.html",
     "Slide05b.dc.html",
+    "Slide05b2.dc.html",
     "Slide05c.dc.html",
     "Slide06.dc.html",
     "Slide07.dc.html",
