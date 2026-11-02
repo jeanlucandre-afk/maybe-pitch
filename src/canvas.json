@@ -589,7 +589,7 @@
     "dev05c": {
       "fill": "purple",
       "page": "presentation",
-      "text": "For the developer · agent world\nDrive this slide with window.MAYBE_SWARM: connect(), setAgents([...]), setPhase('spawn'|'talk'|'think'|'result'), say(id, text, {to}), think(id, text), setVerdict(id, 'yes'|'maybe'|'no'), plus the review panel: addPoint('pro'|'con', text, {by}), addQualification(text, {gap}), setConclusion({wanted, summary, list}), setDeal(text). Full spec: AGENT-WORLD.md.",
+      "text": "For the developer · agent world\nDrive this slide with window.MAYBE_SWARM: connect(), setAgents([...]), setPhase('spawn'|'talk'|'think'|'result'), say(id, text, {to}), think(id, text), setVerdict(id, 'yes'|'maybe'|'no'), plus the review panel: addPoint('pro'|'con', text, {by}), addQualification(text, {gap}), setConclusion({wanted, summary, list}), setDeal(text). Full spec: AGENT-WORLD.md. The animation itself runs from assets/agent-world.js in the deck, not on this canvas.",
       "w": 600,
       "x": 6760,
       "y": 4100
@@ -612,6 +612,7 @@
     "Slide04.dc.html",
     "Slide05.dc.html",
     "Slide05b.dc.html",
+    "Slide05c.dc.html",
     "Slide06.dc.html",
     "Slide07.dc.html",
     "Slide08.dc.html",
