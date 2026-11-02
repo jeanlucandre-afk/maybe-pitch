@@ -26,18 +26,24 @@ a{color:#09090B}a:hover{color:#52525B}
 .anim-on .grow{transform-origin:left center;animation:grow calc(.9s * var(--spd)) cubic-bezier(.2,.7,.2,1) both}
 @media (prefers-reduced-motion:reduce){.rv,.rise,.drift,.fin,.shot,.grow{animation:none!important}}
 </style>
+<style>
+@keyframes growy{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@keyframes pop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+.anim-on .growy{transform-origin:center bottom;animation:growy calc(1s * var(--spd)) cubic-bezier(.2,.7,.2,1) both}
+.anim-on .draw{stroke-dasharray:1;stroke-dashoffset:1;animation:draw calc(1.4s * var(--spd)) cubic-bezier(.4,0,.2,1) both}
+.anim-on .pop{animation:pop calc(.5s * var(--spd)) cubic-bezier(.2,.7,.2,1.2) both}
+@media (prefers-reduced-motion:reduce){.growy,.draw,.pop{animation:none!important;stroke-dashoffset:0}}
+</style>
 </helmet>
 <div class="{{animClass}}" style="--spd: {{spd}}; width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #09090B; color: #FAFAFA; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
-  <div style="position: absolute; left: 72px; top: 32px; display: flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 700; letter-spacing: -0.035em; color: #FAFAFA;"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 4.5 L10.5 13 L10.5 20 M20.5 3.5 L11 14.5" fill="none" stroke="#FAFAFA" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>MAYBE</div>
   <div style="position: absolute; left: 0; top: 0; height: 4px; width: 0.0%; background: #7C3AED;"></div>
-  <div style="position: absolute; right: 72px; bottom: 32px; font-family: 'Geist Mono', monospace; font-size: 16px; color: #A1A1AA;">0 / 0</div>
-  <div style="position: absolute; left: 120px; right: 120px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center;">
-    <p class="rv" style="margin: 0 0 18px; font-family: 'Geist Mono', monospace; font-size: 18px; font-weight: 500; letter-spacing: .02em; color: #A1A1AA; animation-delay: calc(var(--spd) * 0.00s);"><span style="color: #C4B5FD;">00</span> · The question</p>
-    <h2 class="rv" style="margin: 0; font-size: 80px; font-weight: 700; line-height: 1; letter-spacing: -0.045em; font-size: 96px; max-width: 22ch; animation-delay: calc(var(--spd) * 0.30s);">How are you supposed to know what you want to do with your life if you’ve never actually <span style="color: #C4B5FD;">tried</span> doing it?</h2>
+  <div style="position: absolute; left: 160px; right: 160px; top: 0; bottom: 0; display: flex; align-items: center;">
+    <h2 class="rv" style="margin: 0px 0 0; font-size: 104px; font-weight: 700; line-height: 1.02; letter-spacing: -0.045em; max-width: 20ch; animation-delay: calc(var(--spd) * 0.40s);">How are you supposed to know what you want to do with your life if you’ve never actually <span style="color: {{accent}};">tried</span> doing it?</h2>
   </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"animate": {"editor": "boolean", "default": true, "section": "Motion"}, "speed": {"editor": "enum", "options": ["slow", "normal", "fast"], "default": "normal", "section": "Motion"}, "$preview": {"width": 1920, "height": 1080}}'>
+<script type="text/x-dc" data-dc-script data-props='{"animate": {"editor": "boolean", "default": true, "section": "Motion"}, "speed": {"editor": "enum", "options": ["slow", "normal", "fast"], "default": "normal", "section": "Motion"}, "accent": {"editor": "color", "options": ["#C4B5FD", "#A78BFA", "#FAFAFA"], "default": "#C4B5FD", "section": "Look"}, "$preview": {"width": 1920, "height": 1080}}'>
 class Component extends DCLogic {
   renderVals() {
     const on = this.props.animate ?? true;
@@ -45,6 +51,7 @@ class Component extends DCLogic {
     return {
       animClass: on ? 'anim-on' : 'anim-off',
       spd: String(spd),
+      accent: this.props.accent ?? "#C4B5FD",
     };
   }
 }
