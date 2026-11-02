@@ -35,24 +35,19 @@
 @keyframes orb-talk{0%{transform:scale(.9) rotate(0)}35%{transform:scale(.78) rotate(2deg)}60%{transform:scale(.86) rotate(-1deg)}100%{transform:scale(.8) rotate(3deg)}}
 @keyframes orb-listen{0%{transform:scale(.95)}100%{transform:scale(.89)}}
 @keyframes orb-swirl{from{transform:rotate(0)}to{transform:rotate(360deg)}}
-.orb{position:relative;width:540px;height:540px;border-radius:50%;overflow:hidden;background:#F5F3FF;box-shadow:0 50px 100px -45px rgba(124,58,237,.6),inset 0 0 0 1px rgba(124,58,237,.14);transform:scale(calc(1 - var(--level,0) * .26));transition:transform .14s ease-out}
+.orb{position:relative;width:540px;height:540px;border-radius:50%;overflow:hidden;background:#F5F3FF;box-shadow:0 50px 100px -45px rgba(124,58,237,.6),inset 0 0 0 1px rgba(124,58,237,.14);transform:scale(calc(1 - var(--level,0) * .24));will-change:transform;animation:orb-breathe 4.5s ease-in-out infinite}
 .orb__body{position:absolute;inset:0}
-.orb{animation:orb-breathe 4.5s ease-in-out infinite}
-.orb__swirl{position:absolute;inset:-20%;background:radial-gradient(circle at 30% 35%,rgba(196,181,253,.9),rgba(196,181,253,0) 45%),radial-gradient(circle at 70% 65%,rgba(124,58,237,.55),rgba(124,58,237,0) 50%);filter:blur(30px);animation:orb-swirl 14s linear infinite}
-.orb__wave{position:absolute;left:0;width:200%;filter:blur(10px);animation:orb-wave 7s linear infinite}
-.orb__wave--a{height:calc(62% + var(--level,0) * 22%);bottom:-6%;opacity:.95;transition:height .14s ease-out}
+.orb__swirl{position:absolute;inset:-25%;background:radial-gradient(circle at 30% 35%,rgba(196,181,253,.85),rgba(196,181,253,.35) 22%,rgba(196,181,253,0) 50%),radial-gradient(circle at 70% 65%,rgba(124,58,237,.5),rgba(124,58,237,.2) 25%,rgba(124,58,237,0) 55%);will-change:transform;animation:orb-swirl 14s linear infinite}
+.orb__wave{position:absolute;left:0;width:200%;filter:blur(8px);will-change:transform;animation:orb-wave 7s linear infinite}
+.orb__wave--a{height:calc(62% + var(--level,0) * 20%);bottom:-6%;opacity:.95}
 .orb__wave--b{height:52%;bottom:-12%;opacity:.8;animation-duration:10s;animation-direction:reverse}
 .orb__wave svg{display:block;width:100%;height:100%}
 .orb__shine{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 32% 22%,rgba(255,255,255,.75),rgba(255,255,255,0) 32%)}
+/* canvas preview: only the whole orb's size changes with the speaker; the waves keep one steady speed so they never jump */
 .orb.orb--you{animation:orb-talk .42s ease-in-out infinite alternate}
-.orb--you .orb__wave--a{animation-duration:1.7s}
-.orb--you .orb__wave--b{animation-duration:2.4s}
-.orb--you .orb__swirl{animation-duration:4s}
 .orb.orb--agent{animation:orb-listen .5s ease-in-out infinite alternate}
-.orb--agent .orb__wave--a{animation-duration:2.2s}
-.orb--agent .orb__swirl{animation-duration:6s}
-.orb.orb--live{animation:none!important}
-.orb--agent .orb__wave--b{animation-duration:5s}
+/* live deck: assets/live-call.js drives size, waves and swirl every frame, smoothly */
+.orb.orb--live,.orb--live .orb__wave,.orb--live .orb__swirl{animation:none!important;transition:none!important}
 /* ---- talking character ---- */
 @keyframes talk-bob{0%{transform:translateY(0) rotate(0)}100%{transform:translateY(-6px) rotate(-1.6deg)}}
 @keyframes talk-arc{0%,100%{opacity:.15}50%{opacity:1}}
@@ -180,8 +175,8 @@
     <div class="orb orb--you" data-orb role="img" aria-label="You are speaking" style="width: 660px; height: 660px;">
       <div class="orb__body">
         <div class="orb__swirl"></div>
-        <div class="orb__wave orb__wave--b"><svg viewBox="0 0 1200 300" preserveAspectRatio="none" aria-hidden="true"><path d="M0 120 C150 40 300 40 450 120 S750 200 900 120 S1050 40 1200 120 V300 H0 Z" fill="#A78BFA"></path></svg></div>
-        <div class="orb__wave orb__wave--a"><svg viewBox="0 0 1200 300" preserveAspectRatio="none" aria-hidden="true"><path d="M0 110 C150 190 300 190 450 110 S750 30 900 110 S1050 190 1200 110 V300 H0 Z" fill="#7C3AED"></path></svg></div>
+        <div class="orb__wave orb__wave--b"><svg viewBox="0 0 1200 300" preserveAspectRatio="none" aria-hidden="true"><path d="M0 120 C150 40 450 200 600 120 C750 40 1050 200 1200 120 V300 H0 Z" fill="#A78BFA"></path></svg></div>
+        <div class="orb__wave orb__wave--a"><svg viewBox="0 0 1200 300" preserveAspectRatio="none" aria-hidden="true"><path d="M0 110 C150 190 450 30 600 110 C750 190 1050 30 1200 110 V300 H0 Z" fill="#7C3AED"></path></svg></div>
         <div class="orb__shine"></div>
       </div>
     </div>

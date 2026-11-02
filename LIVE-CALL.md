@@ -23,7 +23,7 @@ Until a real agent is connected, the slide plays a scripted demo (six turns) whe
 MAYBE_CALL.connect();                  // stop the demo and the built-in mic meter; the slide now shows only what you send
 MAYBE_CALL.useMic(false);              // optional: turn off the built-in mic meter in demo mode
 MAYBE_CALL.setMode('you' | 'agent' | 'idle');
-MAYBE_CALL.setLevel(0.0 - 1.0);        // call every animation frame with mic or agent volume
+MAYBE_CALL.setLevel(0.0 - 1.0);        // send mic/agent volume as often as you like; the page eases it so the orb never jumps
 MAYBE_CALL.addMessage('you' | 'agent', text, { replaceLast: true }); // replaceLast updates a streaming bubble
 MAYBE_CALL.clear();
 MAYBE_CALL.disconnect();               // back to the demo
@@ -70,3 +70,10 @@ Notes:
 ## Mara's script (draft)
 
 The persona is a retail buyer at a mid-sized drugstore chain. She is friendly, busy, and worried about shelf space near the till and about sell-through. She asks about the minimum order, accepts a 24-unit trial tray if the student handles her objections, and keeps answers to one or two sentences. She must say she is an AI if asked, and never claims to be a real Dr. Lipp customer.
+
+## Smoothness (how the slide animates)
+
+- One animation loop drives the orb while slide 6 is on screen. The level is eased: quick to shrink, slower to grow back.
+- The waves and swirl move continuously and only speed up or slow down with the level, so they never restart or jump.
+- Bubbles glide into place when a new one arrives or the last one grows, so you can stream transcripts with `{replaceLast: true}` freely.
+- Demo mode: with a mic, your line appears only while you actually speak, and Mara's line types itself in while she "speaks".
