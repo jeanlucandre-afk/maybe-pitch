@@ -12,7 +12,7 @@ Until a real agent is connected, the slide plays a scripted demo (six turns) whe
 
 | Element | Selector | Behaviour |
 |---|---|---|
-| Voice orb (left) | `[data-orb]` | Class `orb--idle`, `orb--you` or `orb--agent` sets the motion. CSS variable `--level` (0–1) makes it swell with loudness. |
+| Voice orb (left) | `[data-orb]` | It's **biggest in silence and shrinks as sound gets louder** (`scale(1 - level × 0.26)`), with the liquid inside churning more. Class `orb--idle`, `orb--you` or `orb--agent` sets the motion style. In demo mode the presenter's **real microphone** drives it: the browser asks for mic permission on slide 6, and the mic is released when you leave the slide. |
 | Conversation (right) | `[data-bubbles]` | Black bubbles for "You" (right-aligned), white bubbles for "Mara" (left-aligned). It keeps the last 4; older ones fade. |
 | Character (bottom right) | `[data-avatar]` | Class `avatar--talking` makes her bob and shows violet sound arcs while the agent speaks. |
 | Optional controls | `[data-call-status]`, `[data-call-timer]`, `[data-call-mute]`, `[data-call-end]` | Not on the current design, which is only the orb, bubbles and character. If they're added back, the runtime fills them, and mute/end fire `call:mute` / `call:end` on the slide root. |
@@ -20,7 +20,8 @@ Until a real agent is connected, the slide plays a scripted demo (six turns) whe
 ## API: `window.MAYBE_CALL`
 
 ```js
-MAYBE_CALL.connect();                  // stop the demo; the slide now shows only what you send
+MAYBE_CALL.connect();                  // stop the demo and the built-in mic meter; the slide now shows only what you send
+MAYBE_CALL.useMic(false);              // optional: turn off the built-in mic meter in demo mode
 MAYBE_CALL.setMode('you' | 'agent' | 'idle');
 MAYBE_CALL.setLevel(0.0 - 1.0);        // call every animation frame with mic or agent volume
 MAYBE_CALL.addMessage('you' | 'agent', text, { replaceLast: true }); // replaceLast updates a streaming bubble
