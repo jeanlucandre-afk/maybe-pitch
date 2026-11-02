@@ -3,14 +3,16 @@
  * The slide (canvas board Slide05c) has:
  *   [data-swarm]            slide root (data-swarm-img = folder with the peep-*.svg drawings)
  *   [data-swarm-canvas]     1920x1080 canvas this file draws on
- *   [data-swarm-step=...]   the three steps on the left (spawn, talk, think); get is-on / is-done and --p (0..1)
+ *   [data-swarm-step=...]   the four steps on the left (spawn, talk, think, result); get is-on / is-done and --p (0..1)
  *   [data-swarm-mode]       "Demo simulation" / "Live agents" pill
+ *   [data-swarm-panel]      the review card on the left: candidate, what worked / what didn't, qualifications,
+ *                           the live tally and the verdict (wanted candidate or not). Points fly in from the agent who raised them.
  *
  * Phases: spawn → talk → think → result (→ reset in the demo loop).
  *   spawn   agents pop out of the call transcript card and settle into a slowly turning ball
  *   talk    neighbours connect, pulses travel, speech bubbles about the call
  *   think   each agent weighs the call alone (thought bubble), then leaves the ball for its verdict cluster
- *   result  three clusters, labelled, with the "Synthetic estimate" stamp
+ *   result  three clusters, labelled; the panel shows the concluded verdict
  *
  * Until a developer connects real agents, the slide loops a scripted demo. Every visual comes from the same
  * public calls (window.MAYBE_SWARM), so real agents look exactly like the demo. See AGENT-WORLD.md.
@@ -29,11 +31,11 @@
   // ---------- look (Brutal Zinc, monochrome) ----------
   const INK = '#09090B', PAPER = '#FFFFFF', Z100 = '#F4F4F5', Z200 = '#E4E4E7', Z300 = '#D4D4D8', Z400 = '#A1A1AA', Z500 = '#71717A';
   const SANS = 'Geist, system-ui, sans-serif', MONO = "'Geist Mono', ui-monospace, monospace";
-  const BALL = { x: 1290, y: 540, r: 360 };
+  const BALL = { x: 1350, y: 540, r: 350 };
   const CLUSTERS = {
-    yes:   { label: 'Would stock it',   x: 1040, y: 440, fill: INK,   stroke: INK },
-    maybe: { label: 'Needs more proof', x: 1600, y: 320, fill: Z400,  stroke: INK },
-    no:    { label: 'Would pass',       x: 1580, y: 790, fill: PAPER, stroke: INK },
+    yes:   { label: 'Convinced',        x: 1150, y: 450, fill: INK,   stroke: INK },
+    maybe: { label: 'Needs more proof', x: 1650, y: 320, fill: Z400,  stroke: INK },
+    no:    { label: 'Not convinced',    x: 1640, y: 790, fill: PAPER, stroke: INK },
   };
   const VERDICTS = Object.keys(CLUSTERS);
   for (const k of VERDICTS) Object.assign(CLUSTERS[k], { r: 0, n: 0, alpha: 0 });
@@ -102,8 +104,8 @@
     if (!['idle', 'spawn', 'talk', 'think', 'result', 'reset'].includes(p)) return;
     phase = p; phaseT0 = now; layoutDirty = true;
     steps.forEach((el) => {
-      const order = ['spawn', 'talk', 'think'], i = order.indexOf(el.dataset.swarmStep);
-      const cur = p === 'result' ? 3 : p === 'reset' || p === 'idle' ? -1 : order.indexOf(p);
+      const order = ['spawn', 'talk', 'think', 'result'], i = order.indexOf(el.dataset.swarmStep);
+      const cur = p === 'reset' || p === 'idle' ? -1 : order.indexOf(p);
       el.classList.toggle('is-on', i === cur);
       el.classList.toggle('is-done', i < cur);
       el.style.setProperty('--p', i < cur ? 1 : 0);
@@ -129,7 +131,66 @@
     a.verdict = v; layoutDirty = true;
   }
   function setClusters(map) { for (const k of Object.keys(map || {})) if (CLUSTERS[k] && map[k].label) CLUSTERS[k].label = String(map[k].label); }
-  function clearAll() { setAgents([]); setPhase('idle'); }
+  function clearAll() { setAgents([]); setPhase('idle'); clearPanel(); }
+
+  // ---------- review panel (left) ----------
+  const P = (sel) => root.querySelector(sel);
+  const panel = { name: P('[data-swarm-cand-name]'), meta: P('[data-swarm-cand-meta]'), pros: P('[data-swarm-pros]'), cons: P('[data-swarm-cons]'),
+    quals: P('[data-swarm-quals]'), tally: P('[data-swarm-tally]'), verdict: P('[data-swarm-verdict]'), deal: P('[data-swarm-deal]') };
+  const EMPTY = '<li class="sw-empty" style="display:block;animation:none">Listening to the agents…</li>';
+  const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  let flyers = [];
+  function setCandidate({ name, meta } = {}) {
+    if (name != null && panel.name) panel.name.textContent = name;
+    if (meta != null && panel.meta) panel.meta.textContent = meta;
+  }
+  /** type 'pro' | 'con'; opts.by = agent id that raised it (a dot flies from that agent into the panel) */
+  function addPoint(type, text, opts = {}) {
+    const list = type === 'con' ? panel.cons : panel.pros; if (!list) return;
+    if (list.querySelector('.sw-empty')) list.innerHTML = '';
+    const a = opts.by != null ? byId.get(String(opts.by)) : null;
+    const li = document.createElement('li');
+    li.innerHTML = esc(text) + (a || opts.byLabel ? `<small>raised by ${esc(opts.byLabel || a.role)}</small>` : '');
+    list.appendChild(li);
+    while (list.children.length > 3) list.removeChild(list.firstElementChild);
+    if (a) fly(a, li);
+  }
+  /** a qualification the agents agree on; {gap: true} = something to work on (dashed chip) */
+  function addQualification(text, opts = {}) {
+    if (!panel.quals) return;
+    const span = document.createElement('span'); span.textContent = text; if (opts.gap) span.className = 'is-gap';
+    panel.quals.appendChild(span);
+    const a = opts.by != null ? byId.get(String(opts.by)) : null; if (a) fly(a, span);
+  }
+  /** The concrete conclusion. {wanted: true|false, title, summary, list: 'Dr. Lipp · Sales trial'} */
+  function setConclusion(c) {
+    if (!panel.verdict) return;
+    if (!c) { panel.verdict.hidden = true; panel.verdict.innerHTML = ''; if (panel.tally) panel.tally.hidden = false; return; }
+    const yes = !!c.wanted, list = c.list || 'Wanted candidates';
+    panel.verdict.innerHTML = `<div class="sw-verdict"><div class="sw-stamp ${yes ? 'is-yes' : ''}">${esc(c.title || (yes ? 'Wanted candidate' : 'Not shortlisted'))}<small>${yes ? 'SHORTLISTED' : 'NOT SHORTLISTED'}</small></div>
+      <div><div class="sw-summary">${esc(c.summary || '')}</div>
+      <div class="sw-row ${yes ? '' : 'is-no'}">${esc(list)}<b>${esc(panel.name ? panel.name.textContent : 'Candidate')} ${yes ? '✓ added' : '· not added'}</b></div></div></div>`;
+    panel.verdict.hidden = false; if (panel.tally) panel.tally.hidden = true;
+    const lab = panel.verdict.parentElement.querySelector('.sw-label'); if (lab) lab.textContent = 'Conclusion';
+  }
+  /** The real deal outcome from the call, shown apart from the score. */
+  function setDeal(text) { if (panel.deal) panel.deal.textContent = text ? 'Deal outcome (separate): ' + text : 'Deal outcome kept separate'; }
+  function clearPanel() {
+    if (panel.pros) panel.pros.innerHTML = EMPTY; if (panel.cons) panel.cons.innerHTML = EMPTY; if (panel.quals) panel.quals.innerHTML = '';
+    setConclusion(null); setDeal(null); flyers = [];
+    const lab = panel.tally && panel.tally.parentElement.querySelector('.sw-label'); if (lab) lab.textContent = 'Where the market stands';
+  }
+  // stage coordinates of a panel element (the deck scales the stage)
+  function stagePos(el) {
+    const r = root.getBoundingClientRect(), e = el.getBoundingClientRect(), k = r.width / W || 1;
+    return { x: (e.left - r.left) / k, y: (e.top - r.top + e.height / 2) / k, w: e.width / k };
+  }
+  function fly(a, el) { if (REDUCED) return; flyers.push({ a, el, t0: now, dur: 0.9, sx: a.x, sy: a.y }); }
+  function updateTally() {
+    if (!panel.tally || panel.tally.hidden) return;
+    const n = Math.max(1, agents.length);
+    for (const k of VERDICTS) { const b = panel.tally.querySelector(`[data-tally="${k}"]`); if (b) b.style.width = ((CLUSTERS[k].n / n) * 100).toFixed(1) + '%'; }
+  }
 
   // ---------- drawing helpers ----------
   function roundRect(x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
@@ -160,7 +221,7 @@
     const h = 48 + lines.length * 28;
     const ax = b.a.x, ay = b.a.y, gap = 34;
     const place = (side) => ({ x: side[0] === 'r' ? ax + 14 : ax - w - 14, y: side[1] === 'u' ? ay - h - gap : ay + gap });
-    const fits = (r) => r.x >= 790 && r.x + w <= W - 30 && r.y >= 30 && r.y + h <= H - 70;
+    const fits = (r) => r.x >= 850 && r.x + w <= W - 30 && r.y >= 30 && r.y + h <= H - 70;
     const labels = VERDICTS.map((k) => CLUSTERS[k]).filter((c) => c.n > 0 && (phase === 'think' || phase === 'result')).map((c) => ({ rect: { x: c.x - 150, y: c.y + c.r + 8, w: 300, h: 44 } }));
     const clear = (r) => bubbles.concat(labels).every((o) => o === b || !o.rect || r.x > o.rect.x + o.rect.w + 12 || r.x + w + 12 < o.rect.x || r.y > o.rect.y + o.rect.h + 12 || r.y + h + 12 < o.rect.y);
     if (!b.side) {
@@ -168,7 +229,7 @@
       b.side = sides.find((sd) => { const r = place(sd); return fits(r) && clear(r); }) || sides.find((sd) => fits(place(sd))) || 'ru';
     }
     let { x, y } = place(b.side);
-    x = Math.max(790, Math.min(W - 30 - w, x)); y = Math.max(30, Math.min(H - 70 - h, y));
+    x = Math.max(850, Math.min(W - 30 - w, x)); y = Math.max(30, Math.min(H - 70 - h, y));
     b.rect = { x, y, w, h };
     const below = y > ay;
     const s = 0.92 + 0.08 * inA;
@@ -317,14 +378,19 @@
       ctx.fillStyle = INK; ctx.fillText(c.label, c.x + 4, ly);
       ctx.textAlign = 'left'; ctx.globalAlpha = 1;
     }
-    // provenance stamp on the result
-    if (resultA > 0.02) {
-      const c = CLUSTERS.yes, x = c.x - 150, y = c.y - c.r - 70, t = 'Synthetic estimate · not the deal outcome';
-      ctx.save(); ctx.globalAlpha = resultA; ctx.translate(x, y); ctx.rotate(-0.04);
-      ctx.font = '500 16px ' + MONO; const w = ctx.measureText(t).width + 28;
-      ctx.fillStyle = INK; roundRect(3, 3, w, 36, 8); ctx.fill(); ctx.fillStyle = PAPER; roundRect(0, 0, w, 36, 8); ctx.fill(); ctx.strokeStyle = INK; ctx.lineWidth = 2; ctx.stroke();
-      ctx.fillStyle = INK; ctx.fillText(t, 14, 24); ctx.restore();
+    // points flying from the agent who raised them into the review panel
+    flyers = flyers.filter((f) => now - f.t0 < f.dur && f.el.isConnected);
+    for (const f of flyers) {
+      const q = (now - f.t0) / f.dur, e = 1 - Math.pow(1 - q, 3), to = stagePos(f.el);
+      const tx = to.x + to.w + 8 > 806 ? 806 : to.x + to.w + 8, ty = to.y;
+      const cx = (f.sx + tx) / 2, cy = Math.min(f.sy, ty) - 120;
+      const bx = (1 - e) * (1 - e) * f.sx + 2 * (1 - e) * e * cx + e * e * tx, by = (1 - e) * (1 - e) * f.sy + 2 * (1 - e) * e * cy + e * e * ty;
+      ctx.strokeStyle = INK; ctx.lineWidth = 1.5; ctx.setLineDash([3, 6]); ctx.globalAlpha = 0.5 * (1 - q);
+      ctx.beginPath(); ctx.moveTo(f.sx, f.sy); ctx.quadraticCurveTo(cx, cy, tx, ty); ctx.stroke(); ctx.setLineDash([]);
+      ctx.globalAlpha = 1; ctx.fillStyle = INK; ctx.beginPath(); ctx.arc(bx, by, 6, 0, 7); ctx.fill();
+      ctx.fillStyle = PAPER; ctx.beginPath(); ctx.arc(bx, by, 2.4, 0, 7); ctx.fill();
     }
+    updateTally();
 
     bubbles = bubbles.filter((b) => now - b.t0 < b.dur);
     bubbles.forEach(drawBubble);
@@ -346,66 +412,77 @@
 
   // ---------- demo (mock agents reviewing the call) ----------
   const ROLES = ['Student, 16', 'Store buyer', 'Parent', 'Pharmacist', 'Teacher', 'Shop assistant', 'Rival brand', 'Area manager', 'Grandparent', 'Influencer', 'Gym owner', 'Nurse', 'Barista', 'Café owner', 'Retiree', 'Tourist'];
-  const CAST = [ // named agents: [role, face, verdict, what they say in "talk", what they think alone in "think"]
-    ['Store buyer', 1, 'yes', 'Mara pushed on shelf space by the till. Fair point.', 'A 24-unit tray is low risk. I’d stock it.'],
-    ['Student, 16', 0, 'yes', 'Starting with a small tray was the smart move.', 'I’d grab one if it sits by the till.'],
-    ['Pharmacist', 4, 'maybe', 'Nobody mentioned ingredients. I would have asked.', 'No ingredient facts yet. I need proof first.'],
-    ['Rival brand', 3, 'no', 'Six weeks of sell-through is tough. We’d undercut.', 'Easy to beat on price. I’d pass.'],
-    ['Parent', 2, 'yes', 'The caller listened before pitching. I liked that.', null],
-    ['Area manager', 3, 'maybe', 'Margin never came up. That’s my first question.', 'Margin unknown. Show me numbers first.'],
-    ['Shop assistant', 0, 'yes', null, null],
-    ['Grandparent', 4, 'no', null, null],
+  // named agents: [key, role, face, verdict, private thought in "think" (or null)]
+  const CAST = [
+    ['buyer',   'Store buyer',    1, 'yes',   'A 24-unit tray is low risk. I’d stock it.'],
+    ['rival',   'Rival brand',    3, 'no',    'Easy to beat on price. I’d pass.'],
+    ['pharm',   'Pharmacist',     4, 'maybe', 'No ingredient facts yet. I need proof first.'],
+    ['parent',  'Parent',         2, 'yes',   null],
+    ['manager', 'Area manager',   3, 'maybe', 'Margin unknown. Show me numbers first.'],
+    ['shop',    'Shop assistant', 0, 'yes',   'A clear next step. I’d put it by the till.'],
+    ['teen',    'Student, 16',    0, 'yes',   'Small and cheap to try. I’d buy one.'],
+    ['grand',   'Grandparent',    4, 'no',    null],
   ];
-  const DEMO = { spawn: 0, talk: 4.4, think: 14.2, result: 23.4, reset: 27.6, end: 29.4 };
+  // the conversation about the call: [time after talk starts, speaker, to, line, panel point]
+  const TALK = [
+    [0.6, 'buyer', 'rival', 'The 24-unit tray answered my six-week worry.', ['pro', 'Answered the six-week risk with a 24-unit trial']],
+    [2.3, 'rival', 'buyer', 'Still no reason to pick them over a cheaper brand.', ['con', 'No reason given to choose Dr. Lipp over cheaper brands']],
+    [4.4, 'pharm', 'parent', 'Nobody mentioned ingredients. I would have asked.', ['con', 'No product facts: ingredients never came up']],
+    [6.1, 'parent', 'pharm', 'But they asked what matters before pitching. I liked that.', ['pro', 'Asked what decides shelf space before pitching']],
+    [8.2, 'manager', 'shop', 'Margin never came up. That’s my first question.', null],
+    [9.9, 'shop', 'manager', '“Send me the offer” is still a clear next step.', ['pro', 'Closed on a concrete next step: the offer']],
+  ];
+  const QUALS = [ // [time after think starts, text, gap?, raised by]
+    [0.8, 'Listens first', false, 'parent'], [2.4, 'Handles objections', false, 'buyer'],
+    [4.0, 'Closes on a next step', false, 'shop'], [5.6, 'Product facts', true, 'pharm'],
+  ];
+  const DEMO = { spawn: 0, talk: 4.4, think: 17.0, result: 26.4, reset: 34.5, end: 36.3 };
   const DEMO_LEN = { spawn: DEMO.talk - DEMO.spawn, talk: DEMO.think - DEMO.talk, think: DEMO.result - DEMO.think, result: DEMO.reset - DEMO.result };
   let demo = null;
 
   function demoStart() {
-    seed = 11; now = 0;
+    seed = 11; now = 0; clearPanel();
+    setCandidate({ name: 'Luc', meta: 'Candidate · Dr. Lipp sales trial · 1 call' });
     const N = 320, list = [];
     for (let i = 0; i < N; i++) list.push({ id: 'a' + i, role: ROLES[Math.floor(rnd() * ROLES.length)], face: -1, delay: 0.35 + 3.1 * Math.pow(rnd(), 1.6) });
     // named agents sit on evenly spaced slots of the ball, so a few faces are always turning past the front
-    CAST.forEach((c, k) => { const s = list[Math.round((k + 0.5) * N / CAST.length)]; s.role = c[0]; s.face = c[1]; s.delay = 0.6 + k * 0.28; });
+    CAST.forEach((c, k) => { const s = list[Math.round((k + 0.5) * N / CAST.length)]; s.id = c[0]; s.role = c[1]; s.face = c[2]; s.delay = 0.6 + k * 0.28; });
     setAgents(list);
-    demo = { said: 0, thought: 0, decide: agents.map((a) => {
-      const c = CAST.find((x) => x[0] === a.role && a.face === x[1]);
-      const v = c ? c[2] : (r => r < 0.5 ? 'yes' : r < 0.8 ? 'maybe' : 'no')(rnd());
-      return { a, v, at: DEMO.think + 0.4 + rnd() * 8.2, done: false, named: !!c };
+    demo = { talk: 0, quals: 0, concluded: false, decide: agents.map((a) => {
+      const c = CAST.find((x) => x[0] === a.id);
+      const v = c ? c[3] : (r => r < 0.55 ? 'yes' : r < 0.82 ? 'maybe' : 'no')(rnd());
+      return { a, v, at: DEMO.think + 0.4 + rnd() * 8.2, done: false };
     }) };
     // named thinkers decide right after their thought bubble
-    const thinkers = CAST.filter((c) => c[4]);
-    thinkers.forEach((c, i) => { const d = demo.decide.find((x) => x.a.role === c[0] && x.a.face === c[1]); if (d) { d.thinkAt = DEMO.think + 0.3 + i * 1.75; d.at = d.thinkAt + 2.2; d.thought = c[4]; } });
+    CAST.filter((c) => c[4]).forEach((c, i) => { const d = demo.decide.find((x) => x.a.id === c[0]); d.thinkAt = DEMO.think + 0.3 + i * 1.5; d.at = d.thinkAt + 2.2; d.thought = c[4]; });
     setPhase('spawn');
   }
-  function frontFree(a) { return a && a.z > 0.35 && turn(a.home, rot + 0.65, -0.28).z > 0.3 && bubbles.every((b) => Math.hypot(b.a.x - a.x, b.a.y - a.y) > 300); }
   function demoTick() {
     if (!demo) demoStart();
     const t = now;
     if (phase === 'spawn' && t >= DEMO.talk) setPhase('talk');
     if (phase === 'talk') {
-      // a new line roughly every 1.9s, from a named agent currently facing us
-      const due = Math.floor((t - DEMO.talk - 0.5) / 1.9);
-      if (due >= demo.said && t < DEMO.think - 1.5) {
-        const lines = CAST.filter((c) => c[3]);
-        for (let tries = 0; tries < lines.length; tries++) {
-          const c = lines[(demo.said + tries) % lines.length];
-          const a = agents.find((x) => x.role === c[0] && x.face === c[1]);
-          if (frontFree(a)) {
-            const others = a.nb.length ? a.nb : agents;
-            say(a.id, c[3], { to: others[Math.floor(rnd() * others.length)].id, duration: 3.6 });
-            break;
-          }
-        }
-        demo.said++;
+      while (demo.talk < TALK.length && t >= DEMO.talk + TALK[demo.talk][0]) {
+        const [, from, to, line, point] = TALK[demo.talk++];
+        say(from, line, { to, duration: 3.8 });
+        if (point) { const at = now + 1.1; demo.pending = (demo.pending || []).concat([{ at, point, from }]); }
       }
+      if (t >= DEMO.think) setPhase('think');
     }
-    if (phase === 'talk' && t >= DEMO.think) setPhase('think');
+    if (demo.pending) demo.pending = demo.pending.filter((p) => { if (t < p.at) return true; addPoint(p.point[0], p.point[1], { by: p.from }); return false; });
     if (phase === 'think') {
       for (const d of demo.decide) {
         if (d.thinkAt != null && !d.thinking && t >= d.thinkAt) { d.thinking = true; think(d.a.id, d.thought, { duration: 2.6 }); }
         if (!d.done && t >= d.at) { d.done = true; setVerdict(d.a.id, d.v); }
       }
+      while (demo.quals < QUALS.length && t >= DEMO.think + QUALS[demo.quals][0]) { const q = QUALS[demo.quals++]; addQualification(q[1], { gap: q[2], by: q[3] }); }
       if (t >= DEMO.result) setPhase('result');
+    }
+    if (phase === 'result' && !demo.concluded && t >= DEMO.result + 0.4) {
+      demo.concluded = true;
+      setConclusion({ wanted: true, title: 'Wanted candidate', list: 'Dr. Lipp · Sales shortlist',
+        summary: 'Most of the simulated market was convinced: listens first, closes low-risk. Next time bring product and margin facts.' });
+      setDeal('Mara asked for a 24-unit trial offer.');
     }
     if (phase === 'result' && t >= DEMO.reset) setPhase('reset');
     if (phase === 'reset' && t >= DEMO.end) { demo = null; demoStart(); }
@@ -416,7 +493,7 @@
     if (active) return; active = true;
     if (!live) { demo = null; now = 0; }
     if (REDUCED && !live) { // one still: the split, mid-decision
-      demoStart(); for (let i = 0; i < 1300; i++) { now += 1 / 60; demoTick(); frame(1 / 60); if (now > DEMO.think + 6) break; }
+      demoStart(); for (let i = 0; i < 1300; i++) { now += 1 / 60; demoTick(); frame(1 / 60); if (now > DEMO.result + 1) break; }
       active = false; return;
     }
     start();
@@ -431,7 +508,7 @@
     /** Stop the demo; from now on the slide shows only what you send. */
     connect() { live = true; demo = null; clearAll(); if (modeEl) { modeEl.textContent = 'Live agents'; modeEl.classList.add('is-live'); } if (active) start(); },
     /** Back to the looping demo. */
-    disconnect() { live = false; demo = null; now = 0; if (modeEl) { modeEl.textContent = 'Demo simulation'; modeEl.classList.remove('is-live'); } },
+    disconnect() { live = false; demo = null; now = 0; clearPanel(); if (modeEl) { modeEl.textContent = 'Demo simulation'; modeEl.classList.remove('is-live'); } },
     /** Replace the population: [{id, role, face?: 0..4 (named agent with a drawn face), delay?: seconds before it pops out}] */
     setAgents, addAgent,
     /** 'spawn' | 'talk' | 'think' | 'result' (and 'idle' | 'reset') */
@@ -442,8 +519,18 @@
     think,
     /** 'yes' | 'maybe' | 'no' (or null). In think/result the agent flies to that cluster. */
     setVerdict,
-    /** Rename the clusters, e.g. {yes: {label: 'Would stock it'}} */
+    /** Rename the clusters, e.g. {yes: {label: 'Convinced'}} */
     setClusters,
+    /** Left panel: {name, meta} of the candidate whose call is reviewed. */
+    setCandidate,
+    /** Left panel: addPoint('pro' | 'con', text, {by: agentId}) — a dot flies from that agent into "What worked" / "What didn't". */
+    addPoint,
+    /** Left panel: addQualification(text, {gap: true for something to work on, by: agentId}) */
+    addQualification,
+    /** Left panel: the concrete conclusion. {wanted: true|false, title?, summary, list?: 'Dr. Lipp · Sales · wanted candidates'}; null hides it. */
+    setConclusion,
+    /** Left panel: the real deal outcome from the call, kept apart from the score. */
+    setDeal,
     clear: clearAll,
     get phase() { return phase; },
     get agents() { return agents.map((a) => ({ id: a.id, role: a.role, verdict: a.verdict })); },

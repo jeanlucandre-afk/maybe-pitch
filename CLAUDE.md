@@ -34,6 +34,7 @@ This repo is the MAYBE hackathon presentation (Macromedia × CODE Hackathon). It
 - **Agent-world slide (slide 7, after the live call: the ball of simulated agents reviewing the call):** drive it with `window.MAYBE_SWARM`:
   - `connect()` / `disconnect()`, `setAgents([...])`, `setPhase('spawn'|'talk'|'think'|'result')`
   - `say(id, text, {to})`, `think(id, text)`, `setVerdict(id, 'yes'|'maybe'|'no')`
+  - review panel (left): `setCandidate({name, meta})`, `addPoint('pro'|'con', text, {by})`, `addQualification(text, {gap, by})`, `setConclusion({wanted, summary, list})`, `setDeal(text)`
 
   It loops a demo until connected. The call transcript is available from `MAYBE_CALL.getTranscript()`. Full spec and suggested backend: `AGENT-WORLD.md`.
 - Put new voice code in `assets/voice/*.js` and load it with one `<script>` tag. Ask Luc to add the tag to the canvas export, or add it in `tools/build-deck.mjs` next to `live-call.js`, so a rebuild doesn't drop it.
