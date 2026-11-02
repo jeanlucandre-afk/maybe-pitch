@@ -144,6 +144,7 @@ ${sections.join('\n')}
 </div>
 
 <script src="assets/live-call.js" defer></script>
+<script src="assets/agent-world.js" defer></script>
 <script src="assets/deck.js" defer></script>
 </body>
 </html>

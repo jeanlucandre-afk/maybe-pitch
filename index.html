@@ -76,30 +76,78 @@
 @keyframes live-dot{0%,100%{opacity:1}50%{opacity:.25}}
 .live-dot{animation:live-dot 1.2s ease-in-out infinite}
 @media (prefers-reduced-motion:reduce){.rv,.rise,.fin,.orb__body,.orb__swirl,.orb__wave,.avatar img,.avatar__arcs path,.bubble,.live-dot{animation:none!important}}
+@keyframes rv{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+.anim-on .rv{animation:rv calc(.7s * var(--spd)) cubic-bezier(.2,.7,.2,1) both}
+/* ---- agent world: left review panel (assets/agent-world.js fills it) ---- */
+@keyframes sp-in{0%{opacity:0;transform:translateX(-14px)}100%{opacity:1;transform:none}}
+@keyframes sp-flash{0%{background:#F4F4F5}100%{background:rgba(244,244,245,0)}}
+@keyframes sp-stamp{0%{opacity:0;transform:scale(1.25) rotate(-6deg)}70%{opacity:1;transform:scale(.97) rotate(-2deg)}100%{opacity:1;transform:rotate(-2deg)}}
+.sw-steps{display:flex;gap:10px;margin:0;padding:0;list-style:none}
+.sw-steps li{position:relative;display:flex;align-items:center;gap:8px;padding:8px 14px 10px;border:2px solid #E4E4E7;border-radius:10px;font:500 16px 'Geist Mono',monospace;color:#A1A1AA;overflow:hidden;transition:color .3s,border-color .3s,background .3s}
+.sw-steps li::after{content:"";position:absolute;left:0;bottom:0;height:3px;width:calc(var(--p,0) * 100%);background:#09090B}
+.sw-steps li.is-done{color:#09090B;border-color:#09090B}
+.sw-steps li.is-on{color:#FFFFFF;background:#09090B;border-color:#09090B}
+.sw-steps li.is-on::after{background:#FFFFFF}
+.sw-card{position:absolute;left:96px;top:268px;width:704px;height:724px;box-sizing:border-box;padding:24px 28px;border:2px solid #09090B;border-radius:16px;background:#FFFFFF;box-shadow:6px 6px 0 #09090B;display:flex;flex-direction:column}
+.sw-head{display:flex;align-items:center;gap:14px;padding-bottom:18px;border-bottom:2px solid #F4F4F5}
+.sw-head img{width:56px;height:56px;border-radius:50%;border:2px solid #09090B;background:#F4F4F5;object-fit:cover;object-position:50% 6%}
+.sw-name{font-size:24px;font-weight:700;letter-spacing:-.02em;line-height:1.1}
+.sw-meta{margin-top:4px;font:14px 'Geist Mono',monospace;color:#71717A}
+.sw-mode{margin-left:auto;display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border:2px solid #09090B;border-radius:9px;font:500 14px 'Geist Mono',monospace;white-space:nowrap}
+.sw-mode::before{content:"";width:8px;height:8px;border-radius:50%;border:2px solid #09090B;background:#FFFFFF}
+.sw-mode.is-live::before{background:#09090B}
+.sw-label{margin:0 0 10px;font:500 14px 'Geist Mono',monospace;letter-spacing:.04em;color:#71717A;text-transform:uppercase}
+.sw-cols{display:grid;grid-template-columns:1fr 1fr;gap:26px;padding:18px 0;border-bottom:2px solid #F4F4F5;height:286px;box-sizing:border-box}
+.sw-list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+.sw-list li{display:grid;grid-template-columns:22px 1fr;gap:2px 8px;padding:4px 6px;margin:0 -6px;border-radius:8px;font-size:18px;line-height:1.32;animation:sp-in .5s cubic-bezier(.2,.7,.2,1) both,sp-flash 1.6s ease-out .2s both}
+.sw-list li::before{content:"+";grid-row:span 2;display:grid;place-items:center;width:20px;height:20px;margin-top:2px;border:2px solid #09090B;border-radius:6px;font:700 14px 'Geist Mono',monospace;background:#09090B;color:#FFFFFF}
+.sw-list.is-con li::before{content:"–";background:#FFFFFF;color:#09090B}
+.sw-list li small{grid-column:2;font:13px 'Geist Mono',monospace;color:#A1A1AA}
+.sw-empty{font-size:17px;color:#A1A1AA}
+.sw-quals{padding:16px 0;border-bottom:2px solid #F4F4F5;min-height:96px;box-sizing:border-box}
+.sw-chips{display:flex;flex-wrap:wrap;gap:8px}
+.sw-chips span{padding:4px 11px;border:2px solid #09090B;border-radius:999px;font-size:15px;white-space:nowrap;font-weight:500;animation:sp-in .45s cubic-bezier(.2,.7,.2,1) both}
+.sw-chips span.is-gap{border-style:dashed;color:#52525B}
+.sw-outcome{flex:1;padding-top:16px;position:relative}
+.sw-card [hidden]{display:none!important}
+.sw-tally{display:grid;grid-template-columns:170px 1fr;gap:10px 14px;align-items:center;font-size:17px}
+.sw-tally i{display:block;height:14px;border:2px solid #09090B;border-radius:4px;background:#F4F4F5;overflow:hidden}
+.sw-tally i b{display:block;height:100%;width:0;transition:width .5s ease}
+.sw-verdict{display:flex;gap:18px;align-items:flex-start}
+.sw-stamp{flex:none;width:150px;box-sizing:border-box;padding:10px 12px;border:3px solid #09090B;border-radius:10px;font:700 20px Geist,sans-serif;letter-spacing:-.01em;line-height:1.1;text-align:center;animation:sp-stamp .6s cubic-bezier(.2,.7,.2,1) both}
+.sw-stamp.is-yes{background:#09090B;color:#FFFFFF}
+.sw-stamp small{display:block;margin-top:4px;font:500 12px 'Geist Mono',monospace;letter-spacing:.04em;opacity:.75}
+.sw-summary{font-size:17px;line-height:1.4;animation:sp-in .5s .25s cubic-bezier(.2,.7,.2,1) both}
+.sw-row{display:flex;align-items:center;gap:10px;margin-top:10px;padding:7px 10px;white-space:nowrap;border:2px solid #09090B;border-radius:10px;font:500 15px 'Geist Mono',monospace;animation:sp-in .5s .5s cubic-bezier(.2,.7,.2,1) both}
+.sw-row b{margin-left:auto;padding:2px 8px;border-radius:6px;background:#09090B;color:#FFFFFF;font-weight:500}
+.sw-row.is-no b{background:#FFFFFF;color:#09090B;border:2px solid #09090B}
+.sw-prov{display:flex;justify-content:space-between;gap:16px;padding-top:12px;border-top:2px solid #F4F4F5;font:13px 'Geist Mono',monospace;color:#71717A}
+.sw-prov span:last-child{text-align:right}
+@media (prefers-reduced-motion:reduce){.rv,.sw-list li,.sw-chips span,.sw-stamp,.sw-summary,.sw-row{animation:none!important}}
 </style>
 </head>
 <body>
 <!-- Generated by tools/build-deck.mjs from the canvas boards in src/. Edit the slides on the canvas, not here. -->
 <main class="deck" aria-label="MAYBE presentation">
-<section class="deck-slide" id="slide-1" data-title="Black (press next to start the intro)" data-notes="" aria-roledescription="slide" aria-label="1 of 25: Black (press next to start the intro)">
+<section class="deck-slide" id="slide-1" data-title="Black (press next to start the intro)" data-notes="" aria-roledescription="slide" aria-label="1 of 26: Black (press next to start the intro)">
 <div class="deck-stage">
 <div style="width: 1920px; height: 1080px; background: #09090B;"></div>
 </div>
 </section>
-<section class="deck-slide" id="slide-2" data-title="The question" data-notes="Pause on the black screen first, then let the question land. Don't answer it. Let the room think about how they chose their own degree or first job." aria-roledescription="slide" aria-label="2 of 25: The question">
+<section class="deck-slide" id="slide-2" data-title="The question" data-notes="Pause on the black screen first, then let the question land. Don't answer it. Let the room think about how they chose their own degree or first job." aria-roledescription="slide" aria-label="2 of 26: The question">
 <div class="deck-stage">
 <div class="anim-on" style="--spd: 1; width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #09090B; color: #FAFAFA; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
-  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 4.2%; background: #7C3AED;"></div>
+  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 4.0%; background: #7C3AED;"></div>
   <div style="position: absolute; left: 160px; right: 160px; top: 0; bottom: 0; display: flex; align-items: center;">
     <h2 class="rv" style="margin: 0px 0 0; font-size: 104px; font-weight: 700; line-height: 1.02; letter-spacing: -0.045em; max-width: 20ch; animation-delay: calc(var(--spd) * 0.40s);">How are you supposed to know what you want to do with your life if you’ve never actually <span style="color: #C4B5FD;">tried</span> doing it?</h2>
   </div>
 </div>
 </div>
 </section>
-<section class="deck-slide" id="slide-3" data-title="The experience gap" data-notes="Only 26% of recent U.S. graduates in ZipRecruiter's 2026 survey say they're on their ideal career path. And the obstacle they name most, 66.8%, is lack of experience. We prepare for years for work we have never actually done." aria-roledescription="slide" aria-label="3 of 25: The experience gap">
+<section class="deck-slide" id="slide-3" data-title="The experience gap" data-notes="Only 26% of recent U.S. graduates in ZipRecruiter's 2026 survey say they're on their ideal career path. And the obstacle they name most, 66.8%, is lack of experience. We prepare for years for work we have never actually done." aria-roledescription="slide" aria-label="3 of 26: The experience gap">
 <div class="deck-stage">
 <div class="anim-on" style="--spd: 1; width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #FFFFFF; color: #09090B; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
-  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 8.3%; background: #7C3AED;"></div>
+  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 8.0%; background: #7C3AED;"></div>
   <div style="position: absolute; left: 160px; top: 0; bottom: 0; width: 700px; display: flex; flex-direction: column; justify-content: center; gap: 56px;">
     <h2 class="rv" style="margin: 0px 0 0; font-size: 76px; font-weight: 700; line-height: 1.02; letter-spacing: -0.045em; max-width: 13ch; animation-delay: calc(var(--spd) * 0.05s);">Only <span style="color: #7C3AED;">26 in 100</span> graduates are on their ideal career path.</h2>
     <div class="rv" style="display: flex; flex-direction: column; gap: 12px; width: 640px; animation-delay: calc(var(--spd) * 1.60s);"><div style="display: flex; justify-content: space-between; align-items: baseline; gap: 24px;"><span style="font-size: 24px; line-height: 1.35; color: #52525B;">What holds them back most: lack of experience</span><span style="font-family: 'Geist Mono', monospace; font-size: 40px; font-weight: 500; letter-spacing: -0.04em; color: #09090B; flex: none;">66<span style="margin: 0 -0.22em;">.</span>8%</span></div><span style="display: block; height: 14px; border-radius: 999px; background: #F4F4F5; overflow: hidden;"><span class="grow" style="display: block; height: 14px; width: 66.8%; border-radius: 999px; background: #09090B; animation-delay: calc(var(--spd) * 1.75s);"></span></span></div>
@@ -109,10 +157,10 @@
 </div>
 </div>
 </section>
-<section class="deck-slide" id="slide-4" data-title="The human cost" data-notes="Half of recent graduates call their job a stepping stone; almost one in five took a bridge job just to pay the bills. In the UK, 29% of students and recent graduates reported mental-health difficulties and 64% worry about money every day or week. These are pressures, not proof that career uncertainty causes them." aria-roledescription="slide" aria-label="4 of 25: The human cost">
+<section class="deck-slide" id="slide-4" data-title="The human cost" data-notes="Half of recent graduates call their job a stepping stone; almost one in five took a bridge job just to pay the bills. In the UK, 29% of students and recent graduates reported mental-health difficulties and 64% worry about money every day or week. These are pressures, not proof that career uncertainty causes them." aria-roledescription="slide" aria-label="4 of 26: The human cost">
 <div class="deck-stage">
 <div class="anim-on" style="--spd: 1; width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #FFFFFF; color: #09090B; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
-  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 12.5%; background: #7C3AED;"></div>
+  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 12.0%; background: #7C3AED;"></div>
   <div style="position: absolute; left: 160px; right: 160px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; gap: 44px;">
     <h2 class="rv" style="margin: 0px 0 0; font-size: 76px; font-weight: 700; line-height: 1.02; letter-spacing: -0.045em; max-width: 24ch; animation-delay: calc(var(--spd) * 0.05s);">Graduating doesn’t mean knowing where you’re <span style="color: #7C3AED;">going</span>.</h2>
     <div style="display: flex; flex-direction: column; gap: 30px; margin-top: 16px;">
@@ -125,10 +173,10 @@
 </div>
 </div>
 </section>
-<section class="deck-slide" id="slide-5" data-title="The other side" data-notes="But what about those who already know what they want to do? Those who have the skills and are ready to work? Surely they get the chance to prove themselves. Right? (Pause before 'Right?')" aria-roledescription="slide" aria-label="5 of 25: The other side">
+<section class="deck-slide" id="slide-5" data-title="The other side" data-notes="But what about those who already know what they want to do? Those who have the skills and are ready to work? Surely they get the chance to prove themselves. Right? (Pause before 'Right?')" aria-roledescription="slide" aria-label="5 of 26: The other side">
 <div class="deck-stage">
 <div class="anim-on" style="--spd: 1; width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #09090B; color: #FAFAFA; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
-  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 16.7%; background: #7C3AED;"></div>
+  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 16.0%; background: #7C3AED;"></div>
   <div style="position: absolute; left: 160px; right: 160px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center;">
     <p class="rv" style="margin: 0; font-size: 36px; line-height: 1.35; color: #A1A1AA; max-width: 40ch; animation-delay: calc(var(--spd) * 0.10s);">And those who already know what they want, with the skills to do it?</p>
     <h2 class="rv" style="margin: 48px 0 0; font-size: 104px; font-weight: 700; line-height: 1.02; letter-spacing: -0.045em; max-width: 16ch; animation-delay: calc(var(--spd) * 0.90s);">Surely they get the chance to prove themselves.</h2>
@@ -137,10 +185,10 @@
 </div>
 </div>
 </section>
-<section class="deck-slide" id="slide-6" data-title="The screening" data-notes="Stanford looked at about 4 million applications screened by one vendor's algorithms. With equal recommendation rates, an estimated 40,000 more applications from Black and Asian candidates would have moved forward. That's an estimate of recommendations, not 40,000 proven missed hires. And 81% of U.S. job seekers were rejected last year without talking to a single person, while 96% wish they could show something their application can't. Optional: the attributed @its_ken04 AI-interviewer clip, as a public concern, not a typical case." aria-roledescription="slide" aria-label="6 of 25: The screening">
+<section class="deck-slide" id="slide-6" data-title="The screening" data-notes="Stanford looked at about 4 million applications screened by one vendor's algorithms. With equal recommendation rates, an estimated 40,000 more applications from Black and Asian candidates would have moved forward. That's an estimate of recommendations, not 40,000 proven missed hires. And 81% of U.S. job seekers were rejected last year without talking to a single person, while 96% wish they could show something their application can't. Optional: the attributed @its_ken04 AI-interviewer clip, as a public concern, not a typical case." aria-roledescription="slide" aria-label="6 of 26: The screening">
 <div class="deck-stage">
 <div class="anim-on" style="--spd: 1; width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #FFFFFF; color: #09090B; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
-  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 20.8%; background: #7C3AED;"></div>
+  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 20.0%; background: #7C3AED;"></div>
   <div style="position: absolute; left: 160px; right: 160px; top: 140px;">
     <h2 class="rv" style="margin: 0px 0 0; font-size: 80px; font-weight: 700; line-height: 1.02; letter-spacing: -0.045em; max-width: 24ch; animation-delay: calc(var(--spd) * 0.05s);">What if the right person never gets <span style="color: #7C3AED;">through</span>?</h2>
   </div>
@@ -158,10 +206,10 @@
 </div>
 </div>
 </section>
-<section class="deck-slide" id="slide-7" data-title="The turn" data-notes="We have people who haven't had the chance to discover what they can do, and people who struggle to get the chance to show it. What if we used AI to create opportunities, instead of only filtering applications? Next slide: MAYBE." aria-roledescription="slide" aria-label="7 of 25: The turn">
+<section class="deck-slide" id="slide-7" data-title="The turn" data-notes="We have people who haven't had the chance to discover what they can do, and people who struggle to get the chance to show it. What if we used AI to create opportunities, instead of only filtering applications? Next slide: MAYBE." aria-roledescription="slide" aria-label="7 of 26: The turn">
 <div class="deck-stage">
 <div class="anim-on" style="--spd: 1; width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #09090B; color: #FAFAFA; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
-  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 25.0%; background: #7C3AED;"></div>
+  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 24.0%; background: #7C3AED;"></div>
   <div style="position: absolute; left: 160px; right: 160px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center;">
     <p class="rv" style="margin: 0; font-size: 36px; line-height: 1.35; color: #A1A1AA; max-width: 44ch; animation-delay: calc(var(--spd) * 0.10s);">Some never got the chance to discover what they can do. Others never get the chance to show it.</p>
     <h2 class="rv" style="margin: 56px 0 0; font-size: 104px; font-weight: 700; line-height: 1.02; letter-spacing: -0.045em; max-width: 18ch; animation-delay: calc(var(--spd) * 1.00s);">What if we used AI to <span style="color: #C4B5FD;">create opportunities</span>, instead of only filtering applications?</h2>
@@ -169,11 +217,11 @@
 </div>
 </div>
 </section>
-<section class="deck-slide" id="slide-8" data-title="Title (intro plays when shown)" data-notes="Hi, we're Luc and Friederike. MAYBE lets students try real work from real companies for about an hour before they choose a degree or a job. Everything you'll see is a working prototype; the companies are examples, not partners." aria-roledescription="slide" aria-label="8 of 25: Title (intro plays when shown)">
+<section class="deck-slide" id="slide-8" data-title="Title (intro plays when shown)" data-notes="Hi, we're Luc and Friederike. MAYBE lets students try real work from real companies for about an hour before they choose a degree or a job. Everything you'll see is a working prototype; the companies are examples, not partners." aria-roledescription="slide" aria-label="8 of 26: Title (intro plays when shown)">
 <div class="deck-stage">
 <div class="mb-waiting" ref="" style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #FFFFFF;">
 <div style="position: absolute; inset: 0; background: #FFFFFF; color: #09090B; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
-  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 29.2%; background: #7C3AED;"></div>
+  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 28.0%; background: #7C3AED;"></div>
   <p style="position: absolute; left: 120px; top: 112px; margin: 0; font-family: 'Geist Mono', monospace; font-size: 24px; font-weight: 500; letter-spacing: .02em; color: #71717A;"><span style="color: #5B21B6;">Macromedia × CODE Hackathon</span> · 2026</p>
   <div style="position: absolute; left: 120px; right: 120px; bottom: 120px; display: flex; flex-direction: column; gap: 64px;">
     <h1 style="margin: 0 0 0 -20px; font-size: 506px; font-weight: 700; line-height: .78; letter-spacing: -0.065em;">MAYBE<span style="color: #7C3AED;">.</span></h1>
@@ -191,10 +239,10 @@
 </div>
 </div>
 </section>
-<section class="deck-slide" id="slide-9" data-title="Problem" data-notes="At Stuzubi we asked students who named a dream career one question: have you actually tried it? Almost nobody had. They choose from descriptions, rankings and what their parents know. The cost of a wrong choice shows up years later." aria-roledescription="slide" aria-label="9 of 25: Problem">
+<section class="deck-slide" id="slide-9" data-title="Problem" data-notes="At Stuzubi we asked students who named a dream career one question: have you actually tried it? Almost nobody had. They choose from descriptions, rankings and what their parents know. The cost of a wrong choice shows up years later." aria-roledescription="slide" aria-label="9 of 26: Problem">
 <div class="deck-stage">
 <div class="anim-on" style="--spd: 1; width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #FAFAFA; color: #09090B; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
-  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 33.3%; background: #7C3AED;"></div>
+  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 32.0%; background: #7C3AED;"></div>
   <div style="position: absolute; left: 120px; right: 120px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center;">
     <p class="rv" style="margin: 0 0 18px; font-family: 'Geist Mono', monospace; font-size: 18px; font-weight: 500; letter-spacing: .02em; color: #71717A; animation-delay: calc(var(--spd) * 0.00s);"><span style="color: #5B21B6;">08</span> · The problem</p>
     <p class="rv" style="margin: 0; font-size: 128px; font-weight: 700; line-height: .98; letter-spacing: -0.05em; animation-delay: calc(var(--spd) * 0.09s);">“Have you actually <span style="color: #7C3AED;">tried</span> it?”</p>
@@ -207,10 +255,10 @@
 </div>
 </div>
 </section>
-<section class="deck-slide" id="slide-10" data-title="Idea" data-notes="The idea: a marketplace of one-hour work trials, each branded by a company. You call AI retail buyers for Dr. Lipp, or redesign the DICE festival checkout and test it on synthetic fans. You leave with scored evidence, not a personality label." aria-roledescription="slide" aria-label="10 of 25: Idea">
+<section class="deck-slide" id="slide-10" data-title="Idea" data-notes="The idea: a marketplace of one-hour work trials, each branded by a company. You call AI retail buyers for Dr. Lipp, or redesign the DICE festival checkout and test it on synthetic fans. You leave with scored evidence, not a personality label." aria-roledescription="slide" aria-label="10 of 26: Idea">
 <div class="deck-stage">
 <div class="anim-on" style="--spd: 1; width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #FFFFFF; color: #09090B; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
-  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 37.5%; background: #7C3AED;"></div>
+  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 36.0%; background: #7C3AED;"></div>
   <div style="position: absolute; left: 120px; right: 120px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center;">
     <p class="rv" style="margin: 0 0 18px; font-family: 'Geist Mono', monospace; font-size: 18px; font-weight: 500; letter-spacing: .02em; color: #71717A; animation-delay: calc(var(--spd) * 0.00s);"><span style="color: #5B21B6;">09</span> · The idea</p>
     <h2 class="rv" style="margin: 0; font-size: 80px; font-weight: 700; line-height: 1; letter-spacing: -0.045em; font-size: 96px; max-width: 18ch; animation-delay: calc(var(--spd) * 0.09s);">One-hour work trials, branded by real companies.</h2>
@@ -220,10 +268,10 @@
 </div>
 </div>
 </section>
-<section class="deck-slide" id="slide-11" data-title="Live marketplace" data-notes="This is the live marketplace. Two trials are playable today: DICE product design and Dr. Lipp sales. You can scroll and click inside the frame. The other companies are coming-soon previews." aria-roledescription="slide" aria-label="11 of 25: Live marketplace">
+<section class="deck-slide" id="slide-11" data-title="Live marketplace" data-notes="This is the live marketplace. Two trials are playable today: DICE product design and Dr. Lipp sales. You can scroll and click inside the frame. The other companies are coming-soon previews." aria-roledescription="slide" aria-label="11 of 26: Live marketplace">
 <div class="deck-stage">
 <div class="anim-on" style="--spd: 1; width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #FAFAFA; color: #09090B; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
-  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 41.7%; background: #7C3AED;"></div>
+  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 40.0%; background: #7C3AED;"></div>
   <div style="position: absolute; left: 120px; right: 120px; top: 0; bottom: 0; display: grid; grid-template-columns: 600px 936px; gap: 72px; align-items: center;">
     <div style="display: flex; flex-direction: column; gap: 18px;">
       <p class="rv" style="margin: 0 0 18px; font-family: 'Geist Mono', monospace; font-size: 18px; font-weight: 500; letter-spacing: .02em; color: #71717A; animation-delay: calc(var(--spd) * 0.00s);"><span style="color: #5B21B6;">10</span> · Live demo</p>
@@ -240,10 +288,10 @@
 </div>
 </div>
 </section>
-<section class="deck-slide" id="slide-12" data-title="Dr. Lipp sales trial" data-notes="In the Dr. Lipp trial you're a sales rep. You call three AI retail buyers by voice, handle objections about price and shelf space, and update the CRM. The black strip on top always says it's a simulated MAYBE trial." aria-roledescription="slide" aria-label="12 of 25: Dr. Lipp sales trial">
+<section class="deck-slide" id="slide-12" data-title="Dr. Lipp sales trial" data-notes="In the Dr. Lipp trial you're a sales rep. You call three AI retail buyers by voice, handle objections about price and shelf space, and update the CRM. The black strip on top always says it's a simulated MAYBE trial." aria-roledescription="slide" aria-label="12 of 26: Dr. Lipp sales trial">
 <div class="deck-stage">
 <div class="anim-on" style="--spd: 1; width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #FFFFFF; color: #09090B; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
-  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 45.8%; background: #7C3AED;"></div>
+  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 44.0%; background: #7C3AED;"></div>
   <div style="position: absolute; left: 120px; right: 120px; top: 0; bottom: 0; display: grid; grid-template-columns: 600px 936px; gap: 72px; align-items: center;">
     <div style="display: flex; flex-direction: column; gap: 18px;">
       <p class="rv" style="margin: 0 0 18px; font-family: 'Geist Mono', monospace; font-size: 18px; font-weight: 500; letter-spacing: .02em; color: #71717A; animation-delay: calc(var(--spd) * 0.00s);"><span style="color: #5B21B6;">11</span> · Sales trial</p>
@@ -260,7 +308,7 @@
 </div>
 </div>
 </section>
-<section class="deck-slide" id="slide-13" data-title="Live call (voice agent)" data-notes="Now let's call a buyer for real. I'll talk to Mara, our AI retail buyer, live. Watch the orb react to my voice and her answers appear on the right." aria-roledescription="slide" aria-label="13 of 25: Live call (voice agent)">
+<section class="deck-slide" id="slide-13" data-title="Live call (voice agent)" data-notes="Now let's call a buyer for real. I'll talk to Mara, our AI retail buyer, live. Watch the orb react to my voice and her answers appear on the right." aria-roledescription="slide" aria-label="13 of 26: Live call (voice agent)">
 <div class="deck-stage">
 <div class="anim-on" data-call style="--spd: 1; width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #FFFFFF; color: #09090B; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;" data-call-script='[{"role":"you","text":"Hi Mara, it is Luc from Dr. Lipp. Do you have two minutes?"},{"role":"agent","text":"Two minutes, sure. But shelf space near the till is tight."},{"role":"you","text":"Understood. What decides which brands get that space?"},{"role":"agent","text":"Sell-through. If it does not move in six weeks, it is gone."},{"role":"you","text":"Then let us start small: a 24-unit display tray as a trial."},{"role":"agent","text":"Twenty-four units I can do. Send me the offer."}]'>
 
@@ -294,13 +342,57 @@
 </div>
 </div>
 </section>
-<section class="deck-slide" id="slide-14" data-title="DICE design trial" data-notes="In the DICE trial you're a product designer. The festival checkout loses fans; you redesign it in the editor and run it against 1,000 synthetic fans. Those results are clearly labelled as synthetic estimates, not real users." aria-roledescription="slide" aria-label="14 of 25: DICE design trial">
+<section class="deck-slide" id="slide-14" data-title="Agent world (market reviews the call)" data-notes="Right after that call, MAYBE builds a small market of simulated people: buyers, parents, teenagers, rivals. They argue about the call, then each one decides on its own. On the left you see the result: what worked, what didn't, the qualifications they found, and whether I land on Dr. Lipp's wanted-candidates list. It's a synthetic estimate, kept apart from the real deal outcome." aria-roledescription="slide" aria-label="14 of 26: Agent world (market reviews the call)">
+<div class="deck-stage">
+<div class="anim-on" data-swarm data-swarm-img="deck/img/" style="--spd: 1; width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #FFFFFF; color: #09090B; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
+
+  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 52.0%; background: #7C3AED;"></div>
+
+  <!-- left: the review panel -->
+  <div style="position: absolute; left: 96px; top: 96px; width: 704px;">
+    <p class="rv" style="margin: 0 0 10px; font-family: 'Geist Mono', monospace; font-size: 17px; font-weight: 500; letter-spacing: .02em; color: #71717A;">After the call · Market review</p>
+    <h2 class="rv" style="margin: 0; font-size: 50px; font-weight: 700; line-height: 1; letter-spacing: -0.045em; animation-delay: calc(var(--spd) * 0.08s);">A market reviews your call.</h2>
+    <ol class="sw-steps rv" style="margin-top: 22px; animation-delay: calc(var(--spd) * 0.16s);">
+      <li data-swarm-step="spawn">01 Spawn</li><li data-swarm-step="talk">02 Talk</li><li data-swarm-step="think">03 Think</li><li data-swarm-step="result">04 Verdict</li>
+    </ol>
+  </div>
+
+  <section class="sw-card rv" data-swarm-panel aria-live="polite" style="animation-delay: calc(var(--spd) * 0.24s);">
+    <div class="sw-head">
+      <img src="deck/img/peep-student.svg" alt="">
+      <div><div class="sw-name" data-swarm-cand-name>Luc</div><div class="sw-meta" data-swarm-cand-meta>Candidate · Dr. Lipp sales trial · 1 call</div></div>
+      <span class="sw-mode" data-swarm-mode>Demo simulation</span>
+    </div>
+    <div class="sw-cols">
+      <div><p class="sw-label">What worked</p><ul class="sw-list" data-swarm-pros><li class="sw-empty" style="display:block;animation:none">Listening to the agents…</li></ul></div>
+      <div><p class="sw-label">What didn’t</p><ul class="sw-list is-con" data-swarm-cons><li class="sw-empty" style="display:block;animation:none">Listening to the agents…</li></ul></div>
+    </div>
+    <div class="sw-quals"><p class="sw-label">Qualifications found</p><div class="sw-chips" data-swarm-quals></div></div>
+    <div class="sw-outcome" data-swarm-outcome>
+      <p class="sw-label">Where the market stands</p>
+      <div class="sw-tally" data-swarm-tally>
+        <span>Convinced</span><i><b data-tally="yes" style="background:#09090B"></b></i>
+        <span>Needs more proof</span><i><b data-tally="maybe" style="background:#A1A1AA"></b></i>
+        <span>Not convinced</span><i><b data-tally="no" style="background:#FFFFFF"></b></i>
+      </div>
+      <div data-swarm-verdict hidden></div>
+    </div>
+    <div class="sw-prov"><span>Synthetic estimate · AI review of 1 call</span><span data-swarm-deal>Deal outcome kept separate</span></div>
+  </section>
+
+  <canvas data-swarm-canvas width="1920" height="1080" aria-hidden="true" style="position: absolute; inset: 0; width: 1920px; height: 1080px; pointer-events: none;"></canvas>
+
+  <div style="position: absolute; right: 180px; bottom: 32px; font-family: 'Geist Mono', monospace; font-size: 14px; color: #A1A1AA;">Simulated agents, AI-generated · Dr. Lipp: mockup only, no partnership implied</div>
+</div>
+</div>
+</section>
+<section class="deck-slide" id="slide-15" data-title="DICE design trial" data-notes="In the DICE trial you're a product designer. The festival checkout loses fans; you redesign it in the editor and run it against 1,000 synthetic fans. Those results are clearly labelled as synthetic estimates, not real users." aria-roledescription="slide" aria-label="15 of 26: DICE design trial">
 <div class="deck-stage">
 <div class="anim-on" style="--spd: 1; width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #FAFAFA; color: #09090B; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
-  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 54.2%; background: #7C3AED;"></div>
+  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 56.0%; background: #7C3AED;"></div>
   <div style="position: absolute; left: 120px; right: 120px; top: 0; bottom: 0; display: grid; grid-template-columns: 600px 936px; gap: 72px; align-items: center;">
     <div style="display: flex; flex-direction: column; gap: 18px;">
-      <p class="rv" style="margin: 0 0 18px; font-family: 'Geist Mono', monospace; font-size: 18px; font-weight: 500; letter-spacing: .02em; color: #71717A; animation-delay: calc(var(--spd) * 0.00s);"><span style="color: #5B21B6;">13</span> · Design trial</p>
+      <p class="rv" style="margin: 0 0 18px; font-family: 'Geist Mono', monospace; font-size: 18px; font-weight: 500; letter-spacing: .02em; color: #71717A; animation-delay: calc(var(--spd) * 0.00s);"><span style="color: #5B21B6;">14</span> · Design trial</p>
       <span class="rv" style="animation-delay: calc(var(--spd) * 0.09s); align-self: flex-start; padding: 6px 14px; border-radius: 8px; background: #09090B; color: #FAFAFA; font-size: 17px; font-weight: 500;">MAYBE trial · Simulated</span>
       <h2 class="rv" style="margin: 0; font-size: 80px; font-weight: 700; line-height: 1; letter-spacing: -0.045em; font-size: 72px; animation-delay: calc(var(--spd) * 0.18s);">Design for DICE</h2>
       <p class="rv" style="margin: 22px 0 0; font-size: 28px; line-height: 1.45; color: #52525B; margin: 0; font-size: 26px; animation-delay: calc(var(--spd) * 0.27s);">Fix the festival checkout in the editor, then test it with 1,000 synthetic fans.</p>
@@ -314,12 +406,12 @@
 </div>
 </div>
 </section>
-<section class="deck-slide" id="slide-15" data-title="Honest scoring" data-notes="Every number on MAYBE says where it came from. Rule-based checks are deterministic. Synthetic estimates come from simulated users or buyers. AI review is a model grading against a rubric you can read. And whether you closed the deal is shown on its own, never mixed into your score." aria-roledescription="slide" aria-label="15 of 25: Honest scoring">
+<section class="deck-slide" id="slide-16" data-title="Honest scoring" data-notes="Every number on MAYBE says where it came from. Rule-based checks are deterministic. Synthetic estimates come from simulated users or buyers. AI review is a model grading against a rubric you can read. And whether you closed the deal is shown on its own, never mixed into your score." aria-roledescription="slide" aria-label="16 of 26: Honest scoring">
 <div class="deck-stage">
 <div class="anim-on" style="--spd: 1; width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #FFFFFF; color: #09090B; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
-  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 58.3%; background: #7C3AED;"></div>
+  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 60.0%; background: #7C3AED;"></div>
   <div style="position: absolute; left: 120px; right: 120px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center;">
-    <p class="rv" style="margin: 0 0 18px; font-family: 'Geist Mono', monospace; font-size: 18px; font-weight: 500; letter-spacing: .02em; color: #71717A; animation-delay: calc(var(--spd) * 0.00s);"><span style="color: #5B21B6;">14</span> · Honest scoring</p>
+    <p class="rv" style="margin: 0 0 18px; font-family: 'Geist Mono', monospace; font-size: 18px; font-weight: 500; letter-spacing: .02em; color: #71717A; animation-delay: calc(var(--spd) * 0.00s);"><span style="color: #5B21B6;">15</span> · Honest scoring</p>
     <h2 class="rv" style="margin: 0; font-size: 80px; font-weight: 700; line-height: 1; letter-spacing: -0.045em; font-size: 96px; max-width: 20ch; animation-delay: calc(var(--spd) * 0.09s);">Every score says where it came from.</h2>
     <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin-top: 56px;"><div class="rv" style="background: #FFFFFF; border: 1px solid #E4E4E7; border-radius: 14px; box-shadow: 0 1px 2px rgba(0,0,0,.04); padding: 34px; display: flex; flex-direction: column; gap: 18px; animation-delay: calc(var(--spd) * 0.18s);"><span style="align-self: flex-start; display: inline-flex; padding: 8px 22px; border-radius: 999px; border: 1.5px solid; font-size: 26px; font-weight: 500; color: #0E6680; border-color: #A5D8E6; background: #FFFFFF;">Rule-based</span><p style="margin: 0; font-size: 22px; line-height: 1.5; color: #52525B;">Deterministic checks anyone can re-run.</p><p style="margin: 0; font-size: 17px; color: #71717A; border-top: 1px solid #E4E4E7; padding-top: 16px;">Discovery questions asked, CRM fields complete, contrast passes.</p></div><div class="rv" style="background: #FFFFFF; border: 1px solid #E4E4E7; border-radius: 14px; box-shadow: 0 1px 2px rgba(0,0,0,.04); padding: 34px; display: flex; flex-direction: column; gap: 18px; animation-delay: calc(var(--spd) * 0.27s);"><span style="align-self: flex-start; display: inline-flex; padding: 8px 22px; border-radius: 999px; border: 1.5px solid; font-size: 26px; font-weight: 500; color: #92400E; background: #FFFBEB; border-color: #FDE68A;">Synthetic estimate</span><p style="margin: 0; font-size: 22px; line-height: 1.5; color: #52525B;">Simulated users or buyers. An estimate, never “real fans”.</p><p style="margin: 0; font-size: 17px; color: #71717A; border-top: 1px solid #E4E4E7; padding-top: 16px;">Checkout completion across 1,000 synthetic fans.</p></div><div class="rv" style="background: #FFFFFF; border: 1px solid #E4E4E7; border-radius: 14px; box-shadow: 0 1px 2px rgba(0,0,0,.04); padding: 34px; display: flex; flex-direction: column; gap: 18px; animation-delay: calc(var(--spd) * 0.36s);"><span style="align-self: flex-start; display: inline-flex; padding: 8px 22px; border-radius: 999px; border: 1.5px solid; font-size: 26px; font-weight: 500; color: #5B21B6; background: #F5F3FF; border-color: #DDD6FE;">AI review</span><p style="margin: 0; font-size: 22px; line-height: 1.5; color: #52525B;">A model grading against a rubric you can open and read.</p><p style="margin: 0; font-size: 17px; color: #71717A; border-top: 1px solid #E4E4E7; padding-top: 16px;">Objection handling, design rationale.</p></div></div>
     <div class="rv" style="animation-delay: calc(var(--spd) * 0.45s); margin-top: 22px; padding: 24px 28px; border: 1.5px dashed #D4D4D8; border-radius: 14px; font-size: 22px; color: #52525B;"><strong style="color: #09090B; font-weight: 600;">Deal outcome is kept separate.</strong> Closing the trial order is shown on its own, so luck never inflates a skill score.</div>
@@ -327,13 +419,13 @@
 </div>
 </div>
 </section>
-<section class="deck-slide" id="slide-16" data-title="Student side" data-notes="After a trial, the student keeps the evidence: scores with provenance, transcripts, design files. They decide what goes into the portfolio and whether employers can see it." aria-roledescription="slide" aria-label="16 of 25: Student side">
+<section class="deck-slide" id="slide-17" data-title="Student side" data-notes="After a trial, the student keeps the evidence: scores with provenance, transcripts, design files. They decide what goes into the portfolio and whether employers can see it." aria-roledescription="slide" aria-label="17 of 26: Student side">
 <div class="deck-stage">
 <div class="anim-on" style="--spd: 1; width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #FAFAFA; color: #09090B; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
-  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 62.5%; background: #7C3AED;"></div>
+  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 64.0%; background: #7C3AED;"></div>
   <div style="position: absolute; left: 120px; right: 120px; top: 0; bottom: 0; display: grid; grid-template-columns: 600px 936px; gap: 72px; align-items: center;">
     <div style="display: flex; flex-direction: column; gap: 18px;">
-      <p class="rv" style="margin: 0 0 18px; font-family: 'Geist Mono', monospace; font-size: 18px; font-weight: 500; letter-spacing: .02em; color: #71717A; animation-delay: calc(var(--spd) * 0.00s);"><span style="color: #5B21B6;">15</span> · For students</p>
+      <p class="rv" style="margin: 0 0 18px; font-family: 'Geist Mono', monospace; font-size: 18px; font-weight: 500; letter-spacing: .02em; color: #71717A; animation-delay: calc(var(--spd) * 0.00s);"><span style="color: #5B21B6;">16</span> · For students</p>
       
       <h2 class="rv" style="margin: 0; font-size: 80px; font-weight: 700; line-height: 1; letter-spacing: -0.045em; font-size: 72px; animation-delay: calc(var(--spd) * 0.18s);">Keep the proof.</h2>
       <p class="rv" style="margin: 22px 0 0; font-size: 28px; line-height: 1.45; color: #52525B; margin: 0; font-size: 26px; animation-delay: calc(var(--spd) * 0.27s);">A dashboard of what you tried, what you liked and the evidence behind it. You choose what employers see.</p>
@@ -347,13 +439,13 @@
 </div>
 </div>
 </section>
-<section class="deck-slide" id="slide-17" data-title="Employer side" data-notes="Companies get a candidate board built from work they can inspect: call transcripts, design files and test results, each score linked to the rubric. From there they open the evidence and invite someone to interview." aria-roledescription="slide" aria-label="17 of 25: Employer side">
+<section class="deck-slide" id="slide-18" data-title="Employer side" data-notes="Companies get a candidate board built from work they can inspect: call transcripts, design files and test results, each score linked to the rubric. From there they open the evidence and invite someone to interview." aria-roledescription="slide" aria-label="18 of 26: Employer side">
 <div class="deck-stage">
 <div class="anim-on" style="--spd: 1; width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #FFFFFF; color: #09090B; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
-  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 66.7%; background: #7C3AED;"></div>
+  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 68.0%; background: #7C3AED;"></div>
   <div style="position: absolute; left: 120px; right: 120px; top: 0; bottom: 0; display: grid; grid-template-columns: 600px 936px; gap: 72px; align-items: center;">
     <div style="display: flex; flex-direction: column; gap: 18px;">
-      <p class="rv" style="margin: 0 0 18px; font-family: 'Geist Mono', monospace; font-size: 18px; font-weight: 500; letter-spacing: .02em; color: #71717A; animation-delay: calc(var(--spd) * 0.00s);"><span style="color: #5B21B6;">16</span> · For employers</p>
+      <p class="rv" style="margin: 0 0 18px; font-family: 'Geist Mono', monospace; font-size: 18px; font-weight: 500; letter-spacing: .02em; color: #71717A; animation-delay: calc(var(--spd) * 0.00s);"><span style="color: #5B21B6;">17</span> · For employers</p>
       
       <h2 class="rv" style="margin: 0; font-size: 80px; font-weight: 700; line-height: 1; letter-spacing: -0.045em; font-size: 72px; animation-delay: calc(var(--spd) * 0.18s);">Hire from work you can inspect.</h2>
       <p class="rv" style="margin: 22px 0 0; font-size: 28px; line-height: 1.45; color: #52525B; margin: 0; font-size: 26px; animation-delay: calc(var(--spd) * 0.27s);">Candidates who did your task, with transcripts, files and scores linked to a rubric.</p>
@@ -367,12 +459,12 @@
 </div>
 </div>
 </section>
-<section class="deck-slide" id="slide-18" data-title="Under the hood" data-notes="Under the hood: each trial is a scenario with a brief, tools and a rubric. Voice agents play the buyers, synthetic users test designs, and three kinds of scoring produce evidence with provenance. It's all built on one design system, shadcn with zinc and a single violet." aria-roledescription="slide" aria-label="18 of 25: Under the hood">
+<section class="deck-slide" id="slide-19" data-title="Under the hood" data-notes="Under the hood: each trial is a scenario with a brief, tools and a rubric. Voice agents play the buyers, synthetic users test designs, and three kinds of scoring produce evidence with provenance. It's all built on one design system, shadcn with zinc and a single violet." aria-roledescription="slide" aria-label="19 of 26: Under the hood">
 <div class="deck-stage">
 <div class="anim-on" style="--spd: 1; width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #09090B; color: #FAFAFA; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
-  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 70.8%; background: #7C3AED;"></div>
+  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 72.0%; background: #7C3AED;"></div>
   <div style="position: absolute; left: 120px; right: 120px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center;">
-    <p class="rv" style="margin: 0 0 18px; font-family: 'Geist Mono', monospace; font-size: 18px; font-weight: 500; letter-spacing: .02em; color: #A1A1AA; animation-delay: calc(var(--spd) * 0.00s);"><span style="color: #C4B5FD;">17</span> · Under the hood</p>
+    <p class="rv" style="margin: 0 0 18px; font-family: 'Geist Mono', monospace; font-size: 18px; font-weight: 500; letter-spacing: .02em; color: #A1A1AA; animation-delay: calc(var(--spd) * 0.00s);"><span style="color: #C4B5FD;">18</span> · Under the hood</p>
     <h2 class="rv" style="margin: 0; font-size: 80px; font-weight: 700; line-height: 1; letter-spacing: -0.045em; animation-delay: calc(var(--spd) * 0.09s);">How a trial works</h2>
     <div style="display: grid; grid-template-columns: minmax(0, 1fr) 56px minmax(0, 1.3fr) 56px minmax(0, 1fr); align-items: center; margin-top: 52px;">
       <div class="rv" style="animation-delay: calc(var(--spd) * 0.18s); display: flex; flex-direction: column; gap: 14px;"><span style="font-family: 'Geist Mono', monospace; font-size: 15px; font-weight: 500; color: #A1A1AA; text-transform: uppercase; letter-spacing: .08em;">Scenario</span><div style="padding: 20px 22px; border: 1px solid #3F3F46; border-radius: 12px; background: #18181B; "><h3 style="margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.01em;">Company brief</h3><p style="margin: 6px 0 0; font-size: 17px; line-height: 1.45; color: #A1A1AA;">Task, constraints, assets, time box.</p></div><div style="padding: 20px 22px; border: 1px solid #3F3F46; border-radius: 12px; background: #18181B; "><h3 style="margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.01em;">Rubric</h3><p style="margin: 6px 0 0; font-size: 17px; line-height: 1.45; color: #A1A1AA;">Criteria, weights, provenance per criterion.</p></div></div>
@@ -386,10 +478,10 @@
 </div>
 </div>
 </section>
-<section class="deck-slide" id="slide-19" data-title="The market" data-notes="Recruitment is big and under pressure. AI recruitment software alone is estimated at $5.1 billion in 2026, forecast to roughly double by 2035. In iHire's survey, more than half of employers say they get too many unqualified applicants, and a third want skills assessments. The $34B and $71B figures are separate categories, not our addressable market." aria-roledescription="slide" aria-label="19 of 25: The market">
+<section class="deck-slide" id="slide-20" data-title="The market" data-notes="Recruitment is big and under pressure. AI recruitment software alone is estimated at $5.1 billion in 2026, forecast to roughly double by 2035. In iHire's survey, more than half of employers say they get too many unqualified applicants, and a third want skills assessments. The $34B and $71B figures are separate categories, not our addressable market." aria-roledescription="slide" aria-label="20 of 26: The market">
 <div class="deck-stage">
 <div class="anim-on" style="--spd: 1; width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #FFFFFF; color: #09090B; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
-  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 75.0%; background: #7C3AED;"></div>
+  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 76.0%; background: #7C3AED;"></div>
   <div style="position: absolute; left: 160px; top: 140px; width: 1000px;">
     <h2 class="rv" style="margin: 0px 0 0; font-size: 80px; font-weight: 700; line-height: 1.02; letter-spacing: -0.045em; max-width: 16ch; animation-delay: calc(var(--spd) * 0.05s);">A <span style="color: #7C3AED;">$5.1B</span> market, set to almost double.</h2>
   </div>
@@ -408,10 +500,10 @@
 </div>
 </div>
 </section>
-<section class="deck-slide" id="slide-20" data-title="Why now" data-notes="Greenhouse customers now get 244 applications per job, more than double 2022, with fewer than half the recruiters. Europe shows the same: 99 to 183 per vacancy. These are Greenhouse benchmarks, not the whole labour market. At the same time, 70% of employers in NACE's survey hire on skills. Applications don't show skills. Work does." aria-roledescription="slide" aria-label="20 of 25: Why now">
+<section class="deck-slide" id="slide-21" data-title="Why now" data-notes="Greenhouse customers now get 244 applications per job, more than double 2022, with fewer than half the recruiters. Europe shows the same: 99 to 183 per vacancy. These are Greenhouse benchmarks, not the whole labour market. At the same time, 70% of employers in NACE's survey hire on skills. Applications don't show skills. Work does." aria-roledescription="slide" aria-label="21 of 26: Why now">
 <div class="deck-stage">
 <div class="anim-on" style="--spd: 1; width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #FFFFFF; color: #09090B; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
-  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 79.2%; background: #7C3AED;"></div>
+  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 80.0%; background: #7C3AED;"></div>
   <div style="position: absolute; left: 160px; top: 120px; width: 1600px;">
     <h2 class="rv" style="margin: 0px 0 0; font-size: 76px; font-weight: 700; line-height: 1.02; letter-spacing: -0.045em; max-width: 30ch; animation-delay: calc(var(--spd) * 0.05s);">More applicants. Fewer recruiters. A shift to <span style="color: #7C3AED;">skills</span>.</h2>
   </div>
@@ -433,10 +525,10 @@
 </div>
 </div>
 </section>
-<section class="deck-slide" id="slide-21" data-title="The European opportunity" data-notes="From 2 December 2027, high-risk AI used in hiring faces stricter EU AI Act requirements: transparency, documentation, risk management, data governance, human oversight, and checks for unfair outcomes. MAYBE is designed around transparent, human-reviewed work evidence. We're not claiming to be exempt or compliant; our own evaluations may be high-risk too." aria-roledescription="slide" aria-label="21 of 25: The European opportunity">
+<section class="deck-slide" id="slide-22" data-title="The European opportunity" data-notes="From 2 December 2027, high-risk AI used in hiring faces stricter EU AI Act requirements: transparency, documentation, risk management, data governance, human oversight, and checks for unfair outcomes. MAYBE is designed around transparent, human-reviewed work evidence. We're not claiming to be exempt or compliant; our own evaluations may be high-risk too." aria-roledescription="slide" aria-label="22 of 26: The European opportunity">
 <div class="deck-stage">
 <div class="anim-on" style="--spd: 1; width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #FFFFFF; color: #09090B; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
-  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 83.3%; background: #7C3AED;"></div>
+  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 84.0%; background: #7C3AED;"></div>
   <div style="position: absolute; left: 160px; top: 140px;">
     <h2 class="rv" style="margin: 0px 0 0; font-size: 80px; font-weight: 700; line-height: 1.02; letter-spacing: -0.045em; max-width: 22ch; animation-delay: calc(var(--spd) * 0.05s);">Europe will ask hiring AI to <span style="color: #7C3AED;">show its work</span>.</h2>
   </div>
@@ -455,10 +547,10 @@
 </div>
 </div>
 </section>
-<section class="deck-slide" id="slide-22" data-title="The business" data-notes="Exploring stays free or accessible for students. Employers pay for job-specific simulations, work-sample review and recruiting workflows, evidence-based assessment, and possibly a subscription. We haven't set prices or proven hiring ROI yet; that's what the pilots are for." aria-roledescription="slide" aria-label="22 of 25: The business">
+<section class="deck-slide" id="slide-23" data-title="The business" data-notes="Exploring stays free or accessible for students. Employers pay for job-specific simulations, work-sample review and recruiting workflows, evidence-based assessment, and possibly a subscription. We haven't set prices or proven hiring ROI yet; that's what the pilots are for." aria-roledescription="slide" aria-label="23 of 26: The business">
 <div class="deck-stage">
 <div class="anim-on" style="--spd: 1; width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #FFFFFF; color: #09090B; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
-  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 87.5%; background: #7C3AED;"></div>
+  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 88.0%; background: #7C3AED;"></div>
   <div style="position: absolute; left: 160px; top: 140px;">
     <h2 class="rv" style="margin: 0px 0 0; font-size: 80px; font-weight: 700; line-height: 1.02; letter-spacing: -0.045em; max-width: 20ch; animation-delay: calc(var(--spd) * 0.05s);">Free to explore. Paid by employers who want <span style="color: #7C3AED;">proof</span>.</h2>
   </div>
@@ -473,12 +565,12 @@
 </div>
 </div>
 </section>
-<section class="deck-slide" id="slide-23" data-title="What's next" data-notes="Next: we start with parents, run pilots, then bring it to schools. What we'd love from you is in the three boxes. And if you have questions, ask our agent right here, it knows the project and can move the slides." aria-roledescription="slide" aria-label="23 of 25: What's next">
+<section class="deck-slide" id="slide-24" data-title="What's next" data-notes="Next: we start with parents, run pilots, then bring it to schools. What we'd love from you is in the three boxes. And if you have questions, ask our agent right here, it knows the project and can move the slides." aria-roledescription="slide" aria-label="24 of 26: What's next">
 <div class="deck-stage">
 <div class="anim-on" style="--spd: 1; width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #FFFFFF; color: #09090B; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
-  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 91.7%; background: #7C3AED;"></div>
+  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 92.0%; background: #7C3AED;"></div>
   <div style="position: absolute; left: 120px; right: 120px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center;">
-    <p class="rv" style="margin: 0 0 18px; font-family: 'Geist Mono', monospace; font-size: 18px; font-weight: 500; letter-spacing: .02em; color: #71717A; animation-delay: calc(var(--spd) * 0.00s);"><span style="color: #5B21B6;">22</span> · What's next</p>
+    <p class="rv" style="margin: 0 0 18px; font-family: 'Geist Mono', monospace; font-size: 18px; font-weight: 500; letter-spacing: .02em; color: #71717A; animation-delay: calc(var(--spd) * 0.00s);"><span style="color: #5B21B6;">23</span> · What's next</p>
     <h2 class="rv" style="margin: 0; font-size: 80px; font-weight: 700; line-height: 1; letter-spacing: -0.045em; font-size: 96px; animation-delay: calc(var(--spd) * 0.09s);">Start small, with real students.</h2>
     <div class="rv" style="animation-delay: calc(var(--spd) * 0.18s); display: flex; align-items: center; gap: 16px; margin-top: 36px;"><span style="background: #FFFFFF; border: 1px solid #E4E4E7; border-radius: 14px; box-shadow: 0 1px 2px rgba(0,0,0,.04); padding: 16px 24px; font-size: 24px; font-weight: 600; border-color: #7C3AED; box-shadow: 0 0 0 4px #EDE9FE;">Parents</span><span style="font-size: 26px; color: #71717A;" aria-hidden="true">→</span><span style="background: #FFFFFF; border: 1px solid #E4E4E7; border-radius: 14px; box-shadow: 0 1px 2px rgba(0,0,0,.04); padding: 16px 24px; font-size: 24px; font-weight: 600; ">Pilots</span><span style="font-size: 26px; color: #71717A;" aria-hidden="true">→</span><span style="background: #FFFFFF; border: 1px solid #E4E4E7; border-radius: 14px; box-shadow: 0 1px 2px rgba(0,0,0,.04); padding: 16px 24px; font-size: 24px; font-weight: 600; ">Schools</span></div>
     <ul style="margin: 36px 0 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px;"><li class="rv" style="background: #FFFFFF; border: 1px solid #E4E4E7; border-radius: 14px; box-shadow: 0 1px 2px rgba(0,0,0,.04); padding: 26px; animation-delay: calc(var(--spd) * 0.27s);"><h3 style="margin: 0; font-size: 30px; font-weight: 600; letter-spacing: -0.03em; line-height: 1.2;">[Ask 1]</h3><p style="margin: 8px 0 0; font-size: 20px; color: #52525B;">[What we need from the jury or partners]</p></li><li class="rv" style="background: #FFFFFF; border: 1px solid #E4E4E7; border-radius: 14px; box-shadow: 0 1px 2px rgba(0,0,0,.04); padding: 26px; animation-delay: calc(var(--spd) * 0.36s);"><h3 style="margin: 0; font-size: 30px; font-weight: 600; letter-spacing: -0.03em; line-height: 1.2;">[Ask 2]</h3><p style="margin: 8px 0 0; font-size: 20px; color: #52525B;">[A company willing to host the first real trial]</p></li><li class="rv" style="background: #FFFFFF; border: 1px solid #E4E4E7; border-radius: 14px; box-shadow: 0 1px 2px rgba(0,0,0,.04); padding: 26px; animation-delay: calc(var(--spd) * 0.45s);"><h3 style="margin: 0; font-size: 30px; font-weight: 600; letter-spacing: -0.03em; line-height: 1.2;">[Ask 3]</h3><p style="margin: 8px 0 0; font-size: 20px; color: #52525B;">[Pilot students or schools]</p></li></ul>
@@ -491,10 +583,10 @@
 </div>
 </div>
 </section>
-<section class="deck-slide" id="slide-24" data-title="Back to the start" data-notes="Back to where we started. How are you supposed to know what you want to do if you've never tried it? And how are employers supposed to recognize your potential if you never get the chance to demonstrate it?" aria-roledescription="slide" aria-label="24 of 25: Back to the start">
+<section class="deck-slide" id="slide-25" data-title="Back to the start" data-notes="Back to where we started. How are you supposed to know what you want to do if you've never tried it? And how are employers supposed to recognize your potential if you never get the chance to demonstrate it?" aria-roledescription="slide" aria-label="25 of 26: Back to the start">
 <div class="deck-stage">
 <div class="anim-on" style="--spd: 1; width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #09090B; color: #FAFAFA; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
-  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 95.8%; background: #7C3AED;"></div>
+  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 96.0%; background: #7C3AED;"></div>
   <div style="position: absolute; left: 160px; right: 160px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center;">
     <h2 class="rv" style="margin: 0px 0 0; font-size: 96px; font-weight: 700; line-height: 1.02; letter-spacing: -0.045em; max-width: 20ch; animation-delay: calc(var(--spd) * 0.20s);">How do you know what you want, if you’ve never <span style="color: #C4B5FD;">tried</span> it?</h2>
     <h2 class="rv" style="margin: 64px 0 0; font-size: 72px; font-weight: 700; line-height: 1.02; letter-spacing: -0.045em; max-width: 26ch; color: #D4D4D8; animation-delay: calc(var(--spd) * 1.40s);">How can employers see your potential, if you never get to <span style="color: #C4B5FD;">show</span> it?</h2>
@@ -502,7 +594,7 @@
 </div>
 </div>
 </section>
-<section class="deck-slide" id="slide-25" data-title="Try it. Prove it." data-notes="For years, technology has helped companies decide who deserves a chance. We're building technology that gives more people the chance to prove themselves. MAYBE. Try it. Prove it. Thank you." aria-roledescription="slide" aria-label="25 of 25: Try it. Prove it.">
+<section class="deck-slide" id="slide-26" data-title="Try it. Prove it." data-notes="For years, technology has helped companies decide who deserves a chance. We're building technology that gives more people the chance to prove themselves. MAYBE. Try it. Prove it. Thank you." aria-roledescription="slide" aria-label="26 of 26: Try it. Prove it.">
 <div class="deck-stage">
 <div class="anim-on" style="--spd: 1; width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #FFFFFF; color: #09090B; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
   <div style="position: absolute; left: 0; top: 0; height: 4px; width: 100.0%; background: #7C3AED;"></div>
@@ -521,7 +613,7 @@
 
 <nav class="deck-nav" aria-label="Slide controls">
   <button type="button" class="deck-btn" data-prev aria-label="Previous slide"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
-  <span class="deck-count" aria-live="polite"><span data-cur>1</span> / <span data-total>25</span></span>
+  <span class="deck-count" aria-live="polite"><span data-cur>1</span> / <span data-total>26</span></span>
   <button type="button" class="deck-btn" data-next aria-label="Next slide"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
   <button type="button" class="deck-btn" data-fullscreen aria-label="Full screen"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button>
 </nav>
@@ -538,6 +630,7 @@
 </div>
 
 <script src="assets/live-call.js" defer></script>
+<script src="assets/agent-world.js" defer></script>
 <script src="assets/deck.js" defer></script>
 </body>
 </html>
