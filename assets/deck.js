@@ -58,14 +58,36 @@
     root.classList.add('anim-on');
   }
 
+  // Intro video on a slide (canvas boards with video.mb-intro): play when the slide opens, reset when it closes.
+  function setIntro(slide, on) {
+    const v = slide && slide.querySelector('video.mb-intro');
+    if (!v) return;
+    const root = slide.querySelector('.deck-stage > *');
+    if (root.classList.contains('mb-intro-off')) return;
+    clearTimeout(v._t);
+    if (on) {
+      v._t = setTimeout(() => {
+        root.classList.remove('mb-waiting', 'mb-playing');
+        void root.offsetWidth;
+        root.classList.add('mb-playing');
+        try { v.currentTime = 0; } catch (e) {}
+        const p = v.play(); if (p && p.catch) p.catch(() => {});
+      }, 250);
+    } else {
+      root.classList.remove('mb-playing'); root.classList.add('mb-waiting');
+      v.pause(); try { v.currentTime = 0; } catch (e) {}
+    }
+  }
+
   function go(i, { focus = false } = {}) {
     i = Math.max(0, Math.min(total - 1, i));
     if (i === index) return;
-    if (slides[index]) slides[index].classList.remove('is-active');
+    if (slides[index]) { slides[index].classList.remove('is-active'); setIntro(slides[index], false); }
     index = i;
     const s = slides[i];
     s.classList.add('is-active');
     restartAnimations(s);
+    setIntro(s, true);
     mountLive(s);
     if (slides[i + 1]) mountLive(slides[i + 1]); // preload the next live screen
     cur.textContent = String(i + 1);

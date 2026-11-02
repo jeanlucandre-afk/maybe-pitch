@@ -7,7 +7,7 @@
       "h": 1040,
       "is_interactive": true,
       "page": "live",
-      "title": "Employer \u00b7 Candidate board",
+      "title": "Employer · Candidate board",
       "w": 1440,
       "x": 3040,
       "y": 1360
@@ -17,7 +17,7 @@
       "h": 1250,
       "is_interactive": true,
       "page": "live",
-      "title": "Employer \u00b7 Candidate evidence",
+      "title": "Employer · Candidate evidence",
       "w": 1440,
       "x": 0,
       "y": 2800
@@ -27,7 +27,7 @@
       "h": 1200,
       "is_interactive": true,
       "page": "live",
-      "title": "Employer \u00b7 Create experience",
+      "title": "Employer · Create experience",
       "w": 1440,
       "x": 3040,
       "y": 2800
@@ -37,7 +37,7 @@
       "h": 1320,
       "is_interactive": true,
       "page": "live",
-      "title": "DICE \u00b7 Design editor",
+      "title": "DICE · Design editor",
       "w": 1440,
       "x": 1520,
       "y": 1360
@@ -47,7 +47,7 @@
       "h": 1050,
       "is_interactive": true,
       "page": "live",
-      "title": "Employer \u00b7 Interview invitation",
+      "title": "Employer · Interview invitation",
       "w": 1440,
       "x": 1520,
       "y": 2800
@@ -67,7 +67,7 @@
       "h": 1180,
       "is_interactive": true,
       "page": "live",
-      "title": "Student \u00b7 Dashboard",
+      "title": "Student · Dashboard",
       "w": 1440,
       "x": 1520,
       "y": 0
@@ -77,117 +77,133 @@
       "h": 1240,
       "is_interactive": true,
       "page": "live",
-      "title": "Student \u00b7 Marketplace",
+      "title": "Student · Marketplace",
       "w": 1440,
       "x": 3040,
       "y": 0
+    },
+    "Piece-r56u.dc.html": {
+      "frameless": true,
+      "h": 1080,
+      "title": "Element",
+      "w": 1920,
+      "x": 0,
+      "y": -1428
     },
     "SalesCRM.dc.html": {
       "expand": "fill",
       "h": 1000,
       "is_interactive": true,
       "page": "live",
-      "title": "Dr. Lipp \u00b7 Sales CRM",
+      "title": "Dr. Lipp · Sales CRM",
       "w": 1440,
       "x": 0,
       "y": 1360
     },
     "Slide01.dc.html": {
-      "x": 0,
-      "y": 0,
-      "w": 1920,
       "h": 1080,
-      "title": "01 \u00b7 Title",
-      "page": "presentation"
+      "page": "presentation",
+      "title": "01 · Title (intro plays when shown)",
+      "w": 1920,
+      "x": 0,
+      "y": 0
     },
     "Slide02.dc.html": {
-      "x": 2040,
-      "y": 0,
-      "w": 1920,
       "h": 1080,
-      "title": "02 \u00b7 Problem",
-      "page": "presentation"
+      "page": "presentation",
+      "title": "02 · Problem",
+      "w": 1920,
+      "x": 2040,
+      "y": 0
     },
     "Slide03.dc.html": {
-      "x": 0,
-      "y": 1500,
-      "w": 1920,
       "h": 1080,
-      "title": "03 \u00b7 Idea",
-      "page": "presentation"
+      "page": "presentation",
+      "title": "03 · Idea",
+      "w": 1920,
+      "x": 0,
+      "y": 1500
     },
     "Slide04.dc.html": {
-      "x": 2040,
-      "y": 1500,
-      "w": 1920,
       "h": 1080,
-      "title": "04 \u00b7 Live marketplace",
-      "page": "presentation"
+      "page": "presentation",
+      "title": "04 · Live marketplace",
+      "w": 1920,
+      "x": 2040,
+      "y": 1500
     },
     "Slide05.dc.html": {
+      "h": 1080,
+      "page": "presentation",
+      "title": "05 · Dr. Lipp sales trial",
+      "w": 1920,
       "x": 0,
-      "y": 3000,
-      "w": 1920,
-      "h": 1080,
-      "title": "05 \u00b7 Dr. Lipp sales trial",
-      "page": "presentation"
-    },
-    "Slide06.dc.html": {
-      "x": 2040,
-      "y": 3000,
-      "w": 1920,
-      "h": 1080,
-      "title": "06 \u00b7 DICE design trial",
-      "page": "presentation"
-    },
-    "Slide07.dc.html": {
-      "x": 0,
-      "y": 4500,
-      "w": 1920,
-      "h": 1080,
-      "title": "07 \u00b7 Honest scoring",
-      "page": "presentation"
-    },
-    "Slide08.dc.html": {
-      "x": 2040,
-      "y": 4500,
-      "w": 1920,
-      "h": 1080,
-      "title": "08 \u00b7 Student side",
-      "page": "presentation"
-    },
-    "Slide09.dc.html": {
-      "x": 0,
-      "y": 6000,
-      "w": 1920,
-      "h": 1080,
-      "title": "09 \u00b7 Employer side",
-      "page": "presentation"
-    },
-    "Slide10.dc.html": {
-      "x": 2040,
-      "y": 6000,
-      "w": 1920,
-      "h": 1080,
-      "title": "10 \u00b7 Under the hood",
-      "page": "presentation"
-    },
-    "Slide11.dc.html": {
-      "x": 0,
-      "y": 7500,
-      "w": 1920,
-      "h": 1080,
-      "title": "11 \u00b7 What's next",
-      "page": "presentation"
+      "y": 3000
     },
     "Slide05b.dc.html": {
-      "x": 4080,
-      "y": 3000,
-      "w": 1920,
       "h": 1080,
-      "title": "05b \u00b7 Live call (voice agent)",
+      "is_interactive": true,
       "page": "presentation",
-      "is_interactive": true
+      "title": "05b · Live call (voice agent)",
+      "w": 1920,
+      "x": 4080,
+      "y": 3000
+    },
+    "Slide06.dc.html": {
+      "h": 1080,
+      "page": "presentation",
+      "title": "06 · DICE design trial",
+      "w": 1920,
+      "x": 2040,
+      "y": 3000
+    },
+    "Slide07.dc.html": {
+      "h": 1080,
+      "page": "presentation",
+      "title": "07 · Honest scoring",
+      "w": 1920,
+      "x": 0,
+      "y": 4500
+    },
+    "Slide08.dc.html": {
+      "h": 1080,
+      "page": "presentation",
+      "title": "08 · Student side",
+      "w": 1920,
+      "x": 2040,
+      "y": 4500
+    },
+    "Slide09.dc.html": {
+      "h": 1080,
+      "page": "presentation",
+      "title": "09 · Employer side",
+      "w": 1920,
+      "x": 0,
+      "y": 6000
+    },
+    "Slide10.dc.html": {
+      "h": 1080,
+      "page": "presentation",
+      "title": "10 · Under the hood",
+      "w": 1920,
+      "x": 2040,
+      "y": 6000
+    },
+    "Slide11.dc.html": {
+      "h": 1080,
+      "page": "presentation",
+      "title": "11 · What's next",
+      "w": 1920,
+      "x": 0,
+      "y": 7500
+    },
+    "Slide00.dc.html": {
+      "h": 1080,
+      "page": "presentation",
+      "title": "00 · Black (press next to start the intro)",
+      "w": 1920,
+      "x": -2040,
+      "y": 0
     }
   },
   "createdOnFiles": {
@@ -204,130 +220,148 @@
     }
   ],
   "launch": {
+    "page": "presentation",
     "view": "canvas"
   },
+  "noteOrder": [
+    "livetitle",
+    "prestitle",
+    "notes01",
+    "notes02",
+    "notes03",
+    "notes04",
+    "notes05",
+    "notes06",
+    "notes07",
+    "notes08",
+    "notes09",
+    "notes10",
+    "notes11",
+    "notes05b",
+    "dev05b"
+  ],
   "notes": {
+    "dev05b": {
+      "fill": "purple",
+      "page": "presentation",
+      "text": "For the developer · live call\nDrive this slide with window.MAYBE_CALL: setMode('you'|'agent'|'idle'), setLevel(0–1) for mic/agent volume, addMessage('you'|'agent', text), clear(). Full spec: maybe/pitch/LIVE-CALL.md.",
+      "w": 600,
+      "x": 4720,
+      "y": 4100
+    },
     "livetitle": {
       "kind": "title1",
       "maxW": 4480,
       "page": "live",
-      "text": "MAYBE \u00b7 Live system \u00b7 clickable build spec",
+      "text": "MAYBE · Live system · clickable build spec",
       "w": 240,
       "x": 0,
       "y": -300
     },
-    "prestitle": {
-      "kind": "title1",
-      "x": 0,
-      "y": -300,
-      "w": 240,
-      "maxW": 3960,
-      "page": "presentation",
-      "text": "MAYBE \u00b7 Hackathon presentation"
-    },
     "notes01": {
-      "x": 0,
-      "y": 1100,
-      "w": 600,
       "fill": "gray",
       "page": "presentation",
-      "text": "Notes \u00b7 01 \u00b7 Title\nHi, we're Luc and Friederike. MAYBE lets students try real work from real companies for about an hour before they choose a degree or a job. Everything you'll see is a working prototype; the companies are examples, not partners."
+      "text": "Notes · 01 · Title\nHi, we're Luc and Friederike. MAYBE lets students try real work from real companies for about an hour before they choose a degree or a job. Everything you'll see is a working prototype; the companies are examples, not partners.",
+      "w": 600,
+      "x": 0,
+      "y": 1100
     },
     "notes02": {
-      "x": 2040,
-      "y": 1100,
-      "w": 600,
       "fill": "gray",
       "page": "presentation",
-      "text": "Notes \u00b7 02 \u00b7 Problem\nAt Stuzubi we asked students who named a dream career one question: have you actually tried it? Almost nobody had. They choose from descriptions, rankings and what their parents know. The cost of a wrong choice shows up years later."
+      "text": "Notes · 02 · Problem\nAt Stuzubi we asked students who named a dream career one question: have you actually tried it? Almost nobody had. They choose from descriptions, rankings and what their parents know. The cost of a wrong choice shows up years later.",
+      "w": 600,
+      "x": 2040,
+      "y": 1100
     },
     "notes03": {
-      "x": 0,
-      "y": 2600,
-      "w": 600,
       "fill": "gray",
       "page": "presentation",
-      "text": "Notes \u00b7 03 \u00b7 Idea\nThe idea: a marketplace of one-hour work trials, each branded by a company. You call AI retail buyers for Dr. Lipp, or redesign the DICE festival checkout and test it on synthetic fans. You leave with scored evidence, not a personality label."
+      "text": "Notes · 03 · Idea\nThe idea: a marketplace of one-hour work trials, each branded by a company. You call AI retail buyers for Dr. Lipp, or redesign the DICE festival checkout and test it on synthetic fans. You leave with scored evidence, not a personality label.",
+      "w": 600,
+      "x": 0,
+      "y": 2600
     },
     "notes04": {
-      "x": 2040,
-      "y": 2600,
-      "w": 600,
       "fill": "gray",
       "page": "presentation",
-      "text": "Notes \u00b7 04 \u00b7 Live marketplace\nThis is the live marketplace. Two trials are playable today: DICE product design and Dr. Lipp sales. You can scroll and click inside the frame. The other companies are coming-soon previews."
+      "text": "Notes · 04 · Live marketplace\nThis is the live marketplace. Two trials are playable today: DICE product design and Dr. Lipp sales. You can scroll and click inside the frame. The other companies are coming-soon previews.",
+      "w": 600,
+      "x": 2040,
+      "y": 2600
     },
     "notes05": {
+      "fill": "gray",
+      "page": "presentation",
+      "text": "Notes · 05 · Dr. Lipp sales trial\nIn the Dr. Lipp trial you're a sales rep. You call three AI retail buyers by voice, handle objections about price and shelf space, and update the CRM. The black strip on top always says it's a simulated MAYBE trial.",
+      "w": 600,
       "x": 0,
-      "y": 4100,
-      "w": 600,
-      "fill": "gray",
-      "page": "presentation",
-      "text": "Notes \u00b7 05 \u00b7 Dr. Lipp sales trial\nIn the Dr. Lipp trial you're a sales rep. You call three AI retail buyers by voice, handle objections about price and shelf space, and update the CRM. The black strip on top always says it's a simulated MAYBE trial."
-    },
-    "notes06": {
-      "x": 2040,
-      "y": 4100,
-      "w": 600,
-      "fill": "gray",
-      "page": "presentation",
-      "text": "Notes \u00b7 06 \u00b7 DICE design trial\nIn the DICE trial you're a product designer. The festival checkout loses fans; you redesign it in the editor and run it against 1,000 synthetic fans. Those results are clearly labelled as synthetic estimates, not real users."
-    },
-    "notes07": {
-      "x": 0,
-      "y": 5600,
-      "w": 600,
-      "fill": "gray",
-      "page": "presentation",
-      "text": "Notes \u00b7 07 \u00b7 Honest scoring\nEvery number on MAYBE says where it came from. Rule-based checks are deterministic. Synthetic estimates come from simulated users or buyers. AI review is a model grading against a rubric you can read. And whether you closed the deal is shown on its own, never mixed into your score."
-    },
-    "notes08": {
-      "x": 2040,
-      "y": 5600,
-      "w": 600,
-      "fill": "gray",
-      "page": "presentation",
-      "text": "Notes \u00b7 08 \u00b7 Student side\nAfter a trial, the student keeps the evidence: scores with provenance, transcripts, design files. They decide what goes into the portfolio and whether employers can see it."
-    },
-    "notes09": {
-      "x": 0,
-      "y": 7100,
-      "w": 600,
-      "fill": "gray",
-      "page": "presentation",
-      "text": "Notes \u00b7 09 \u00b7 Employer side\nCompanies get a candidate board built from work they can inspect: call transcripts, design files and test results, each score linked to the rubric. From there they open the evidence and invite someone to interview."
-    },
-    "notes10": {
-      "x": 2040,
-      "y": 7100,
-      "w": 600,
-      "fill": "gray",
-      "page": "presentation",
-      "text": "Notes \u00b7 10 \u00b7 Under the hood\nUnder the hood: each trial is a scenario with a brief, tools and a rubric. Voice agents play the buyers, synthetic users test designs, and three kinds of scoring produce evidence with provenance. It's all built on one design system, shadcn with zinc and a single violet."
-    },
-    "notes11": {
-      "x": 0,
-      "y": 8600,
-      "w": 600,
-      "fill": "gray",
-      "page": "presentation",
-      "text": "Notes \u00b7 11 \u00b7 What's next\nNext: we start with parents, run pilots, then bring it to schools. What we'd love from you is in the three boxes. And if you have questions, ask our agent right here, it knows the project and can move the slides."
+      "y": 4100
     },
     "notes05b": {
-      "x": 4080,
-      "y": 4100,
-      "w": 600,
       "fill": "gray",
       "page": "presentation",
-      "text": "Notes \u00b7 05b \u00b7 Live call\nNow let's call a buyer for real. I'll talk to Mara, our AI retail buyer, live. Watch the orb react to my voice and her answers appear on the right."
-    },
-    "dev05b": {
-      "x": 4720,
-      "y": 4100,
+      "text": "Notes · 05b · Live call\nNow let's call a buyer for real. I'll talk to Mara, our AI retail buyer, live. Watch the orb react to my voice and her answers appear on the right.",
       "w": 600,
-      "fill": "purple",
+      "x": 4080,
+      "y": 4100
+    },
+    "notes06": {
+      "fill": "gray",
       "page": "presentation",
-      "text": "For the developer \u00b7 live call\nDrive this slide with window.MAYBE_CALL: setMode('you'|'agent'|'idle'), setLevel(0\u20131) for mic/agent volume, addMessage('you'|'agent', text), clear(). Full spec: maybe/pitch/LIVE-CALL.md."
+      "text": "Notes · 06 · DICE design trial\nIn the DICE trial you're a product designer. The festival checkout loses fans; you redesign it in the editor and run it against 1,000 synthetic fans. Those results are clearly labelled as synthetic estimates, not real users.",
+      "w": 600,
+      "x": 2040,
+      "y": 4100
+    },
+    "notes07": {
+      "fill": "gray",
+      "page": "presentation",
+      "text": "Notes · 07 · Honest scoring\nEvery number on MAYBE says where it came from. Rule-based checks are deterministic. Synthetic estimates come from simulated users or buyers. AI review is a model grading against a rubric you can read. And whether you closed the deal is shown on its own, never mixed into your score.",
+      "w": 600,
+      "x": 0,
+      "y": 5600
+    },
+    "notes08": {
+      "fill": "gray",
+      "page": "presentation",
+      "text": "Notes · 08 · Student side\nAfter a trial, the student keeps the evidence: scores with provenance, transcripts, design files. They decide what goes into the portfolio and whether employers can see it.",
+      "w": 600,
+      "x": 2040,
+      "y": 5600
+    },
+    "notes09": {
+      "fill": "gray",
+      "page": "presentation",
+      "text": "Notes · 09 · Employer side\nCompanies get a candidate board built from work they can inspect: call transcripts, design files and test results, each score linked to the rubric. From there they open the evidence and invite someone to interview.",
+      "w": 600,
+      "x": 0,
+      "y": 7100
+    },
+    "notes10": {
+      "fill": "gray",
+      "page": "presentation",
+      "text": "Notes · 10 · Under the hood\nUnder the hood: each trial is a scenario with a brief, tools and a rubric. Voice agents play the buyers, synthetic users test designs, and three kinds of scoring produce evidence with provenance. It's all built on one design system, shadcn with zinc and a single violet.",
+      "w": 600,
+      "x": 2040,
+      "y": 7100
+    },
+    "notes11": {
+      "fill": "gray",
+      "page": "presentation",
+      "text": "Notes · 11 · What's next\nNext: we start with parents, run pilots, then bring it to schools. What we'd love from you is in the three boxes. And if you have questions, ask our agent right here, it knows the project and can move the slides.",
+      "w": 600,
+      "x": 0,
+      "y": 8600
+    },
+    "prestitle": {
+      "kind": "title1",
+      "maxW": 3960,
+      "page": "presentation",
+      "text": "MAYBE · Hackathon presentation",
+      "w": 240,
+      "x": 0,
+      "y": -300
     }
   },
   "order": [
@@ -340,6 +374,7 @@
     "CandidateEvidence.dc.html",
     "InterviewInvite.dc.html",
     "CreateExperience.dc.html",
+    "Slide00.dc.html",
     "Slide01.dc.html",
     "Slide02.dc.html",
     "Slide03.dc.html",
@@ -351,16 +386,17 @@
     "Slide08.dc.html",
     "Slide09.dc.html",
     "Slide10.dc.html",
-    "Slide11.dc.html"
+    "Slide11.dc.html",
+    "Piece-r56u.dc.html"
   ],
   "pages": [
     {
-      "id": "live",
-      "name": "Live system"
-    },
-    {
       "id": "presentation",
       "name": "Presentation"
+    },
+    {
+      "id": "live",
+      "name": "Live system"
     }
   ],
   "title": "MAYBE Final"

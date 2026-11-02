@@ -12,46 +12,69 @@
 <style>
 body{margin:0}
 a{color:#09090B}a:hover{color:#52525B}
-@keyframes rv{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
-@keyframes rise{0%{transform:translateY(105%) rotate(4deg)}60%{transform:translateY(-6%) rotate(-2deg)}80%{transform:translateY(2%)}100%{transform:translateY(0) rotate(0)}}
-@keyframes drift{from{transform:scale(1.08) translateY(0)}to{transform:scale(1.08) translateY(-4%)}}
-@keyframes frame-in{from{opacity:0;transform:translateY(40px) scale(.97)}to{opacity:1;transform:none}}
-@keyframes scroll-shot{0%,15%{transform:translateY(0)}55%,70%{transform:translateY(var(--shot-scroll,-18%))}100%{transform:translateY(0)}}
-@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
-.anim-on .rv{animation:rv calc(.7s * var(--spd)) cubic-bezier(.2,.7,.2,1) both}
-.anim-on .rise{animation:rise calc(.8s * var(--spd)) cubic-bezier(.3,.7,.2,1) both}
-.anim-on .drift{animation:drift calc(9s * var(--spd)) ease-in-out infinite alternate}
-.anim-on .fin{animation:frame-in calc(.9s * var(--spd)) cubic-bezier(.2,.7,.2,1) both}
-.anim-on .shot{animation:scroll-shot calc(14s * var(--spd)) ease-in-out 1.4s infinite}
-.anim-on .grow{transform-origin:left center;animation:grow calc(.9s * var(--spd)) cubic-bezier(.2,.7,.2,1) both}
-@media (prefers-reduced-motion:reduce){.rv,.rise,.drift,.fin,.shot,.grow{animation:none!important}}
+@keyframes mb-intro-out{0%,96%{opacity:1;visibility:visible}100%{opacity:0;visibility:hidden}}
+.mb-intro{opacity:1}
+.mb-playing .mb-intro{animation:mb-intro-out 6.43s linear both}
+.mb-intro-off .mb-intro,.mb-intro-off .mb-black,.mb-playing .mb-black{display:none}
+.mb-black{position:absolute;inset:0;background:#09090B}
 </style>
 </helmet>
-<div class="{{animClass}}" style="--spd: {{spd}}; width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #FFFFFF; color: #09090B; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
-  <div style="position: absolute; left: 72px; top: 32px; display: flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 700; letter-spacing: -0.035em; color: #09090B;"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 4.5 L10.5 13 L10.5 20 M20.5 3.5 L11 14.5" fill="none" stroke="#09090B" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>MAYBE</div>
+<div class="{{rootClass}}" ref="{{setRoot}}" style="width: 1920px; height: 1080px; position: relative; overflow: hidden; background: #FFFFFF;">
+<div style="position: absolute; inset: 0; background: #FFFFFF; color: #09090B; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
   <div style="position: absolute; left: 0; top: 0; height: 4px; width: 9.1%; background: #7C3AED;"></div>
-  <div style="position: absolute; right: 72px; bottom: 32px; font-family: 'Geist Mono', monospace; font-size: 16px; color: #71717A;">1 / 11</div>
-  <div style="position: absolute; left: 120px; right: 120px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; right: auto; width: 1000px;">
-    <p class="rv" style="margin: 0 0 18px; font-family: 'Geist Mono', monospace; font-size: 18px; font-weight: 500; letter-spacing: .02em; color: #71717A; animation-delay: calc(var(--spd) * 0.00s);"><span style="color: #5B21B6;">Macromedia × CODE Hackathon</span> · 2026</p>
-    <h1 class="rv" style="margin: 0; font-size: 220px; font-weight: 700; line-height: .9; letter-spacing: -0.06em; animation-delay: calc(var(--spd) * 0.09s);">MAYBE</h1>
-    <p class="rv" style="margin: 28px 0 0; font-size: 48px; font-weight: 500; letter-spacing: -0.03em; line-height: 1.15; max-width: 18ch; animation-delay: calc(var(--spd) * 0.18s);">Try real work before you choose it.</p>
-    <div class="rv" style="margin-top: 52px; display: flex; gap: 12px 36px; flex-wrap: wrap; font-size: 22px; color: #52525B; animation-delay: calc(var(--spd) * 0.27s);"><span><strong style="color: #09090B; font-weight: 600;">Jean-Luc Andre Navarro</strong> · co-founder</span><span><strong style="color: #09090B; font-weight: 600;">Friederike Wirz</strong> · co-founder</span></div>
-  </div>
-  <div aria-hidden="true" style="position: absolute; right: 120px; bottom: 0; height: 640px; display: flex; align-items: flex-end;">
-    <div style="position: relative; width: 260px; height: 72%; overflow: hidden;"><img class="rise" src="/_blob/783a98b6d04d4f677ad5b680bc02635b" alt="" style="position: absolute; left: 0; bottom: -18%; width: 100%; animation-delay: calc(var(--spd) * .45s);"></div>
-    <div style="position: relative; width: 330px; height: 100%; overflow: hidden;"><img class="rise" src="/_blob/213175625e1003990abdd16ec3dd7643" alt="" style="position: absolute; left: 0; bottom: -18%; width: 100%; animation-delay: calc(var(--spd) * .25s);"></div>
-    <div style="position: relative; width: 260px; height: 72%; overflow: hidden;"><img class="rise" src="/_blob/3d46dca5b85688403842bc1ae495d845" alt="" style="position: absolute; left: 0; bottom: -18%; width: 100%; animation-delay: calc(var(--spd) * .6s);"></div>
+  <div style="position: absolute; right: 72px; bottom: 34px; font-family: 'Geist Mono', monospace; font-size: 16px; color: #71717A;">1 / 11</div>
+  <p style="position: absolute; left: 120px; top: 112px; margin: 0; font-family: 'Geist Mono', monospace; font-size: 24px; font-weight: 500; letter-spacing: .02em; color: #71717A;"><span style="color: #5B21B6;">Macromedia × CODE Hackathon</span> · 2026</p>
+  <div style="position: absolute; left: 120px; right: 120px; bottom: 120px; display: flex; flex-direction: column; gap: 64px;">
+    <h1 style="margin: 0 0 0 -20px; font-size: 506px; font-weight: 700; line-height: .78; letter-spacing: -0.065em;">MAYBE<span style="color: #7C3AED;">.</span></h1>
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 48px;">
+      <h2 style="margin: 0; font-size: 68px; font-weight: 600; line-height: 1; letter-spacing: -0.04em;">Try real work before you choose it.</h2>
+      <div style="display: flex; flex-direction: column; gap: 10px; flex-shrink: 0;">
+        <p style="margin: 0; font-family: 'Geist Mono', monospace; font-size: 18px; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; color: #71717A;">By</p>
+        <p style="margin: 0; font-size: 68px; font-weight: 600; line-height: 1; letter-spacing: -0.04em;">Boris &amp; Luc</p>
+      </div>
+    </div>
   </div>
 </div>
+<video class="mb-intro" ref="{{setVideo}}" src="/_blob/2c1cc64d39d1f024e59572de09cee528" muted="" playsinline="" preload="auto" aria-hidden="true" style="position: absolute; inset: 0; width: 1920px; height: 1080px; display: block;"></video>
+<div class="mb-black" aria-hidden="true"></div>
+</div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"animate": {"editor": "boolean", "default": true, "section": "Motion"}, "speed": {"editor": "enum", "options": ["slow", "normal", "fast"], "default": "normal", "section": "Motion"}, "$preview": {"width": 1920, "height": 1080}}'>
+<script type="text/x-dc" data-dc-script data-props='{"intro": {"editor": "boolean", "default": true, "section": "Motion"}, "$preview": {"width": 1920, "height": 1080}}'>
 class Component extends DCLogic {
+  componentDidMount() {
+    if (!this.root || typeof IntersectionObserver === 'undefined') return;
+    this.io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (e.intersectionRatio >= 0.6) this.begin();
+        else if (e.intersectionRatio === 0) this.reset();
+      }
+    }, { threshold: [0, 0.6] });
+    this.io.observe(this.root);
+  }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); clearTimeout(this.timer); }
+  begin() {
+    if ((this.props.intro ?? true) === false || (this.state && this.state.started)) return;
+    clearTimeout(this.timer);
+    this.timer = setTimeout(() => {          // let the slide change settle first
+      this.setState({ started: true });
+      const v = this.video;
+      if (v) { v.currentTime = 0; const p = v.play(); if (p && p.catch) p.catch(() => {}); }
+    }, 250);
+  }
+  reset() {
+    clearTimeout(this.timer);
+    if (!(this.state && this.state.started)) return;
+    this.setState({ started: false });
+    const v = this.video;
+    if (v) { v.pause(); v.currentTime = 0; }
+  }
   renderVals() {
-    const on = this.props.animate ?? true;
-    const spd = { slow: 1.5, normal: 1, fast: 0.6 }[this.props.speed ?? 'normal'] ?? 1;
+    const on = this.props.intro ?? true;
+    const started = !!(this.state && this.state.started);
     return {
-      animClass: on ? 'anim-on' : 'anim-off',
-      spd: String(spd),
+      rootClass: !on ? 'mb-intro-off' : (started ? 'mb-playing' : 'mb-waiting'),
+      setRoot: (el) => { this.root = el; },
+      setVideo: (el) => { this.video = el; },
     };
   }
 }
