@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Agent World storyboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* MAYBE · Brutal Zinc, monochrome: ink, white, zinc. No accent colour. */
+  :root { --ink:#09090B; --paper:#FFFFFF; --z50:#FAFAFA; --z100:#F4F4F5; --z200:#E4E4E7; --z300:#D4D4D8; --z400:#A1A1AA; --z500:#71717A; --z600:#52525B; }
+  html,body { margin:0; background:var(--paper); }
+  .slide { width:1920px; height:1080px; position:relative; overflow:hidden; background:var(--paper); color:var(--ink); font-family:Geist,system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+  .logo { position:absolute; left:72px; top:32px; display:flex; align-items:center; gap:10px; font-size:22px; font-weight:700; letter-spacing:-.035em; }
+  .bar { position:absolute; left:0; top:0; height:4px; background:var(--ink); }
+  .pg { position:absolute; right:72px; bottom:32px; font:16px 'Geist Mono',monospace; color:var(--z500); }
+  .copy { position:absolute; left:120px; top:200px; width:640px; }
+  .kicker { margin:0 0 18px; font:500 18px 'Geist Mono',monospace; letter-spacing:.02em; color:var(--z500); }
+  .kicker b { color:var(--ink); font-weight:500; }
+  h2 { margin:0; font-size:76px; font-weight:700; line-height:1.02; letter-spacing:-.045em; }
+  .sub { margin:24px 0 0; font-size:26px; line-height:1.45; color:var(--z600); }
+  .note { position:absolute; left:120px; bottom:72px; width:640px; padding:16px 20px; border:2px dashed var(--z300); border-radius:12px; font:15px/1.55 'Geist Mono',monospace; color:var(--z500); }
+  .note b { color:var(--ink); font-weight:500; }
+  .legal { position:absolute; left:72px; bottom:32px; font:14px 'Geist Mono',monospace; color:var(--z400); }
+  svg.world { position:absolute; inset:0; }
+  .tag { font:500 15px 'Geist Mono',monospace; }
+</style>
+</head>
+<body>
+<div class="slide" id="slide"></div>
+<script>
+const W = 1920, H = 1080;
+const frame = Number(new URLSearchParams(location.search).get('f') || 1);
+const PEEPS = ['student','seller','designer','recruiter','thinker'];
+
+// seeded RNG so every render is identical
+let s = 7; const rnd = () => (s = (s * 16807) % 2147483647) / 2147483647;
+
+// Fibonacci sphere
+const N = 560, pts = [];
+for (let i = 0; i < N; i++) {
+  const y = 1 - (i / (N - 1)) * 2, r = Math.sqrt(1 - y * y), th = i * 2.399963;
+  pts.push({ x: Math.cos(th) * r, y, z: Math.sin(th) * r, j: rnd() });
+}
+function rot(p, ay, ax) {
+  let x = p.x * Math.cos(ay) + p.z * Math.sin(ay), z = -p.x * Math.sin(ay) + p.z * Math.cos(ay), y = p.y;
+  const y2 = y * Math.cos(ax) - z * Math.sin(ax), z2 = y * Math.sin(ax) + z * Math.cos(ax);
+  return { x, y: y2, z: z2 };
+}
+// nearest neighbours for the "talking" mesh
+const nb = pts.map((p, i) => pts.map((q, k) => [k, (p.x-q.x)**2 + (p.y-q.y)**2 + (p.z-q.z)**2]).filter(a => a[0] !== i).sort((a, b) => a[1] - b[1]).slice(0, 3).map(a => a[0]));
+
+// three candidates; each agent leans toward one (by direction on the sphere)
+const CAND = [
+  { id:'A', peep:'student',  dir:{x:-.8,y:-.5,z:.3}, label:'Candidate A' },
+  { id:'B', peep:'designer', dir:{x:.7,y:-.2,z:.6},  label:'Candidate B' },
+  { id:'C', peep:'thinker',  dir:{x:.1,y:.9,z:-.2},  label:'Candidate C' },
+];
+pts.forEach(p => {
+  let best = 0, bd = -9;
+  CAND.forEach((c, k) => { const d = p.x*c.dir.x + p.y*c.dir.y + p.z*c.dir.z + (p.j - .5) * .9; if (d > bd) { bd = d; best = k; } });
+  p.lean = best;
+});
+
+const ROLES = ['Student, 16','Store buyer','Parent','Pharmacist','Teacher','Shop assistant','Rival brand','Influencer','Area manager','Grandparent','Gym owner','Teammate'];
+
+const F = {
+  1: { kicker:'01 · Spawn', h:'One trial goes in.', sub:'A student finishes the Dr. Lipp sales trial. MAYBE starts building a small world around that one piece of work.',
+       note:'<b>Motion</b> · trial card drops in (0.6s). First agents pop out of the card one by one, then faster, each on a short ink trail. 0–2s.',
+       cx:1300, cy:540, R:380, grow:.18, ay:.3, ax:-.25 },
+  2: { kicker:'02 · Populate', h:'It fills with people who look like the world.', sub:'Buyers, parents, teachers, rivals, teenagers. Simulated agents, each with its own needs and doubts.',
+       note:'<b>Motion</b> · dots stream outward and settle into a ball. Ball rotates slowly (one turn ≈ 30s). Front agents flip into faces with role tags. 2–5s.',
+       cx:1300, cy:540, R:400, grow:1, ay:.6, ax:-.25 },
+  3: { kicker:'03 · Talk', h:'They talk to each other.', sub:'Agents question the pitch, compare notes and push back, the way a real market would.',
+       note:'<b>Motion</b> · lines draw between neighbours, ink pulses travel along them. Speech bubbles pop in and fade (2s each, 3 on screen max). 5–10s.',
+       cx:1300, cy:540, R:400, grow:1, ay:.9, ax:-.25 },
+  4: { kicker:'04 · Weigh', h:'They work out what each pitch would change.', sub:'The ball splits into opinions. Every agent leans toward the candidate whose work convinced them.',
+       note:'<b>Motion</b> · agents re-shade by lean (outline · zinc · ink) and drift toward three clusters. Threads stretch to the candidate cards. 10–14s.',
+       cx:1150, cy:560, R:360, grow:1, ay:1.1, ax:-.25 },
+  5: { kicker:'05 · Fit', h:'The work that held up shows itself.', sub:'One result, with its source on it. Students keep the proof, employers inspect the work behind it.',
+       note:'<b>Motion</b> · most agents flow into the winning cluster and orbit it. The card inverts to ink, provenance tag stamps on. Hold. 14–18s.',
+       cx:1150, cy:560, R:360, grow:1, ay:1.3, ax:-.25 },
+}[frame];
+
+const el = document.getElementById('slide');
+el.innerHTML = `
+  <div class="bar" style="width:${frame * 20}%"></div>
+  <div class="logo"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M3.5 4.5 L10.5 13 L10.5 20 M20.5 3.5 L11 14.5" fill="none" stroke="#09090B" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>MAYBE</div>
+  <div class="pg">Storyboard · ${frame} / 5</div>
+  <div class="legal">Concept frame · simulated agents, illustrative only · Dr. Lipp: mockup only, no partnership implied</div>
+  <div class="copy"><p class="kicker"><b>Agent world</b> · ${F.kicker}</p><h2>${F.h}</h2><p class="sub">${F.sub}</p></div>
+  <div class="note">${F.note}</div>`;
+
+// ---------- SVG world ----------
+const g = [];
+const defs = [`<filter id="hs" x="-50%" y="-50%" width="200%" height="200%"><feOffset dx="4" dy="4"/></filter>`];
+const peepImg = (name, x, y, r, id) => {
+  defs.push(`<clipPath id="c${id}"><circle cx="${x}" cy="${y}" r="${r}"/></clipPath>`);
+  return `<circle cx="${x+3}" cy="${y+3}" r="${r+1}" fill="#09090B"/>
+    <circle cx="${x}" cy="${y}" r="${r}" fill="#F4F4F5" stroke="#09090B" stroke-width="2"/>
+    <image href="../../../assets/img/peep-${name}.svg" x="${x - r*1.25}" y="${y - r*0.95}" width="${r*2.5}" height="${r*3.5}" preserveAspectRatio="xMidYMin meet" clip-path="url(#c${id})"/>
+    <circle cx="${x}" cy="${y}" r="${r}" fill="none" stroke="#09090B" stroke-width="2"/>`;
+};
+const card = (x, y, w, h, inner, inv) => `
+  <rect x="${x+6}" y="${y+6}" width="${w}" height="${h}" rx="14" fill="#09090B"/>
+  <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="14" fill="${inv ? '#09090B' : '#FFFFFF'}" stroke="#09090B" stroke-width="2"/>${inner}`;
+const bubble = (x, y, who, text, tail = 'left') => {
+  const w = Math.max(text.length * 11.4 + 40, who.length * 9.6 + 40), h = 74;
+  const tx = tail === 'left' ? x + 28 : x + w - 28;
+  return `<g>
+    <rect x="${x+4}" y="${y+4}" width="${w}" height="${h}" rx="14" fill="#09090B"/>
+    <path d="M${tx-10} ${y+h-1} L${tx-14} ${y+h+16} L${tx+8} ${y+h-1}Z" fill="#FFFFFF" stroke="#09090B" stroke-width="2" stroke-linejoin="round"/>
+    <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="14" fill="#FFFFFF" stroke="#09090B" stroke-width="2"/>
+    <rect x="${tx-12}" y="${y+h-4}" width="22" height="6" fill="#FFFFFF"/>
+    <text x="${x+20}" y="${y+28}" font-family="Geist Mono" font-size="14" font-weight="500" fill="#71717A">${who}</text>
+    <text x="${x+20}" y="${y+56}" font-family="Geist" font-size="21" font-weight="500" fill="#09090B">${text}</text></g>`;
+};
+
+// project
+const CL = { 4: [ {x:-.6,y:-.55,r:.42}, {x:.42,y:0,r:.42}, {x:-.5,y:.62,r:.42} ],
+             5: [ {x:-.75,y:-.75,r:.13}, {x:.1,y:0,r:.62}, {x:-.65,y:.85,r:.13} ] };
+const clusterAt = k => { const c = CL[frame][k]; return { x: F.cx + c.x * F.R, y: F.cy + c.y * F.R, r: c.r * F.R }; };
+pts.forEach(p => { p.win = p.lean === 1 || p.j < .6; });   // frame 5: most agents converge on B
+const clusterKey = p => frame === 5 ? (p.win ? 1 : p.lean) : p.lean;
+const groups = [[], [], []]; pts.forEach((p, i) => groups[clusterKey(p)].push(i));
+const proj = pts.map((p, i) => {
+  const q = rot(p, F.ay, F.ax);
+  let gr = F.grow;
+  if (frame === 1) gr = (p.j < .09) ? .25 + p.j * 6 : 0;   // only a few agents out yet
+  let X = F.cx + q.x * F.R * gr, Y = F.cy + q.y * F.R * gr;
+  let z = q.z;
+  if (frame >= 4) {
+    // each cluster re-forms as its own full ball (Fibonacci sphere per group)
+    const k = clusterKey(p), m = groups[k].indexOf(i), n = groups[k].length, c = clusterAt(k);
+    const yy = 1 - (m / Math.max(1, n - 1)) * 2, rr = Math.sqrt(1 - yy * yy), th = m * 2.399963;
+    const u = rot({ x: Math.cos(th) * rr, y: yy, z: Math.sin(th) * rr }, F.ay + k, F.ax);
+    X = c.x + u.x * c.r; Y = c.y + u.y * c.r; z = u.z;
+  }
+  return { i, X, Y, z, p, gr };
+}).filter(o => o.gr > 0);
+
+// mesh (frames 3+)
+if (frame >= 3) {
+  const seen = new Set();
+  proj.forEach(o => nb[o.i].forEach(k => {
+    const key = Math.min(o.i, k) + '-' + Math.max(o.i, k); if (seen.has(key)) return; seen.add(key);
+    const b = proj.find(t => t.i === k); if (!b) return;
+    const d = (o.z + b.z) / 2; if (d < -.35) return;
+    if (frame >= 4 && o.p.lean !== b.p.lean) return;
+    if (frame === 5 && !(o.p.win && b.p.win)) return;
+    if (Math.hypot(o.X - b.X, o.Y - b.Y) > 60) return;
+    const op = (.12 + .5 * (d + 1) / 2).toFixed(2);
+    g.push(`<line x1="${o.X.toFixed(1)}" y1="${o.Y.toFixed(1)}" x2="${b.X.toFixed(1)}" y2="${b.Y.toFixed(1)}" stroke="#09090B" stroke-opacity="${op}" stroke-width="${d > .3 ? 1.6 : 1}"/>`);
+    if (frame === 3 && rnd() < .08 && d > .1) { // pulses travelling along a line
+      const t = rnd(); g.push(`<circle cx="${(o.X + (b.X - o.X) * t).toFixed(1)}" cy="${(o.Y + (b.Y - o.Y) * t).toFixed(1)}" r="3.5" fill="#09090B"/>`);
+    }
+  }));
+}
+
+// frame 1: seed card + trails
+if (frame === 1) {
+  proj.forEach(o => g.push(`<line x1="${F.cx}" y1="${F.cy}" x2="${o.X.toFixed(1)}" y2="${o.Y.toFixed(1)}" stroke="#09090B" stroke-opacity=".18" stroke-width="1.5" stroke-dasharray="2 6"/>`));
+}
+
+// dots, back to front
+proj.sort((a, b) => a.z - b.z).forEach(o => {
+  const d = (o.z + 1) / 2, r = (2.2 + d * 5.2) * (frame === 1 ? 1.3 : 1);
+  let fill = d > .45 ? '#FFFFFF' : '#D4D4D8', stroke = d > .45 ? '#09090B' : 'none';
+  if (frame >= 4) {
+    fill = ['#FFFFFF', '#09090B', '#A1A1AA'][o.p.lean]; stroke = '#09090B';
+    if (frame === 5) { fill = o.p.win ? '#09090B' : '#E4E4E7'; stroke = o.p.win ? '#09090B' : '#D4D4D8'; }
+    if (d < .35) { fill = frame === 5 && o.p.win ? '#52525B' : '#E4E4E7'; stroke = 'none'; }
+  }
+  const op = (.35 + .65 * d).toFixed(2);
+  g.push(`<circle cx="${o.X.toFixed(1)}" cy="${o.Y.toFixed(1)}" r="${r.toFixed(1)}" fill="${fill}" stroke="${stroke}" stroke-width="1.6" opacity="${op}"/>`);
+});
+
+// front-facing agents become faces with role tags (frames 2–3)
+if (frame === 2 || frame === 3) {
+  const front = proj.filter(o => o.z > .55).sort((a, b) => b.z - a.z);
+  const picked = [];
+  for (const o of front) { if (picked.every(p => Math.hypot(p.X - o.X, p.Y - o.Y) > 150)) picked.push(o); if (picked.length >= (frame === 2 ? 9 : 6)) break; }
+  picked.forEach((o, k) => {
+    const r = 30;
+    g.push(peepImg(PEEPS[k % 5], o.X, o.Y, r, 'f' + k));
+    if (frame === 2) {
+      const t = ROLES[k], w = t.length * 9.4 + 22;
+      g.push(`<rect x="${o.X - w/2}" y="${o.Y + r + 10}" width="${w}" height="28" rx="6" fill="#09090B"/><text class="tag" x="${o.X}" y="${o.Y + r + 29}" text-anchor="middle" fill="#FFFFFF">${t}</text>`);
+    }
+  });
+  if (frame === 3) {
+    g.push(bubble(1310, 150, 'STORE BUYER', 'Will it move off the shelf in six weeks?'));
+    g.push(bubble(860, 430, 'STUDENT, 16', 'I’d buy it if my friends do.'));
+    g.push(bubble(1440, 620, 'PARENT', 'Fair price for a lip balm.', 'right'));
+    g.push(bubble(980, 860, 'RIVAL BRAND', 'We’d answer with a discount.'));
+  }
+}
+
+// frame 1: the trial card in the centre
+if (frame === 1) {
+  const x = F.cx - 210, y = F.cy - 95;
+  g.push(card(x, y, 420, 190, `
+    ${peepImg('student', x + 62, y + 70, 36, 's')}
+    <text x="${x+118}" y="${y+58}" font-family="Geist Mono" font-size="15" font-weight="500" fill="#71717A">TRIAL · SALES</text>
+    <text x="${x+118}" y="${y+90}" font-family="Geist" font-size="28" font-weight="700" letter-spacing="-.5" fill="#09090B">Sell for Dr. Lipp</text>
+    <line x1="${x+26}" y1="${y+128}" x2="${x+394}" y2="${y+128}" stroke="#E4E4E7" stroke-width="2"/>
+    <text x="${x+26}" y="${y+162}" font-family="Geist Mono" font-size="15" fill="#52525B">3 candidates · pitch + call recording</text>`));
+}
+
+// frames 4–5: candidate cards on the right
+if (frame >= 4) {
+  CAND.forEach((c, k) => {
+    const x = 1540, y = 250 + k * 230, w = 300, h = 170, win = frame === 5 && k === 1, dim = frame === 5 && k !== 1;
+    const swatch = ['#FFFFFF', '#09090B', '#A1A1AA'][k];
+    // threads from cluster to card
+    const cc = clusterAt(k), ccx = cc.x, ccy = cc.y;
+    if (!dim) for (let t = 0; t < (win ? 9 : 5); t++) {
+      const sy = ccy + (t - 3) * 14, ey = y + 40 + t * (90 / 8);
+      g.push(`<path d="M${ccx + cc.r * .9} ${sy} C ${(ccx + x) / 2 + 60} ${sy}, ${(ccx + x) / 2 - 60} ${ey}, ${x - 6} ${ey}" fill="none" stroke="#09090B" stroke-opacity="${win ? .55 : .22}" stroke-width="${win ? 1.6 : 1.2}"/>`);
+    }
+    const fg = win ? '#FFFFFF' : '#09090B', mute = win ? '#A1A1AA' : '#71717A';
+    g.push(`<g opacity="${dim ? .35 : 1}">` + card(x, y, w, h, `
+      ${peepImg(c.peep, x + 56, y + 62, 32, 'k' + k)}
+      <text x="${x+104}" y="${y+54}" font-family="Geist Mono" font-size="14" font-weight="500" fill="${mute}">${c.label.toUpperCase()}</text>
+      <text x="${x+104}" y="${y+84}" font-family="Geist" font-size="24" font-weight="700" fill="${fg}">${['Price-first pitch','Shelf-trial pitch','Story pitch'][k]}</text>
+      <circle cx="${x+34}" cy="${y+130}" r="9" fill="${win ? '#FFFFFF' : swatch}" stroke="${win ? '#FFFFFF' : '#09090B'}" stroke-width="2"/>
+      <text x="${x+54}" y="${y+136}" font-family="Geist Mono" font-size="15" fill="${mute}">${frame === 5 ? (win ? 'Most agents convinced' : 'Fewer agents convinced') : 'Agents leaning here'}</text>`, win) + `</g>`);
+    if (win) {
+      g.push(`<g transform="rotate(-4 ${x + 230} ${y - 14})"><rect x="${x + 150}" y="${y - 32}" width="176" height="36" rx="8" fill="#FFFFFF" stroke="#09090B" stroke-width="2"/><text class="tag" x="${x + 238}" y="${y - 8}" text-anchor="middle" fill="#09090B">Synthetic estimate</text></g>`);
+      g.push(`<text x="${x}" y="${y + h + 44}" font-family="Geist Mono" font-size="14" fill="#71717A">Deal outcome shown separately</text>`);
+    }
+  });
+  if (frame === 5) {
+    const bc = clusterAt(1), bx = bc.x, by = bc.y;
+    g.push(peepImg('designer', bx, by, 54, 'win'));
+  }
+}
+
+el.insertAdjacentHTML('beforeend', `<svg class="world" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}"><defs>${defs.join('')}</defs>${g.join('')}</svg>`);
+document.fonts.ready.then(() => document.body.dataset.ready = '1');
+</script>
+</body>
+</html>

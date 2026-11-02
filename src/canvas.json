@@ -204,6 +204,15 @@
       "w": 1920,
       "x": -2040,
       "y": 0
+    },
+    "Slide05c.dc.html": {
+      "h": 1080,
+      "is_interactive": true,
+      "page": "presentation",
+      "title": "05c · Agent world (market reviews the call)",
+      "w": 1920,
+      "x": 6120,
+      "y": 3000
     }
   },
   "createdOnFiles": {
@@ -238,7 +247,9 @@
     "notes10",
     "notes11",
     "notes05b",
-    "dev05b"
+    "dev05b",
+    "notes05c",
+    "dev05c"
   ],
   "notes": {
     "dev05b": {
@@ -362,6 +373,22 @@
       "w": 240,
       "x": 0,
       "y": -300
+    },
+    "notes05c": {
+      "fill": "gray",
+      "page": "presentation",
+      "text": "Notes · 05c · Agent world\nRight after that call, MAYBE builds a small market of simulated people: buyers, parents, teenagers, rivals. They argue about the call, then each one decides on its own. On the left you see the result: what worked, what didn't, the qualifications they found, and whether I land on Dr. Lipp's wanted-candidates list. It's a synthetic estimate, kept apart from the real deal outcome.",
+      "w": 600,
+      "x": 6120,
+      "y": 4100
+    },
+    "dev05c": {
+      "fill": "purple",
+      "page": "presentation",
+      "text": "For the developer · agent world\nDrive this slide with window.MAYBE_SWARM: connect(), setAgents([...]), setPhase('spawn'|'talk'|'think'|'result'), say(id, text, {to}), think(id, text), setVerdict(id, 'yes'|'maybe'|'no'), plus the review panel: addPoint('pro'|'con', text, {by}), addQualification(text, {gap}), setConclusion({wanted, summary, list}), setDeal(text). Full spec: AGENT-WORLD.md.",
+      "w": 600,
+      "x": 6760,
+      "y": 4100
     }
   },
   "order": [
