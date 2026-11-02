@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>MAYBE · The business</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#09090B}a:hover{color:#52525B}
+@keyframes rv{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes rise{0%{transform:translateY(105%) rotate(4deg)}60%{transform:translateY(-6%) rotate(-2deg)}80%{transform:translateY(2%)}100%{transform:translateY(0) rotate(0)}}
+@keyframes drift{from{transform:scale(1.08) translateY(0)}to{transform:scale(1.08) translateY(-4%)}}
+@keyframes frame-in{from{opacity:0;transform:translateY(40px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes scroll-shot{0%,15%{transform:translateY(0)}55%,70%{transform:translateY(var(--shot-scroll,-18%))}100%{transform:translateY(0)}}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.anim-on .rv{animation:rv calc(.7s * var(--spd)) cubic-bezier(.2,.7,.2,1) both}
+.anim-on .rise{animation:rise calc(.8s * var(--spd)) cubic-bezier(.3,.7,.2,1) both}
+.anim-on .drift{animation:drift calc(9s * var(--spd)) ease-in-out infinite alternate}
+.anim-on .fin{animation:frame-in calc(.9s * var(--spd)) cubic-bezier(.2,.7,.2,1) both}
+.anim-on .shot{animation:scroll-shot calc(14s * var(--spd)) ease-in-out 1.4s infinite}
+.anim-on .grow{transform-origin:left center;animation:grow calc(.9s * var(--spd)) cubic-bezier(.2,.7,.2,1) both}
+@media (prefers-reduced-motion:reduce){.rv,.rise,.drift,.fin,.shot,.grow{animation:none!important}}
+</style>
+<style>
+@keyframes growy{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@keyframes pop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+.anim-on .growy{transform-origin:center bottom;animation:growy calc(1s * var(--spd)) cubic-bezier(.2,.7,.2,1) both}
+.anim-on .draw{stroke-dasharray:1;stroke-dashoffset:1;animation:draw calc(1.4s * var(--spd)) cubic-bezier(.4,0,.2,1) both}
+.anim-on .pop{animation:pop calc(.5s * var(--spd)) cubic-bezier(.2,.7,.2,1.2) both}
+@media (prefers-reduced-motion:reduce){.growy,.draw,.pop{animation:none!important;stroke-dashoffset:0}}
+</style>
+</helmet>
+<div class="{{animClass}}" style="--spd: {{spd}}; width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #FFFFFF; color: #09090B; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
+  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 0.0%; background: #7C3AED;"></div>
+  <div style="position: absolute; left: 160px; top: 140px;">
+    <h2 class="rv" style="margin: 0px 0 0; font-size: 80px; font-weight: 700; line-height: 1.02; letter-spacing: -0.045em; max-width: 20ch; animation-delay: calc(var(--spd) * 0.05s);">Free to explore. Paid by employers who want <span style="color: {{accent}};">proof</span>.</h2>
+  </div>
+  <div style="position: absolute; left: 160px; right: 160px; top: 470px; display: flex; align-items: center; justify-content: space-between;">
+    <div class="rv" style="display: flex; flex-direction: column; align-items: center; gap: 18px; width: 300px; animation-delay: calc(var(--spd) * 0.30s);"><span style="width: 220px; height: 220px; border-radius: 999px; overflow: hidden; background: #F4F4F5; border: 2px solid #E4E4E7; "><img src="/_blob/213175625e1003990abdd16ec3dd7643" alt="" style="width: 300px; margin: 14px 0 0 -40px; display: block;"></span><span style="font-size: 34px; font-weight: 700; letter-spacing: -0.03em;">Students</span><span style="font-size: 22px; color: #52525B; text-align: center;">try real work, for free</span></div>
+    <div class="rv" style="display: flex; flex-direction: column; align-items: center; gap: 12px; width: 260px; margin-top: -110px; animation-delay: calc(var(--spd) * 0.60s);"><span style="font-family: 'Geist Mono', monospace; font-size: 20px; color: #52525B;">free</span><span class="grow" style="position: relative; display: block; width: 240px; height: 3px; background: #09090B; animation-delay: calc(var(--spd) * 0.70s);"><span style="position: absolute; right: -2px; top: -7px; border: 8px solid transparent; border-left-color: #09090B; border-right: 0;"></span></span></div>
+    <div class="fin" style="width: 300px; padding: 24px; border: 1px solid #E4E4E7; border-radius: 14px; background: #FFFFFF; box-shadow: 0 30px 70px -30px rgba(9,9,11,.3); margin-top: -110px; animation-delay: calc(var(--spd) * 0.90s);"><span style="display: inline-flex; padding: 4px 12px; border-radius: 999px; background: #EDE9FE; color: #5B21B6; font-size: 16px; font-weight: 500;">Work evidence</span><div style="margin-top: 14px; display: flex; flex-direction: column;"><span style="display: flex; justify-content: space-between; gap: 16px; font-size: 18px; color: #52525B; padding: 8px 0; border-top: 1px solid #F4F4F5;"><span>Call transcripts</span><span style="font-family: 'Geist Mono', monospace; color: #09090B;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span></span><span style="display: flex; justify-content: space-between; gap: 16px; font-size: 18px; color: #52525B; padding: 8px 0; border-top: 1px solid #F4F4F5;"><span>Design files</span><span style="font-family: 'Geist Mono', monospace; color: #09090B;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span></span><span style="display: flex; justify-content: space-between; gap: 16px; font-size: 18px; color: #52525B; padding: 8px 0; border-top: 1px solid #F4F4F5;"><span>Scores with provenance</span><span style="font-family: 'Geist Mono', monospace; color: #09090B;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span></span></div></div>
+    <div class="rv" style="display: flex; flex-direction: column; align-items: center; gap: 12px; width: 260px; margin-top: -110px; animation-delay: calc(var(--spd) * 1.20s);"><span style="font-family: 'Geist Mono', monospace; font-size: 20px; color: #52525B;">employers pay</span><span class="grow" style="position: relative; display: block; width: 240px; height: 3px; background: {{accent}}; animation-delay: calc(var(--spd) * 1.30s);"><span style="position: absolute; right: -2px; top: -7px; border: 8px solid transparent; border-left-color: {{accent}}; border-right: 0;"></span></span></div>
+    <div class="rv" style="display: flex; flex-direction: column; align-items: center; gap: 18px; width: 300px; animation-delay: calc(var(--spd) * 1.50s);"><span style="width: 220px; height: 220px; border-radius: 999px; overflow: hidden; background: #F4F4F5; border: 2px solid #E4E4E7; box-shadow: 0 0 0 6px #EDE9FE; border-color: {{accent}};"><img src="/_blob/1d916352e48c8c4cf752090562d5f415" alt="" style="width: 300px; margin: 14px 0 0 -40px; display: block;"></span><span style="font-size: 34px; font-weight: 700; letter-spacing: -0.03em;">Employers</span><span style="font-size: 22px; color: #52525B; text-align: center;">simulations, review, assessment</span></div>
+  </div>
+  <p class="rv" style="position: absolute; right: 72px; bottom: 32px; margin: 0; max-width: 1100px; text-align: right; font-size: 16px; line-height: 1.45; color: #71717A; animation-delay: calc(var(--spd) * 1.80s);">Pricing and hiring ROI are not set yet; pilots will test them.</p>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"animate": {"editor": "boolean", "default": true, "section": "Motion"}, "speed": {"editor": "enum", "options": ["slow", "normal", "fast"], "default": "normal", "section": "Motion"}, "accent": {"editor": "color", "options": ["#7C3AED", "#09090B", "#5B21B6"], "default": "#7C3AED", "section": "Look"}, "$preview": {"width": 1920, "height": 1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const on = this.props.animate ?? true;
+    const spd = { slow: 1.5, normal: 1, fast: 0.6 }[this.props.speed ?? 'normal'] ?? 1;
+    return {
+      animClass: on ? 'anim-on' : 'anim-off',
+      spd: String(spd),
+      accent: this.props.accent ?? "#7C3AED",
+    };
+  }
+}
+</script>
+</body>
+</html>

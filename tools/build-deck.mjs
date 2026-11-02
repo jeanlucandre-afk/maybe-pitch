@@ -94,7 +94,7 @@ const sections = boards.map(([file, b], i) => {
   const offset = /^Slide00\b/.test(boards[0][0]) ? 1 : 0;
   const body = renumber(r.body, i + 1 - offset, boards.length - offset), styles = r.styles;
   for (const s of styles) { const k = s.trim(); if (k && !seenStyles.has(k)) { seenStyles.add(k); styleBlocks.push(k); } }
-  const title = (b.title || file).replace(/^\d+\s*·\s*/, '');
+  const title = (b.title || file).replace(/^\d+[a-z]?\s*·\s*/, '');
   return `<section class="deck-slide" id="slide-${i + 1}" data-title="${esc(title)}" data-notes="${esc(notesFor(b))}" aria-roledescription="slide" aria-label="${i + 1} of ${boards.length}: ${esc(title)}">
 <div class="deck-stage">
 ${body}

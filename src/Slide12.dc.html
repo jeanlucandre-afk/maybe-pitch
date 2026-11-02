@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>MAYBE · Back to the start</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#09090B}a:hover{color:#52525B}
+@keyframes rv{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes rise{0%{transform:translateY(105%) rotate(4deg)}60%{transform:translateY(-6%) rotate(-2deg)}80%{transform:translateY(2%)}100%{transform:translateY(0) rotate(0)}}
+@keyframes drift{from{transform:scale(1.08) translateY(0)}to{transform:scale(1.08) translateY(-4%)}}
+@keyframes frame-in{from{opacity:0;transform:translateY(40px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes scroll-shot{0%,15%{transform:translateY(0)}55%,70%{transform:translateY(var(--shot-scroll,-18%))}100%{transform:translateY(0)}}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.anim-on .rv{animation:rv calc(.7s * var(--spd)) cubic-bezier(.2,.7,.2,1) both}
+.anim-on .rise{animation:rise calc(.8s * var(--spd)) cubic-bezier(.3,.7,.2,1) both}
+.anim-on .drift{animation:drift calc(9s * var(--spd)) ease-in-out infinite alternate}
+.anim-on .fin{animation:frame-in calc(.9s * var(--spd)) cubic-bezier(.2,.7,.2,1) both}
+.anim-on .shot{animation:scroll-shot calc(14s * var(--spd)) ease-in-out 1.4s infinite}
+.anim-on .grow{transform-origin:left center;animation:grow calc(.9s * var(--spd)) cubic-bezier(.2,.7,.2,1) both}
+@media (prefers-reduced-motion:reduce){.rv,.rise,.drift,.fin,.shot,.grow{animation:none!important}}
+</style>
+<style>
+@keyframes growy{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@keyframes pop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+.anim-on .growy{transform-origin:center bottom;animation:growy calc(1s * var(--spd)) cubic-bezier(.2,.7,.2,1) both}
+.anim-on .draw{stroke-dasharray:1;stroke-dashoffset:1;animation:draw calc(1.4s * var(--spd)) cubic-bezier(.4,0,.2,1) both}
+.anim-on .pop{animation:pop calc(.5s * var(--spd)) cubic-bezier(.2,.7,.2,1.2) both}
+@media (prefers-reduced-motion:reduce){.growy,.draw,.pop{animation:none!important;stroke-dashoffset:0}}
+</style>
+</helmet>
+<div class="{{animClass}}" style="--spd: {{spd}}; width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #09090B; color: #FAFAFA; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
+  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 0.0%; background: #7C3AED;"></div>
+  <div style="position: absolute; left: 160px; right: 160px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center;">
+    <h2 class="rv" style="margin: 0px 0 0; font-size: 96px; font-weight: 700; line-height: 1.02; letter-spacing: -0.045em; max-width: 20ch; animation-delay: calc(var(--spd) * 0.20s);">How do you know what you want, if you’ve never <span style="color: {{accent}};">tried</span> it?</h2>
+    <h2 class="rv" style="margin: 64px 0 0; font-size: 72px; font-weight: 700; line-height: 1.02; letter-spacing: -0.045em; max-width: 26ch; color: #D4D4D8; animation-delay: calc(var(--spd) * 1.40s);">How can employers see your potential, if you never get to <span style="color: {{accent}};">show</span> it?</h2>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"animate": {"editor": "boolean", "default": true, "section": "Motion"}, "speed": {"editor": "enum", "options": ["slow", "normal", "fast"], "default": "normal", "section": "Motion"}, "accent": {"editor": "color", "options": ["#C4B5FD", "#A78BFA", "#FAFAFA"], "default": "#C4B5FD", "section": "Look"}, "$preview": {"width": 1920, "height": 1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const on = this.props.animate ?? true;
+    const spd = { slow: 1.5, normal: 1, fast: 0.6 }[this.props.speed ?? 'normal'] ?? 1;
+    return {
+      animClass: on ? 'anim-on' : 'anim-off',
+      spd: String(spd),
+      accent: this.props.accent ?? "#C4B5FD",
+    };
+  }
+}
+</script>
+</body>
+</html>
