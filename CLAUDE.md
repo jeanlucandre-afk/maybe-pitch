@@ -31,6 +31,11 @@ This repo is the MAYBE hackathon presentation (Macromedia × CODE Hackathon). It
   - `clear()`
 
   Listen for `deck:slidechange` on `document` to start and stop the session. Full spec and example: `LIVE-CALL.md`.
+- **Agent-world slide (slide 7, after the live call: the ball of simulated agents reviewing the call):** drive it with `window.MAYBE_SWARM`:
+  - `connect()` / `disconnect()`, `setAgents([...])`, `setPhase('spawn'|'talk'|'think'|'result')`
+  - `say(id, text, {to})`, `think(id, text)`, `setVerdict(id, 'yes'|'maybe'|'no')`
+
+  It loops a demo until connected. The call transcript is available from `MAYBE_CALL.getTranscript()`. Full spec and suggested backend: `AGENT-WORLD.md`.
 - Put new voice code in `assets/voice/*.js` and load it with one `<script>` tag. Ask Luc to add the tag to the canvas export, or add it in `tools/build-deck.mjs` next to `live-call.js`, so a rebuild doesn't drop it.
 - **Server code:** Vercel functions in `api/*.js`, Node 20, CommonJS `module.exports = (req, res) => { … }` (no package.json needed; add one with `"type": "module"` if you prefer ESM). For example, `api/elevenlabs-signed-url.js` reads `process.env.ELEVENLABS_API_KEY` and returns a signed conversation URL, so no key ever reaches the browser.
 

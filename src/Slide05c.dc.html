@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>MAYBE · Agent world</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#09090B}a:hover{color:#52525B}
+@keyframes rv{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+.anim-on .rv{animation:rv calc(.7s * var(--spd)) cubic-bezier(.2,.7,.2,1) both}
+/* ---- agent world (monochrome; assets/agent-world.js draws the canvas and drives the steps) ---- */
+.swarm-step{display:grid;grid-template-columns:44px 1fr;gap:4px 0;padding:16px 0 16px 20px;border-left:2px solid #E4E4E7;color:#A1A1AA;transition:color .4s,border-color .4s}
+.swarm-step b{font:500 16px 'Geist Mono',monospace;padding-top:6px}
+.swarm-step strong{font-size:28px;font-weight:600;letter-spacing:-.03em;line-height:1.2}
+.swarm-step span{grid-column:2;font-size:19px;line-height:1.45}
+.swarm-step i{grid-column:2;display:block;height:3px;margin-top:10px;background:#F4F4F5;overflow:hidden;font-style:normal}
+.swarm-step i::after{content:"";display:block;height:100%;width:calc(var(--p,0) * 100%);background:#09090B}
+.swarm-step.is-on{color:#09090B;border-left-color:#09090B}
+.swarm-step.is-on span{color:#52525B}
+.swarm-step.is-done{color:#71717A}
+.swarm-mode{display:inline-flex;align-items:center;gap:10px;padding:8px 14px;border:2px solid #09090B;border-radius:10px;background:#FFFFFF;box-shadow:4px 4px 0 #09090B;font:500 16px 'Geist Mono',monospace}
+.swarm-mode::before{content:"";width:9px;height:9px;border-radius:50%;border:2px solid #09090B;background:#FFFFFF}
+.swarm-mode.is-live::before{background:#09090B}
+@media (prefers-reduced-motion:reduce){.rv{animation:none!important}}
+</style>
+</helmet>
+<div class="{{animClass}}" data-swarm data-swarm-img="deck/img/" style="--spd: {{spd}}; width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #FFFFFF; color: #09090B; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
+  <canvas data-swarm-canvas width="1920" height="1080" aria-hidden="true" style="position: absolute; inset: 0; width: 1920px; height: 1080px;"></canvas>
+
+  <div style="position: absolute; left: 72px; top: 32px; display: flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 700; letter-spacing: -0.035em; color: #09090B;"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 4.5 L10.5 13 L10.5 20 M20.5 3.5 L11 14.5" fill="none" stroke="#09090B" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>MAYBE</div>
+  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 50%; background: #7C3AED;"></div>
+  <div style="position: absolute; right: 72px; bottom: 32px; font-family: 'Geist Mono', monospace; font-size: 16px; color: #71717A;">7 / 12</div>
+
+  <div style="position: absolute; left: 120px; top: 150px; width: 640px;">
+    <p class="rv" style="margin: 0 0 18px; font-family: 'Geist Mono', monospace; font-size: 18px; font-weight: 500; letter-spacing: .02em; color: #71717A;">After the call · Market simulation</p>
+    <h2 class="rv" style="margin: 0; font-size: 72px; font-weight: 700; line-height: 1.02; letter-spacing: -0.045em; animation-delay: calc(var(--spd) * 0.09s);">Then a whole market reviews the call.</h2>
+    <p class="rv" style="margin: 22px 0 0; font-size: 24px; line-height: 1.45; color: #52525B; animation-delay: calc(var(--spd) * 0.18s);">MAYBE creates simulated people who look like the real market. They talk the call through, then each one decides on its own.</p>
+
+    <div class="rv" style="margin-top: 44px; animation-delay: calc(var(--spd) * 0.27s);">
+      <div class="swarm-step" data-swarm-step="spawn"><b>01</b><strong>Spawn</strong><span>Agents built from the call and the market</span><i></i></div>
+      <div class="swarm-step" data-swarm-step="talk"><b>02</b><strong>Talk</strong><span>They compare notes on the pitch</span><i></i></div>
+      <div class="swarm-step" data-swarm-step="think"><b>03</b><strong>Think</strong><span>Each one weighs it alone and picks a side</span><i></i></div>
+    </div>
+  </div>
+
+  <div class="rv" style="position: absolute; left: 120px; bottom: 96px; animation-delay: calc(var(--spd) * 0.36s);"><span class="swarm-mode" data-swarm-mode>Demo simulation</span></div>
+  <div style="position: absolute; right: 180px; bottom: 32px; font-family: 'Geist Mono', monospace; font-size: 14px; color: #A1A1AA;">Simulated agents, AI-generated · Synthetic estimate, not the deal outcome · Dr. Lipp: mockup only, no partnership implied</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"animate": {"editor": "boolean", "default": true, "section": "Motion"}, "speed": {"editor": "enum", "options": ["slow", "normal", "fast"], "default": "normal", "section": "Motion"}, "$preview": {"width": 1920, "height": 1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const on = this.props.animate ?? true;
+    const spd = { slow: 1.5, normal: 1, fast: 0.6 }[this.props.speed ?? 'normal'] ?? 1;
+    return { animClass: on ? 'anim-on' : 'anim-off', spd: String(spd) };
+  }
+}
+</script>
+</body>
+</html>
