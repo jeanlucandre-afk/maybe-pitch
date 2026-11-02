@@ -27,28 +27,28 @@ a{color:#09090B}a:hover{color:#52525B}
 @media (prefers-reduced-motion:reduce){.rv,.rise,.drift,.fin,.shot,.grow{animation:none!important}}
 </style>
 </helmet>
-<div class="{{animClass}}" style="--spd: {{spd}}; width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #09090B; color: #FAFAFA; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
-  <div style="position: absolute; left: 160px; right: 160px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center;">
-    <p class="rv" style="margin: 0; max-width: 36ch; font-size: 44px; line-height: 1.3; color: #A1A1AA; animation-delay: calc(var(--spd) * 0.20s);">For years, technology has helped companies decide who deserves a chance.</p>
-    <p class="rv" style="margin: 36px 0 0; max-width: 22ch; font-size: 88px; font-weight: 700; line-height: 1.04; letter-spacing: -0.045em; animation-delay: calc(var(--spd) * 1.20s);">We’re building technology that gives more people the chance to prove themselves.</p>
-    <div class="rv" style="display: flex; align-items: center; gap: 48px; margin-top: 88px; animation-delay: calc(var(--spd) * 2.40s);">
-      <div style="display: flex; align-items: center; gap: 18px; font-size: 88px; font-weight: 700; letter-spacing: -0.045em; line-height: 1;"><svg width="80" height="80" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 4.5 L10.5 13 L10.5 20 M20.5 3.5 L11 14.5" fill="none" stroke="#FAFAFA" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>MAYBE</div>
-      <span style="width: 1px; height: 72px; background: #3F3F46;" aria-hidden="true"></span>
-      <p style="margin: 0; font-size: 56px; font-weight: 600; letter-spacing: -0.035em; color: {{accent}};">Try it. Prove it.</p>
-    </div>
+<div class="{{animClass}}" style="--spd: {{spd}}; width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #FFFFFF; color: #09090B; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
+  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 0.0%; background: #7C3AED;"></div>
+  <div style="position: absolute; right: 72px; bottom: 34px; font-family: 'Geist Mono', monospace; font-size: 16px; color: #71717A;">0 / 0</div>
+  <div style="position: absolute; left: 120px; right: 120px; top: 112px; display: flex; flex-direction: column; gap: 20px;">
+    <p class="rv" style="margin: 0; font-size: 32px; line-height: 1.4; color: #52525B; max-width: 46ch; animation-delay: calc(var(--spd) * 0.10s);">For years, technology has helped companies decide who deserves a chance.</p>
+    <p class="rv" style="margin: 0; font-size: 68px; font-weight: 600; line-height: 1.05; letter-spacing: -0.04em; max-width: 24ch; animation-delay: calc(var(--spd) * 0.80s);">We’re building technology that gives more people the chance to prove themselves.</p>
+  </div>
+  <div style="position: absolute; left: 120px; right: 120px; bottom: 120px; display: flex; justify-content: space-between; align-items: flex-end; gap: 48px;">
+    <h1 class="rv" style="margin: 0 0 0 -14px; font-size: 360px; font-weight: 700; line-height: .78; letter-spacing: -0.065em; animation-delay: calc(var(--spd) * 1.60s);">MAYBE<span style="color: {{accent}};">.</span></h1>
+    <p class="rv" style="margin: 0; font-size: 68px; font-weight: 600; line-height: 1; letter-spacing: -0.04em; animation-delay: calc(var(--spd) * 2.20s);">Try it. Prove it.</p>
   </div>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"animate": {"editor": "boolean", "default": true, "section": "Motion"}, "speed": {"editor": "enum", "options": ["slow", "normal", "fast"], "default": "normal", "section": "Motion"}, "accent": {"editor": "color", "options": ["#A78BFA", "#FAFAFA", "#C4B5FD"], "default": "#A78BFA", "section": "Look"}, "$preview": {"width": 1920, "height": 1080}}'>
+<script type="text/x-dc" data-dc-script data-props='{"animate": {"editor": "boolean", "default": true, "section": "Motion"}, "speed": {"editor": "enum", "options": ["slow", "normal", "fast"], "default": "normal", "section": "Motion"}, "accent": {"editor": "color", "options": ["#7C3AED", "#09090B", "#5B21B6"], "default": "#7C3AED", "section": "Look"}, "$preview": {"width": 1920, "height": 1080}}'>
 class Component extends DCLogic {
   renderVals() {
     const on = this.props.animate ?? true;
     const spd = { slow: 1.5, normal: 1, fast: 0.6 }[this.props.speed ?? 'normal'] ?? 1;
-    const accent = this.props.accent ?? "#A78BFA";
     return {
       animClass: on ? 'anim-on' : 'anim-off',
       spd: String(spd),
-      accent,
+      accent: this.props.accent ?? "#7C3AED",
     };
   }
 }
