@@ -44,7 +44,7 @@ This repo is the MAYBE hackathon presentation (Macromedia × CODE Hackathon). It
 
 **This repo is public.** Anyone can read every file, so a committed key is a leaked key: rotate it immediately if it happens.
 
-Previews: every push to a branch should also show up as a preview deployment on Luc's Vercel project; the link appears on the pull request. If Vercel blocks a preview because the commit author isn't on Luc's (free) account, Boris imports this repo into his own free Vercel account and uses that project's preview URLs instead. **Environment variables must be set in both projects**: the partner's for testing, Luc's for production. Tell Luc which variable names to add; never send the values in chat or commits.
+Previews: every push to a branch should also show up as a preview deployment on Luc's Vercel project; the link appears on the pull request. If Vercel blocks a preview because the commit author isn't on Luc's (free) account, Boris imports this repo into his own free Vercel account and uses that project's preview URLs instead. **Environment variables:** Luc's project needs them for production and previews; if Boris uses his own Vercel project, set them there too. Tell Luc which variable names to add; never send the values in chat or commits.
 
 ## Pull request checklist
 
