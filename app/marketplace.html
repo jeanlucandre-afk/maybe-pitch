@@ -113,12 +113,12 @@ a{color:#09090B}a:hover{color:#52525B}
           </article>
         </template>
       </div>
-      <p style="margin: 0; font-size: 12px; color: #71717A;">Company names shown as text wordmarks. Cover images AI-generated. Mockup only, no partnership implied.</p>
+      <p style="margin: 0; font-size: 12px; color: #71717A;">Example companies: logos are their official marks (via the open-source Simple Icons and Iconify sets); DICE and Dr. Lipp are text stand-ins. Cover images AI-generated. Mockup only, no partnership implied.</p>
     </section>
   </main>
 </div>
 </template>
-<p class="app-note">Example companies · mockup only, no partnership implied. Company names shown as text wordmarks; cover images are AI-generated.</p>
+<p class="app-note">Example companies · mockup only, no partnership implied. Logos are the companies' official marks; DICE and Dr. Lipp are text stand-ins. Cover images are AI-generated.</p>
 <script src="dc-lite.js"></script>
 <script>
 class Component extends DCLogic {
@@ -136,13 +136,13 @@ class Component extends DCLogic {
     };
     const base = [
       { id: 'spotify', company: 'Spotify', cat: 'Marketing', role: 'Marketing Strategist', task: 'Plan the launch of a new German podcast.', time: '~60 min', bg: '#121212', logo: L.spotify, h: '44px' },
-      { id: 'dhl', company: 'DHL', cat: 'Operations', role: 'Operations Analyst', task: 'Find why parcels miss next-day delivery.', time: '~75 min', bg: '#FFCC00', logo: L.dhl, h: '56px' },
-      { id: 'zalando', company: 'Zalando', cat: 'Product', role: 'Product Manager', task: 'Prioritize a roadmap to cut returns.', time: '~75 min', bg: '#FFF4EC', logo: L.zalando, h: '40px' },
-      { id: 'personio', company: 'Personio', cat: 'People', role: 'HR Generalist', task: 'Design onboarding for 20 new hires.', time: '~60 min', bg: '#F4F4F5', logo: L.personio, h: '40px' },
+      { id: 'dhl', company: 'DHL', cat: 'Operations', role: 'Operations Analyst', task: 'Find why parcels miss next-day delivery.', time: '~75 min', bg: '#FFCC00', logo: L.dhl, h: '28px' },
+      { id: 'zalando', company: 'Zalando', cat: 'Product', role: 'Product Manager', task: 'Prioritize a roadmap to cut returns.', time: '~75 min', bg: '#FFF4EC', logo: L.zalando, h: '36px' },
+      { id: 'personio', company: 'Personio', cat: 'People', role: 'HR Generalist', task: 'Design onboarding for 20 new hires.', time: '~60 min', bg: '#F4F4F5', logo: L.personio, h: '34px' },
       { id: 'hubspot', company: 'HubSpot', cat: 'Sales', role: 'Customer Success', task: 'Save an account that wants to churn.', time: '~60 min', bg: '#FFF1EC', logo: L.hubspot, h: '40px' },
       { id: 'n26', company: 'N26', cat: 'Data', role: 'Data Analyst', task: 'Spot a fraud pattern in transactions.', time: '~75 min', bg: '#E6F4F1', logo: L.n26, h: '40px' },
-      { id: 'siemens', company: 'Siemens', cat: 'Engineering', role: 'Systems Engineer', task: 'Plan sensors for a smart factory line.', time: '~90 min', bg: '#E6F5F5', logo: L.siemens, h: '52px' },
-      { id: 'lufthansa', company: 'Lufthansa', cat: 'Operations', role: 'Network Planner', task: 'Rebuild a schedule after a storm.', time: '~90 min', bg: '#FFF6DF', logo: L.lufthansa, h: '44px' }
+      { id: 'siemens', company: 'Siemens', cat: 'Engineering', role: 'Systems Engineer', task: 'Plan sensors for a smart factory line.', time: '~90 min', bg: '#E6F5F5', logo: L.siemens, h: '26px' },
+      { id: 'lufthansa', company: 'Lufthansa', cat: 'Operations', role: 'Network Planner', task: 'Rebuild a schedule after a storm.', time: '~90 min', bg: '#FFF6DF', logo: L.lufthansa, h: '36px' }
     ];
     const notify = this.state.notify;
     const previews = base.map((p) => {
@@ -153,13 +153,13 @@ class Component extends DCLogic {
       { id: 'dice', name: 'DICE', logo: 'img/logo-dice.svg', h: '22px' },
       { id: 'lipp', name: 'Dr. Lipp', logo: 'img/logo-drlipp.svg', h: '22px' },
       { id: 'spotify', name: 'Spotify', logo: L.spotify, h: '24px' },
-      { id: 'dhl', name: 'DHL', logo: L.dhl, h: '30px' },
-      { id: 'zalando', name: 'Zalando', logo: L.zalando, h: '22px' },
-      { id: 'personio', name: 'Personio', logo: L.personio, h: '22px' },
+      { id: 'dhl', name: 'DHL', logo: L.dhl, h: '14px' },
+      { id: 'zalando', name: 'Zalando', logo: L.zalando, h: '20px' },
+      { id: 'personio', name: 'Personio', logo: L.personio, h: '20px' },
       { id: 'hubspot', name: 'HubSpot', logo: L.hubspot, h: '22px' },
       { id: 'n26', name: 'N26', logo: L.n26, h: '22px' },
-      { id: 'siemens', name: 'Siemens', logo: L.siemens, h: '28px' },
-      { id: 'lufthansa', name: 'Lufthansa', logo: L.lufthansa, h: '24px' }
+      { id: 'siemens', name: 'Siemens', logo: L.siemens, h: '14px' },
+      { id: 'lufthansa', name: 'Lufthansa', logo: L.lufthansa, h: '22px' }
     ];
     const co = this.state.co;
     const companies = coList.map((c) => {

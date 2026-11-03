@@ -117,12 +117,12 @@ a{color:#09090B}a:hover{color:#52525B}
           </article>
         </template>
       </div>
-      <p style="margin: 0; font-size: 12px; color: #71717A;">Company names shown as text wordmarks. Mockup only, no partnership implied.</p>
+      <p style="margin: 0; font-size: 12px; color: #71717A;">Example companies: logos are their official marks (via the open-source Simple Icons and Iconify sets); DICE and Dr. Lipp are text stand-ins. Mockup only, no partnership implied.</p>
     </section>
   </main>
 </div>
 </template>
-<p class="app-note">Example companies · mockup only, no partnership implied. Company names shown as text wordmarks; cover images are AI-generated.</p>
+<p class="app-note">Example companies · mockup only, no partnership implied. Logos are the companies' official marks; DICE and Dr. Lipp are text stand-ins. Cover images are AI-generated.</p>
 <script src="dc-lite.js"></script>
 <script>
 class Component extends DCLogic {
@@ -139,7 +139,7 @@ class Component extends DCLogic {
     const base = [
       { id: 'spotify', company: 'Spotify', role: 'Marketing Strategist', why: 'Soon', bg: '#121212', logo: 'img/logo-spotify.svg', h: '34px' },
       { id: 'zalando', company: 'Zalando', role: 'Product Manager', why: 'Soon', bg: '#FFF4EC', logo: 'img/logo-zalando.svg', h: '30px' },
-      { id: 'dhl', company: 'DHL', role: 'Operations Analyst', why: 'Soon', bg: '#FFCC00', logo: 'img/logo-dhl.svg', h: '44px' }
+      { id: 'dhl', company: 'DHL', role: 'Operations Analyst', why: 'Soon', bg: '#FFCC00', logo: 'img/logo-dhl.svg', h: '24px' }
     ];
     const next = base.map((n) => { const on = !!notify[n.id]; return { ...n, btn: on ? 'Notified' : 'Notify me', btnBg: on ? '#F4F4F5' : '#FFFFFF', toggle: () => this.setState({ notify: { ...notify, [n.id]: !on } }) }; });
     return { modes, bars, modeNote, next };
