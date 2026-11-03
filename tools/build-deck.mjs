@@ -9,8 +9,9 @@
 // Usage: node tools/build-deck.mjs        (run from maybe/pitch)
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = path.join(ROOT, 'src');
 const read = (p) => fs.readFileSync(p, 'utf8');
 const warn = [];
@@ -144,7 +145,11 @@ ${sections.join('\n')}
 </div>
 
 <script src="assets/live-call.js" defer></script>
+<script src="assets/voice/mara.js" defer></script>
+<script src="assets/voice/review.js" defer></script>
 <script src="assets/agent-world.js" defer></script>
+<script src="assets/voice/agent-world-live.js" defer></script>
+<script src="assets/careers.js" defer></script>
 <script src="assets/deck.js" defer></script>
 </body>
 </html>
