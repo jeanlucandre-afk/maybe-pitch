@@ -203,7 +203,7 @@
       "page": "presentation",
       "title": "05d · Product walkthrough (video) copy",
       "w": 1920,
-      "x": 0,
+      "x": 4080,
       "y": 5861
     },
     "Slide05d.dc.html": {
@@ -235,7 +235,7 @@
       "page": "presentation",
       "title": "10a · The market",
       "w": 1920,
-      "x": 2700,
+      "x": 4080,
       "y": 4361
     },
     "Slide10b.dc.html": {
@@ -251,7 +251,7 @@
       "page": "presentation",
       "title": "10c · The European opportunity",
       "w": 1920,
-      "x": 3400,
+      "x": 6120,
       "y": 4361
     },
     "Slide10d.dc.html": {
@@ -267,16 +267,16 @@
       "page": "presentation",
       "title": "12 · Back to the start",
       "w": 1920,
-      "x": 4080,
-      "y": 4361
+      "x": 0,
+      "y": 5861
     },
     "Slide13.dc.html": {
       "h": 1080,
       "page": "presentation",
       "title": "13 · Try it. Prove it.",
       "w": 1920,
-      "x": 6120,
-      "y": 4361
+      "x": 2040,
+      "y": 5861
     },
     "Slide05b2.dc.html": {
       "h": 1080,
@@ -453,63 +453,63 @@
       "text": "Notes · 05d · Product walkthrough\nSo basically, this is it. A student scrolls the marketplace and opens the Dr. Lipp sales trial. They read the brief and start. They call Bettina, an AI buyer, and you see the conversation in the transcript. They log the call in the CRM like a real sales rep, then submit. An AI review checks the calls against Dr. Lipp's rubric, and every score says where it came from. The student shares it, and on Dr. Lipp's side this is now the best sale on the board. One click: invite to interview.",
       "w": 600,
       "x": 2040,
-      "y": 5600
+      "y": 5461
     },
     "notes05e": {
       "fill": "gray",
       "page": "presentation",
       "text": "Notes · 05e · Employer side\nNow the employer side. So how is MAYBE different from an AI screener? A screener reads a CV, often one written by AI, and software rejects people, often with no human looking. With MAYBE, the employer sees the work itself: the candidate’s real sales call, their CRM notes, the deal they closed. Every score says where it came from: rule-based, AI review or a synthetic estimate. And a person decides who gets invited. AI lays out the evidence; it doesn't make the call. The candidates here are demo data.",
       "w": 600,
-      "x": 2040,
-      "y": 5600
+      "x": 602,
+      "y": 10700
     },
     "notes05f": {
       "fill": "gray",
       "page": "presentation",
       "text": "Notes · 05f · What MAYBE is\nSo that's MAYBE. Students explore real jobs from real companies, try the actual task for an hour, and keep the evidence. Employers review the work and invite people to interview. Students choose with experience, employers hire on evidence. AI creates the chance; people make the decision.",
       "w": 600,
-      "x": 4080,
-      "y": 5600
+      "x": -1803,
+      "y": 10700
     },
     "notes10a": {
       "fill": "gray",
       "page": "presentation",
       "text": "Notes · 10a · The market\nRecruitment is big and under pressure. AI recruitment software alone is estimated at $5.1 billion in 2026, forecast to roughly double by 2035. In iHire's survey, more than half of employers say they get too many unqualified applicants, and a third want skills assessments. The $34B and $71B figures are separate categories, not our addressable market.",
       "w": 600,
-      "x": 6100,
-      "y": 5620
+      "x": 4080,
+      "y": 5461
     },
     "notes10b": {
       "fill": "gray",
       "page": "presentation",
       "text": "Notes · 10b · Why now\nGreenhouse customers now get 244 applications per job, more than double 2022, with fewer than half the recruiters. Europe shows the same: 99 to 183 per vacancy. These are Greenhouse benchmarks, not the whole labour market. At the same time, 70% of employers in NACE's survey hire on skills. Applications don't show skills. Work does.",
       "w": 600,
-      "x": 0,
-      "y": 7100
+      "x": 2760,
+      "y": 10700
     },
     "notes10c": {
       "fill": "gray",
       "page": "presentation",
       "text": "Notes · 10c · The European opportunity\nFrom 2 December 2027, high-risk AI used in hiring faces stricter EU AI Act requirements: transparency, documentation, risk management, data governance, human oversight, and checks for unfair outcomes. MAYBE is designed around transparent, human-reviewed work evidence. We're not claiming to be exempt or compliant; our own evaluations may be high-risk too.",
       "w": 600,
-      "x": 2040,
-      "y": 7100
+      "x": 6120,
+      "y": 5461
     },
     "notes10d": {
       "fill": "gray",
       "page": "presentation",
       "text": "Notes · 10d · The business\nExploring stays free or accessible for students. Employers pay for job-specific simulations, work-sample review and recruiting workflows, evidence-based assessment, and possibly a subscription. We haven't set prices or proven hiring ROI yet; that's what the pilots are for.",
       "w": 600,
-      "x": 4080,
-      "y": 7100
+      "x": 7183,
+      "y": 10600
     },
     "notes12": {
       "fill": "gray",
       "page": "presentation",
       "text": "Notes · 12 · Back to the start\nBack to where we started. How are you supposed to know what you want to do if you've never tried it? And how are employers supposed to recognize your potential if you never get the chance to demonstrate it?",
       "w": 600,
-      "x": 8160,
-      "y": 7100
+      "x": 0,
+      "y": 6961
     },
     "notes13": {
       "fill": "gray",
@@ -517,7 +517,7 @@
       "text": "Notes · 13 · Try it. Prove it.\nFor years, technology has helped companies decide who deserves a chance. We're building technology that gives more people the chance to prove themselves. MAYBE. Try it. Prove it. Thank you.",
       "w": 600,
       "x": 2040,
-      "y": 8600
+      "y": 6961
     },
     "prestitle": {
       "kind": "title1",
