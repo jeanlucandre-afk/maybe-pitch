@@ -100,23 +100,6 @@
       "x": 0,
       "y": 1360
     },
-    "Slide01.dc.html": {
-      "h": 1080,
-      "page": "presentation",
-      "title": "01 · Title (intro plays when shown)",
-      "w": 1920,
-      "x": 0,
-      "y": 3000
-    },
-    "Slide05b.dc.html": {
-      "h": 1080,
-      "is_interactive": true,
-      "page": "presentation",
-      "title": "05b · Live call (voice agent)",
-      "w": 1920,
-      "x": 2040,
-      "y": 3000
-    },
     "Slide00.dc.html": {
       "h": 1080,
       "page": "presentation",
@@ -165,13 +148,79 @@
       "x": 2040,
       "y": 1500
     },
+    "Slide00e2.dc.html": {
+      "h": 1080,
+      "page": "presentation",
+      "title": "00e2 · AI vs AI (stories and numbers)",
+      "w": 1920,
+      "x": 4080,
+      "y": 1500
+    },
+    "Slide00e3.dc.html": {
+      "h": 1080,
+      "page": "presentation",
+      "title": "00e3 · Real people are living this",
+      "w": 1920,
+      "x": 6120,
+      "y": 1500
+    },
     "Slide00f.dc.html": {
       "h": 1080,
       "page": "presentation",
       "title": "00f · The turn",
       "w": 1920,
+      "x": 0,
+      "y": 3000
+    },
+    "Slide01.dc.html": {
+      "h": 1080,
+      "page": "presentation",
+      "title": "01 · Title (intro plays when shown)",
+      "w": 1920,
+      "x": 2040,
+      "y": 3000
+    },
+    "Slide05b.dc.html": {
+      "h": 1080,
+      "is_interactive": true,
+      "page": "presentation",
+      "title": "05b · Live call (voice agent)",
+      "w": 1920,
+      "x": 4080,
+      "y": 3000
+    },
+    "Slide05c.dc.html": {
+      "h": 1080,
+      "is_interactive": true,
+      "page": "presentation",
+      "title": "05c · Agent world (market reviews the call)",
+      "w": 1920,
       "x": 6120,
-      "y": 1500
+      "y": 3000
+    },
+    "Slide05d.dc.html": {
+      "h": 1080,
+      "page": "presentation",
+      "title": "05d · Product walkthrough (video)",
+      "w": 1920,
+      "x": 0,
+      "y": 4500
+    },
+    "Slide05e.dc.html": {
+      "h": 1080,
+      "page": "presentation",
+      "title": "05e · Employer side",
+      "w": 1920,
+      "x": 2040,
+      "y": 4500
+    },
+    "Slide05f.dc.html": {
+      "h": 1080,
+      "page": "presentation",
+      "title": "05f · What MAYBE is (conclusion)",
+      "w": 1920,
+      "x": 4080,
+      "y": 4500
     },
     "Slide10a.dc.html": {
       "h": 1080,
@@ -220,55 +269,6 @@
       "w": 1920,
       "x": 0,
       "y": 7500
-    },
-    "Slide05c.dc.html": {
-      "h": 1080,
-      "is_interactive": true,
-      "page": "presentation",
-      "title": "05c · Agent world (market reviews the call)",
-      "w": 1920,
-      "x": 4080,
-      "y": 3000
-    },
-    "Slide05d.dc.html": {
-      "h": 1080,
-      "page": "presentation",
-      "title": "05d · Product walkthrough (video)",
-      "w": 1920,
-      "x": 6120,
-      "y": 3000
-    },
-    "Slide05e.dc.html": {
-      "h": 1080,
-      "page": "presentation",
-      "title": "05e · Employer side",
-      "w": 1920,
-      "x": 2040,
-      "y": 4500
-    },
-    "Slide05f.dc.html": {
-      "h": 1080,
-      "page": "presentation",
-      "title": "05f · What MAYBE is (conclusion)",
-      "w": 1920,
-      "x": 4080,
-      "y": 4500
-    },
-    "Slide00e2.dc.html": {
-      "h": 1080,
-      "page": "presentation",
-      "title": "00e2 · AI vs AI (stories and numbers)",
-      "w": 1920,
-      "x": 4080,
-      "y": 1500
-    },
-    "Slide05d2.dc.html": {
-      "h": 1080,
-      "page": "presentation",
-      "title": "05d2 · AI screening, from the other side",
-      "w": 1920,
-      "x": 0,
-      "y": 4500
     },
     "Slide05b2.dc.html": {
       "h": 1080,
@@ -321,7 +321,7 @@
     "notes05e",
     "notes05f",
     "notes00e2",
-    "notes05d2",
+    "notes00e3",
     "notes05b2",
     "dev05b2"
   ],
@@ -331,7 +331,15 @@
       "page": "presentation",
       "text": "For the developer · live call\nDrive this slide with window.MAYBE_CALL: setMode('you'|'agent'|'idle'), setLevel(0–1) for mic/agent volume, addMessage('you'|'agent', text), clear(). Full spec: maybe/pitch/LIVE-CALL.md.",
       "w": 600,
-      "x": 2680,
+      "x": 4720,
+      "y": 4100
+    },
+    "dev05c": {
+      "fill": "purple",
+      "page": "presentation",
+      "text": "For the developer · agent world\nDrive this slide with window.MAYBE_SWARM: connect(), setAgents([...]), setPhase('spawn'|'talk'|'think'|'result'), say(id, text, {to}), think(id, text), setVerdict(id, 'yes'|'maybe'|'no'), plus the review panel: addPoint('pro'|'con', text, {by}), addQualification(text, {gap}), setConclusion({wanted, summary, list}), setDeal(text). Full spec: AGENT-WORLD.md. The animation itself runs from assets/agent-world.js in the deck, not on this canvas.",
+      "w": 600,
+      "x": 6760,
       "y": 4100
     },
     "livetitle": {
@@ -339,31 +347,6 @@
       "maxW": 4480,
       "page": "live",
       "text": "MAYBE · Live system · clickable build spec",
-      "w": 240,
-      "x": 0,
-      "y": -300
-    },
-    "notes01": {
-      "fill": "gray",
-      "page": "presentation",
-      "text": "Notes · 01 · Title\nHi, we're Luc and Friederike. MAYBE lets students try real work from real companies for about an hour before they choose a degree or a job. Everything you'll see is a working prototype; the companies are examples, not partners.",
-      "w": 600,
-      "x": 0,
-      "y": 4100
-    },
-    "notes05b": {
-      "fill": "gray",
-      "page": "presentation",
-      "text": "Notes · 05b · Live call\nNow let's call a buyer for real. I'll talk to Mara, our AI retail buyer, live. Watch the orb react to my voice and her answers appear on the right.",
-      "w": 600,
-      "x": 2040,
-      "y": 4100
-    },
-    "prestitle": {
-      "kind": "title1",
-      "maxW": 8040,
-      "page": "presentation",
-      "text": "MAYBE · Hackathon presentation",
       "w": 240,
       "x": 0,
       "y": -300
@@ -408,13 +391,77 @@
       "x": 2040,
       "y": 2600
     },
+    "notes00e2": {
+      "fill": "gray",
+      "page": "presentation",
+      "text": "Notes · 00e2 · AI vs AI\nAnd it's getting worse. People now send eleven thousand applications on LinkedIn every minute, many written by AI. Companies answer with AI too: one in five lets software reject people with no human ever looking. You've seen what that looks like. An AI interviewer that glitches mid-interview. A manager who applied to his own company and got rejected in six minutes. A man rejected from more than a hundred jobs, often within minutes, now in court against the screening software. It's AI against AI, and the person in the middle never gets seen.",
+      "w": 600,
+      "x": 4080,
+      "y": 2600
+    },
+    "notes00e3": {
+      "fill": "gray",
+      "page": "presentation",
+      "text": "Notes · 00e3 · Real people are living this\nAnd this isn't just numbers. Real people are living it. This post went viral last month: a team lead whose HR kept saying nobody passed screening. So they applied to their own job, under a fake name, with essentially their own CV. Rejected in six minutes. The filter wanted 'React.js' and their CV said 'React'. Since April they had been rejecting every qualified applicant over punctuation. And on the right, applicants on TikTok: an AI interviewer stuck repeating 'vertical bar pilates', someone who expected a person and wasn't told it would be AI, and an automatic rejection right after applying. (Click a phone to play it. These are individual accounts, not verified, not typical cases.)",
+      "w": 600,
+      "x": 6120,
+      "y": 2600
+    },
     "notes00f": {
       "fill": "gray",
       "page": "presentation",
       "text": "Notes · 00f · The turn\nWe have people who haven't had the chance to discover what they can do, and people who struggle to get the chance to show it. What if we used AI to create opportunities, instead of only filtering applications? Next slide: MAYBE.",
       "w": 600,
+      "x": 0,
+      "y": 4100
+    },
+    "notes01": {
+      "fill": "gray",
+      "page": "presentation",
+      "text": "Notes · 01 · Title\nHi, we're Luc and Friederike. MAYBE lets students try real work from real companies for about an hour before they choose a degree or a job. Everything you'll see is a working prototype; the companies are examples, not partners.",
+      "w": 600,
+      "x": 2040,
+      "y": 4100
+    },
+    "notes05b": {
+      "fill": "gray",
+      "page": "presentation",
+      "text": "Notes · 05b · Live call\nNow let's call a buyer for real. I'll talk to Mara, our AI retail buyer, live. Watch the orb react to my voice and her answers appear on the right.",
+      "w": 600,
+      "x": 4080,
+      "y": 4100
+    },
+    "notes05c": {
+      "fill": "gray",
+      "page": "presentation",
+      "text": "Notes · 05c · Agent world\nRight after that call, MAYBE builds a small market of simulated people: buyers, parents, teenagers, rivals. They argue about the call, then each one decides on its own. On the left you see the result: what worked, what didn't, the qualifications they found, and whether I land on Dr. Lipp's wanted-candidates list. It's a synthetic estimate, kept apart from the real deal outcome.",
+      "w": 600,
       "x": 6120,
-      "y": 2600
+      "y": 4100
+    },
+    "notes05d": {
+      "fill": "gray",
+      "page": "presentation",
+      "text": "Notes · 05d · Product walkthrough\nSo basically, this is it. A student scrolls the marketplace and opens the Dr. Lipp sales trial. They read the brief and start. They call Bettina, an AI buyer, and you see the conversation in the transcript. They log the call in the CRM like a real sales rep, then submit. An AI review checks the calls against Dr. Lipp's rubric, and every score says where it came from. The student shares it, and on Dr. Lipp's side this is now the best sale on the board. One click: invite to interview.",
+      "w": 600,
+      "x": 0,
+      "y": 5600
+    },
+    "notes05e": {
+      "fill": "gray",
+      "page": "presentation",
+      "text": "Notes · 05e · Employer side\nNow the employer side. So how is MAYBE different from an AI screener? A screener reads a CV, often one written by AI, and software rejects people, often with no human looking. With MAYBE, the employer sees the work itself: the candidate’s real sales call, their CRM notes, the deal they closed. Every score says where it came from: rule-based, AI review or a synthetic estimate. And a person decides who gets invited. AI lays out the evidence; it doesn't make the call. The candidates here are demo data.",
+      "w": 600,
+      "x": 2040,
+      "y": 5600
+    },
+    "notes05f": {
+      "fill": "gray",
+      "page": "presentation",
+      "text": "Notes · 05f · What MAYBE is\nSo that's MAYBE. Students explore real jobs from real companies, try the actual task for an hour, and keep the evidence. Employers review the work and invite people to interview. Students choose with experience, employers hire on evidence. AI creates the chance; people make the decision.",
+      "w": 600,
+      "x": 4080,
+      "y": 5600
     },
     "notes10a": {
       "fill": "gray",
@@ -464,61 +511,14 @@
       "x": 0,
       "y": 8600
     },
-    "notes05c": {
-      "fill": "gray",
+    "prestitle": {
+      "kind": "title1",
+      "maxW": 8000,
       "page": "presentation",
-      "text": "Notes · 05c · Agent world\nRight after that call, MAYBE builds a small market of simulated people: buyers, parents, teenagers, rivals. They argue about the call, then each one decides on its own. On the left you see the result: what worked, what didn't, the qualifications they found, and whether I land on Dr. Lipp's wanted-candidates list. It's a synthetic estimate, kept apart from the real deal outcome.",
-      "w": 600,
-      "x": 4080,
-      "y": 4100
-    },
-    "dev05c": {
-      "fill": "purple",
-      "page": "presentation",
-      "text": "For the developer · agent world\nDrive this slide with window.MAYBE_SWARM: connect(), setAgents([...]), setPhase('spawn'|'talk'|'think'|'result'), say(id, text, {to}), think(id, text), setVerdict(id, 'yes'|'maybe'|'no'), plus the review panel: addPoint('pro'|'con', text, {by}), addQualification(text, {gap}), setConclusion({wanted, summary, list}), setDeal(text). Full spec: AGENT-WORLD.md. The animation itself runs from assets/agent-world.js in the deck, not on this canvas.",
-      "w": 600,
-      "x": 4720,
-      "y": 4100
-    },
-    "notes05d": {
-      "fill": "gray",
-      "page": "presentation",
-      "text": "Notes · 05d · Product walkthrough\nSo basically, this is it. A student scrolls the marketplace and opens the Dr. Lipp sales trial. They read the brief and start. They call Bettina, an AI buyer, and you see the conversation in the transcript. They log the call in the CRM like a real sales rep, then submit. An AI review checks the calls against Dr. Lipp's rubric, and every score says where it came from. The student shares it, and on Dr. Lipp's side this is now the best sale on the board. One click: invite to interview.",
-      "w": 600,
-      "x": 6120,
-      "y": 4100
-    },
-    "notes05e": {
-      "fill": "gray",
-      "page": "presentation",
-      "text": "Notes · 05e · Employer side\nSo how is MAYBE different from an AI screener? A screener reads a CV, often one written by AI, and software rejects people, often with no human looking. With MAYBE, the employer sees the work itself: the candidate’s real sales call, their CRM notes, the deal they closed. Every score says where it came from: rule-based, AI review or a synthetic estimate. And a person decides who gets invited. AI lays out the evidence; it doesn't make the call. The candidates here are demo data.",
-      "w": 600,
-      "x": 2040,
-      "y": 5600
-    },
-    "notes05f": {
-      "fill": "gray",
-      "page": "presentation",
-      "text": "Notes · 05f · What MAYBE is\nSo that's MAYBE. Students explore real jobs from real companies, try the actual task for an hour, and keep the evidence. Employers review the work and invite people to interview. Students choose with experience, employers hire on evidence. AI creates the chance; people make the decision.",
-      "w": 600,
-      "x": 4080,
-      "y": 5600
-    },
-    "notes00e2": {
-      "fill": "gray",
-      "page": "presentation",
-      "w": 600,
-      "x": 4080,
-      "y": 2600,
-      "text": "Notes · 00e2 · AI vs AI\nAnd it's getting worse. People now send eleven thousand applications on LinkedIn every minute, many written by AI. Companies answer with AI too: one in five lets software reject people with no human ever looking. You've seen what that looks like. An AI interviewer that glitches mid-interview. A manager who applied to his own company and got rejected in six minutes. A man rejected from more than a hundred jobs, often within minutes, now in court against the screening software. It's AI against AI, and the person in the middle never gets seen."
-    },
-    "notes05d2": {
-      "fill": "gray",
-      "page": "presentation",
-      "w": 600,
+      "text": "MAYBE · Hackathon presentation",
+      "w": 240,
       "x": 0,
-      "y": 5600,
-      "text": "Notes · 05d2 · AI screening, from the other side\nNow the employer side. Today most companies answer the flood of applications with an AI screener. This is what that feels like for the people applying. An AI interviewer that glitches and repeats the same phrase. A candidate who expected a person and wasn't told it would be AI. An automatic rejection seconds after applying. It's fast for the company, but it's a black box, and the screener still never sees anyone do the job. (Click a phone to play it. These are individual experiences, not typical cases.)"
+      "y": -300
     },
     "notes05b2": {
       "fill": "gray",
@@ -558,6 +558,7 @@
     "Slide00d.dc.html",
     "Slide00e.dc.html",
     "Slide00e2.dc.html",
+    "Slide00e3.dc.html",
     "Slide00f.dc.html",
     "Slide10a.dc.html",
     "Slide10b.dc.html",
@@ -566,7 +567,6 @@
     "Slide12.dc.html",
     "Slide13.dc.html",
     "Slide05d.dc.html",
-    "Slide05d2.dc.html",
     "Slide05e.dc.html",
     "Slide05f.dc.html",
     "Piece-r56u.dc.html"
