@@ -733,9 +733,10 @@
     document.body.classList.remove('cr-cover');
   }
   const blurIn = (el, delay, px) => el.animate([{ opacity: 0, filter: `blur(${px}px)` }, { opacity: 1, filter: 'blur(0px)' }], { duration: 420, delay, easing: 'cubic-bezier(.22,.61,.36,1)', fill: 'backwards' });
-  // Opening UX/UI Design, on one clock that starts at the press: 3 s at most until the editor is fully in view.
-  // The curtain rises, a highlight walks the logos, slower each time, stops on the last one, and the curtain falls.
-  const PICK = { up: 380, walk: 400, hops: [30, 34, 40, 50, 65, 85, 115, 155, 210], down: 2300, downFor: 480 };
+  // Opening UX/UI Design, on one clock that starts at the press: about 4.8 s until the editor is fully in view.
+  // The curtain rises, a highlight walks the logos, slower each time, stops on the last one, the task stays for about
+  // 3 s so the room can read it, and the curtain falls.
+  const PICK = { up: 380, walk: 400, hops: [30, 34, 40, 50, 65, 85, 115, 155, 210], down: 4300, downFor: 480 };
   function clearPick() {
     ui.pick.classList.remove('is-walking', 'is-chosen');
     ui.pickLogos.forEach((el) => el.classList.remove('is-on'));
@@ -771,7 +772,7 @@
       anims = [slideY(ui.curtain, 0, 0, 1), slideY(ui.curtainIn, 0, 0, 1)];
       chooseLast();
       showEditor();
-      await at(1500);
+      await at(3000);
       if (gone()) return;
     } else {
       anims = [slideY(ui.curtain, 100, 0, PICK.up), slideY(ui.curtainIn, -100, 0, PICK.up)];
@@ -829,6 +830,7 @@
       root.classList.remove('is-editor');
       document.body.classList.remove('cr-full');
       ui.editor.setAttribute('aria-hidden', 'true');
+      resetEditor();
       runSteps(0);
       draw();
       wake();
@@ -848,6 +850,13 @@
       startPending = false;
       Promise.resolve(editor.start({ skipOpening: true })).catch(() => {});
     } catch (err) { /* nothing to start: the page stays as it is */ }
+  }
+  // Going back to the cards leaves the editor ready for the next opening.
+  function resetEditor() {
+    try {
+      const editor = frameEl && frameEl.contentWindow && frameEl.contentWindow.MAYBE_EDITOR;
+      if (editor && editor.reset) editor.reset();
+    } catch (err) { /* nothing to reset */ }
   }
   function probePage() {
     if (!opener || probeEl || pageThere) return;

@@ -107,7 +107,7 @@ Las decisiones de Boris del 3 de noviembre de 2026 mandan sobre la versión ante
 | Pila con todas las imágenes | Arriba, solo la primera conserva su imagen; abajo, solo la banda con el nombre | Sin caras amontonadas ni textos cortados a la mitad |
 | Hueco de 7 pasos a cada lado | 4,7 arriba y 5,5 abajo; la línea se dobla un poco en cada extremo | Para leer los nombres apilados sin tapar la lista ni el número |
 | 19 proyectos | 6 carreras en un anillo de 12 | El guion del pitch |
-| Transición de unos 5 s | Menos de 3 s, con telón morado y selección de empresa | Es un escenario; no se puede esperar |
+| Transición de unos 5 s | Unos 4,8 s, con telón morado, selección de empresa y unos 3 s para leer la tarea | La audiencia debe entender la tarea antes de ver el editor |
 | Página del proyecto | El editor de diseño a pantalla completa | Es el siguiente paso de la demo |
 | Intro de unos 9 s: un personaje empuja una pared hacia la derecha | Menos de 1,5 s: un Open Peep empuja la pared morada hacia la izquierda y esta se queda como panel | Se salta con cualquier tecla |
 | Menú, premios, correo, redes, showreel | Se quitan | Pedido expreso |
