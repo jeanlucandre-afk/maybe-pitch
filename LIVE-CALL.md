@@ -1,6 +1,6 @@
 # Live-call slide: developer handoff
 
-On slide 7 (`#slide-7`) the presenter talks live with **Mara**, an AI customer, over the OpenAI Realtime API. He approaches her cold at a hackathon and tries to sell her a banana.
+On the live-call slide (`#slide-11` when this was written; the number moves with the deck) the presenter talks live with **Mara**, an AI customer, over the OpenAI Realtime API. He approaches her cold at a hackathon and tries to sell her a banana.
 
 - **Design source:** the canvas board `Slide05b · Live call (voice agent)`, copied to `src/Slide05b.dc.html`. Build with `node tools/build-deck.mjs`.
 - **The look:** `assets/live-call.js`. It knows nothing about the voice.
@@ -16,7 +16,7 @@ On slide 7 (`#slide-7`) the presenter talks live with **Mara**, an AI customer, 
 4. The presenter speaks first. Mara hears the audio directly. Their words reach the bubbles through Realtime events.
 5. The call ends when Mara closes it, when the presenter leaves the slide, or at the 3 minute limit. `call:ended` fires, and the bubbles stay until the slide is entered again. That clears them and starts a new call with the microphone live.
 
-**Say the intro on slide 6.** The microphone is live as soon as slide 7 is open, and the first words on it must be the approach to Mara.
+**Say the intro on the title slide, just before it.** The microphone is live as soon as the live-call slide is open, and the first words on it must be the approach to Mara.
 
 ## The `call:ended` event
 
@@ -62,7 +62,7 @@ A plain static server such as `npx serve .` has no `api/`, so the slide shows "M
 | **Shift+T** | Back to automatic voice detection. Push to talk otherwise carries over to reconnects and to the next call, until the page reloads. |
 | **M** | Mute or unmute. A notice shows while muted. The next call starts unmuted. |
 | **Enter** | Same as the Try again button. |
-| **A** (from `review.js`) | Ends the call. If a review has finished since the page loaded, it reopens that one: no Sample label, no network. Otherwise it opens the labelled sample, which needs the network, because it calls `/api/review-sales`. If the venue connection is dead, switch to a phone hotspot first. Reload the page after rehearsing, so that A gives the sample. |
+| **A** (from `agent-world-live.js`) | The backup if the voice fails on stage: opens the agent-world slide with the labelled sample call. It needs the network, because it calls `/api/review-sales`. If the venue connection is dead, switch to a phone hotspot first. |
 
 Space, the arrows, Home, End, PageUp, PageDown, the numbers, F, P and R belong to the deck and the review. While the review is open it takes every key but F.
 
@@ -83,7 +83,7 @@ Space, the arrows, Home, End, PageUp, PageDown, the numbers, F, P and R belong t
 | The presenter talks for 20 seconds without a break | Probably noise: a notice suggests holding T. |
 | His words never show, on any turn | Transcription is failing. Mara still answers, because she hears the audio directly. No notice shows, and the console logs `[mara] transcription failed` only if OpenAI reports it. With under 3 words from him no review opens. In rehearsal, set `OPENAI_TRANSCRIBE_MODEL=gpt-4o-transcribe`. |
 
-When a call ends with 3 or more words from him, `review.js` opens the review 800 ms after `call:ended`, over whatever slide is showing: slide 7 if Mara closed the call, the next slide if he left. Press → to close it.
+When a call ends with 3 or more words from him, `review.js` starts the analysis with nothing on screen. The presenter goes on through the careers slide and the design editor, and the agent-world slide shows the result on arrival (`assets/voice/agent-world-live.js`). With no call, or if the analysis fails twice, that slide stays on its labelled demo.
 
 ## Why each setting
 
@@ -106,7 +106,7 @@ The docs do not list which error codes are fatal, and they do not document how a
 
 ### Rehearsal switches
 
-Add these to the URL, for example `http://localhost:3010/?vad=server#slide-7`:
+Add these to the URL, for example `http://localhost:3010/?vad=server#slide-11`:
 
 | Switch | What it does |
 |---|---|
