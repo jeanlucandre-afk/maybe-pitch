@@ -23,7 +23,7 @@ This repo is the MAYBE hackathon presentation (Macromedia × CODE Hackathon). It
 ## How the voice pieces connect to the page (contract; don't break it)
 
 - **Q&A agent (the "Talk to MAYBE" button, all slides):** set `AGENT_ID` in `assets/deck.js`. The page registers ElevenLabs client tools `goToSlide`, `nextSlide`, `prevSlide`, `openScreen` and `getCurrentSlide`. Spec: `agent-prompt.md`.
-- **Live-call slide (`#slide-11`, right after the title: orb, bubbles, Mara):** drive it with `window.MAYBE_CALL`:
+- **Live-call slide (`#slide-12`, right after the title: orb, bubbles, Mara):** drive it with `window.MAYBE_CALL`:
   - `connect()` / `disconnect()`
   - `setMode('you'|'agent'|'idle')`
   - `setLevel(0..1)`
@@ -31,7 +31,7 @@ This repo is the MAYBE hackathon presentation (Macromedia × CODE Hackathon). It
   - `clear()`
 
   Listen for `deck:slidechange` on `document` to start and stop the session. Full spec and example: `LIVE-CALL.md`.
-- **Agent-world slide (`#slide-13`, after the live call and the careers slide `#slide-12`: the ball of simulated agents reviewing the call):** drive it with `window.MAYBE_SWARM`:
+- **Agent-world slide (`#slide-14`, after the live call and the careers slide `#slide-13`: the ball of simulated agents reviewing the call):** drive it with `window.MAYBE_SWARM`:
   - `connect()` / `disconnect()`, `setAgents([...])`, `setPhase('spawn'|'talk'|'think'|'result')`
   - `say(id, text, {to})`, `think(id, text)`, `setVerdict(id, 'yes'|'maybe'|'no')`
   - review panel (left): `setCandidate({name, meta})`, `addPoint('pro'|'con', text, {by})`, `addQualification(text, {gap, by})`, `setConclusion({wanted, summary, list})`, `setDeal(text)`
@@ -90,4 +90,4 @@ Design source of truth: the **MAYBE Final** design canvas, https://claude.ai/art
    - `window.MAYBE_CALL` and the slide markers (`data-call`, `data-orb`, `data-bubbles`, `data-avatar`) are intact
 2. Merge into main. If `index.html` conflicts, take either side, then run `node tools/build-deck.mjs` and commit the regenerated file.
 3. Before or right after the merge, Luc adds the env vars the PR names (e.g. `OPENAI_API_KEY`) in Vercel → maybe-pitch → Settings → Environment Variables (Production + Preview). Values never go in chat or git.
-4. Push main, and tell Luc to test the live-call slide (`#slide-11`) out loud on https://maybe-pitch.vercel.app.
+4. Push main, and tell Luc to test the live-call slide (`#slide-12`) out loud on https://maybe-pitch.vercel.app.

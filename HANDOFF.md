@@ -6,7 +6,7 @@ Design canvas: https://claude.ai/artifact/7ffQa8sB7mqJyxWByXgztf (page "Presenta
 
 Everything below is on `main`. The canvas and `src/` match as of this handoff.
 
-## The deck (17 slides)
+## The deck (18 slides)
 
 The deck follows the canvas grid: rows top to bottom, each row left to right. Boards parked far below the grid stay on the canvas but are left out (now: 05e Employer side, 05f What MAYBE is, 10a–10d market/why now/Europe/business). Move a board back into the grid to bring it back.
 
@@ -15,20 +15,21 @@ The deck follows the canvas grid: rows top to bottom, each row left to right. Bo
 | 1 | Black pre-show | `src/Slide00.dc.html` |
 | 2 | The question | `src/Slide00a.dc.html` |
 | 3 | The experience gap (26 in 100) | `src/Slide00b.dc.html` |
-| 4 | The human cost | `src/Slide00c.dc.html` |
-| 5 | The other side | `src/Slide00d.dc.html` |
-| 6 | The screening | `src/Slide00e.dc.html` |
-| 7 | AI vs AI | `src/Slide00e2.dc.html` |
-| 8 | Real people (X post + TikTok flower, no text) | `src/Slide00e3.dc.html` |
-| 9 | The turn | `src/Slide00f.dc.html` |
-| 10 | Title (intro video) | `src/Slide01.dc.html` |
-| 11 | Live call with Mara (OpenAI Realtime voice, Boris) | `src/Slide05b.dc.html` |
-| 12 | Careers roller → Figma-like DICE design editor (Boris) | `src/Slide05b2.dc.html` |
-| 13 | Agent world: AI agents review the live call (Boris) | `src/Slide05c.dc.html` |
-| 14 | Product walkthrough video (2x) | `src/Slide05d.dc.html` |
-| 15 | Back to the start | `src/Slide12.dc.html` |
-| 16 | Try it. Prove it. | `src/Slide13.dc.html` |
-| 17 | Product walkthrough video again (2x) | `src/Slide05d-o9hm.dc.html` |
+| 4 | The access gap (who you know gets you the experience) | `src/Slide00b2.dc.html` |
+| 5 | The human cost | `src/Slide00c.dc.html` |
+| 6 | The other side | `src/Slide00d.dc.html` |
+| 7 | The screening | `src/Slide00e.dc.html` |
+| 8 | AI vs AI | `src/Slide00e2.dc.html` |
+| 9 | Real people (X post + TikTok flower, no text) | `src/Slide00e3.dc.html` |
+| 10 | The turn | `src/Slide00f.dc.html` |
+| 11 | Title (intro video) | `src/Slide01.dc.html` |
+| 12 | Live call with Mara (OpenAI Realtime voice, Boris) | `src/Slide05b.dc.html` |
+| 13 | Careers roller → Figma-like DICE design editor (Boris) | `src/Slide05b2.dc.html` |
+| 14 | Agent world: AI agents review the live call (Boris) | `src/Slide05c.dc.html` |
+| 15 | Product walkthrough video (2x) | `src/Slide05d.dc.html` |
+| 16 | Back to the start | `src/Slide12.dc.html` |
+| 17 | Try it. Prove it. | `src/Slide13.dc.html` |
+| 18 | Product walkthrough video again (2x) | `src/Slide05d-o9hm.dc.html` |
 
 Speaker notes live in `src/canvas.json` (`notes`), matched to a slide by their title ("Notes · 05d · …"; a canvas copy like `05d-o9hm` uses `05d`'s notes). Press **P** in the deck.
 
@@ -69,7 +70,7 @@ node tools/build-deck.mjs        # after any change in src/ → regenerates inde
 ## For Boris
 
 - `voice` was merged into `main` on 3 Nov (Mara voice, review agents, careers + design editor). The "Talk to MAYBE" button is hidden in `tools/build-deck.mjs`.
-- Live call `#slide-11`, careers `#slide-12`, agent world `#slide-13`.
+- Live call `#slide-12`, careers `#slide-13`, agent world `#slide-14`.
 
 - Branch `voice` has nothing that isn't on `main`, and is 27 commits behind. Start with `git checkout voice && git merge origin/main`.
 - Slide numbers moved: **live call is `#slide-11`, agent world `#slide-12`** (CLAUDE.md is updated). The `window.MAYBE_CALL` / `window.MAYBE_SWARM` contracts are unchanged.
