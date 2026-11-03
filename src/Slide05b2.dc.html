@@ -97,7 +97,7 @@ body{margin:0}
         <div class="cr-pick__row" data-cr-pick-row>
           <span class="cr-pick__mark" aria-hidden="true"></span>
           <sc-for list="{{companies}}" as="co" hint-placeholder-count="5">
-            <div class="cr-pick__logo" data-cr-pick-logo><img src="{{co.logo}}" alt="{{co.name}}" style="height: {{co.h}}px;"></div>
+            <div class="cr-pick__logo" data-cr-pick-logo><img src="{{co.logo}}" alt="{{co.name}}" style="height: {{co.h}}px;"><span class="cr-pick__name">{{co.label}}</span></div>
           </sc-for>
         </div>
         <p class="cr-pick__task">{{pick.task}}</p>
@@ -159,13 +159,14 @@ class Component extends DCLogic {
     ];
   }
   // The companies shown when UX/UI Design opens. The highlight always stops on the last one. h: logo height, to even them out by eye.
+  // label: the name under a logo that is only a symbol.
   companies() {
     return [
-      { id: 'spotify', name: 'Spotify', logo: 'app/img/logo-spotify.svg', h: 84 },
-      { id: 'zalando', name: 'Zalando', logo: 'app/img/logo-zalando.svg', h: 84 },
-      { id: 'n26', name: 'N26', logo: 'app/img/logo-n26.svg', h: 108 },
-      { id: 'lufthansa', name: 'Lufthansa', logo: 'app/img/logo-lufthansa.svg', h: 72 },
-      { id: 'dice', name: 'DICE', logo: 'app/img/logo-dice-white.svg', h: 100 }
+      { id: 'spotify', name: 'Spotify', logo: 'assets/careers/logos/spotify.svg', h: 122, label: 'Spotify' },
+      { id: 'zalando', name: 'Zalando', logo: 'assets/careers/logos/zalando.svg', h: 122, label: 'Zalando' },
+      { id: 'n26', name: 'N26', logo: 'assets/careers/logos/n26.svg', h: 156, label: '' },
+      { id: 'lufthansa', name: 'Lufthansa', logo: 'assets/careers/logos/lufthansa.svg', h: 122, label: 'Lufthansa' },
+      { id: 'dice', name: 'DICE', logo: 'assets/careers/logos/dice-white.svg', h: 88, label: '' }
     ];
   }
   renderVals() {

@@ -108,14 +108,17 @@
 /* ---------- opening UX/UI Design: five white logos, a black block walks them, and the last one swaps places with the middle one ---------- */
 .cr-pick { position: absolute; inset: 0; --pick-ease: cubic-bezier(.22, .8, .2, 1); }
 .cr-pick__row { --slot: 350px; --at: 0; --hop: 0ms; position: absolute; left: 50%; top: calc(50% - 90px); display: flex; width: calc(var(--slot) * 5); height: 172px; margin: -86px 0 0 calc(var(--slot) * -2.5); }
-.cr-pick__mark { position: absolute; z-index: 1; left: 10px; top: 0; width: calc(var(--slot) - 20px); height: 100%; border-radius: 22px; background: #09090B; opacity: 0; transform: translateX(calc(var(--at) * var(--slot))); transition: transform var(--hop) ease-out; }
+.cr-pick__mark { position: absolute; left: 10px; top: 0; width: calc(var(--slot) - 20px); height: 100%; border-radius: 22px; background: #09090B; opacity: 0; transform: translateX(calc(var(--at) * var(--slot))); transition: transform var(--hop) ease-out; }
 .cr-pick.is-walking .cr-pick__mark { opacity: 1; }
-.cr-pick__logo { position: relative; flex: none; display: grid; place-items: center; width: var(--slot); height: 100%; transition: opacity .14s ease, transform .42s var(--pick-ease); }
-.cr-pick__logo.is-on { z-index: 2; } /* the block passes over the others, never through their words */
+.cr-pick__logo { position: relative; flex: none; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; width: var(--slot); height: 100%; transition: opacity .14s ease, transform .42s var(--pick-ease); }
 .cr-pick__logo img { display: block; width: auto; filter: brightness(0) invert(1); } /* the files stay as they are: white comes from here */
+.cr-pick__name { color: #FFFFFF; font-size: 24px; font-weight: 600; line-height: 1; letter-spacing: -.015em; }
+.cr-pick__name:empty { display: none; }
 .cr .cr-pick__task { position: absolute; left: 0; right: 0; top: calc(50% + 64px); text-align: center; color: #FFFFFF; font-size: 68px; font-weight: 600; line-height: 1.1; letter-spacing: -.04em; opacity: 0; filter: blur(12px); transition: opacity .24s ease, filter .24s ease; }
 .cr .cr-pick__note { position: absolute; left: 0; right: 0; bottom: 44px; text-align: center; color: #FFFFFF; font-size: 22px; font-weight: 500; letter-spacing: -.005em; }
-.cr-pick.is-chosen .cr-pick__mark { transform: translateX(calc(2 * var(--slot))) scale(1.12, 1.2); transition: transform .42s var(--pick-ease); }
+/* while walking the logos stay above the block, so none is ever hidden; once chosen, the block crosses over the others, never through their words */
+.cr-pick.is-chosen .cr-pick__logo.is-on { z-index: 2; }
+.cr-pick.is-chosen .cr-pick__mark { z-index: 1; transform: translateX(calc(2 * var(--slot))) scale(1.12, 1.2); transition: transform .42s var(--pick-ease); }
 .cr-pick.is-chosen .cr-pick__logo { opacity: .24; }
 .cr-pick.is-chosen .cr-pick__logo:nth-child(2), .cr-pick.is-chosen .cr-pick__logo:nth-child(3) { transform: translateX(-34px); }
 .cr-pick.is-chosen .cr-pick__logo:nth-child(4) { transform: translateX(calc(2 * var(--slot))); animation: cr-pick-swap .42s ease both; }
