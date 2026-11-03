@@ -105,7 +105,7 @@
       "page": "presentation",
       "title": "01 · Title (intro plays when shown)",
       "w": 1920,
-      "x": 0,
+      "x": 2040,
       "y": 3000
     },
     "Slide05b.dc.html": {
@@ -114,7 +114,7 @@
       "page": "presentation",
       "title": "05b · Live call (voice agent)",
       "w": 1920,
-      "x": 2040,
+      "x": 4080,
       "y": 3000
     },
     "Slide00.dc.html": {
@@ -170,15 +170,15 @@
       "page": "presentation",
       "title": "00f · The turn",
       "w": 1920,
-      "x": 6120,
-      "y": 1500
+      "x": 0,
+      "y": 3000
     },
     "Slide10a.dc.html": {
       "h": 1080,
       "page": "presentation",
       "title": "10a · The market",
       "w": 1920,
-      "x": 4080,
+      "x": 6120,
       "y": 4500
     },
     "Slide10b.dc.html": {
@@ -186,15 +186,15 @@
       "page": "presentation",
       "title": "10b · Why now",
       "w": 1920,
-      "x": 6120,
-      "y": 4500
+      "x": 0,
+      "y": 6000
     },
     "Slide10c.dc.html": {
       "h": 1080,
       "page": "presentation",
       "title": "10c · The European opportunity",
       "w": 1920,
-      "x": 0,
+      "x": 2040,
       "y": 6000
     },
     "Slide10d.dc.html": {
@@ -202,7 +202,7 @@
       "page": "presentation",
       "title": "10d · The business",
       "w": 1920,
-      "x": 2040,
+      "x": 4080,
       "y": 6000
     },
     "Slide12.dc.html": {
@@ -210,7 +210,7 @@
       "page": "presentation",
       "title": "12 · Back to the start",
       "w": 1920,
-      "x": 4080,
+      "x": 6120,
       "y": 6000
     },
     "Slide13.dc.html": {
@@ -218,8 +218,8 @@
       "page": "presentation",
       "title": "13 · Try it. Prove it.",
       "w": 1920,
-      "x": 6120,
-      "y": 6000
+      "x": 0,
+      "y": 7500
     },
     "Slide05c.dc.html": {
       "h": 1080,
@@ -227,7 +227,7 @@
       "page": "presentation",
       "title": "05c · Agent world (market reviews the call)",
       "w": 1920,
-      "x": 4080,
+      "x": 6120,
       "y": 3000
     },
     "Slide05d.dc.html": {
@@ -235,15 +235,15 @@
       "page": "presentation",
       "title": "05d · Product walkthrough (video)",
       "w": 1920,
-      "x": 6120,
-      "y": 3000
+      "x": 0,
+      "y": 4500
     },
     "Slide05e.dc.html": {
       "h": 1080,
       "page": "presentation",
       "title": "05e · Employer side",
       "w": 1920,
-      "x": 0,
+      "x": 2040,
       "y": 4500
     },
     "Slide05f.dc.html": {
@@ -251,7 +251,7 @@
       "page": "presentation",
       "title": "05f · What MAYBE is (conclusion)",
       "w": 1920,
-      "x": 2040,
+      "x": 4080,
       "y": 4500
     },
     "Slide00e2.dc.html": {
@@ -260,6 +260,14 @@
       "title": "00e2 · AI vs AI (stories and numbers)",
       "w": 1920,
       "x": 4080,
+      "y": 1500
+    },
+    "Slide00e3.dc.html": {
+      "h": 1080,
+      "page": "presentation",
+      "title": "00e3 · Real people are living this",
+      "w": 1920,
+      "x": 6120,
       "y": 1500
     }
   },
@@ -303,7 +311,8 @@
     "notes05d",
     "notes05e",
     "notes05f",
-    "notes00e2"
+    "notes00e2",
+    "notes00e3"
   ],
   "notes": {
     "dev05b": {
@@ -311,7 +320,7 @@
       "page": "presentation",
       "text": "For the developer · live call\nDrive this slide with window.MAYBE_CALL: setMode('you'|'agent'|'idle'), setLevel(0–1) for mic/agent volume, addMessage('you'|'agent', text), clear(). Full spec: maybe/pitch/LIVE-CALL.md.",
       "w": 600,
-      "x": 2680,
+      "x": 4720,
       "y": 4100
     },
     "livetitle": {
@@ -328,7 +337,7 @@
       "page": "presentation",
       "text": "Notes · 01 · Title\nHi, we're Luc and Friederike. MAYBE lets students try real work from real companies for about an hour before they choose a degree or a job. Everything you'll see is a working prototype; the companies are examples, not partners.",
       "w": 600,
-      "x": 0,
+      "x": 2040,
       "y": 4100
     },
     "notes05b": {
@@ -336,7 +345,7 @@
       "page": "presentation",
       "text": "Notes · 05b · Live call\nNow let's call a buyer for real. I'll talk to Mara, our AI retail buyer, live. Watch the orb react to my voice and her answers appear on the right.",
       "w": 600,
-      "x": 2040,
+      "x": 4080,
       "y": 4100
     },
     "prestitle": {
@@ -393,15 +402,15 @@
       "page": "presentation",
       "text": "Notes · 00f · The turn\nWe have people who haven't had the chance to discover what they can do, and people who struggle to get the chance to show it. What if we used AI to create opportunities, instead of only filtering applications? Next slide: MAYBE.",
       "w": 600,
-      "x": 6120,
-      "y": 2600
+      "x": 0,
+      "y": 4100
     },
     "notes10a": {
       "fill": "gray",
       "page": "presentation",
       "text": "Notes · 10a · The market\nRecruitment is big and under pressure. AI recruitment software alone is estimated at $5.1 billion in 2026, forecast to roughly double by 2035. In iHire's survey, more than half of employers say they get too many unqualified applicants, and a third want skills assessments. The $34B and $71B figures are separate categories, not our addressable market.",
       "w": 600,
-      "x": 4080,
+      "x": 6120,
       "y": 5600
     },
     "notes10b": {
@@ -409,15 +418,15 @@
       "page": "presentation",
       "text": "Notes · 10b · Why now\nGreenhouse customers now get 244 applications per job, more than double 2022, with fewer than half the recruiters. Europe shows the same: 99 to 183 per vacancy. These are Greenhouse benchmarks, not the whole labour market. At the same time, 70% of employers in NACE's survey hire on skills. Applications don't show skills. Work does.",
       "w": 600,
-      "x": 6120,
-      "y": 5600
+      "x": 0,
+      "y": 7100
     },
     "notes10c": {
       "fill": "gray",
       "page": "presentation",
       "text": "Notes · 10c · The European opportunity\nFrom 2 December 2027, high-risk AI used in hiring faces stricter EU AI Act requirements: transparency, documentation, risk management, data governance, human oversight, and checks for unfair outcomes. MAYBE is designed around transparent, human-reviewed work evidence. We're not claiming to be exempt or compliant; our own evaluations may be high-risk too.",
       "w": 600,
-      "x": 0,
+      "x": 2040,
       "y": 7100
     },
     "notes10d": {
@@ -425,7 +434,7 @@
       "page": "presentation",
       "text": "Notes · 10d · The business\nExploring stays free or accessible for students. Employers pay for job-specific simulations, work-sample review and recruiting workflows, evidence-based assessment, and possibly a subscription. We haven't set prices or proven hiring ROI yet; that's what the pilots are for.",
       "w": 600,
-      "x": 2040,
+      "x": 4080,
       "y": 7100
     },
     "notes12": {
@@ -433,7 +442,7 @@
       "page": "presentation",
       "text": "Notes · 12 · Back to the start\nBack to where we started. How are you supposed to know what you want to do if you've never tried it? And how are employers supposed to recognize your potential if you never get the chance to demonstrate it?",
       "w": 600,
-      "x": 4080,
+      "x": 6120,
       "y": 7100
     },
     "notes13": {
@@ -441,15 +450,15 @@
       "page": "presentation",
       "text": "Notes · 13 · Try it. Prove it.\nFor years, technology has helped companies decide who deserves a chance. We're building technology that gives more people the chance to prove themselves. MAYBE. Try it. Prove it. Thank you.",
       "w": 600,
-      "x": 6120,
-      "y": 7100
+      "x": 0,
+      "y": 8600
     },
     "notes05c": {
       "fill": "gray",
       "page": "presentation",
       "text": "Notes · 05c · Agent world\nRight after that call, MAYBE builds a small market of simulated people: buyers, parents, teenagers, rivals. They argue about the call, then each one decides on its own. On the left you see the result: what worked, what didn't, the qualifications they found, and whether I land on Dr. Lipp's wanted-candidates list. It's a synthetic estimate, kept apart from the real deal outcome.",
       "w": 600,
-      "x": 4080,
+      "x": 6120,
       "y": 4100
     },
     "dev05c": {
@@ -457,7 +466,7 @@
       "page": "presentation",
       "text": "For the developer · agent world\nDrive this slide with window.MAYBE_SWARM: connect(), setAgents([...]), setPhase('spawn'|'talk'|'think'|'result'), say(id, text, {to}), think(id, text), setVerdict(id, 'yes'|'maybe'|'no'), plus the review panel: addPoint('pro'|'con', text, {by}), addQualification(text, {gap}), setConclusion({wanted, summary, list}), setDeal(text). Full spec: AGENT-WORLD.md. The animation itself runs from assets/agent-world.js in the deck, not on this canvas.",
       "w": 600,
-      "x": 4720,
+      "x": 6760,
       "y": 4100
     },
     "notes05d": {
@@ -465,15 +474,15 @@
       "page": "presentation",
       "text": "Notes · 05d · Product walkthrough\nSo basically, this is it. A student scrolls the marketplace and opens the Dr. Lipp sales trial. They read the brief and start. They call Bettina, an AI buyer, and you see the conversation in the transcript. They log the call in the CRM like a real sales rep, then submit. An AI review checks the calls against Dr. Lipp's rubric, and every score says where it came from. The student shares it, and on Dr. Lipp's side this is now the best sale on the board. One click: invite to interview.",
       "w": 600,
-      "x": 6120,
-      "y": 4100
+      "x": 0,
+      "y": 5600
     },
     "notes05e": {
       "fill": "gray",
       "page": "presentation",
       "text": "Notes · 05e · Employer side\nNow the employer side. So how is MAYBE different from an AI screener? A screener reads a CV, often one written by AI, and software rejects people, often with no human looking. With MAYBE, the employer sees the work itself: the candidate’s real sales call, their CRM notes, the deal they closed. Every score says where it came from: rule-based, AI review or a synthetic estimate. And a person decides who gets invited. AI lays out the evidence; it doesn't make the call. The candidates here are demo data.",
       "w": 600,
-      "x": 0,
+      "x": 2040,
       "y": 5600
     },
     "notes05f": {
@@ -481,7 +490,7 @@
       "page": "presentation",
       "text": "Notes · 05f · What MAYBE is\nSo that's MAYBE. Students explore real jobs from real companies, try the actual task for an hour, and keep the evidence. Employers review the work and invite people to interview. Students choose with experience, employers hire on evidence. AI creates the chance; people make the decision.",
       "w": 600,
-      "x": 2040,
+      "x": 4080,
       "y": 5600
     },
     "notes00e2": {
@@ -491,6 +500,14 @@
       "x": 4080,
       "y": 2600,
       "text": "Notes · 00e2 · AI vs AI\nAnd it's getting worse. People now send eleven thousand applications on LinkedIn every minute, many written by AI. Companies answer with AI too: one in five lets software reject people with no human ever looking. You've seen what that looks like. An AI interviewer that glitches mid-interview. A manager who applied to his own company and got rejected in six minutes. A man rejected from more than a hundred jobs, often within minutes, now in court against the screening software. It's AI against AI, and the person in the middle never gets seen."
+    },
+    "notes00e3": {
+      "fill": "gray",
+      "page": "presentation",
+      "w": 600,
+      "x": 6120,
+      "y": 2600,
+      "text": "Notes · 00e3 · Real people are living this\nAnd this isn't just numbers. Real people are living it. This post went viral last month: a team lead whose HR kept saying nobody passed screening. So they applied to their own job, under a fake name, with essentially their own CV. Rejected in six minutes. The filter wanted 'React.js' and their CV said 'React'. Since April they had been rejecting every qualified applicant over punctuation. And on the right, applicants on TikTok: an AI interviewer stuck repeating 'vertical bar pilates', someone who expected a person and wasn't told it would be AI, and an automatic rejection right after applying. (Click a phone to play it. These are individual accounts, not verified, not typical cases.)"
     }
   },
   "order": [
@@ -513,6 +530,7 @@
     "Slide00d.dc.html",
     "Slide00e.dc.html",
     "Slide00e2.dc.html",
+    "Slide00e3.dc.html",
     "Slide00f.dc.html",
     "Slide10a.dc.html",
     "Slide10b.dc.html",
