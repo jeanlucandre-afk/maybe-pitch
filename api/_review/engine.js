@@ -9,6 +9,7 @@ const { isQuestion, ruleAgent, ruleAudit } = require('./rules');
 const { activeScenario } = require('./scenario');
 
 const DEFAULT_DEADLINE_MS = 7000;
+const DEFAULT_BACKUP_MS = 3500; // a normal answer takes 2 to 3 seconds
 const MIN_CANDIDATE_WORDS = 12; // below this there is nothing to assess, so no AI is spent
 const MUST_NOT_FAIL = ['discovery', 'next_step', 'integrity'];
 const pointsOf = (agentId) => SALES_PANEL.find((agent) => agent.id === agentId).points;
@@ -131,8 +132,8 @@ function auditInput(ctx) {
 - outcome: decided only by the customer's explicit words, never by a friendly tone. If they changed their mind, the last position counts. sale_agreed needs a clear yes to buying; "sounds interesting" is not agreement. Otherwise no_agreement. Quote the customer's deciding words.
 - askedProblem: the student asked about the customer's situation or need. Quote the question.
 - price: stated: the student gave one clear price, in digits or in words. unclear: they contradicted themselves or changed it for no reason. not_stated: never mentioned. Quote the student.
-- nextStep: the student explicitly asked the customer to buy. "Let me know" does not count. Quote the student.
-- falsePromise: the student claimed what the product cannot deliver: cures, guarantees, invented studies or numbers. Saying it is quick, filling or gives energy is not a false promise. Quote the student.
+- nextStep: the student explicitly asked the customer to buy, even clumsily or under pressure, as in "just buy it". "Let me know" does not count. Quote the student.
+- falsePromise: the student claimed what the product cannot deliver: cures, guarantees, invented studies or numbers. Saying it is quick, filling or gives energy is not a false promise, and neither is everyday sales language such as "it fills you up in a minute". Quote the student.
 
 ${metricsText(ctx.metrics)}
 
@@ -201,11 +202,8 @@ function applyFacts(check, audit, ctx) {
     case 'found_real_problem':
       return audit.askedProblem ? check : { ...check, status: 'missed', evidence: null };
     case 'asked_next_step':
+    case 'clear_answer': // a clear no earns the same as a yes: closing the sale adds no points
       return audit.nextStep ? check : { ...check, status: 'missed', evidence: null };
-    case 'explicit_agreement':
-      return audit.outcome === 'sale_agreed'
-        ? { ...check, status: 'met', evidence: audit.outcomeEvidence }
-        : { ...check, status: 'missed', evidence: null };
     case 'accurate_terms':
       if (audit.price.status === 'unclear') return { ...check, status: 'missed', evidence: audit.price.evidence };
       if (audit.price.status === 'stated') return { ...check, status: 'met', evidence: audit.price.evidence };
@@ -241,6 +239,16 @@ function evidenceFor(checks, rating) {
   return evidence.filter((item) => !seen.has(item.quote) && seen.add(item.quote)).slice(0, 3);
 }
 
+// The cards are free text, so they get the same treatment as the quotes: a number nobody said, or
+// words in quotation marks that were never spoken, discard the sentence. A suggestion can propose
+// words of its own, so only its numbers count.
+function invents(text, ctx, { quotes = true } = {}) {
+  const spoken = ctx.turns.map((turn) => turn.text).join(' ');
+  const unknownNumber = (text.match(/\d+(?:[.,]\d+)?/g) || []).some((number) => !spoken.includes(number));
+  const quoted = quotes ? [...text.matchAll(/["“]([^"”]+)["”]/g)].map((match) => match[1]) : [];
+  return unknownNumber || quoted.some((words) => !verifyQuote(ctx.turns, words));
+}
+
 function finalizeReview(agent, raw, audit, ctx, source) {
   const definitions = SALES_CHECKS[agent.id];
   const opinions = definitions.map((definition) => verifyCheck(definition, raw.checks.find((check) => check.id === definition.id), ctx));
@@ -249,12 +257,16 @@ function finalizeReview(agent, raw, audit, ctx, source) {
 
   const weakest = checks.find((check) => check.status === 'missed') || checks.find((check) => check.status === 'partial');
   const tipOf = (check) => definitions.find((definition) => definition.id === (check && check.id))?.tip;
-  // Talk time is always measured by the code, so it contradicts nobody.
+  // Talk time is measured by the code, and a clear answer can be real even if nobody asked: they contradict nobody.
   const overruled = checks.find(
-    (check, index) => check.id !== 'balanced_talk' && check.status === 'missed' && (opinions[index].status === 'met' || opinions[index].status === 'partial'),
+    (check, index) => !['balanced_talk', 'clear_answer'].includes(check.id) && check.status === 'missed' && (opinions[index].status === 'met' || opinions[index].status === 'partial'),
   );
 
   let { finding, suggestion } = raw;
+  if (invents(finding, ctx) || invents(suggestion, ctx, { quotes: false })) {
+    finding = '';
+    suggestion = '';
+  }
   if (source === 'ai' && overruled) {
     finding = `Fact check: "${overruled.label}" did not hold up in this conversation.`;
     suggestion = tipOf(overruled) || suggestion;
@@ -342,7 +354,8 @@ function buildResult(reviews, audit, ctx, startedAt, fallbackAgents) {
     outcomeEvidence: audit.outcomeEvidence,
     facts: factsFrom(audit, fallbackAgents.includes('facts') ? 'Rule-based' : 'AI review'),
     reviews,
-    strongest: best && share(best) >= 0.5 ? { agentId: best.agentId, label: label(best.agentId) } : null,
+    // A weak call has no strong point to celebrate: its best card is only the least bad.
+    strongest: best && share(best) >= 0.5 && totalRating !== 'needs_work' ? { agentId: best.agentId, label: label(best.agentId) } : null,
     focus: worst && share(worst) < 0.9 ? { agentId: worst.agentId, label: label(worst.agentId), suggestion: worst.suggestion } : null,
     metrics: ctx.metrics,
     elapsedMs: Date.now() - startedAt,
@@ -361,7 +374,39 @@ function withinDeadline(work, signal) {
   });
 }
 
-async function reviewSalesCall({ turns, scenario = activeScenario, ask = askOpenAI, deadlineMs, onReview }) {
+// About one request in two hundred hangs. Rather than lose that card at the deadline, a second copy
+// starts if the first is late or fails, and whichever answers first wins.
+function askWithBackup(ask, request, deadline, backupAfterMs) {
+  const race = new AbortController();
+  deadline.addEventListener('abort', () => race.abort(), { once: true });
+  let timer;
+  return new Promise((resolve, reject) => {
+    let running = 0;
+    let backupSent = false;
+    const attempt = () => {
+      running += 1;
+      ask(request, race.signal).then(resolve, (error) => {
+        running -= 1;
+        if (race.signal.aborted) reject(error);
+        else if (!backupSent) sendBackup();
+        else if (running === 0) reject(error);
+      });
+    };
+    const sendBackup = () => {
+      clearTimeout(timer);
+      backupSent = true;
+      attempt();
+    };
+    timer = setTimeout(sendBackup, backupAfterMs);
+    race.signal.addEventListener('abort', () => clearTimeout(timer), { once: true });
+    attempt();
+  }).finally(() => {
+    clearTimeout(timer);
+    race.abort();
+  });
+}
+
+async function reviewSalesCall({ turns, scenario = activeScenario, ask = askOpenAI, deadlineMs, backupAfterMs = DEFAULT_BACKUP_MS, onReview }) {
   const startedAt = Date.now();
   const ctx = buildContext(turns, scenario);
   const limit = deadlineMs || Number(process.env.OPENAI_REVIEW_DEADLINE_MS) || DEFAULT_DEADLINE_MS;
@@ -383,7 +428,7 @@ async function reviewSalesCall({ turns, scenario = activeScenario, ask = askOpen
 
   // One promise, so even the first agent to finish already respects the facts.
   const rawAudit = withinDeadline(
-    ask({ name: 'sales_call_facts', instructions: ctx.instructions, input: auditInput(ctx), schema: AUDIT_SCHEMA }, controller.signal),
+    askWithBackup(ask, { name: 'sales_call_facts', instructions: ctx.instructions, input: auditInput(ctx), schema: AUDIT_SCHEMA }, controller.signal, backupAfterMs),
     controller.signal,
   )
     .then((raw) => {
@@ -401,7 +446,7 @@ async function reviewSalesCall({ turns, scenario = activeScenario, ask = askOpen
       let raw = null;
       try {
         const answer = await withinDeadline(
-          ask({ name: 'sales_agent_review', instructions: ctx.instructions, input: agentInput(agent, ctx), schema: agentSchema(agent) }, controller.signal),
+          askWithBackup(ask, { name: 'sales_agent_review', instructions: ctx.instructions, input: agentInput(agent, ctx), schema: agentSchema(agent) }, controller.signal, backupAfterMs),
           controller.signal,
         );
         if (!isAgentOutput(answer)) throw new Error('invalid answer');

@@ -18,7 +18,7 @@ const SALES_CHECKS = {
       "Asked about the customer's situation before pitching the product or its price. A first question that comes only after the pitch is partial at most. Cite the first such question.",
       'Ask how they are doing before you mention the product.'),
     check('open_questions', 'Used open questions',
-      'Asked at least one open question (how, what, why, tell me) that lets the customer explain in their own words. Only yes/no questions is partial.',
+      'Asked at least one open question (how, what, why, tell me) that lets the customer explain in their own words. Only yes/no questions is partial, and so is only a greeting such as "how is it going".',
       'Swap yes/no questions for how and what questions.'),
     check('found_real_problem', 'Uncovered the real need',
       "A question from the student led the customer to reveal a specific need, such as being hungry or not having eaten. A need the customer volunteered with no help is partial. Cite the student's question that brought it out.",
@@ -32,32 +32,32 @@ const SALES_CHECKS = {
       'Explicitly tied the product to a need the customer revealed in this call. Praising the product without saying how it solves their need is partial. A generic pitch is missed.',
       'Say how the product solves the need they just told you.'),
     check('customer_language', "Used the customer's words",
-      "Reused the customer's own words or situation when presenting the product, so it sounded specific to them.",
+      "Repeated a specific word or detail the customer said earlier in this call when presenting the product. Cite the student's words that repeat it. A benefit that only fits their situation in general is partial.",
       "Repeat the customer's own words when you describe the benefit."),
     check('relevant_only', 'Kept it relevant',
       'Stayed on what matters for this customer instead of listing everything. If the product was never presented, this is missed.',
       'Mention only what helps with the need they described.'),
     check('explained_benefit', 'Explained the benefit',
-      'Said what would change for this customer right now, not just what the product is.',
+      'Said what would change for this customer right now, not just what the product is. A claim the product cannot deliver is not a benefit: that is missed.',
       'Finish with what changes for the customer right now.'),
   ],
   objections: [
     check('acknowledged', 'Acknowledged the concern',
-      "Recognised the customer's objection or doubt respectfully, instead of ignoring it, dismissing it or arguing. Use not_applicable only if the customer raised no objection, doubt or concern at all.",
+      "Recognised the customer's objection respectfully, instead of ignoring it, dismissing it or arguing. An objection is the customer pushing back: doubting, comparing with an alternative, or saying they are busy. A reason they gave when answering the student's question is not one. Use not_applicable if the customer raised no objection, or raised it only in their last words, when the student had no chance to reply.",
       'Acknowledge the concern before you answer it.', { canBeNotApplicable: true }),
     check('explored_concern', 'Explored the concern',
-      'Asked a question to understand what was behind the objection before answering it. Use not_applicable only if no objection was raised.',
+      'Asked a question to understand what was behind the objection before answering it. Use not_applicable under the same condition as the check above.',
       'Ask what is behind the concern before you answer.', { canBeNotApplicable: true }),
     check('answered_directly', 'Answered it directly',
-      'Gave a real reason that addresses the objection itself. Changing the subject, repeating the pitch, or only acknowledging is missed. Use not_applicable only if no objection was raised.',
+      'Gave a real reason that addresses the objection itself. Changing the subject, repeating the pitch, or only acknowledging is missed. Use not_applicable under the same condition as the first check.',
       'Answer the objection itself before you move on.', { canBeNotApplicable: true }),
     check('confirmed_resolved', 'Checked it was resolved',
-      'Checked that the answer satisfied the customer before moving on. Use not_applicable only if no objection was raised.',
+      'Checked that the answer satisfied the customer before moving on. Use not_applicable under the same condition as the first check.',
       'Ask whether that answers their concern before moving on.', { canBeNotApplicable: true }),
   ],
   communication: [
     check('listened', "Built on the customer's answers",
-      "The student's replies visibly built on what the customer had just said, instead of following a script. Cite a reply that refers to the customer's previous words.",
+      "The student's replies visibly built on what the customer had just said, instead of following a script. If the student ignored a direct question or objection, this is partial at most. Cite a reply that refers to the customer's previous words.",
       'Refer to what they just said before you make your next point.'),
     check('clear_language', 'Explained clearly',
       'Explained things in plain, concrete language. Rambling or confusing explanations lower this. Ignore filler words and transcription errors.',
@@ -66,21 +66,21 @@ const SALES_CHECKS = {
       'Measured automatically from the call metrics. Mark it met and cite any student question.',
       'Talk less: ask a question and let the customer answer.'),
     check('empathy', 'Showed empathy',
-      "Acknowledged the customer's situation or feelings. A stock phrase such as 'that makes sense' is partial; reflecting their specific situation is met. For a cold approach, respecting that you interrupted them counts.",
+      "Acknowledged the customer's situation or feelings. A stock phrase such as 'that makes sense' or a plain apology for interrupting is partial; reflecting their specific situation is met.",
       'Show that you understand how their situation affects them.'),
   ],
   next_step: [
     check('asked_next_step', 'Asked for the sale',
-      'Explicitly asked the customer to buy. Hints such as "let me know" are missed.',
+      'Explicitly asked the customer to buy. Hints such as "let me know" are missed. Ordering or pressuring them to buy is not asking well: that is partial at most.',
       'Ask directly: would you like to buy one?'),
     check('fitting_step', 'Asked at the right moment',
-      'Asked once the need, the benefit and the price were clear. Asking before any discovery is partial at most.',
+      'Asked once the need, the benefit and the price were clear. Asking before learning anything about the customer is missed.',
       'Ask for the sale once the need and the price are clear.'),
     check('concrete_details', 'Made it easy to say yes',
-      'Made the purchase simple and concrete: how much, right now, how to pay or hand it over.',
+      'Made the purchase simple and concrete: how much, right now, how to pay or hand it over. Only the price, with nothing else, is partial.',
       'Say exactly what happens if they say yes.'),
-    check('explicit_agreement', 'Got explicit agreement',
-      'The customer explicitly agreed to buy in their own words. Polite interest is not agreement. Cite the customer.',
+    check('clear_answer', 'Got a clear answer',
+      'After being asked to buy, the customer gave a clear answer in their own words. A clear no counts exactly the same as a clear yes. A vague reply or polite interest is missed. Cite the customer.',
       'Keep going until you get a clear yes or no.', { citeFrom: 'prospect' }),
   ],
   integrity: [
@@ -88,7 +88,7 @@ const SALES_CHECKS = {
       'Any price the student stated was clear and consistent. Use not_applicable if they never stated one.',
       'State one clear price and stick to it.', { faultOnly: true, canBeNotApplicable: true }),
     check('no_unsupported_claims', 'Made no unsupported claims',
-      'Claimed nothing the product cannot deliver: no cures, guarantees, invented studies or numbers. Saying a banana is quick, filling or gives energy is fine.',
+      'Claimed nothing the product cannot deliver: no cures, guarantees, invented studies or numbers. Saying a banana is quick, filling or gives energy is fine, and so is everyday sales language such as "it fills you up in a minute". Only claims about the product count: a common-sense remark about an alternative, such as "pizza means waiting in line", is not one. The price is never an unsupported claim, however high it is.',
       'Promise only what the product can really do.', { faultOnly: true }),
     check('no_pressure', 'Applied no pressure',
       'Used no false urgency or guilt, and did not keep pushing after a clear no.',
@@ -116,6 +116,7 @@ const COACH_RULES = `You are a senior sales coach with 20 years of experience tr
 
 # How you judge
 - Judge what the student actually said and did. A friendly customer is not evidence of skill, and a lucky close does not excuse a weak process.
+- Whether the sale closed is reported apart from the score. Never give or take away credit because the customer did or did not buy.
 - Be fair and exacting. Credit only what happened; never invent it, and never assume intentions.
 - Order matters: when something happened can change its value.
 - met: it clearly happened. partial: it was attempted but was weak or incomplete. missed: it did not happen. Between two statuses, choose the lower one.
@@ -130,9 +131,9 @@ const COACH_RULES = `You are a senior sales coach with 20 years of experience tr
 - Use null for turnId and quote when there is nothing to cite. A check with no real evidence cannot be met or partial.
 
 # Writing
-- finding: one sentence of at most 25 words about the most decisive thing in this conversation for your area. Start with a past-tense verb, such as "Asked whether…". Be specific to this conversation, with no generic advice.
+- finding: one sentence of at most 25 words about the most decisive thing in this conversation for your area. Start with a past-tense verb, such as "Asked whether…". Be specific to this conversation, with no generic advice. It must agree with your statuses: do not praise what you marked missed, or fault what you marked met.
 - suggestion: one imperative sentence of at most 20 words: what to say or do differently next time, tied to this conversation.
-- Write in plain English that can be read on a projector. No jargon, no scores, and do not write "the student".
+- Write in plain English that can be read on a projector. No jargon, no scores, and do not write "the student". Use a number only if it was said in the conversation.
 - This is practice feedback. Never say whether the student is suited to a job.
 
 # The full rubric

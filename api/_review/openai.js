@@ -12,7 +12,8 @@ async function askOpenAI({ name, instructions, input, schema }, signal) {
     signal,
     body: JSON.stringify({
       model: process.env.OPENAI_REVIEW_MODEL || 'gpt-6.1-terra',
-      reasoning: { effort: process.env.OPENAI_REVIEW_EFFORT || 'low' },
+      reasoning: { effort: process.env.OPENAI_REVIEW_EFFORT || 'none' }, // measured: faster and just as accurate as low
+      service_tier: process.env.OPENAI_REVIEW_TIER || 'fast', // double the price, about 0.7 s less; "default" turns it off
       instructions,
       input,
       store: false,
@@ -23,7 +24,10 @@ async function askOpenAI({ name, instructions, input, schema }, signal) {
   });
 
   // This message only reaches the server log, never the screen.
-  if (!response.ok) throw new Error(`OpenAI answered ${response.status}: ${(await response.text()).slice(0, 300)}`);
+  if (!response.ok) {
+    const detail = (await response.text()).replace(/sk-[\w*-]+/g, '[key]').slice(0, 300);
+    throw new Error(`OpenAI answered ${response.status}: ${detail}`);
+  }
 
   const body = await response.json();
   if (body.status === 'incomplete') throw new Error('OpenAI cut the answer short');
