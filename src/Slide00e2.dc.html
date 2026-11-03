@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>MAYBE · AI vs AI</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#09090B}a:hover{color:#52525B}
+@keyframes rv{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes rise{0%{transform:translateY(105%) rotate(4deg)}60%{transform:translateY(-6%) rotate(-2deg)}80%{transform:translateY(2%)}100%{transform:translateY(0) rotate(0)}}
+@keyframes drift{from{transform:scale(1.08) translateY(0)}to{transform:scale(1.08) translateY(-4%)}}
+@keyframes frame-in{from{opacity:0;transform:translateY(40px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes scroll-shot{0%,15%{transform:translateY(0)}55%,70%{transform:translateY(var(--shot-scroll,-18%))}100%{transform:translateY(0)}}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.anim-on .rv{animation:rv calc(.7s * var(--spd)) cubic-bezier(.2,.7,.2,1) both}
+.anim-on .rise{animation:rise calc(.8s * var(--spd)) cubic-bezier(.3,.7,.2,1) both}
+.anim-on .drift{animation:drift calc(9s * var(--spd)) ease-in-out infinite alternate}
+.anim-on .fin{animation:frame-in calc(.9s * var(--spd)) cubic-bezier(.2,.7,.2,1) both}
+.anim-on .shot{animation:scroll-shot calc(14s * var(--spd)) ease-in-out 1.4s infinite}
+.anim-on .grow{transform-origin:left center;animation:grow calc(.9s * var(--spd)) cubic-bezier(.2,.7,.2,1) both}
+@media (prefers-reduced-motion:reduce){.rv,.rise,.drift,.fin,.shot,.grow{animation:none!important}}
+</style>
+<style>
+@keyframes feed{0%,21%{transform:translateY(0)}25%,46%{transform:translateY(-25%)}50%,71%{transform:translateY(-50%)}75%,96%{transform:translateY(-75%)}100%{transform:translateY(0)}}
+@keyframes feed-dot{0%,24%{background:#FAFAFA;height:22px}25%,100%{background:#52525B;height:8px}}
+@keyframes ticker{from{transform:translateY(0)}to{transform:translateY(-50%)}}
+.anim-on .ai-feed{animation:feed calc(18s * var(--spd)) cubic-bezier(.7,0,.2,1) 1s infinite}
+.anim-on .ai-dot{animation:feed-dot calc(18s * var(--spd)) linear infinite}
+.anim-on .ai-tick{animation:ticker calc(9s * var(--spd)) linear infinite}
+@media (prefers-reduced-motion:reduce){.ai-feed,.ai-dot,.ai-tick{animation:none!important}}
+</style>
+</helmet>
+<div class="{{animClass}}" style="--spd: {{spd}}; width: 1920px; height: 1080px; box-sizing: border-box; position: relative; overflow: hidden; background: #FFFFFF; color: #09090B; font-family: Geist, system-ui, sans-serif; -webkit-font-smoothing: antialiased;">
+  <div style="position: absolute; left: 0; top: 0; height: 4px; width: 0.0%; background: #7C3AED;"></div>
+  <div style="position: absolute; left: 160px; top: 0; bottom: 0; width: 900px; display: flex; flex-direction: column; justify-content: center; gap: 56px;">
+    <h2 class="rv" style="margin: 0; font-size: 76px; font-weight: 700; line-height: 1.02; letter-spacing: -0.045em; max-width: 17ch; animation-delay: calc(var(--spd) * 0.05s);">Applicants use AI to apply. Companies use AI to <span style="color: {{accent}};">reject</span>.</h2>
+    <div style="display: flex; gap: 64px;">
+      <div class="rv" style="display: flex; flex-direction: column; gap: 8px; animation-delay: calc(var(--spd) * 0.40s);"><span style="font-family: 'Geist Mono', monospace; font-size: 96px; font-weight: 500; line-height: .95; letter-spacing: -0.05em;">11,000</span><span style="font-size: 26px; line-height: 1.35; color: #52525B; max-width: 26ch;">applications sent on LinkedIn every minute</span><span style="font-size: 15px; color: #71717A;">LinkedIn data, via The New York Times, June 2025</span></div>
+      <div class="rv" style="display: flex; flex-direction: column; gap: 8px; animation-delay: calc(var(--spd) * 0.60s);"><span style="font-family: 'Geist Mono', monospace; font-size: 96px; font-weight: 500; line-height: .95; letter-spacing: -0.05em;">1 in 5</span><span style="font-size: 26px; line-height: 1.35; color: #52525B; max-width: 26ch;">companies let AI reject candidates with no human review</span><span style="font-size: 15px; color: #71717A;">Resume Builder survey of 948 business leaders, 2024</span></div>
+    </div>
+  </div>
+  <div class="fin" style="position: absolute; left: 1180px; top: 90px; width: 450px; height: 900px; box-sizing: border-box; border-radius: 64px; background: #09090B; padding: 14px; box-shadow: 0 50px 100px -40px rgba(9,9,11,.6), inset 0 0 0 2px #27272A; animation-delay: calc(var(--spd) * 0.20s);">
+    <div style="position: relative; width: 100%; height: 100%; border-radius: 52px; overflow: hidden; background: #18181B;">
+      <div class="ai-feed" style="position: absolute; left: 0; top: 0; width: 100%; height: 400%;">
+        <article data-tiktok="" style="position: relative; height: 25%; box-sizing: border-box; padding: 56px 30px 34px; display: flex; flex-direction: column; gap: 18px; color: #FAFAFA;"><span style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; background: rgba(255,255,255,.12); font-size: 15px; font-weight: 600;"><span style="width: 8px; height: 8px; border-radius: 999px; background: #C4B5FD;"></span>TikTok</span><span style="font-size: 15px; color: #A1A1AA; font-family: 'Geist Mono', monospace;">@its_ken04 · May 2025</span><p style="margin: 6px 0 0; font-size: 31px; font-weight: 600; line-height: 1.22; letter-spacing: -0.02em;">An AI interviewer glitches mid-interview and keeps repeating <span style="color: #C4B5FD;">“vertical bar pilates”</span>.</p><p style="margin: auto 0 0; font-size: 14px; line-height: 1.4; color: #A1A1AA;">Reported by 404 Media and Futurism</p></article><article style="position: relative; height: 25%; box-sizing: border-box; padding: 56px 30px 34px; display: flex; flex-direction: column; gap: 18px; color: #FAFAFA;"><span style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; background: rgba(255,255,255,.12); font-size: 15px; font-weight: 600;"><span style="width: 8px; height: 8px; border-radius: 999px; background: #C4B5FD;"></span>Viral post</span><span style="font-size: 15px; color: #A1A1AA; font-family: 'Geist Mono', monospace;">A team lead, as he told it</span><p style="margin: 6px 0 0; font-size: 31px; font-weight: 600; line-height: 1.22; letter-spacing: -0.02em;">He applies to his own company under a fake name. <span style="color: #C4B5FD;">Rejected in 6 minutes</span> by its own screening filter.</p><p style="margin: auto 0 0; font-size: 14px; line-height: 1.4; color: #A1A1AA;">Reported by YourStory and Distractify</p></article><article style="position: relative; height: 25%; box-sizing: border-box; padding: 56px 30px 34px; display: flex; flex-direction: column; gap: 18px; color: #FAFAFA;"><span style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; background: rgba(255,255,255,.12); font-size: 15px; font-weight: 600;"><span style="width: 8px; height: 8px; border-radius: 999px; background: #C4B5FD;"></span>Court case</span><span style="font-size: 15px; color: #A1A1AA; font-family: 'Geist Mono', monospace;">Mobley v. Workday</span><p style="margin: 6px 0 0; font-size: 31px; font-weight: 600; line-height: 1.22; letter-spacing: -0.02em;">Rejected from <span style="color: #C4B5FD;">100+ jobs</span>, often within minutes, at companies using AI screening. In May 2025 a US court let his age-bias case go ahead.</p><p style="margin: auto 0 0; font-size: 14px; line-height: 1.4; color: #A1A1AA;">US District Court, N.D. California, May 2025</p></article><article style="position: relative; height: 25%; box-sizing: border-box; padding: 56px 30px 34px; display: flex; flex-direction: column; gap: 18px; color: #FAFAFA;"><span style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; background: rgba(255,255,255,.12); font-size: 15px; font-weight: 600;"><span style="width: 8px; height: 8px; border-radius: 999px; background: #C4B5FD;"></span>Court case</span><span style="font-size: 15px; color: #A1A1AA; font-family: 'Geist Mono', monospace;">EEOC v. iTutorGroup</span><p style="margin: 6px 0 0; font-size: 31px; font-weight: 600; line-height: 1.22; letter-spacing: -0.02em;">Hiring software auto-rejected <span style="color: #C4B5FD;">women over 55 and men over 60</span>. It surfaced when one applicant reapplied with a younger birth date.</p><p style="margin: auto 0 0; font-size: 14px; line-height: 1.4; color: #A1A1AA;">Settled for $365,000, 2023</p></article>
+      </div>
+      <span aria-hidden="true" style="position: absolute; left: 50%; top: 14px; width: 120px; height: 32px; margin-left: -60px; border-radius: 999px; background: #09090B;"></span>
+      <div aria-hidden="true" style="position: absolute; right: 14px; top: 50%; margin-top: -60px; display: flex; flex-direction: column; gap: 8px; align-items: center;">
+        <span class="ai-dot" style="display: block; width: 6px; height: 8px; border-radius: 999px; background: #52525B; animation-delay: calc(var(--spd) * 1.0s);"></span><span class="ai-dot" style="display: block; width: 6px; height: 8px; border-radius: 999px; background: #52525B; animation-delay: calc(var(--spd) * 5.5s);"></span><span class="ai-dot" style="display: block; width: 6px; height: 8px; border-radius: 999px; background: #52525B; animation-delay: calc(var(--spd) * 10.0s);"></span><span class="ai-dot" style="display: block; width: 6px; height: 8px; border-radius: 999px; background: #52525B; animation-delay: calc(var(--spd) * 14.5s);"></span>
+      </div>
+    </div>
+  </div>
+  <p class="rv" style="position: absolute; right: 72px; bottom: 28px; margin: 0; font-size: 15px; color: #71717A; animation-delay: calc(var(--spd) * 1.20s);">Reported stories, summarised; details as published by the sources named on each card.</p>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"animate": {"editor": "boolean", "default": true, "section": "Motion"}, "speed": {"editor": "enum", "options": ["slow", "normal", "fast"], "default": "normal", "section": "Motion"}, "accent": {"editor": "color", "options": ["#7C3AED", "#09090B", "#5B21B6"], "default": "#7C3AED", "section": "Look"}, "$preview": {"width": 1920, "height": 1080}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const on = this.props.animate ?? true;
+    const spd = { slow: 1.5, normal: 1, fast: 0.6 }[this.props.speed ?? 'normal'] ?? 1;
+    return { animClass: on ? 'anim-on' : 'anim-off', spd: String(spd), accent: this.props.accent ?? "#7C3AED" };
+  }
+}
+</script>
+</body>
+</html>
