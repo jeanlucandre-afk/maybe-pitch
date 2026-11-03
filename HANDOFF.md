@@ -6,9 +6,9 @@ Design canvas: https://claude.ai/artifact/7ffQa8sB7mqJyxWByXgztf (page "Presenta
 
 Everything below is on `main`. The canvas and `src/` match as of this handoff.
 
-## The deck (17 slides)
+## The deck (19 slides)
 
-The deck follows the canvas grid: rows top to bottom, each row left to right. Boards parked far below the grid stay on the canvas but are left out (now: 05e Employer side, 05f What MAYBE is, 10a–10d market/why now/Europe/business). Move a board back into the grid to bring it back.
+The deck follows the canvas grid: rows top to bottom, each row left to right. Boards parked far below the grid stay on the canvas but are left out (now: 05e Employer side, 05f What MAYBE is, 10b Why now, 10d The business). Move a board back into the grid to bring it back.
 
 | # | Slide | Source file |
 |---|---|---|
@@ -26,9 +26,11 @@ The deck follows the canvas grid: rows top to bottom, each row left to right. Bo
 | 12 | Careers roller → Figma-like DICE design editor (Boris) | `src/Slide05b2.dc.html` |
 | 13 | Agent world: AI agents review the live call (Boris) | `src/Slide05c.dc.html` |
 | 14 | Product walkthrough video (2x) | `src/Slide05d.dc.html` |
-| 15 | Back to the start | `src/Slide12.dc.html` |
-| 16 | Try it. Prove it. | `src/Slide13.dc.html` |
-| 17 | Product walkthrough video again (2x) | `src/Slide05d-o9hm.dc.html` |
+| 15 | The market | `src/Slide10a.dc.html` |
+| 16 | The European opportunity | `src/Slide10c.dc.html` |
+| 17 | Back to the start | `src/Slide12.dc.html` |
+| 18 | Try it. Prove it. | `src/Slide13.dc.html` |
+| 19 | Product walkthrough video again (2x) | `src/Slide05d-o9hm.dc.html` |
 
 Speaker notes live in `src/canvas.json` (`notes`), matched to a slide by their title ("Notes · 05d · …"; a canvas copy like `05d-o9hm` uses `05d`'s notes). Press **P** in the deck.
 
