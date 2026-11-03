@@ -116,6 +116,7 @@ const page = `<!doctype html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/deck.css">
+<link rel="stylesheet" href="assets/careers.css">
 <style>
 ${styleBlocks.join('\n')}
 </style>

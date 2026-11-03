@@ -269,6 +269,15 @@
       "w": 1920,
       "x": 0,
       "y": 4500
+    },
+    "Slide05b2.dc.html": {
+      "h": 1080,
+      "is_interactive": true,
+      "page": "presentation",
+      "title": "05b · Careers",
+      "w": 1920,
+      "x": 8160,
+      "y": 3000
     }
   },
   "createdOnFiles": {
@@ -312,7 +321,9 @@
     "notes05e",
     "notes05f",
     "notes00e2",
-    "notes05d2"
+    "notes05d2",
+    "notes05b2",
+    "dev05b2"
   ],
   "notes": {
     "dev05b": {
@@ -508,6 +519,22 @@
       "x": 0,
       "y": 5600,
       "text": "Notes · 05d2 · AI screening, from the other side\nNow the employer side. Today most companies answer the flood of applications with an AI screener. This is what that feels like for the people applying. An AI interviewer that glitches and repeats the same phrase. A candidate who expected a person and wasn't told it would be AI. An automatic rejection seconds after applying. It's fast for the company, but it's a black box, and the screener still never sees anyone do the job. (Click a phone to play it. These are individual experiences, not typical cases.)"
+    },
+    "notes05b2": {
+      "fill": "gray",
+      "page": "presentation",
+      "text": "Notes · 05b · Careers\nI don't want to be a salesperson anymore, I want to try UX/UI design. Scroll or drag through the careers, stop on UX/UI Design and open it: the curtain rises, a highlight walks five example companies and stops on DICE, and the design editor takes the whole screen. Sales is marked Just tried. Every trial is simulated. Sound on or off: top right, or M.",
+      "w": 600,
+      "x": 8160,
+      "y": 4100
+    },
+    "dev05b2": {
+      "fill": "purple",
+      "page": "presentation",
+      "text": "For the developer · careers\nRuntime: assets/careers.js and assets/careers.css. All copy and images are in this board (careers() in its script). UX/UI Design opens app/design-live.html in a 1440x810 iframe scaled to the stage, preloaded when the slide opens. It fires career:open on document with detail {id}; design:finish on document moves to the next slide. How the reference works: docs/careers-reference.md.",
+      "w": 600,
+      "x": 8800,
+      "y": 4100
     }
   },
   "order": [
@@ -523,6 +550,7 @@
     "Slide00.dc.html",
     "Slide01.dc.html",
     "Slide05b.dc.html",
+    "Slide05b2.dc.html",
     "Slide05c.dc.html",
     "Slide00a.dc.html",
     "Slide00b.dc.html",
