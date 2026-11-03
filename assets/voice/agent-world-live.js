@@ -3,7 +3,8 @@
  * are only decoration. Every sentence and label comes from the review and result events.
  * With the data ready it lasts about 20 seconds; if not, the agents keep working until it arrives.
  * With no call, or if the analysis fails even after one retry, the slide stays on its labelled demo.
- * A opens this slide with the labelled sample call, for when the live voice fails on stage. */
+ * A opens this slide with the labelled sample call, for when the live voice fails on stage.
+ * With reduced motion the real review shows too, with what agent-world.js leaves out in live mode. */
 (function () {
   'use strict';
 
@@ -32,12 +33,14 @@
   const isWanted = (result) =>
     result.rating !== 'needs_work' && !result.reviews.some((item) => MUST_NOT_FAIL.includes(item.agentId) && item.rating === 'needs_work');
 
-  // Seconds. With the data ready: talk at 3, think at 10.4, result at 17.8, deal at 18.9, last entrance at about 20.
+  // Seconds. With the data ready: talk at 3, think at 11.6, result at 18.3, deal at 19.4, last entrance at about 20.
+  // Never more than two bubbles at once, because with three there may be no free side to place the last one.
   // An agent only leaves for its cluster as its thought fades, so moving bubbles never cover each other.
-  const SPAWN = 3, FIRST_SAY = 0.2, SAY_STEP = 1.2, SAY_TIME = 3.2, POINT_DELAY = 1.1;
-  const THINK_GAP = 1.2, FIRST_THINK = 0.2, THINK_STEP = 0.9, THINK_TIME = 2.6, VERDICT_DELAY = 2.4, DOTS_SPREAD = 1.2;
-  const RESULT_GAP = 2.7, CONCLUSION_GAP = 0.4, DEAL_GAP = 0.7, WORKING_STEP = 1.4;
-  const DOTS_PER_AGENT = 50, MAX_THOUGHTS = 3;
+  const SPAWN = 3, FIRST_SAY = 0.2, SAY_STEP = 1.4, SAY_TIME = 2.7, POINT_DELAY = 1.1;
+  const THINK_GAP = 1.4, FIRST_THINK = 0.2, THINK_STEP = 0.8, THINK_TIME = 2.6, VERDICT_DELAY = 2.4, DOTS_SPREAD = 1.2;
+  const RESULT_GAP = 2.5, CONCLUSION_GAP = 0.4, DEAL_GAP = 0.7, WORKING_STEP = 1.4;
+  const DOTS_PER_AGENT = 50, MAX_THOUGHTS = 3, BALL_ORDER = [0, 3, 1, 4, 2, 5];
+  const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const { root } = swarm;
   const slide = root.closest('.deck-slide');
@@ -49,6 +52,7 @@
   // The slide's words that only fit the demo; they come back with it.
   const liveCopy = [
     [root.querySelector('p.rv'), 'After the call · Agent review'],
+    [root.querySelector('h2'), 'Six agents review your call'],
     [strongRow, RATING.strong],
     [okRow, RATING.ok],
     [weakRow, RATING.needs_work],
@@ -60,6 +64,7 @@
 
   let run = null;
   let wantSample = false;
+  let resting = false;
 
   const onSlide = () => slide.classList.contains('is-active');
   const reviewOf = (r, id) => r.analysis.arrivals[id]?.review;
@@ -67,9 +72,10 @@
   function population() {
     const total = AGENTS.length * (DOTS_PER_AGENT + 1);
     const list = Array.from({ length: total }, (unused, index) => ({ id: `dot-${index}`, delay: 0.35 + 2.3 * Math.random() ** 1.6 }));
-    // Evenly spaced on the ball, so a few faces are always turning past the front.
+    // Evenly spaced on the ball, so a few faces are always turning past the front. Agents who speak one after
+    // the other sit far apart, so that their bubbles have room.
     AGENTS.forEach((agent, index) => {
-      list[Math.round(((index + 0.5) * total) / AGENTS.length)] = { id: agent.id, role: agent.label, face: agent.face, delay: 0.6 + index * 0.28 };
+      list[Math.round(((BALL_ORDER[index] + 0.5) * total) / AGENTS.length)] = { id: agent.id, role: agent.label, face: agent.face, delay: 0.6 + index * 0.28 };
     });
     return list;
   }
@@ -221,11 +227,33 @@
     r.raf = requestAnimationFrame((timestamp) => frame(r, timestamp));
   }
 
-  function backToDemo() {
+  function restoreDemo() {
     halt();
     liveCopy.forEach(({ node, demo }) => { node.textContent = demo; });
     swarm.setClusters(DEMO_CLUSTERS);
     swarm.disconnect();
+  }
+
+  // agent-world.js only wakes up or rests on a slide change, so with reduced motion the adapter replays one.
+  // The other listeners only act on the live-call slide, so they ignore it.
+  const announce = (target) => document.dispatchEvent(new CustomEvent('deck:slidechange', { detail: { slide: target } }));
+
+  function backToDemo() {
+    restoreDemo();
+    if (!REDUCED || !onSlide()) return;
+    // Back to the demo's still frame: out of the slide and in again, without connecting.
+    resting = true;
+    announce(document.createElement('div'));
+    announce(slide);
+    resting = false;
+  }
+
+  // On the slide already. With reduced motion and no connection it is a still frame, which has to be entered again.
+  function show(analysis, sample) {
+    if (REDUCED && !swarm.live) {
+      wantSample = sample;
+      announce(slide);
+    } else begin(analysis, sample);
   }
 
   root.addEventListener('swarm:start', () => {
@@ -237,9 +265,22 @@
   });
   root.addEventListener('swarm:stop', halt);
 
+  // With reduced motion, agent-world.js freezes its demo on entering the slide and fires no swarm:start, unless
+  // it is already connected. The capture phase runs before its listener, so the connection gets there first.
+  document.addEventListener(
+    'deck:slidechange',
+    (event) => {
+      if (!REDUCED || resting || !event.detail.slide.contains(root)) return;
+      const wanted = wantSample || review.current();
+      if (wanted && !swarm.live) swarm.connect();
+      if (!wanted && swarm.live) restoreDemo();
+    },
+    true,
+  );
+
   // The call can end just after the slide opens, while its last words are still being transcribed.
   document.addEventListener('review:started', (event) => {
-    if (onSlide() && !run?.sample) begin(event.detail.analysis, false);
+    if (onSlide() && !run?.sample) show(event.detail.analysis, false);
   });
 
   // In the capture phase, like the rest of the deck's overlays.
@@ -251,7 +292,7 @@
       event.preventDefault();
       event.stopPropagation();
       review.close();
-      if (onSlide()) begin(review.sample(), true);
+      if (onSlide()) show(review.sample(), true);
       else {
         wantSample = true;
         window.MAYBE_DECK.go([...document.querySelectorAll('.deck-slide')].indexOf(slide));
