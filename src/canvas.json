@@ -195,23 +195,23 @@
       "page": "presentation",
       "title": "05c · Agent world (market reviews the call)",
       "w": 1920,
-      "x": 6120,
-      "y": 3000
+      "x": 0,
+      "y": 4361
     },
     "Slide05d-o9hm.dc.html": {
       "h": 1080,
       "page": "presentation",
       "title": "05d · Product walkthrough (video) copy",
       "w": 1920,
-      "x": 6120,
-      "y": 4401
+      "x": 0,
+      "y": 5861
     },
     "Slide05d.dc.html": {
       "h": 1080,
       "page": "presentation",
       "title": "05d · Product walkthrough (video)",
       "w": 1920,
-      "x": 0,
+      "x": 2040,
       "y": 4361
     },
     "Slide05e.dc.html": {
@@ -267,7 +267,7 @@
       "page": "presentation",
       "title": "12 · Back to the start",
       "w": 1920,
-      "x": 2040,
+      "x": 4080,
       "y": 4361
     },
     "Slide13.dc.html": {
@@ -275,8 +275,17 @@
       "page": "presentation",
       "title": "13 · Try it. Prove it.",
       "w": 1920,
-      "x": 4080,
+      "x": 6120,
       "y": 4361
+    },
+    "Slide05b2.dc.html": {
+      "h": 1080,
+      "is_interactive": true,
+      "page": "presentation",
+      "title": "05b2 · Careers",
+      "w": 1920,
+      "x": 6120,
+      "y": 3000
     }
   },
   "createdOnFiles": {
@@ -320,7 +329,9 @@
     "notes05e",
     "notes05f",
     "notes00e2",
-    "notes00e3"
+    "notes00e3",
+    "notes05b2",
+    "dev05b2"
   ],
   "notes": {
     "dev05b": {
@@ -336,8 +347,8 @@
       "page": "presentation",
       "text": "For the developer · agent world\nDrive this slide with window.MAYBE_SWARM: connect(), setAgents([...]), setPhase('spawn'|'talk'|'think'|'result'), say(id, text, {to}), think(id, text), setVerdict(id, 'yes'|'maybe'|'no'), plus the review panel: addPoint('pro'|'con', text, {by}), addQualification(text, {gap}), setConclusion({wanted, summary, list}), setDeal(text). Full spec: AGENT-WORLD.md. The animation itself runs from assets/agent-world.js in the deck, not on this canvas.",
       "w": 600,
-      "x": 6760,
-      "y": 4100
+      "x": 640,
+      "y": 5461
     },
     "livetitle": {
       "kind": "title1",
@@ -433,15 +444,15 @@
       "page": "presentation",
       "text": "Notes · 05c · Agent world\nRight after that call, MAYBE builds a small market of simulated people: buyers, parents, teenagers, rivals. They argue about the call, then each one decides on its own. On the left you see the result: what worked, what didn't, the qualifications they found, and whether I land on Dr. Lipp's wanted-candidates list. It's a synthetic estimate, kept apart from the real deal outcome.",
       "w": 600,
-      "x": 6120,
-      "y": 4100
+      "x": 0,
+      "y": 5461
     },
     "notes05d": {
       "fill": "gray",
       "page": "presentation",
       "text": "Notes · 05d · Product walkthrough\nSo basically, this is it. A student scrolls the marketplace and opens the Dr. Lipp sales trial. They read the brief and start. They call Bettina, an AI buyer, and you see the conversation in the transcript. They log the call in the CRM like a real sales rep, then submit. An AI review checks the calls against Dr. Lipp's rubric, and every score says where it came from. The student shares it, and on Dr. Lipp's side this is now the best sale on the board. One click: invite to interview.",
       "w": 600,
-      "x": 0,
+      "x": 2040,
       "y": 5600
     },
     "notes05e": {
@@ -497,7 +508,7 @@
       "page": "presentation",
       "text": "Notes · 12 · Back to the start\nBack to where we started. How are you supposed to know what you want to do if you've never tried it? And how are employers supposed to recognize your potential if you never get the chance to demonstrate it?",
       "w": 600,
-      "x": 6120,
+      "x": 8160,
       "y": 7100
     },
     "notes13": {
@@ -505,7 +516,7 @@
       "page": "presentation",
       "text": "Notes · 13 · Try it. Prove it.\nFor years, technology has helped companies decide who deserves a chance. We're building technology that gives more people the chance to prove themselves. MAYBE. Try it. Prove it. Thank you.",
       "w": 600,
-      "x": 0,
+      "x": 2040,
       "y": 8600
     },
     "prestitle": {
@@ -516,6 +527,22 @@
       "w": 240,
       "x": 0,
       "y": -300
+    },
+    "notes05b2": {
+      "fill": "gray",
+      "page": "presentation",
+      "text": "Notes · 05b2 · Careers\nI don't want to be a salesperson anymore, I want to try UX/UI design. Scroll or drag through the careers, stop on UX/UI Design and open it: the curtain rises, a highlight walks five example companies and stops on DICE, and the design editor takes the whole screen. Sales is marked Just tried. Every trial is simulated. Sound on or off: top right, or M.",
+      "w": 600,
+      "x": 6120,
+      "y": 4100
+    },
+    "dev05b2": {
+      "fill": "purple",
+      "page": "presentation",
+      "text": "For the developer · careers\nRuntime: assets/careers.js and assets/careers.css. All copy and images are in this board (careers() in its script). UX/UI Design opens app/design-live.html in a 1440x810 iframe scaled to the stage, preloaded when the slide opens. It fires career:open on document with detail {id}; design:finish on document moves to the next slide. How the reference works: docs/careers-reference.md.",
+      "w": 600,
+      "x": 6760,
+      "y": 4100
     }
   },
   "order": [
@@ -531,6 +558,7 @@
     "Slide00.dc.html",
     "Slide01.dc.html",
     "Slide05b.dc.html",
+    "Slide05b2.dc.html",
     "Slide05c.dc.html",
     "Slide00a.dc.html",
     "Slide00b.dc.html",

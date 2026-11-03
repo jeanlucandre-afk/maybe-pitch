@@ -31,7 +31,7 @@ This repo is the MAYBE hackathon presentation (Macromedia × CODE Hackathon). It
   - `clear()`
 
   Listen for `deck:slidechange` on `document` to start and stop the session. Full spec and example: `LIVE-CALL.md`.
-- **Agent-world slide (`#slide-12`, after the live call: the ball of simulated agents reviewing the call):** drive it with `window.MAYBE_SWARM`:
+- **Agent-world slide (`#slide-13`, after the live call and the careers slide `#slide-12`: the ball of simulated agents reviewing the call):** drive it with `window.MAYBE_SWARM`:
   - `connect()` / `disconnect()`, `setAgents([...])`, `setPhase('spawn'|'talk'|'think'|'result')`
   - `say(id, text, {to})`, `think(id, text)`, `setVerdict(id, 'yes'|'maybe'|'no')`
   - review panel (left): `setCandidate({name, meta})`, `addPoint('pro'|'con', text, {by})`, `addQualification(text, {gap, by})`, `setConclusion({wanted, summary, list})`, `setDeal(text)`

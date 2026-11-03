@@ -6,7 +6,7 @@ Design canvas: https://claude.ai/artifact/7ffQa8sB7mqJyxWByXgztf (page "Presenta
 
 Everything below is on `main`. The canvas and `src/` match as of this handoff.
 
-## The deck (16 slides)
+## The deck (17 slides)
 
 The deck follows the canvas grid: rows top to bottom, each row left to right. Boards parked far below the grid stay on the canvas but are left out (now: 05e Employer side, 05f What MAYBE is, 10a–10d market/why now/Europe/business). Move a board back into the grid to bring it back.
 
@@ -22,12 +22,13 @@ The deck follows the canvas grid: rows top to bottom, each row left to right. Bo
 | 8 | Real people (X post + TikTok flower, no text) | `src/Slide00e3.dc.html` |
 | 9 | The turn | `src/Slide00f.dc.html` |
 | 10 | Title (intro video) | `src/Slide01.dc.html` |
-| 11 | Live call (voice agent, Boris) | `src/Slide05b.dc.html` |
-| 12 | Agent world (Boris) | `src/Slide05c.dc.html` |
-| 13 | Product walkthrough video (2x) | `src/Slide05d.dc.html` |
-| 14 | Back to the start | `src/Slide12.dc.html` |
-| 15 | Try it. Prove it. | `src/Slide13.dc.html` |
-| 16 | Product walkthrough video again (2x) | `src/Slide05d-o9hm.dc.html` |
+| 11 | Live call with Mara (OpenAI Realtime voice, Boris) | `src/Slide05b.dc.html` |
+| 12 | Careers roller → Figma-like DICE design editor (Boris) | `src/Slide05b2.dc.html` |
+| 13 | Agent world: AI agents review the live call (Boris) | `src/Slide05c.dc.html` |
+| 14 | Product walkthrough video (2x) | `src/Slide05d.dc.html` |
+| 15 | Back to the start | `src/Slide12.dc.html` |
+| 16 | Try it. Prove it. | `src/Slide13.dc.html` |
+| 17 | Product walkthrough video again (2x) | `src/Slide05d-o9hm.dc.html` |
 
 Speaker notes live in `src/canvas.json` (`notes`), matched to a slide by their title ("Notes · 05d · …"; a canvas copy like `05d-o9hm` uses `05d`'s notes). Press **P** in the deck.
 
@@ -66,6 +67,9 @@ node tools/build-deck.mjs        # after any change in src/ → regenerates inde
 4. Official DICE and Dr. Lipp logos in the prototype marketplace: needs `dice.fm` and `www.drlipp.com` allowed in the Claude environment's network settings, or drop the SVGs into `app/img/` yourself, then re-record the walkthrough (`node tools/walkthrough/record.mjs` with a server on :8765).
 
 ## For Boris
+
+- `voice` was merged into `main` on 3 Nov (Mara voice, review agents, careers + design editor). The "Talk to MAYBE" button is hidden in `tools/build-deck.mjs`.
+- Live call `#slide-11`, careers `#slide-12`, agent world `#slide-13`.
 
 - Branch `voice` has nothing that isn't on `main`, and is 27 commits behind. Start with `git checkout voice && git merge origin/main`.
 - Slide numbers moved: **live call is `#slide-11`, agent world `#slide-12`** (CLAUDE.md is updated). The `window.MAYBE_CALL` / `window.MAYBE_SWARM` contracts are unchanged.

@@ -9,8 +9,9 @@
 // Usage: node tools/build-deck.mjs        (run from maybe/pitch)
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = path.join(ROOT, 'src');
 const read = (p) => fs.readFileSync(p, 'utf8');
 const warn = [];
@@ -135,6 +136,7 @@ const page = `<!doctype html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/deck.css">
+<link rel="stylesheet" href="assets/careers.css">
 <style>
 ${styleBlocks.join('\n')}
 </style>
@@ -158,13 +160,17 @@ ${sections.join('\n')}
   <p class="deck-notes__hint">P hides notes · ← → move · F full screen</p>
 </aside>
 
-<div class="agent" data-agent>
+<div class="agent" data-agent hidden style="display: none"><!-- "Talk to MAYBE" Q&A button: hidden for the pitch (remove hidden + style to bring it back) -->
   <button class="agent__btn" type="button" data-agent-open aria-describedby="agent-tip"><img src="deck/img/peep-thinker.svg" alt=""><span>Talk to MAYBE</span><span class="agent__dot" aria-hidden="true"></span></button>
   <span class="agent__tip" id="agent-tip" role="tooltip">Agent not connected yet</span>
 </div>
 
 <script src="assets/live-call.js" defer></script>
+<script src="assets/voice/mara.js" defer></script>
+<script src="assets/voice/review.js" defer></script>
 <script src="assets/agent-world.js" defer></script>
+<script src="assets/voice/agent-world-live.js" defer></script>
+<script src="assets/careers.js" defer></script>
 <script src="assets/deck.js" defer></script>
 </body>
 </html>
