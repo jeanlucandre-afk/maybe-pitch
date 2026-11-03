@@ -286,6 +286,14 @@
       "w": 1920,
       "x": 6120,
       "y": 3000
+    },
+    "Slide00b2.dc.html": {
+      "h": 1080,
+      "page": "presentation",
+      "title": "00b2 · The access gap",
+      "w": 1920,
+      "x": 5100,
+      "y": 0
     }
   },
   "createdOnFiles": {
@@ -331,7 +339,8 @@
     "notes00e2",
     "notes00e3",
     "notes05b2",
-    "dev05b2"
+    "dev05b2",
+    "notes00b2"
   ],
   "notes": {
     "dev05b": {
@@ -543,6 +552,14 @@
       "w": 600,
       "x": 6760,
       "y": 4100
+    },
+    "notes00b2": {
+      "fill": "gray",
+      "page": "presentation",
+      "w": 600,
+      "x": 8160,
+      "y": 1100,
+      "text": "Notes · 00b2 · The access gap\nAnd here's the catch: you need experience to get hired, but the first experience often comes through who you know. If your parents know someone at a big firm, you get the internship, and it goes on your CV. If not, you send applications and hear: no experience. And the loop starts again. So a CV shows the chances someone was given, not what they can actually do."
     }
   },
   "order": [
@@ -562,6 +579,7 @@
     "Slide05c.dc.html",
     "Slide00a.dc.html",
     "Slide00b.dc.html",
+    "Slide00b2.dc.html",
     "Slide00c.dc.html",
     "Slide00d.dc.html",
     "Slide00e.dc.html",
