@@ -8,12 +8,15 @@
  *   ↑ ↓                       one card
  *   Enter / click             open the active card (clicking a stacked card brings it to the front)
  *   Esc                       back from the editor
+ *   M                         sound on or off
  *   ← →                       untouched: the deck changes slide
  *
- * All copy and images are in the board (src/Slide05b2.dc.html, careers()). A career with `opens` loads that page in a
- * 1440x810 iframe, scaled to the whole stage, as soon as the slide opens. Opening it fires career:open on document with
- * detail { id }; going back fires career:close. design:finish on document (ours or the iframe's) moves to the next
- * slide. See docs/careers-reference.md.
+ * The slide fills the window whatever its shape: the deck still scales a 1920x1080 stage, and this slide takes the
+ * window measured in those same stage pixels, so one side is exactly 1920 or 1080 and the other is longer.
+ *
+ * All copy and images are in the board (src/Slide05b2.dc.html, careers()). A career with `opens` loads that page in an
+ * iframe as soon as the slide opens. Opening it fires career:open on document with detail { id }; going back fires
+ * career:close. design:finish on document (ours or the iframe's) moves to the next slide. See docs/careers-reference.md.
  */
 (function () {
   'use strict';
@@ -24,30 +27,41 @@
   const $$ = (s) => Array.from(root.querySelectorAll(s));
 
   // ---------- content, read from the board ----------
+  const rgb = (hex) => [1, 3, 5].map((k) => parseInt(hex.slice(k, k + 2), 16) / 255);
   const careers = $$('[data-career]').map((el) => ({
-    el, id: el.dataset.career, name: el.dataset.name, status: el.dataset.status, state: el.dataset.state,
-    duration: el.dataset.duration, does: el.dataset.does, evidence: el.dataset.evidence, opens: el.dataset.opens,
-    image: el.dataset.image, focus: (el.dataset.focus || '0.5 0.5').split(' ').map(Number), swatches: (el.dataset.swatches || '').split(','),
-    cover: null, tex: null, tag: null, tagTex: null, tagAt: null,
+    el, id: el.dataset.career, ground: el.dataset.ground, groundRgb: rgb(el.dataset.ground), name: el.dataset.name, state: el.dataset.state, cta: el.dataset.cta,
+    does: el.dataset.does, who: el.dataset.who, keeps: el.dataset.keeps, opens: el.dataset.opens, image: el.dataset.image,
+    cover: null, tex: null,
   }));
   const N = careers.length;
   if (!N) return;
   const RING = N * 2; // the ring repeats the careers so the stacks stay full
 
   const ui = {
-    canvas: $('[data-cr-canvas]'), num: $('[data-cr-num]'), duration: $('[data-cr-duration]'), does: $('[data-cr-does]'), evidence: $('[data-cr-evidence]'),
-    swatches: $$('[data-cr-swatches] i'), curtain: $('[data-cr-curtain]'), curtainIn: $('[data-cr-curtain-in]'), curtainTitle: $('[data-cr-curtain-title]'),
-    wall: $('[data-cr-wall]'), peep: $('[data-cr-wall-peep]'), veil: $('[data-cr-veil]'), word: $('[data-cr-veil-word]'), editor: $('[data-cr-editor]'), enter: $$('[data-cr-enter]'),
+    canvas: $('[data-cr-canvas]'), num: $('[data-cr-num]'), does: $('[data-cr-does]'), who: $('[data-cr-who]'), keeps: $('[data-cr-keeps]'), facts: $('[data-cr-facts]'),
+    tryBtn: $('[data-cr-try]'), tryLabel: $('[data-cr-try-label]'), soundBtn: $('[data-cr-sound]'), soundLabel: $('[data-cr-sound-label]'), soundBars: $('.cr-sound__bars'),
+    title: $$('[data-cr-title] .cr-title__line > span'), steps: $('[data-cr-steps]'), stepItems: $$('[data-cr-step]'),
+    curtain: $('[data-cr-curtain]'), curtainIn: $('[data-cr-curtain-in]'), curtainTitle: $('[data-cr-curtain-title]'), curtainSub: $('[data-cr-curtain-sub]'),
+    wall: $('[data-cr-wall]'), peep: $('[data-cr-wall-peep]'), word: $('[data-cr-wall-word]'), editor: $('[data-cr-editor]'), enter: $$('[data-cr-enter]'),
   };
-  const S_W = 1920, S_H = 1080;
+  let S_W = 1920, S_H = 1080; // the window in stage pixels
 
   // ---------- the scene, in stage pixels ----------
-  const SCALE = 1.07;             // card size against the reference: a projector wants a little more image
-  const CARD_W = 449 * SCALE, CARD_H = 366 * SCALE, CARD_R = 12 * SCALE;
-  const UNIT = 100 * SCALE;       // one step in the stack
-  const FOCUS_AT = { x: 985, y: 530 };
-  const GAP_ABOVE = 6.2, GAP_BELOW = 7; // empty steps on each side of the active card
-  const LINE_AT = { x: FOCUS_AT.x - 66, y: FOCUS_AT.y + 54 }; // where the stack line passes near the centre
+  const CARD_W = 540, CARD_H = 380, CARD_R = 16, INK = 2.6; // INK: the card's outline, like the peeps' ink
+  const GROW = .28;               // the active card comes forward: it has to lead, even next to art this loud
+  const UNIT = 120;               // one step in the stack
+  const FOCUS_AT = { x: 935, y: 530 }, LINE_AT = { x: 856, y: 595 }; // the active card, and where the stack line passes near it
+  const GAP_ABOVE = 4.7, GAP_BELOW = 5.5; // empty steps on each side of the active card: close enough to read the names
+
+  function layout() {
+    const s = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+    S_W = Math.ceil(window.innerWidth / s) + 2; S_H = Math.ceil(window.innerHeight / s) + 2; // a pixel over on each side, so no edge shows through
+    root.style.setProperty('--cr-w', S_W + 'px');
+    root.style.setProperty('--cr-h', S_H + 'px');
+    root.style.setProperty('--cr-k', String(clamp(S_W / 1920, 1, 1.12)));
+    FOCUS_AT.x = S_W * .5026; FOCUS_AT.y = S_H * .49;
+    LINE_AT.x = FOCUS_AT.x - 79; LINE_AT.y = FOCUS_AT.y + 65;
+  }
 
   // A stacked card leans back; the active one turns almost flat to the viewer. x, y are its edges on screen.
   const frame = (xx, xy, yx, yy) => {
@@ -88,17 +102,164 @@
 
   // ---------- state ----------
   const TAU_IN = .085, TAU_OUT = .3; // two smoothing stages: quick to start, long to stop, no bounce
-  const BEND_GAIN = .34, BEND_MAX = 1.9;
+  const BEND_GAIN = .3, BEND_MAX = 1.7;
   let target = 0, mid = 0, x = 0, velocity = 0, listPos = 0;
   let active = false, raf = 0, last = 0, index = -1;
-  let view = 'cards', busy = false, intro = false, introAnims = [], introTimer = 0, introHold = false, textLock = false;
+  let view = 'cards', busy = false, intro = false, introAnims = [], introTimer = 0, introHold = false, textLock = false, tickAt = 0;
   let hoverCard = -1, lift = new Float32Array(RING), zoom = 0, shake = 0;
   let cardsNow = [];
-  let wheelTimer = 0, wheelDir = 0, wheelLast = 0, session = 0;
+  let wheelTimer = 0, wheelDir = 0, wheelLast = 0, session = 0, stepTimer = 0;
+
+  // ---------- sound: everything is made here with Web Audio, there are no files ----------
+  const sound = (() => {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    const NOTES = [392, 440, 523.25, 587.33, 659.25, 783.99]; // a pentatonic scale: each career has its own soft note
+    let ctx = null, master = null, roomIn = null, windGain = null, windFilter = null, meter = null, data = null, noise = null;
+    let on = true, inSlide = false, lastPass = 0, meterRaf = 0, peak = 0, suspendTimer = 0;
+
+    function build() {
+      if (ctx || !AC) return !!ctx;
+      ctx = new AC();
+      master = ctx.createGain(); master.gain.value = 0;
+      const comp = ctx.createDynamicsCompressor();
+      comp.threshold.value = -14; comp.ratio.value = 3; comp.attack.value = .004; comp.release.value = .18;
+      meter = ctx.createAnalyser(); meter.fftSize = 1024; data = new Float32Array(meter.fftSize);
+      master.connect(comp); comp.connect(ctx.destination); comp.connect(meter);
+      noise = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
+      const d = noise.getChannelData(0);
+      let soft = 0;
+      for (let i = 0; i < d.length; i++) { const w = Math.random() * 2 - 1; soft = soft * .86 + w * .14; d[i] = soft * 2.4; } // softer than white noise: air, not hiss
+      // a small made-up room: noise that dies away
+      const room = ctx.createConvolver(), len = Math.round(ctx.sampleRate * 1.9), ir = ctx.createBuffer(2, len, ctx.sampleRate);
+      for (let c = 0; c < 2; c++) { const t = ir.getChannelData(c); for (let i = 0; i < len; i++) t[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3.4); }
+      room.buffer = ir;
+      roomIn = ctx.createGain(); roomIn.gain.value = .5;
+      roomIn.connect(room); room.connect(master);
+      // the wind that follows the speed of the cards
+      const w = ctx.createBufferSource(); w.buffer = noise; w.loop = true;
+      windFilter = ctx.createBiquadFilter(); windFilter.type = 'bandpass'; windFilter.frequency.value = 260; windFilter.Q.value = .7;
+      windGain = ctx.createGain(); windGain.gain.value = 0;
+      w.connect(windFilter); windFilter.connect(windGain); windGain.connect(master);
+      w.start();
+      return true;
+    }
+    function tone(freq, at, o) {
+      const osc = ctx.createOscillator(), g = ctx.createGain(), dur = o.dur, attack = o.attack || .004;
+      osc.type = o.type || 'sine';
+      osc.frequency.setValueAtTime(freq, at);
+      if (o.to) osc.frequency.exponentialRampToValueAtTime(o.to, at + dur * .7);
+      g.gain.setValueAtTime(.0001, at);
+      g.gain.exponentialRampToValueAtTime(o.gain, at + attack);
+      g.gain.exponentialRampToValueAtTime(.0001, at + dur);
+      osc.connect(g); g.connect(master);
+      if (o.send) { const s = ctx.createGain(); s.gain.value = o.send; g.connect(s); s.connect(roomIn); }
+      osc.start(at); osc.stop(at + dur + .02);
+    }
+    function air(at, o) {
+      const src = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain(), dur = o.dur;
+      src.buffer = noise; f.type = 'bandpass'; f.Q.value = o.q || 1;
+      f.frequency.setValueAtTime(o.freq, at);
+      if (o.to) f.frequency.exponentialRampToValueAtTime(o.to, at + dur);
+      g.gain.setValueAtTime(.0001, at);
+      g.gain.exponentialRampToValueAtTime(o.gain, at + (o.rise || .004));
+      g.gain.exponentialRampToValueAtTime(.0001, at + dur);
+      src.connect(f); f.connect(g); g.connect(master);
+      if (o.send) { const s = ctx.createGain(); s.gain.value = o.send; g.connect(s); s.connect(roomIn); }
+      src.start(at, Math.random() * 1.5); src.stop(at + dur + .02);
+    }
+    const ready = () => ctx && ctx.state === 'running' && on && inSlide;
+    function meterLoop() {
+      meterRaf = 0;
+      if (!ctx || !inSlide) return;
+      meter.getFloatTimeDomainData(data);
+      let top = 0;
+      for (let i = 0; i < data.length; i += 4) top = Math.max(top, Math.abs(data[i]));
+      peak = Math.max(peak, top);
+      ui.soundBars.style.setProperty('--lvl', on ? Math.min(1, top * 3.2).toFixed(3) : '0');
+      meterRaf = requestAnimationFrame(meterLoop);
+    }
+    function raise() {
+      clearTimeout(suspendTimer);
+      if (ctx.state !== 'running') ctx.resume().catch(() => {});
+      master.gain.cancelScheduledValues(ctx.currentTime);
+      master.gain.setTargetAtTime(on ? 1 : 0, ctx.currentTime, .05);
+      if (!meterRaf) meterRaf = requestAnimationFrame(meterLoop);
+    }
+    return {
+      // browsers only let sound start after a key or a click
+      unlock() { if (inSlide && build()) raise(); },
+      enter() { inSlide = true; if (ctx || (navigator.userActivation && navigator.userActivation.hasBeenActive)) this.unlock(); },
+      leave() {
+        inSlide = false;
+        if (!ctx) return;
+        const t = ctx.currentTime;
+        windGain.gain.cancelScheduledValues(t); windGain.gain.setValueAtTime(0, t);
+        master.gain.cancelScheduledValues(t); master.gain.setTargetAtTime(0, t, .03);
+        ui.soundBars.style.setProperty('--lvl', '0');
+        clearTimeout(suspendTimer);
+        suspendTimer = setTimeout(() => { if (!inSlide) ctx.suspend().catch(() => {}); }, 220);
+      },
+      get on() { return on; },
+      toggle() {
+        on = !on;
+        ui.soundBtn.setAttribute('aria-pressed', String(on));
+        ui.soundLabel.textContent = on ? 'Sound on' : 'Sound off';
+        if (!ctx) return;
+        master.gain.cancelScheduledValues(ctx.currentTime);
+        master.gain.setTargetAtTime(on ? 1 : 0, ctx.currentTime, .03);
+        if (on) this.pass(3, 0);
+      },
+      // a soft touch for each card that goes by; many at once stay quiet
+      pass(i, speed) {
+        if (!ready()) return;
+        const t = ctx.currentTime;
+        if (t - lastPass < .03) return;
+        lastPass = t;
+        const soft = 1 - clamp(speed / 10, 0, .62);
+        tone(NOTES[i % NOTES.length] * 2, t, { dur: .2, gain: .1 * soft, send: .3 });
+        tone(NOTES[i % NOTES.length] * 4.01, t, { dur: .055, gain: .026 * soft });
+        air(t, { dur: .04, gain: .2 * soft, freq: 2800, q: 1.3 });
+      },
+      // a breath that follows the speed
+      speed(v) {
+        if (!ctx) return;
+        const a = ready() ? clamp(Math.abs(v) / 7, 0, 1) : 0, t = ctx.currentTime;
+        windGain.gain.setTargetAtTime(Math.pow(a, 1.4) * .26, t, .06);
+        windFilter.frequency.setTargetAtTime(240 + a * a * 2700, t, .08);
+      },
+      // air that rises with the curtain, then a chord that opens when it has covered everything
+      open() {
+        if (!ready()) return;
+        const t = ctx.currentTime;
+        air(t, { dur: .62, gain: .24, freq: 280, to: 3200, q: .8, rise: .4, send: .3 });
+        tone(58, t, { dur: .7, gain: .3, to: 96, attack: .12 });
+        [[220, 0], [329.63, .05], [440, .1], [554.37, .16], [659.25, .23], [987.77, .32]].forEach(([f, d], k) => {
+          tone(f, t + .4 + d, { dur: 2.3 - d * 2, gain: .1 - .009 * k, send: .75, attack: .014 });
+          tone(f * 2.003, t + .4 + d, { dur: .8, gain: .02, send: .6, attack: .006 });
+        });
+      },
+      close() {
+        if (!ready()) return;
+        const t = ctx.currentTime;
+        air(t, { dur: .5, gain: .16, freq: 2600, to: 320, q: .8, rise: .12 });
+        tone(659.25, t + .18, { dur: .9, gain: .07, send: .6, attack: .01 });
+        tone(440, t + .28, { dur: 1.1, gain: .08, send: .6, attack: .01 });
+      },
+      // the discreet "not this one": two muted knocks
+      nudge() {
+        if (!ready()) return;
+        const t = ctx.currentTime;
+        tone(170, t, { dur: .1, gain: .2, to: 120 });
+        tone(150, t + .1, { dur: .11, gain: .15, to: 110 });
+      },
+      info() { const v = peak; peak = 0; return { state: ctx ? ctx.state : 'none', on, peak: v, gain: master ? master.gain.value : 0 }; },
+    };
+  })();
 
   // ---------- drawing ----------
   const STRIP = 28;
-  const TEX_W = 1200, TEX_H = Math.round(TEX_W * CARD_H / CARD_W);
+  const COVER_BAND = .205; // the top of a cover, where the name is
+  const TEX_W = 1600, TEX_H = Math.round(TEX_W * CARD_H / CARD_W);
   const gl = ui.canvas.getContext('webgl2', { alpha: true, antialias: false, premultipliedAlpha: true, powerPreference: 'high-performance' });
   const flat = gl ? null : ui.canvas.getContext('2d');
   let prog = null, U = {}, vao = null, renderScale = 1;
@@ -122,34 +283,30 @@
       precision highp float;
       in vec2 vP;
       uniform vec2 uSize;
-      uniform float uR, uZoom, uHaze, uFade, uTagA, uShadow;
-      uniform vec3 uTint;
+      uniform float uR, uZoom, uFade, uInk, uFlat, uBand;
+      uniform vec3 uGround;
       uniform float uHasTex;
-      uniform vec4 uTag;                            // x, y, w, h of the status tag, 0..1 over the card
-      uniform sampler2D uT, uTagTex;
+      uniform sampler2D uT;
       out vec4 o;
       float box(vec2 p, vec2 b, float r) { vec2 q = abs(p) - b + r; return length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - r; }
       void main() {
         float d = box(vP - uSize * 0.5, uSize * 0.5, uR);
         float aa = max(fwidth(d), 0.001);
         float a = 1.0 - smoothstep(-aa * 0.5, aa * 0.5, d);
-        float ds = box(vP - uSize * 0.5 - vec2(0.0, 18.0), uSize * 0.5, uR);
-        float sh = uShadow * exp(-pow(max(ds, 0.0) / 38.0, 2.0)) * (1.0 - a);
-        if (a <= 0.0 && sh <= 0.002) discard;
+        if (a <= 0.0) discard;
         vec2 uv = 0.5 + (vP / uSize - 0.5) * uZoom;
-        vec3 c = uHasTex > 0.5 ? texture(uT, uv).rgb : uTint;
-        if (uHasTex > 0.5) { vec4 tag = texture(uTagTex, (vP / uSize - uTag.xy) / uTag.zw) * uTagA; c = c * (1.0 - tag.a) + tag.rgb; }
-        float line = 1.0 - smoothstep(0.0, 1.4, -d);  // hairline so light covers keep an edge on the zinc ground
-        c = mix(c, c * 0.82, line * 0.85);
-        c = mix(c, vec3(0.957, 0.957, 0.961), uHaze); // the far stack recedes into the page
-        o = (vec4(c * a, a) + vec4(0.0, 0.0, 0.0, sh)) * uFade;
+        vec3 c = uHasTex > 0.5 ? texture(uT, uv).rgb : uGround;
+        c = mix(c, uGround, uFlat * step(uBand, vP.y / uSize.y)); // in the stacks a card is a sheet of colour: no art to pile up, no text cut in half
+        float line = 1.0 - smoothstep(uInk - aa, uInk + aa, -d); // the ink outline keeps the card's edge on any ground, violet on violet too
+        c = mix(c, vec3(0.035, 0.035, 0.043), line);
+        o = vec4(c * a, a) * uFade;
       }`;
     const sh = (type, src) => { const s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s); if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(s)); return s; };
     prog = gl.createProgram();
     gl.attachShader(prog, sh(gl.VERTEX_SHADER, vs)); gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, fs));
     gl.linkProgram(prog);
     gl.useProgram(prog);
-    for (const n of ['uO', 'uX', 'uY', 'uB', 'uRes', 'uSize', 'uR', 'uZoom', 'uTint', 'uHasTex', 'uTag', 'uT', 'uTagTex', 'uPad', 'uHaze', 'uFade', 'uTagA', 'uShadow']) U[n] = gl.getUniformLocation(prog, n);
+    for (const n of ['uO', 'uX', 'uY', 'uB', 'uRes', 'uSize', 'uR', 'uZoom', 'uGround', 'uHasTex', 'uT', 'uPad', 'uFade', 'uInk', 'uFlat', 'uBand']) U[n] = gl.getUniformLocation(prog, n);
     const verts = [];
     for (let i = 0; i <= STRIP; i++) { const v = i / STRIP; verts.push(0, v, 1, v); }
     vao = gl.createVertexArray(); gl.bindVertexArray(vao);
@@ -159,7 +316,6 @@
     gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
     gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
     gl.uniform1i(U.uT, 0);
-    gl.uniform1i(U.uTagTex, 1);
     gl.clearColor(0, 0, 0, 0);
     for (const c of careers) if (c.cover) uploadCover(c);
   }
@@ -179,62 +335,38 @@
   }
   function uploadCover(c) {
     if (!gl) return;
-    if (!c.tex) { c.tex = gl.createTexture(); c.tagTex = gl.createTexture(); }
+    if (!c.tex) c.tex = gl.createTexture();
     uploadTexture(c.tex, c.cover, false);
-    uploadTexture(c.tagTex, c.tag, true);
   }
 
-  // The cover cropped to the card, and its status tag apart, so the zoom on hover never cuts the text.
+  // The cover on a CPU canvas, so the upload to the GPU never comes back black, cropped to the card if it had to be.
   function composeCover(c, img) {
     const cv = document.createElement('canvas');
     cv.width = TEX_W; cv.height = TEX_H;
-    const g = cv.getContext('2d', { willReadFrequently: true }); // CPU canvas: the upload to the GPU never comes back black
+    const g = cv.getContext('2d', { willReadFrequently: true });
     const ia = img.naturalWidth / img.naturalHeight, ta = TEX_W / TEX_H;
     let sw = img.naturalWidth, sh = img.naturalHeight;
     if (ia > ta) sw = sh * ta; else sh = sw / ta;
-    const sx = (img.naturalWidth - sw) * c.focus[0], sy = (img.naturalHeight - sh) * c.focus[1];
-    g.drawImage(img, sx, sy, sw, sh, 0, 0, TEX_W, TEX_H);
+    g.drawImage(img, (img.naturalWidth - sw) / 2, (img.naturalHeight - sh) / 2, sw, sh, 0, 0, TEX_W, TEX_H);
     c.cover = cv;
-    const dark = c.state === 'tried' || c.state === 'open';
-    const label = c.name + ' · ' + c.status;
-    const font = '600 46px Geist, system-ui, sans-serif';
-    const measure = document.createElement('canvas').getContext('2d');
-    measure.font = font;
-    const m = 6, w = Math.ceil(measure.measureText(label).width) + 56, h = 84; // m: a clear edge, so the tag ends cleanly
-    const tag = document.createElement('canvas');
-    tag.width = w + m * 2; tag.height = h + m * 2;
-    const t = tag.getContext('2d', { willReadFrequently: true });
-    t.fillStyle = dark ? '#09090B' : '#FFFFFF';
-    t.beginPath(); t.roundRect(m, m, w, h, 42); t.fill();
-    if (!dark) { t.strokeStyle = '#E4E4E7'; t.lineWidth = 2; t.stroke(); }
-    t.font = font;
-    t.fillStyle = dark ? '#FAFAFA' : '#09090B';
-    t.textBaseline = 'middle';
-    t.fillText(label, m + 28, m + h / 2 + 2);
-    c.tag = tag;
-    c.tagAt = [(36 - m) / TEX_W, (34 - m) / TEX_H, tag.width / TEX_W, tag.height / TEX_H];
     if (gl && prog) uploadCover(c);
   }
 
   function preload() {
-    const loads = careers.map((c) => new Promise((res) => {
+    careers.forEach((c) => {
       const img = new Image();
-      img.onload = () => { (img.decode ? img.decode().catch(() => {}) : Promise.resolve()).then(() => { c.img = img; composeCover(c, img); res(); wake(); }); };
-      img.onerror = () => res();
+      img.onload = () => { (img.decode ? img.decode().catch(() => {}) : Promise.resolve()).then(() => { composeCover(c, img); wake(); drawOnce(); }); };
       img.src = c.image;
-    }));
-    // the status is written with Geist, so write it again once the font is in
-    if (document.fonts && document.fonts.load) {
-      Promise.all([document.fonts.load('600 46px Geist'), Promise.all(loads)]).then(() => { careers.forEach((c) => { if (c.img) composeCover(c, c.img); }); drawOnce(); }).catch(() => {});
-    }
+    });
   }
 
   function sizeCanvas() {
     const rect = root.getBoundingClientRect();
-    const k = clamp((rect.width / S_W) * (window.devicePixelRatio || 1), 1, 1.5); // sharper than this costs frames and the covers have no more detail
-    if (k === renderScale && ui.canvas.width === Math.round(S_W * k)) return;
+    const k = clamp((rect.width / S_W) * (window.devicePixelRatio || 1), 1, 1.5); // sharper than this costs frames
+    const w = Math.round(S_W * k), h = Math.round(S_H * k);
     renderScale = k;
-    ui.canvas.width = Math.round(S_W * k); ui.canvas.height = Math.round(S_H * k);
+    if (ui.canvas.width === w && ui.canvas.height === h) return;
+    ui.canvas.width = w; ui.canvas.height = h;
   }
 
   function computeCards() {
@@ -243,23 +375,26 @@
     for (let i = 0; i < RING; i++) {
       const d = wrap(i - x, RING), ad = Math.abs(d), sg = d >= 0 ? 1 : -1;
       const s = -(d + sg * smooth(.08, .92, ad) * (d >= 0 ? GAP_BELOW : GAP_ABOVE)); // < 0 goes down and left, > 0 up and right
-      const fade = 1 - smooth(9.3, 10.5, s);                 // the far end of the stack dissolves before it reaches the list
+      const fade = (1 - smooth(7.75, 8.65, s)) * (1 - smooth(7.8, 8.4, -s)); // three stay above and two below; at rest none is half gone
       if (fade <= 0) continue;
       const f = smooth(0, 1, 1 - smooth(0, .82, ad));        // 1 only when it faces the viewer
       const ex = turned(FRAME_STACK.x, f), ey = turned(FRAME_STACK.y, f), en = turned(FRAME_STACK.n, f);
       const ax = -FRAME_STACK.n[0] * UNIT, ay = -FRAME_STACK.n[1] * UNIT;
-      let cx = LINE_AT.x + ax * s, cy = LINE_AT.y + ay * s;
+      // the line bends a little: the top keeps clear of the list and the bottom keeps clear of the big number
+      let cx = LINE_AT.x + ax * s + (s > 0 ? -24 * smooth(0, 3, s) : 112 * smooth(0, 3, -s)), cy = LINE_AT.y + ay * s;
       cx += (FOCUS_AT.x - cx) * f; cy += (FOCUS_AT.y - cy) * f;
       cy -= lift[i] * 26 * (1 - f);
-      if (f > .5) cx += Math.sin(shake * 26) * shake * 14;
-      const X = [ex[0] * CARD_W, ex[1] * CARD_W], Y = [ey[0] * CARD_H, ey[1] * CARD_H];
+      if (f > .5) cx += Math.sin(shake * 26) * shake * 10;
+      const grow = 1 + GROW * f;
+      const X = [ex[0] * CARD_W * grow, ex[1] * CARD_W * grow], Y = [ey[0] * CARD_H * grow, ey[1] * CARD_H * grow];
       const o = [cx - X[0] / 2 - Y[0] / 2, cy - X[1] / 2 - Y[1] / 2];
       const b = [-en[0] * bend, -en[1] * bend];
       const pad = 140;
       const xs = [o[0], o[0] + X[0], o[0] + Y[0], o[0] + X[0] + Y[0]], ys = [o[1], o[1] + X[1], o[1] + Y[1], o[1] + X[1] + Y[1]];
       if (Math.max(...xs) < -pad || Math.min(...xs) > S_W + pad || Math.max(...ys) < -pad || Math.min(...ys) > S_H + pad) continue;
-      const haze = s > 0 ? Math.min(s / 7.2, 1.4) * .3 : 0;  // the active card must lead, never the neighbour above it
-      list.push({ i, s, f, o, X, Y, b, fade, haze, tagA: smooth(.55, .95, f), shadow: .13 * f, career: careers[i % N] });
+      // above, only the nearest card keeps its art; below, the cards keep just the band with their name
+      const flatness = s > 0 ? smooth(6, 6.5, s) : smooth(3.6, 6.2, -s);
+      list.push({ i, s, f, o, X, Y, b, fade, flat: flatness, band: s > 0 ? 0 : COVER_BAND, career: careers[i % N] });
     }
     list.sort((a, c) => c.s - a.s); // far ones first
     cardsNow = list;
@@ -276,25 +411,21 @@
       gl.uniform2f(U.uRes, S_W, S_H);
       gl.uniform2f(U.uSize, CARD_W, CARD_H);
       gl.uniform1f(U.uR, CARD_R);
+      gl.uniform1f(U.uInk, INK);
+      gl.uniform1f(U.uPad, 3);
       gl.activeTexture(gl.TEXTURE0);
       for (const c of cardsNow) {
         gl.uniform2f(U.uO, c.o[0], c.o[1]);
         gl.uniform2f(U.uX, c.X[0], c.X[1]);
         gl.uniform2f(U.uY, c.Y[0], c.Y[1]);
         gl.uniform2f(U.uB, c.b[0], c.b[1]);
-        gl.uniform1f(U.uZoom, 1 - .13 * zoom * smooth(.7, 1, c.f));
+        gl.uniform1f(U.uZoom, 1 - .05 * zoom * smooth(.7, 1, c.f));
         gl.uniform1f(U.uHasTex, c.career.tex ? 1 : 0);
-        gl.uniform1f(U.uPad, c.shadow > .002 ? 110 : 3);
-        gl.uniform1f(U.uHaze, c.haze);
         gl.uniform1f(U.uFade, c.fade);
-        gl.uniform1f(U.uTagA, c.tagA);
-        gl.uniform1f(U.uShadow, c.shadow);
-        gl.uniform3f(U.uTint, .894, .894, .906);
-        if (c.career.tex) {
-          gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, c.career.tagTex);
-          gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, c.career.tex);
-          gl.uniform4f(U.uTag, c.career.tagAt[0], c.career.tagAt[1], c.career.tagAt[2], c.career.tagAt[3]);
-        }
+        gl.uniform1f(U.uFlat, c.flat);
+        gl.uniform1f(U.uBand, c.band);
+        gl.uniform3f(U.uGround, c.career.groundRgb[0], c.career.groundRgb[1], c.career.groundRgb[2]);
+        if (c.career.tex) gl.bindTexture(gl.TEXTURE_2D, c.career.tex);
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, (STRIP + 1) * 2);
       }
     } else if (flat) {
@@ -305,15 +436,11 @@
         flat.setTransform(c.X[0] / CARD_W * k, c.X[1] / CARD_W * k, c.Y[0] / CARD_H * k, c.Y[1] / CARD_H * k, c.o[0] * k, c.o[1] * k);
         flat.save();
         flat.beginPath(); flat.roundRect(0, 0, CARD_W, CARD_H, CARD_R); flat.clip();
-        if (c.career.cover) {
-          const a = c.career.tagAt;
-          flat.globalAlpha = c.fade;
-          flat.drawImage(c.career.cover, 0, 0, CARD_W, CARD_H);
-          flat.globalAlpha = c.fade * c.tagA;
-          flat.drawImage(c.career.tag, a[0] * CARD_W, a[1] * CARD_H, a[2] * CARD_W, a[3] * CARD_H);
-          flat.globalAlpha = c.fade * c.haze;
-          flat.fillStyle = '#F4F4F5'; flat.fillRect(0, 0, CARD_W, CARD_H);
-        } else { flat.fillStyle = '#E4E4E7'; flat.fillRect(0, 0, CARD_W, CARD_H); }
+        flat.globalAlpha = c.fade;
+        if (c.career.cover) flat.drawImage(c.career.cover, 0, 0, CARD_W, CARD_H);
+        else { flat.fillStyle = c.career.ground; flat.fillRect(0, 0, CARD_W, CARD_H); }
+        if (c.flat > 0) { flat.globalAlpha = c.fade * c.flat; flat.fillStyle = c.career.ground; flat.fillRect(0, c.band * CARD_H, CARD_W, CARD_H * (1 - c.band)); flat.globalAlpha = c.fade; }
+        flat.lineWidth = INK * 2; flat.strokeStyle = '#09090B'; flat.stroke();
         flat.restore();
       }
     }
@@ -339,10 +466,15 @@
       if (x !== target || velocity !== 0) moving = true;
 
       const near0 = Math.round(x);
-      if (!textLock) { const idx = mod(near0, N); if (idx !== index) setActive(idx, true); }
-      else if (Math.abs(x) < .5) { textLock = false; }
-      const goal = textLock ? 0 : near0;
-      if (Math.abs(goal - listPos) > .0008) { listPos = REDUCED ? goal : near(listPos, goal, dt, .075); moving = true; } else listPos = goal;
+      if (near0 !== tickAt) { tickAt = near0; if (!introHold) sound.pass(mod(near0, N), Math.abs(velocity)); }
+      sound.speed(introHold ? 0 : velocity);
+      // While the cards fly in after the intro, the words already show where they will land. Any move during that time
+      // moves the landing with it, in either direction, so words and cards can never disagree.
+      if (textLock && Math.abs(target - x) < .5) textLock = false;
+      const goal = textLock ? Math.round(target) : near0;
+      if (mod(goal, N) !== index) setActive(mod(goal, N), true);
+      const listGoal = textLock ? Math.round(target) : near0;
+      if (Math.abs(listGoal - listPos) > .0008) { listPos = REDUCED ? listGoal : near(listPos, listGoal, dt, .075); moving = true; } else listPos = listGoal;
       placeList();
 
       for (let i = 0; i < RING; i++) {
@@ -354,15 +486,27 @@
       if (shake > .002) { shake = near(shake, 0, dt, .16); moving = true; } else shake = 0;
       draw();
     }
-    if (moving || intro) raf = requestAnimationFrame(tick);
+    if (moving || intro) raf = requestAnimationFrame(tick); else sound.speed(0);
   }
 
-  const SLOT = 212;
+  // The active name is big and has its facts under it; the others wait in a small size above and below.
+  const LIST_SMALL = .42, SLOT = 62, FACTS_H = 356, NAME_H = 58;
+  const listY = () => S_H * .457;
   function placeList() {
+    const y0 = listY();
     careers.forEach((c, i) => {
-      const y = S_H / 2 + wrap(i - listPos, N) * SLOT;
-      c.el.style.transform = `translate3d(0, ${y.toFixed(2)}px, 0) translateY(-50%)`;
+      const d = mod(i - listPos + 2, N) - 2; // -2 .. 3.99: one more below than above, the top stack takes that room
+      const big = 1 - clamp(Math.abs(d), 0, 1);
+      const above = Math.min(d, 0), below = Math.max(d, 0);
+      const y = y0 + above * SLOT - clamp(-d, 0, 1) * 24 + below * SLOT + clamp(d, 0, 1) * (FACTS_H + NAME_H - 24);
+      const a = clamp((d + 2) / .6, 0, 1) * clamp((2.9 - d) / .4, 0, 1);
+      c.el.style.transform = `translate3d(0, ${y.toFixed(2)}px, 0) scale(${(LIST_SMALL + (1 - LIST_SMALL) * big).toFixed(4)})`;
+      c.el.style.opacity = a.toFixed(3);
+      c.el.style.pointerEvents = a > .5 ? '' : 'none';
     });
+    const still = 1 - smooth(.02, .22, Math.abs(listPos - Math.round(listPos)));
+    ui.facts.style.transform = `translate3d(0, ${(y0 + NAME_H).toFixed(1)}px, 0)`;
+    ui.facts.style.opacity = still.toFixed(3);
   }
   const isFront = (ringIndex) => { const d = wrap(ringIndex - x, RING); return Math.abs(d) < .5; };
 
@@ -371,31 +515,50 @@
     if (REDUCED || !el.animate) return;
     el.animate([{ filter: 'blur(0px)' }, { filter: `blur(${peak}px)`, offset: .2 }, { filter: 'blur(0px)' }], { duration: 640, delay: delay || 0, easing: 'cubic-bezier(.22,.61,.36,1)' });
   };
+  const rise = (el, delay) => {
+    if (REDUCED || !el.animate) return;
+    el.animate([{ opacity: 0, transform: 'translateY(16px)', filter: 'blur(6px)' }, { opacity: 1, transform: 'none', filter: 'blur(0px)' }], { duration: 460, delay, easing: 'cubic-bezier(.22,.61,.36,1)', fill: 'backwards' });
+  };
   function setActive(i, animate) {
     index = i;
     const c = careers[i];
-    const number = String(i + 1).padStart(2, '0');
-    ui.num.textContent = number.replace(/0/g, 'O'); // Geist Mono's zero has a slash that reads as Ø at this size
-    ui.num.setAttribute('aria-label', number);
-    ui.duration.textContent = c.duration;
+    ui.num.textContent = String(i + 1).padStart(2, '0');
     ui.does.textContent = c.does;
-    ui.evidence.textContent = c.evidence;
+    ui.who.textContent = c.who;
+    ui.keeps.textContent = c.keeps;
+    ui.tryLabel.textContent = c.cta;
     careers.forEach((o, k) => { o.el.classList.toggle('is-active', k === i); if (k === i) o.el.setAttribute('aria-current', 'true'); else o.el.removeAttribute('aria-current'); });
-    ui.swatches.forEach((el, k) => { el.style.backgroundColor = c.swatches[k] || ''; });
     root.classList.toggle('can-open', c.state === 'open');
     if (animate) {
-      pulse(ui.num, 9);
-      pulse(ui.duration, 5, 20);
-      pulse(ui.does, 5, 40);
-      pulse(ui.evidence, 5, 60);
+      pulse(ui.num, 12);
+      pulse(ui.tryLabel, 4, 40);
+      rise(ui.does, 40); rise(ui.who, 110); rise(ui.keeps, 180);
     }
   }
+
+  // ---------- the three steps: a white block walks through them, and stays on the one the presenter is at ----------
+  function setStep(i) {
+    ui.steps.style.setProperty('--step', String(i));
+    ui.facts.dataset.step = String(i);
+    ui.stepItems.forEach((el, k) => el.classList.toggle('is-on', k === i));
+  }
+  let step = 0;
+  function runSteps(from) {
+    clearInterval(stepTimer);
+    step = from; setStep(step);
+    if (REDUCED) return;
+    stepTimer = setInterval(() => { step = (step + 1) % 3; setStep(step); }, 2200);
+  }
+  function holdSteps(at) { clearInterval(stepTimer); step = at; setStep(at); }
 
   // ---------- moving ----------
   function go(to) {
     target = to;
+    moved();
     wake();
   }
+  // browsing is step one: the walk starts again from there once the cards are still
+  function moved() { if (active && view === 'cards') runSteps(0); }
   const settled = () => Math.round(target);
   function move(by) { go(settled() + by); }
 
@@ -415,6 +578,7 @@
     const lead = notch ? 5 : 2;
     wheelDir = Math.sign(dy);
     target = clamp(target + step, x - lead, x + lead);
+    moved();
     clearTimeout(wheelTimer);
     wheelTimer = setTimeout(() => {
       const frac = target - Math.floor(target);
@@ -446,6 +610,7 @@
   let drag = null, skipClick = false;
   function onPointerDown(e) {
     if (!active || e.button !== 0 || e.pointerType === 'touch') return;
+    if (e.target.closest && e.target.closest('button')) return;
     if (intro) { skipIntro(); skipClick = true; return; }
     if (view !== 'cards' || busy) return;
     const p = toStage(e);
@@ -467,6 +632,7 @@
     drag.speed = near(drag.speed, (amount - drag.last) / dt, dt, .06); // cards per second
     drag.last = amount; drag.t = e.timeStamp;
     target = clamp(drag.from + amount, x - 2, x + 2);
+    moved();
     wake();
   }
   function onPointerUp(e) {
@@ -488,14 +654,14 @@
     if (drag) { onDragMove(e); if (drag.on) return; }
     const hit = pick(toStage(e));
     const item = hit < 0 && e.target.closest ? e.target.closest('[data-career]') : null;
-    const lockedFront = hit >= 0 && isFront(hit) && careers[mod(settled(), N)].state !== 'open';
-    root.style.cursor = (hit >= 0 && !lockedFront) || item ? 'pointer' : '';
+    root.style.cursor = hit >= 0 || item ? 'pointer' : '';
     if (hit !== hoverCard) { hoverCard = hit; wake(); }
   }
   function onPointerLeave() { if (hoverCard !== -1) { hoverCard = -1; wake(); } root.style.cursor = ''; }
   function onClick(e) {
     if (!active) return;
     if (skipClick) { skipClick = false; return; }
+    if (e.target.closest && e.target.closest('button')) return;
     if (intro) { skipIntro(); return; }
     if (view !== 'cards' || busy) return;
     const hit = pick(toStage(e));
@@ -517,8 +683,7 @@
   const EASE_CURTAIN = 'cubic-bezier(.76,0,.24,1)';
   function nudge() {
     shake = REDUCED ? 0 : 1;
-    const st = careers[mod(settled(), N)].el.querySelector('.cr-item__status');
-    if (st && st.animate && !REDUCED) st.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-7px)' }, { transform: 'translateX(6px)' }, { transform: 'translateX(-4px)' }, { transform: 'translateX(0)' }], { duration: 360, easing: 'ease-out' });
+    sound.nudge();
     wake();
   }
   function tryOpen() {
@@ -527,34 +692,37 @@
     if (c.state !== 'open') { nudge(); return; }
     open(c);
   }
-  async function curtain(title, swap) {
+  async function curtain(title, sub, swap) {
     const sid = session;
     busy = true;
-    document.body.classList.add('cr-black');
-    if (REDUCED || !ui.curtain.animate) { swap(); busy = false; document.body.classList.remove('cr-black'); return; }
+    document.body.classList.add('cr-cover');
+    if (REDUCED || !ui.curtain.animate) { swap(); busy = false; document.body.classList.remove('cr-cover'); return; }
     ui.curtainTitle.textContent = title;
+    ui.curtainSub.textContent = sub;
     ui.curtain.hidden = false;
     const run = (el, from, to, duration, delay) => el.animate([{ transform: `translateY(${from}%)` }, { transform: `translateY(${to}%)` }], { duration, delay: delay || 0, easing: EASE_CURTAIN, fill: 'both' });
     const up = run(ui.curtain, 100, 0, 460); const upIn = run(ui.curtainIn, -100, 0, 460);
-    const t = ui.curtainTitle.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 220, delay: 530, easing: 'ease-out', fill: 'both' }); // black first, then the title
+    const words = [ui.curtainTitle, ui.curtainSub].map((el, k) => el.animate([{ opacity: 0, filter: 'blur(14px)' }, { opacity: 1, filter: 'blur(0px)' }], { duration: 300, delay: 360 + k * 90, easing: 'ease-out', fill: 'both' }));
     await up.finished.catch(() => {});
     if (sid !== session) return;
     swap();
-    await wait(560);
+    await wait(660);
     if (sid !== session) return;
     const down = run(ui.curtain, 0, 100, 540); const downIn = run(ui.curtainIn, 0, -100, 540);
     await down.finished.catch(() => {});
     if (sid !== session) return;
-    [up, upIn, t, down, downIn].forEach((a) => a.cancel());
+    [up, upIn, down, downIn].concat(words).forEach((a) => a.cancel());
     ui.curtain.hidden = true;
     busy = false;
-    document.body.classList.remove('cr-black');
+    document.body.classList.remove('cr-cover');
   }
   const blurIn = (el, delay, px) => el.animate([{ opacity: 0, filter: `blur(${px}px)` }, { opacity: 1, filter: 'blur(0px)' }], { duration: 420, delay, easing: 'cubic-bezier(.22,.61,.36,1)', fill: 'backwards' });
   function open(c) {
     document.dispatchEvent(new CustomEvent('career:open', { detail: { id: c.id } }));
     hoverCard = -1; root.style.cursor = '';
-    curtain(c.name, () => {
+    holdSteps(1);
+    sound.open();
+    curtain(c.name, 'Do the work', () => {
       view = 'editor';
       root.classList.add('is-editor');
       document.body.classList.add('cr-full');
@@ -566,11 +734,13 @@
     if (view !== 'editor' || busy) return;
     const id = careers[mod(settled(), N)].id;
     releaseFocus();
-    curtain('Careers', () => {
+    sound.close();
+    curtain('Careers', 'Pick a career', () => {
       view = 'cards';
       root.classList.remove('is-editor');
       document.body.classList.remove('cr-full');
       ui.editor.setAttribute('aria-hidden', 'true');
+      runSteps(0);
       draw();
       wake();
     }).then(() => document.dispatchEvent(new CustomEvent('career:close', { detail: { id } })));
@@ -629,32 +799,37 @@
   }
 
   // ---------- intro: under 1.5 s, any key skips it ----------
+  // The screen starts violet. A peep comes in from the right, shoving the wall, until it stops as the panel.
   function startIntro() {
     if (REDUCED || !ui.wall.animate) return;
     intro = true; textLock = true;
-    document.body.classList.add('cr-black');
-    ui.wall.hidden = false; ui.veil.hidden = false;
-    x = mid = -7.4; target = 0; introHold = true; velocity = 0; listPos = 0;
-    // Black first, a fast shove, a stubborn moment, then the wall gives way: 1.43 s in all.
-    const START = 320, PUSH = 1090, GIVES = .68;
+    document.body.classList.add('cr-cover');
+    root.classList.add('is-intro');
+    ui.wall.hidden = false;
+    x = mid = -7.4; target = 0; introHold = true; velocity = 0; listPos = 0; tickAt = Math.round(x);
+    const START = 170, PUSH = 860, to = S_W * .31 - S_W;
     const wall = ui.wall.animate([
       { transform: 'translateX(0)', easing: 'cubic-bezier(.2,.7,.3,1)' },
-      { transform: 'translateX(1130px)', offset: .36, easing: 'linear' },
-      { transform: 'translateX(1230px)', offset: GIVES, easing: 'cubic-bezier(.7,0,.9,.4)' },
-      { transform: 'translateX(2600px)' },
+      { transform: `translateX(${to * .66}px)`, offset: .46, easing: 'linear' },
+      { transform: `translateX(${to * .74}px)`, offset: .68, easing: 'cubic-bezier(.5,0,.1,1)' },
+      { transform: `translateX(${to}px)` },
     ], { duration: PUSH, delay: START, fill: 'both' });
-    const bob = ui.peep.animate([{ transform: 'rotate(10deg) translateY(8px)' }, { transform: 'rotate(13deg) translateY(-10px)' }, { transform: 'rotate(10deg) translateY(8px)' }], { duration: 300, iterations: 6, delay: START });
-    const gone = { duration: 300, delay: START + PUSH * GIVES, easing: 'ease-in', fill: 'both' };
-    introAnims = [wall, bob, ui.veil.animate([{ opacity: 1 }, { opacity: 0 }], gone), ui.word.animate([{ filter: 'blur(0px)' }, { filter: 'blur(14px)' }], gone)];
-    ui.enter.forEach((el, k) => introAnims.push(blurIn(el, 900 + k * 16, 12)));
-    introTimer = setTimeout(() => { introHold = false; wake(); }, 960);
-    wall.finished.then(endIntro).catch(() => {});
+    const bob = ui.peep.animate([{ transform: 'rotate(-10deg) translateY(8px)' }, { transform: 'rotate(-13deg) translateY(-10px)' }, { transform: 'rotate(-10deg) translateY(8px)' }], { duration: 300, iterations: 3, delay: START });
+    const fall = ui.peep.animate([{ transform: 'rotate(-10deg) translateY(8px)' }, { transform: 'rotate(14deg) translateY(1100px)' }], { duration: 330, delay: START + PUSH - 30, easing: 'cubic-bezier(.55,0,.8,.3)', fill: 'forwards' });
+    const word = ui.word.animate([{ opacity: 1, filter: 'blur(0px)' }, { opacity: 0, filter: 'blur(14px)' }], { duration: 240, delay: START + 180, easing: 'ease-in', fill: 'both' });
+    introAnims = [wall, bob, fall, word];
+    ui.enter.forEach((el) => introAnims.push(blurIn(el, Number(el.dataset.crEnter) || 900, 12)));
+    ui.title.forEach((el, k) => introAnims.push(el.animate([{ transform: 'translateY(108%)' }, { transform: 'none' }], { duration: 520, delay: 800 + k * 60, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'backwards' })));
+    introTimer = setTimeout(() => { introHold = false; wake(); }, 560);
+    fall.finished.then(endIntro).catch(() => {});
   }
   function endIntro() {
     if (!intro) return;
     intro = false;
-    ui.wall.hidden = true; ui.veil.hidden = true;
-    document.body.classList.remove('cr-black');
+    ui.wall.hidden = true;
+    root.classList.remove('is-intro');
+    document.body.classList.remove('cr-cover');
+    runSteps(0);
     prepareFrame(); // it shares a thread with the cards, so it waits for the intro to finish
     wake();
   }
@@ -662,7 +837,7 @@
     if (!intro) return;
     clearTimeout(introTimer); introHold = false;
     introAnims.forEach((a) => a.cancel()); introAnims = [];
-    x = mid = target = 0; velocity = 0; listPos = 0; textLock = false;
+    x = mid = target = 0; velocity = 0; listPos = 0; textLock = false; tickAt = 0;
     endIntro();
   }
 
@@ -675,23 +850,25 @@
     if (view === 'cards') {
       if (e.key === 'ArrowDown') { e.preventDefault(); if (!busy) move(1); }
       else if (e.key === 'ArrowUp') { e.preventDefault(); if (!busy) move(-1); }
-      else if (e.key === 'Enter') { e.preventDefault(); tryOpen(); }
+      else if (e.key === 'm' || e.key === 'M') sound.toggle();
+      else if (e.key === 'Enter' && t !== ui.soundBtn) { e.preventDefault(); tryOpen(); } // on the sound button, reached with Tab, Enter is that button's
     } else if (e.key === 'Escape') { e.preventDefault(); close(); }
   }
 
   // ---------- entering and leaving the slide ----------
   function reset() {
-    target = mid = x = 0; velocity = 0; listPos = 0; index = -1; hoverCard = -1; zoom = 0; shake = 0; lift.fill(0);
+    target = mid = x = 0; velocity = 0; listPos = 0; index = -1; hoverCard = -1; zoom = 0; shake = 0; lift.fill(0); tickAt = 0;
     view = 'cards'; busy = false; textLock = false; intro = false; drag = null; skipClick = false;
-    root.classList.remove('is-editor', 'is-dragging');
+    root.classList.remove('is-editor', 'is-dragging', 'is-intro');
     ui.editor.setAttribute('aria-hidden', 'true');
-    ui.curtain.hidden = true; ui.wall.hidden = true; ui.veil.hidden = true;
+    ui.curtain.hidden = true; ui.wall.hidden = true;
     clearTimeout(introTimer); introHold = false;
     root.style.cursor = '';
-    document.body.classList.remove('cr-black', 'cr-full');
+    document.body.classList.remove('cr-cover', 'cr-full');
     root.getAnimations && root.getAnimations({ subtree: true }).forEach((a) => a.cancel());
     introAnims = [];
     setActive(0, false);
+    holdSteps(0);
     placeList();
   }
   function lockEsc(on) {
@@ -704,10 +881,12 @@
     active = true;
     session++;
     document.body.classList.add('cr-on');
+    layout();
     reset();
+    sound.enter();
     removeFrame(); // a fresh editor on every visit
     startIntro();
-    if (!intro) prepareFrame();
+    if (!intro) { prepareFrame(); runSteps(0); }
     lockEsc(true);
     draw();
     wake();
@@ -719,7 +898,9 @@
     if (raf) cancelAnimationFrame(raf); raf = 0;
     drag = null;
     clearTimeout(introTimer);
-    document.body.classList.remove('cr-on', 'cr-black', 'cr-full');
+    clearInterval(stepTimer);
+    sound.leave();
+    document.body.classList.remove('cr-on', 'cr-cover', 'cr-full');
     releaseFocus();
     frameTimer = setTimeout(removeFrame, 450); // once the slide has faded out
     lockEsc(false);
@@ -729,8 +910,9 @@
   if (gl) {
     setupGL();
     ui.canvas.addEventListener('webglcontextlost', (e) => e.preventDefault());
-    ui.canvas.addEventListener('webglcontextrestored', () => { careers.forEach((c) => { c.tex = c.tagTex = null; }); setupGL(); drawOnce(); });
+    ui.canvas.addEventListener('webglcontextrestored', () => { careers.forEach((c) => { c.tex = null; }); setupGL(); drawOnce(); });
   }
+  layout();
   reset();
   preload();
   probePage();
@@ -744,7 +926,14 @@
   document.addEventListener('keydown', onKey);
   document.addEventListener('design:finish', onFinish);
   document.addEventListener('fullscreenchange', () => { if (active) lockEsc(true); });
-  window.addEventListener('resize', () => { if (active) { sizeCanvas(); drawOnce(); } });
+  window.addEventListener('resize', () => { layout(); if (active) { sizeCanvas(); placeList(); drawOnce(); } });
+  // the first key or click of the visit lets the sound start
+  const unlock = () => { if (active) sound.unlock(); };
+  window.addEventListener('pointerdown', unlock, true);
+  window.addEventListener('keydown', unlock, true);
+  // after a mouse click the button gives the focus back: in a live demo, the next Enter must open the career
+  ui.soundBtn.addEventListener('click', (e) => { sound.toggle(); if (e.detail > 0) ui.soundBtn.blur(); });
+  ui.tryBtn.addEventListener('click', () => tryOpen());
   document.addEventListener('deck:slidechange', (e) => { if (e.detail.slide.contains(root)) enter(); else leave(); });
 
   window.MAYBE_CAREERS = {
@@ -753,5 +942,6 @@
     get view() { return view; },
     goTo(i) { if (view === 'cards') go(settled() + wrap(i - mod(settled(), N), N)); },
     open: tryOpen, close,
+    soundInfo: () => sound.info(),
   };
 })();

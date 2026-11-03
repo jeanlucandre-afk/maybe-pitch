@@ -1,113 +1,250 @@
 <!doctype html>
-<!-- Source of the four provisional career covers (marketing, product, data, finance).
-     Open Peeps plus a floating UI card, in the style of the MAYBE covers. No generated images, no numbers.
-     Replace the .jpg files in this folder with final art when it exists; nothing else has to change. -->
+<!-- Source of the six career covers: solid brand ground, the career's name, an Open Peep and a big piece of the real work.
+     No generated images, no logos, no numbers.
+
+     One cover alone: montage.html?card=sales (the same for marketing, product, ux-ui, data, finance).
+     To export them at 1600x1125, with the local server on port 3013, once per card:
+       msedge --headless=new --force-device-scale-factor=1.33333 --window-size=1200,844 --hide-scrollbars --virtual-time-budget=4000
+              --screenshot=assets/careers/sales.png "http://localhost:3013/assets/careers/montage.html?card=sales"
+     Then rebuild nothing: assets/careers.js reads the .png files directly. -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Career covers, provisional montage</title>
+<title>Career covers</title>
+<link rel="icon" href="data:,">
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+:root{--ink:#09090B;--violet:#7C3AED;--deep:#5B21B6;--soft:#EDE9FE;--line:#E4E4E7;--zinc:#F4F4F5;--mute:#52525B}
 *{box-sizing:border-box}
-body{margin:0;background:#3f3f46;font-family:Geist,system-ui,sans-serif;color:#09090B;-webkit-font-smoothing:antialiased;display:grid;gap:40px;grid-template-columns:repeat(2,1200px);padding:40px}
-.c{position:relative;width:1200px;height:976px;overflow:hidden}
-.peep{position:absolute;display:block}
-.card{position:absolute;background:#fff;border:1px solid #E4E4E7;border-radius:22px;box-shadow:0 26px 60px -22px rgba(9,9,11,.5);padding:34px 36px}
-.card h3{margin:0;font-size:40px;font-weight:600;letter-spacing:-.03em;line-height:1.1}
-.sub{margin:8px 0 0;font-size:24px;color:#71717A}
-.pill{display:inline-flex;align-items:center;padding:6px 15px;border-radius:999px;border:1.5px solid;font-size:24px;font-weight:500}
-.rule{color:#0E6680;border-color:#A5D8E6;background:#fff}
-.syn{color:#92400E;border-color:#FDE68A;background:#FFFBEB}
-.ai{color:#5B21B6;border-color:#DDD6FE;background:#F5F3FF}
-.row{display:grid;grid-template-columns:150px 1fr;gap:16px;align-items:center;margin-top:20px;font-size:24px;font-weight:500}
-.bar{display:block;height:14px;border-radius:99px;background:#F4F4F5;overflow:hidden}
-.bar i{display:block;height:100%;border-radius:99px;background:#7C3AED}
-.bar i.ink{background:#09090B}
+html,body{margin:0}
+body{background:#3f3f46;font-family:Geist,system-ui,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased;display:grid;gap:40px;grid-template-columns:repeat(2,1200px);padding:40px}
+body.one{display:block;padding:0;background:none;width:1200px;height:844px;overflow:hidden}
+body.one .c{display:none}
+body.one .c.on{display:block}
 
-/* Marketing */
-#marketing{background:#E4E4E7}
-#marketing .disc{position:absolute;right:-120px;top:120px;width:800px;height:800px;border-radius:50%;background:#FAFAFA}
-#marketing .peep{right:-30px;bottom:-250px;height:1090px}
-#marketing .card{left:44px;top:420px;width:600px;transform:rotate(-3deg) scale(1.22);transform-origin:0 50%}
+/* the card: 1200x844. The name sits in the top band, which is what still shows when the card is in a stack. */
+.c{position:relative;width:1200px;height:844px;overflow:hidden}
+.c.violet{background:var(--violet);color:#fff}
+.c.white{background:#fff;color:var(--ink)}
+.c.black{background:var(--ink);color:#fff}
+.name{position:absolute;left:56px;top:30px;margin:0;font-size:124px;font-weight:600;line-height:1.08;letter-spacing:-.05em;white-space:nowrap}
+.tag{position:absolute;right:56px;top:58px;display:inline-flex;align-items:center;gap:14px;height:70px;padding:0 30px;border-radius:999px;font-size:36px;font-weight:600;letter-spacing:-.02em;background:#fff;color:var(--ink)}
+.tag i{width:18px;height:18px;border-radius:50%;background:var(--violet)}
 
-/* Product */
-#product{background:#18181B}
-#product .ring{position:absolute;left:560px;top:150px;width:760px;height:760px;border-radius:50%;background:#3F3F46}
-#product .peep{right:-70px;bottom:-280px;height:1100px}
-#product .card{left:40px;top:376px;width:640px;transform:rotate(2.5deg) scale(1.22);transform-origin:0 50%}
-.board{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px}
-.lane{background:#FAFAFA;border:1px solid #E4E4E7;border-radius:14px;padding:13px;display:grid;gap:11px;align-content:start;min-height:230px}
-.lane b{font-size:24px;font-weight:500;color:#52525B}
-.tile{height:50px;border-radius:9px;background:#fff;border:1px solid #E4E4E7}
-.tile.on{border:2.5px solid #7C3AED;box-shadow:0 0 0 5px #EDE9FE}
+/* the peep, always cut by the bottom edge */
+.peep{position:absolute;display:block;width:auto}
 
-/* Data */
-#data{background:#FAFAFA}
-#data .disc{position:absolute;right:-110px;top:110px;width:820px;height:820px;border-radius:50%;background:#E4E4E7}
-#data .peep{right:-46px;bottom:-250px;height:1090px}
-#data .card{left:44px;top:362px;width:620px;transform:rotate(-2.5deg) scale(1.22);transform-origin:0 50%}
-.chart{display:flex;align-items:flex-end;gap:15px;height:270px;margin-top:22px;padding-bottom:3px;border-bottom:3px solid #09090B}
-.chart i{flex:1;border-radius:7px 7px 0 0;background:#D4D4D8}
-.chart i.on{background:#7C3AED}
+/* a piece of interface, flat and big */
+.ui{position:absolute;background:#fff;color:var(--ink);border:4px solid var(--ink);border-radius:30px;overflow:hidden}
+.white .ui{border-color:var(--ink)}
+.ui h3{margin:0;font-size:50px;font-weight:600;line-height:1.1;letter-spacing:-.035em}
+.btn{display:inline-flex;align-items:center;justify-content:center;height:84px;padding:0 36px;border-radius:18px;background:var(--ink);color:#fff;font-size:38px;font-weight:600;letter-spacing:-.02em}
 
-/* Finance */
-#finance{background:#09090B}
-#finance .ring{position:absolute;right:-90px;top:80px;width:840px;height:840px;border-radius:50%;border:3px solid #3F3F46}
-#finance .ring.b{right:40px;top:210px;width:580px;height:580px}
-#finance .peep{right:-16px;bottom:-250px;height:1090px}
-#finance .card{left:42px;top:420px;width:620px;transform:rotate(-2deg) scale(1.22);transform-origin:0 50%}
-.who{display:flex;align-items:center;gap:14px;margin-top:26px;padding-top:22px;border-top:1px solid #E4E4E7;font-size:24px;font-weight:500}
-.who img{width:60px;height:60px;border-radius:50%;background:#F4F4F5;object-fit:cover;object-position:50% 6%;border:1px solid #E4E4E7}
+/* Sales: a call with a buyer */
+#sales .ui{left:56px;top:176px;width:716px;height:610px;padding:36px 40px}
+#sales .peep{right:-104px;bottom:-336px;height:1040px}
+.who{display:flex;align-items:center;gap:24px}
+.who__pic{width:118px;height:118px;flex:none;border-radius:50%;background:var(--soft);border:4px solid var(--ink);overflow:hidden;position:relative}
+.who__pic img{position:absolute;left:-44px;top:-8px;width:206px}
+.who__name{font-size:54px;font-weight:600;line-height:1.05;letter-spacing:-.035em}
+.who__role{margin-top:4px;font-size:38px;font-weight:500;color:var(--mute);letter-spacing:-.015em}
+.who__live{margin-left:auto;align-self:flex-start;display:inline-flex;align-items:center;gap:10px;font-size:36px;font-weight:600;color:var(--deep)}
+.who__live i{width:16px;height:16px;border-radius:50%;background:var(--violet)}
+.wave{display:flex;align-items:center;gap:9px;height:118px;margin-top:22px}
+.wave i{flex:1;background:var(--violet);border-radius:9px}
+.say{margin-top:22px;padding:22px 30px;border-radius:24px 24px 24px 4px;background:var(--zinc);font-size:42px;font-weight:500;line-height:1.14;letter-spacing:-.025em}
+.call{position:absolute;left:40px;right:40px;bottom:32px;display:flex;align-items:center;gap:18px}
+.round{display:grid;place-items:center;width:84px;height:84px;border-radius:50%;border:4px solid var(--ink);background:#fff}
+.call .btn{margin-left:auto}
+
+/* Marketing: a campaign */
+#marketing .ui{left:56px;top:176px;width:856px;height:610px;padding:28px 34px}
+.ui__bar{display:flex;align-items:center;justify-content:space-between}
+.ui__bar h3{font-size:54px}
+.live{display:inline-flex;align-items:center;gap:12px;font-size:38px;font-weight:600;color:var(--deep);letter-spacing:-.02em}
+.live i{width:18px;height:18px;border-radius:50%;background:var(--violet)}
+.camp{display:grid;grid-template-columns:352px 1fr;gap:30px;height:462px;margin-top:22px}
+.poster{position:relative;border-radius:22px;background:var(--violet);color:#fff;padding:26px 26px;overflow:hidden;border:4px solid var(--ink)}
+.poster b{display:block;font-size:72px;font-weight:600;line-height:.98;letter-spacing:-.05em}
+.horn{position:absolute;left:26px;bottom:14px;width:262px;height:218px}
+.chan{display:flex;align-items:center;gap:16px;margin-top:30px;font-size:42px;font-weight:500;letter-spacing:-.02em;white-space:nowrap}
+.chan:first-child{margin-top:18px}
+.chan i{display:grid;place-items:center;width:54px;height:54px;flex:none;border-radius:50%;background:var(--violet)}
+.chan i.off{background:#fff;border:4px solid var(--ink)}
+#marketing .peep{right:-216px;bottom:-356px;height:1100px}
+
+/* Product: now, next, later */
+#product .ui{left:56px;top:176px;width:820px;height:610px;padding:24px}
+#product .peep{right:-274px;bottom:-400px;height:1040px;transform:scaleX(-1)}
+.lanes{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;height:100%}
+.lane{display:flex;flex-direction:column;gap:14px;padding:16px 14px;border-radius:20px;background:var(--zinc)}
+.lane b{font-size:54px;font-weight:600;letter-spacing:-.035em;line-height:1.1;padding-left:4px}
+.tile{padding:18px 16px;border-radius:14px;background:#fff;border:3px solid var(--ink);font-size:36px;font-weight:500;line-height:1.12;letter-spacing:-.025em}
+.tile.hot{background:var(--violet);color:#fff;transform:rotate(-3deg) translateX(8px) scale(1.05);border-color:var(--ink);position:relative;z-index:2}
+
+/* UX/UI Design: a design canvas with a checkout */
+#ux-ui .ui{left:56px;top:176px;width:872px;height:610px;background:var(--zinc)}
+#ux-ui .dots{position:absolute;left:0;top:0;width:100%;height:100%}
+#ux-ui .tools{position:absolute;left:24px;top:24px;bottom:24px;width:88px;padding:12px 0;display:flex;flex-direction:column;align-items:center;gap:6px;background:var(--ink);border-radius:20px}
+#ux-ui .tools span{display:grid;place-items:center;width:68px;height:68px;border-radius:14px}
+#ux-ui .tools span.on{background:var(--violet)}
+#ux-ui .phone{position:absolute;left:158px;top:34px;width:368px;height:600px;padding:26px 24px;background:#fff;border:4px solid var(--ink);border-radius:40px 40px 0 0}
+#ux-ui .phone h4{margin:0;font-size:48px;font-weight:600;letter-spacing:-.035em;line-height:1.1}
+.field{position:relative;margin-top:14px;padding:12px 18px 16px;border:3px solid var(--line);border-radius:14px;font-size:32px;font-weight:500;color:var(--mute)}
+.field u{display:block;height:15px;margin-top:9px;border-radius:8px;background:#D4D4D8;text-decoration:none}
+#ux-ui .pay{display:flex;margin-top:18px;height:82px;font-size:38px}
+.sel{position:absolute;left:-9px;top:-9px;right:-9px;bottom:-9px;margin:0;border:4px solid var(--violet);border-radius:2px;pointer-events:none}
+.sel i{position:absolute;width:20px;height:20px;background:#fff;border:4px solid var(--violet)}
+.sel i:nth-child(1){left:-12px;top:-12px}.sel i:nth-child(2){right:-12px;top:-12px}.sel i:nth-child(3){left:-12px;bottom:-12px}.sel i:nth-child(4){right:-12px;bottom:-12px}
+.props{position:absolute;right:24px;top:24px;width:276px;padding:22px 24px;background:#fff;border:4px solid var(--ink);border-radius:20px}
+.props b{display:block;font-size:34px;font-weight:600;letter-spacing:-.025em}
+.chips{display:flex;gap:10px;margin-top:14px}
+.chips i{width:50px;height:50px;border-radius:12px;border:3px solid var(--ink)}
+.cursor{position:absolute;left:286px;top:48px;z-index:3;display:flex;align-items:flex-start}
+.cursor b{margin:40px 0 0 -4px;padding:9px 18px;border-radius:12px;background:var(--violet);color:#fff;font-size:30px;font-weight:600;letter-spacing:-.02em}
+#ux-ui .peep{right:-174px;bottom:-396px;height:1040px}
+
+/* Data: a chart */
+#data .ui{left:56px;top:176px;width:832px;height:610px;padding:34px 40px}
+#data .peep{right:-146px;bottom:-356px;height:1060px}
+.chart{position:absolute;left:40px;right:40px;bottom:30px;height:400px;display:grid;grid-template-columns:repeat(5,1fr);gap:22px;align-items:end}
+.bar{position:relative;display:flex;flex-direction:column;justify-content:flex-end;height:100%}
+.bar i{display:block;background:var(--ink);border-radius:12px 12px 0 0}
+.bar.on i{background:var(--violet)}
+.bar span{display:block;height:64px;padding-top:14px;border-top:4px solid var(--ink);font-size:36px;font-weight:500;letter-spacing:-.02em;text-align:center;white-space:nowrap}
+.flag{position:absolute;left:50%;transform:translateX(-50%);padding:12px 22px;border-radius:14px;background:var(--violet);color:#fff;font-size:34px;font-weight:600;letter-spacing:-.02em;white-space:nowrap}
+.flag::after{content:"";position:absolute;left:50%;bottom:-14px;width:28px;height:28px;margin-left:-14px;background:var(--violet);transform:rotate(45deg);border-radius:4px}
+
+/* Finance: a budget, a table of money with the amounts blacked out: nothing here is a real figure */
+#finance .ui{left:56px;top:176px;width:806px;height:610px;padding:28px 40px}
+#finance .peep{right:-120px;bottom:-356px;height:1030px}
+.head{display:flex;align-items:baseline;justify-content:space-between}
+.head h3{font-size:62px}
+.head span{font-size:38px;font-weight:500;color:var(--mute);letter-spacing:-.02em}
+.line{display:flex;align-items:center;justify-content:space-between;height:70px;border-top:3px solid var(--line);font-size:44px;font-weight:500;letter-spacing:-.025em}
+.head + .line{margin-top:16px}
+.amt{display:inline-flex;align-items:center;gap:14px;font-family:"Geist Mono",ui-monospace,monospace;font-weight:500}
+.amt u{display:block;height:34px;border-radius:8px;background:var(--ink);text-decoration:none}
+.amt u.v{background:var(--violet)}
+.sum{position:absolute;left:40px;right:40px;bottom:26px;display:flex;align-items:center;gap:26px;padding-top:20px;border-top:5px solid var(--ink);font-size:46px;font-weight:600;letter-spacing:-.03em}
+.sum .amt{margin-right:auto}
+.ok{display:inline-flex;align-items:center;gap:14px;height:84px;padding:0 28px;border-radius:18px;background:var(--ink);color:#fff;font-size:38px}
 </style>
 </head>
 <body>
-<section class="c" id="marketing">
-  <div class="disc"></div>
+
+<section class="c violet" id="sales">
+  <h2 class="name">Sales</h2>
+  <div class="tag"><i></i>Just tried</div>
+  <img class="peep" src="../../app/img/peep-seller.svg" alt="">
+  <div class="ui">
+    <div class="who">
+      <div class="who__pic"><img src="../../app/img/peep-recruiter.svg" alt=""></div>
+      <div><div class="who__name">Mara</div><div class="who__role">AI buyer</div></div>
+      <div class="who__live"><i></i>On call</div>
+    </div>
+    <div class="wave" aria-hidden="true" id="wave"></div>
+    <div class="say">Why should I switch to you?</div>
+    <div class="call">
+      <span class="round"><svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#09090B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v4"/></svg></span>
+      <span class="btn">End call</span>
+    </div>
+  </div>
+</section>
+
+<section class="c white" id="marketing">
+  <h2 class="name">Marketing</h2>
   <img class="peep" src="../../app/img/peep-thinker.svg" alt="">
-  <div class="card">
-    <h3>Launch campaign</h3>
-    <p class="sub">Testing the message</p>
-    <div class="row"><span>Email</span><span class="bar"><i style="width:72%"></i></span></div>
-    <div class="row"><span>Social</span><span class="bar"><i style="width:44%"></i></span></div>
-    <div class="row"><span>Landing</span><span class="bar"><i style="width:61%"></i></span></div>
-    <p style="margin:28px 0 0"><span class="pill syn">Synthetic estimate</span></p>
-  </div>
-</section>
-<section class="c" id="product">
-  <div class="ring"></div>
-  <img class="peep" src="../../app/img/peep-designer.svg" alt="">
-  <div class="card">
-    <h3>What do we build next?</h3>
-    <div class="board">
-      <div class="lane"><b>Now</b><div class="tile"></div><div class="tile on"></div></div>
-      <div class="lane"><b>Next</b><div class="tile"></div><div class="tile"></div></div>
-      <div class="lane"><b>Later</b><div class="tile"></div></div>
+  <div class="ui">
+    <div class="ui__bar"><h3>Launch campaign</h3><span class="live"><i></i>Live</span></div>
+    <div class="camp">
+      <div class="poster">
+        <b>Launch week</b>
+        <svg class="horn" viewBox="0 0 120 100" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 40v22l18 2 62 24V14L30 38z"/><path d="M34 64l8 26h14l-8-20"/><path d="M104 38c6 8 6 18 0 26"/></svg>
+      </div>
+      <div>
+        <div class="chan"><i><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></i>Email</div>
+        <div class="chan"><i><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></i>Social</div>
+        <div class="chan"><i class="off"></i>Landing page</div>
+        <div class="chan"><i class="off"></i>Launch film</div>
+      </div>
     </div>
-    <p style="margin:24px 0 0"><span class="pill ai">AI review</span></p>
   </div>
 </section>
-<section class="c" id="data">
-  <div class="disc"></div>
-  <img class="peep" src="../../app/img/peep-recruiter.svg" alt="">
-  <div class="card">
-    <h3>Where do users drop off?</h3>
-    <div class="chart">
-      <i style="height:100%"></i><i style="height:82%"></i><i style="height:74%"></i><i class="on" style="height:34%"></i><i style="height:30%"></i><i style="height:25%"></i><i style="height:20%"></i>
-    </div>
-    <p style="margin:24px 0 0"><span class="pill rule">Rule-based</span> <span class="sub" style="margin-left:8px">Simulated dataset</span></p>
-  </div>
-</section>
-<section class="c" id="finance">
-  <div class="ring"></div><div class="ring b"></div>
+
+<section class="c black" id="product">
+  <h2 class="name">Product</h2>
   <img class="peep" src="../../app/img/peep-student.svg" alt="">
-  <div class="card">
-    <h3>Next quarter's budget</h3>
-    <p class="sub">Simulated company</p>
-    <div class="row"><span>People</span><span class="bar"><i class="ink" style="width:82%"></i></span></div>
-    <div class="row"><span>Tools</span><span class="bar"><i class="ink" style="width:36%"></i></span></div>
-    <div class="row"><span>Growth</span><span class="bar"><i style="width:58%"></i></span></div>
-    <div class="who"><img src="../../app/img/peep-recruiter.svg" alt=""><span>Simulated CFO</span><span class="pill ai" style="margin-left:auto">AI review</span></div>
+  <div class="ui">
+    <div class="lanes">
+      <div class="lane"><b>Now</b><div class="tile">Fix sign-up</div><div class="tile hot">Faster search</div><div class="tile">Clear pricing</div></div>
+      <div class="lane"><b>Next</b><div class="tile">Team plans</div><div class="tile">Saved filters</div></div>
+      <div class="lane"><b>Later</b><div class="tile">Mobile app</div></div>
+    </div>
   </div>
 </section>
+
+<section class="c violet" id="ux-ui">
+  <h2 class="name">UX/UI Design</h2>
+  <img class="peep" src="../../app/img/peep-designer.svg" alt="">
+  <div class="ui">
+    <svg class="dots" aria-hidden="true"><defs><pattern id="dot" width="36" height="36" patternUnits="userSpaceOnUse"><circle cx="18" cy="18" r="2.6" fill="#A1A1AA"/></pattern></defs><rect width="100%" height="100%" fill="url(#dot)"/></svg>
+    <div class="tools">
+      <span class="on"><svg width="42" height="42" viewBox="0 0 24 24" fill="#fff"><path d="M4 4l16 6.5-6.6 1.8L11.6 19z"/></svg></span>
+      <span><svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><rect x="4" y="4" width="16" height="16" rx="2"/></svg></span>
+      <span><svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg></span>
+      <span><svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><circle cx="12" cy="12" r="8"/></svg></span>
+    </div>
+    <div class="phone">
+      <h4>Checkout</h4>
+      <div class="field">Name<u style="width:72%"></u></div>
+      <div class="field">Card<u style="width:88%"></u><div class="sel"><i></i><i></i><i></i><i></i></div><div class="cursor"><svg width="62" height="62" viewBox="0 0 24 24" fill="#09090B" stroke="#fff" stroke-width="1.2" stroke-linejoin="round"><path d="M4 3l16.5 7-7 2-2.5 7z"/></svg><b>You</b></div></div>
+      <div class="field">Email<u style="width:64%"></u></div>
+      <div class="btn pay">Pay now</div>
+    </div>
+    <div class="props">
+      <b>Colour</b>
+      <div class="chips"><i style="background:#7C3AED"></i><i style="background:#09090B"></i><i style="background:#fff"></i></div>
+    </div>
+  </div>
+</section>
+
+<section class="c white" id="data">
+  <h2 class="name">Data</h2>
+  <img class="peep" src="../../app/img/peep-recruiter.svg" alt="">
+  <div class="ui">
+    <h3>Where do people drop off?</h3>
+    <div class="chart">
+      <div class="bar"><i style="height:300px"></i><span>Visit</span></div>
+      <div class="bar"><i style="height:254px"></i><span>Browse</span></div>
+      <div class="bar"><i style="height:216px"></i><span>Cart</span></div>
+      <div class="bar on"><i style="height:82px"></i><span>Pay</span><b class="flag" style="bottom:176px">Here</b></div>
+      <div class="bar"><i style="height:66px"></i><span>Done</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="c black" id="finance">
+  <h2 class="name">Finance</h2>
+  <img class="peep" src="../../app/img/peep-student.svg" alt="">
+  <div class="ui">
+    <div class="head"><h3>Budget</h3><span>Next quarter</span></div>
+    <div class="line">People<span class="amt">€<u style="width:206px"></u></span></div>
+    <div class="line">Tools<span class="amt">€<u style="width:118px"></u></span></div>
+    <div class="line">Growth<span class="amt">€<u class="v" style="width:162px"></u></span></div>
+    <div class="line">Rent<span class="amt">€<u style="width:96px"></u></span></div>
+    <div class="sum"><span>Total</span><span class="amt">€<u style="width:150px"></u></span><span class="ok"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Balanced</span></div>
+  </div>
+</section>
+
+<script>
+// the call's voice, drawn once so the export stays the same
+const wave = document.getElementById('wave');
+[22, 40, 62, 34, 78, 96, 54, 30, 70, 110, 84, 46, 26, 58, 92, 118, 72, 38, 60, 88, 50, 28, 44, 66, 36, 20].forEach((h) => {
+  const i = document.createElement('i'); i.style.height = h + 'px'; wave.appendChild(i);
+});
+const card = new URLSearchParams(location.search).get('card');
+if (card) { document.body.classList.add('one'); document.getElementById(card).classList.add('on'); }
+</script>
 </body>
 </html>

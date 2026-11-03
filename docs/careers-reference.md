@@ -83,60 +83,56 @@ La página tiene: datos a la izquierda (About, Role, Launch, Recognition y «Vis
 
 ## Qué se conserva y qué se adapta
 
+Las decisiones de Boris del 3 de noviembre de 2026 mandan sobre la versión anterior de esta sección y sobre la regla del acento del sistema de marca.
+
 **Se conserva igual**
 
-- La composición: logo vertical, menú, datos a la izquierda, tarjeta centrada, lista a la derecha, número abajo a la izquierda, cuadritos al borde.
 - La escena: planos en una pila vista con cámara ortográfica, con hueco central, giro al llegar al centro, doblado por velocidad y anillo infinito.
 - La respuesta de la rueda: dos etapas de suavizado, sin rebote, siempre termina en una tarjeta. La hago por tiempo, no por fotograma, para que rinda igual en cualquier equipo.
-- El `difference` en textos y número, el cambio con desenfoque, la lista a 0,24 y los fundidos de arriba y abajo.
+- El reparto: información a la izquierda, tarjeta al centro, lista a la derecha y número abajo a la izquierda.
 - Clic en apilada: lleva a ella. Clic en la activa: abre. Zoom interior y subida al pasar el ratón.
-- La transición: telón que sube, título en negro y telón que baja.
+- El cambio de número y textos con desenfoque, y la lista que da un paso al cruzar la mitad.
+- La transición: telón que sube, título y telón que baja.
 
 **Se adapta**
 
 | Referencia | MAYBE | Por qué |
 |---|---|---|
-| Gris `#ECECEC`, texto a 12 px | Zinc `#F4F4F5`, texto desde 20 px | Marca, y un proyector no perdona 12 px |
-| Fuentes de la referencia | Geist; Geist Mono en números | Marca |
-| Esquinas rectas | Radio de 12 px, con línea fina | Marca: las tarjetas llevan `radius-xl` |
+| Gris `#ECECEC` y todo a tinta | Blanco, panel morado `#7C3AED` sólido y un poco de negro | Marca |
+| Texto en `difference` | Colores sólidos; el número va debajo de las tarjetas, que lo cortan al pasar | `difference` sobre morado da verde, y no cumple el contraste |
+| Texto de 12 px, sin explicar nada | Logo en horizontal, título de 106 px, apoyo, tres pasos y datos de cada carrera, desde 21 px | Un juez debe entenderlo en 3 segundos, en un proyector |
+| Escenario fijo | Llena la ventana: el lado sobrante del 16:9 se reparte entre panel, tarjetas y lista | Pedido expreso |
+| Tarjetas con foto | Fondo sólido, nombre grande arriba, Open Peep y una pieza de interfaz | La banda del nombre es lo que se ve cuando la tarjeta está apilada |
+| Tarjetas sin borde, todas iguales | Contorno de tinta de 2,6 px; la activa crece un 28 % | Morado sobre morado no tendría borde; la activa debe leerse en un proyector |
+| Pila con todas las imágenes | Arriba, solo la primera conserva su imagen; abajo, solo la banda con el nombre | Sin caras amontonadas ni textos cortados a la mitad |
+| Hueco de 7 pasos a cada lado | 4,7 arriba y 5,5 abajo; la línea se dobla un poco en cada extremo | Para leer los nombres apilados sin tapar la lista ni el número |
 | 19 proyectos | 6 carreras en un anillo de 12 | El guion del pitch |
-| Transición de unos 5 s | Unos 1,6 s en total, con el negro antes del título | Es un escenario; no se puede esperar |
+| Transición de unos 5 s | Unos 1,7 s, con telón morado | Es un escenario; no se puede esperar |
 | Página del proyecto | El editor de diseño a pantalla completa | Es el siguiente paso de la demo |
-| Intro de unos 9 s | Menos de 1,5 s, se salta con cualquier tecla | Pedido expreso |
-| Menú de portfolio | Menú real del producto: Explore careers, My experiences, Portfolio | No inventar secciones |
-| Audio, premios, correo, redes, showreel | Se quitan | Pedido expreso |
-| Hora y ciudad | «All trials are simulated» | Honestidad sobre la simulación |
-| Personaje propio de la intro | Open Peep | Marca: siempre Open Peeps |
-| Cuadritos con paleta de cada imagen | Tokens de marca | La marca manda en colores |
-| Sin rótulo en las imágenes | Rótulo de estado solo en la tarjeta activa | Se tiene que entender que son carreras |
-| Pila sin atenuar | La pila de arriba se aclara con la distancia | Con ilustración en tinta negra, las vecinas le quitaban protagonismo a la activa |
-| Cifra sin barra | Geist Mono; el cero del número grande es su O | El cero de la fuente lleva una barra que, a este tamaño, se lee como Ø |
+| Intro de unos 9 s: un personaje empuja una pared hacia la derecha | Menos de 1,5 s: un Open Peep empuja la pared morada hacia la izquierda y esta se queda como panel | Se salta con cualquier tecla |
+| Menú, premios, correo, redes, showreel | Se quitan | Pedido expreso |
+| Audio con pistas ajenas | Sonidos propios hechos con Web Audio | Sin archivos de otros |
+| Cuadritos con la paleta de cada imagen | Se quitan | Las tarjetas ya solo usan los tres colores de marca |
 
 **Se añade**
 
 - Arrastre con el mouse, que la referencia no tiene: sigue la diagonal de la pila y se detiene en una tarjeta.
-- Teclado: ↑ ↓ mueven, Enter abre, Esc vuelve. ← → siguen cambiando de diapositiva.
-- Estados: Sales es «Just tried»; UX/UI Design es la única que abre; el resto es «Coming soon» y responde con un pequeño gesto de negativa.
-- `prefers-reduced-motion`: sin intro, sin desenfoque, sin doblado y sin inercia.
+- Teclado: ↑ ↓ mueven, Enter abre, Esc vuelve, M activa o quita el sonido. ← → siguen cambiando de diapositiva.
+- Botón negro «Try this job», igual en todas las carreras. Solo UX/UI Design abre; en las demás, la tarjeta hace un gesto y suenan dos golpes apagados, sin texto de aviso.
+- Tres pasos con un bloque blanco que los recorre y señala los datos de la derecha: «Do the work» marca qué harás y con quién; «Keep the evidence», qué te llevas. Se queda en «Pick a career» mientras se navega y pasa a «Do the work» al abrir.
+- `prefers-reduced-motion`: sin intro, sin desenfoque, sin doblado, sin inercia y con los pasos quietos.
 
 ## Cómo quedó en MAYBE
 
 - **Contenido:** todo está en un solo sitio, `careers()` dentro de `src/Slide05b2.dc.html`. Después de cambiarlo, ejecuta `node tools/build-deck.mjs`.
-- **Estados:** `tried` (Just tried), `open` (abre la página de `opens`), `soon` (Coming soon).
-- **Editor:** UX/UI Design abre `app/design-live.html` en un iframe de 1440x810 escalado a 1920x1080. Se monta al terminar la intro de la diapositiva y se retira al salir, así que cada visita empieza de cero. Si el archivo no existe, sale un aviso provisional.
+- **Estados:** `tried` (conserva «Just tried»), `open` (abre la página de `opens`), `ready` (el resto). Se ven iguales salvo por esa etiqueta.
+- **Pantalla completa:** `layout()` en `assets/careers.js` mide la ventana en píxeles del escenario y lo deja en `--cr-w` y `--cr-h`. Un lado vale 1920 o 1080 y el otro es mayor. El deck no cambia.
+- **Editor:** UX/UI Design abre `app/design-live.html` en un iframe escalado a toda la ventana, 1440 de ancho si es 16:9. Se monta al terminar la intro de la diapositiva y se retira al salir, así que cada visita empieza de cero. Si el archivo no existe, sale un aviso provisional.
 - **Contrato con el editor:**
   - Debe lanzar `design:finish` en su `document` o en `window.parent.document`; se escuchan los dos.
   - Con el foco dentro, sus teclas suben al deck. Para quedarse con una, debe llamar a `preventDefault()`. Lo que se escribe en un campo de texto no sube, salvo Esc.
   - No debe gastar créditos ni pedir permisos al cargar: se carga antes de que nadie lo abra, y una vez más al abrir el deck, en un `<object>` oculto, para saber si existe. Es la única forma de comprobarlo sin dejar un 404 en la consola.
 - **Eventos:** `career:open` y `career:close` en `document`, con `detail { id }`. `design:finish` pasa a la siguiente diapositiva.
 - **Dibujo:** WebGL2 sin librerías. Si WebGL2 falta, un lienzo 2D dibuja lo mismo sin el doblado.
-- **Imágenes:** Sales y UX/UI Design usan las portadas del sistema (`app/img`). Las otras cuatro son montajes provisionales en `assets/careers/*.jpg`, hechos con `assets/careers/montage.html`. Para cambiarlas, basta con sustituir el archivo o la ruta `image` en `careers()`. Se recortan solas al formato de la tarjeta; `focus` indica qué parte conservar.
-
-## Prompts propuestos para las imágenes finales
-
-Mismo estilo que las portadas actuales: una escena con personajes Open Peeps en tinta negra y relleno blanco, y una tarjeta de interfaz flotante. Sin logos, sin cifras, sin fotos de personas. Formato 3:2, con la esquina superior izquierda despejada, porque ahí pasa el número grande.
-
-- **Marketing:** «Hand-drawn Open Peeps character in black ink and white fill, pointing up with one finger, standing in front of a wall of blank campaign posters in a calm zinc-grey studio. A clean floating UI card shows three channel rows with violet progress bars and no numbers. Soft daylight, muted palette with one violet accent, no logos, no text other than the UI labels, 3:2.»
-- **Product:** «Hand-drawn Open Peeps character in black ink and white fill, holding a phone, next to a large whiteboard covered in sticky notes, in a dark evening office. A clean floating UI card shows a Now, Next, Later board with one tile outlined in violet. Muted palette with one violet accent, no logos, no numbers, 3:2.»
-- **Data:** «Hand-drawn Open Peeps character in black ink and white fill, holding a mug, looking at a wall-sized chart made of plain bars, in a bright white room with a faint grid. A clean floating UI card shows a bar chart with no axis numbers and one bar in violet. Muted palette with one violet accent, no logos, 3:2.»
-- **Finance:** «Hand-drawn Open Peeps character in black ink and white fill, in a hoodie, at a desk with stacks of plain paper and a calculator, in a dark room lit by one desk lamp. A clean floating UI card shows three budget rows with bars and no numbers. Muted palette with one violet accent, no logos, 3:2.»
+- **Sonido:** todo sale de `sound` en `assets/careers.js`, sin archivos. Cada carrera tiene su nota, el soplo sigue la velocidad y al abrir sube aire y se abre un acorde. Se activa por defecto; el navegador lo desbloquea con la primera tecla o clic, y se detiene al salir de la diapositiva. La rueda sola no lo desbloquea: es una regla del navegador.
+- **Imágenes:** `assets/careers/<id>.png`, a 1600x1125, exportadas de `assets/careers/montage.html`. Ese archivo explica cómo volver a exportarlas. La franja superior debe quedar para el nombre, porque es lo que se ve con la tarjeta apilada.
