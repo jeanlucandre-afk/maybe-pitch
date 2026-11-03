@@ -65,7 +65,7 @@
       if (on) { try { pv.currentTime = 0; } catch (e) {} const p = pv.play(); if (p && p.catch) p.catch(() => {}); }
       else pv.pause();
     });
-    // TikTok cards ([data-tiktok="https://www.tiktok.com/@user/video/123…"]): play the real TikTok in the card while the slide is open.
+    // TikTok cards ([data-tiktok="https://www.tiktok.com/@user/video/123…"]): show the real TikTok in the card while the slide is open (add data-autoplay to start it by itself).
     slide && slide.querySelectorAll('[data-tiktok]').forEach((card) => {
       const id = ((card.getAttribute('data-tiktok') || '').match(/video\/(\d+)/) || [])[1];
       if (!id) return;
@@ -73,10 +73,11 @@
       if (on && !f) {
         f = document.createElement('iframe');
         f.className = 'tt-embed';
-        f.src = `https://www.tiktok.com/player/v1/${id}?autoplay=1&loop=1&music_info=0&description=0`;
+        const auto = card.hasAttribute('data-autoplay') ? 1 : 0; // one clip plays by itself; the others play on click
+        f.src = `https://www.tiktok.com/player/v1/${id}?autoplay=${auto}&loop=1&music_info=0&description=0&rel=0`;
         f.allow = 'autoplay; encrypted-media; fullscreen';
         f.title = 'TikTok video';
-        f.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:0;background:#000;z-index:2';
+        f.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:0;background:transparent;z-index:2';
         card.appendChild(f);
       } else if (!on && f) f.remove();
     });
