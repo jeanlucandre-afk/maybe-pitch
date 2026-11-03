@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>DICE ticket checkout · MAYBE</title>
 <link rel="icon" href="data:,">
-<style>html,body{margin:0;height:100%;overflow:hidden;background:#0a0a0b}</style>
+<style>html,body{margin:0;height:100%;overflow:hidden;background:#18181b}</style>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;family=Geist+Mono:wght@400;500&amp;display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="app.css">
 <link rel="stylesheet" href="design-live.css">
@@ -19,6 +19,8 @@
   <symbol id="i-comment" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></symbol>
   <symbol id="i-diamond" viewBox="0 0 24 24"><path d="M2.7 10.3a2.41 2.41 0 0 0 0 3.41l7.59 7.59a2.41 2.41 0 0 0 3.41 0l7.59-7.59a2.41 2.41 0 0 0 0-3.41l-7.59-7.59a2.41 2.41 0 0 0-3.41 0Z"/></symbol>
   <symbol id="i-rect" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/></symbol>
+  <symbol id="i-image" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
   <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
   <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
@@ -35,7 +37,7 @@
     <div class="bar-left">
       <img class="bar-logo" src="img/logo-dice-white.svg" alt="DICE">
       <span class="bar-rule"></span>
-      <h1 class="bar-title">Redesign: ticket checkout</h1>
+      <h1 class="bar-title">Ticket checkout</h1>
     </div>
     <div class="tools" aria-hidden="true">
       <span class="tool is-on"><svg class="i"><use href="#i-cursor"/></svg></span>
@@ -46,132 +48,192 @@
     </div>
     <div class="bar-right">
       <span class="saved" id="saved" role="status"><svg class="i"><use href="#i-check"/></svg><span id="saved-text">Saved</span></span>
+      <span class="avatars" role="img" aria-label="In this file: the CEO of DICE and you, the designer">
+        <span class="avatar avatar-ceo"><img src="img/peep-recruiter.svg" alt=""></span>
+        <span class="avatar avatar-you"><img src="img/peep-designer.svg" alt=""></span>
+      </span>
+      <span class="zoom">100%</span>
       <button class="finish" id="finish" type="button">Finish</button>
     </div>
   </header>
 
-  <main class="canvas" id="canvas" aria-label="Canvas">
-    <i class="dots"></i>
-
-    <div class="rig" id="rig">
-      <div class="orig" aria-hidden="true">
-        <span class="frame-label">Original</span>
-        <div class="orig-phone">
-          <div class="orig-screen">
-            <div class="orig-photo"><img src="img/dice-festival.jpg" alt=""></div>
-            <div class="orig-row"><span>General admission</span><b>€89</b></div>
-            <p class="orig-fine">excl. service fee</p>
-            <div class="orig-account"><b>Create an account</b><i></i><i></i></div>
-            <div class="orig-continue">Continue</div>
-          </div>
-        </div>
-      </div>
-      <div class="comment" id="comment">
-        <p class="comment-text" id="comment-text">People are confused about how to buy a ticket.</p>
-        <i class="comment-check" aria-hidden="true"><svg class="i"><use href="#i-check"/></svg></i>
-      </div>
-      <div class="slot" id="slot" aria-hidden="true">
-        <div class="ticket" id="ticket">
-          <div class="ticket-paper">
-            <div class="ticket-main">
-              <div class="ticket-top"><img src="img/logo-dice.svg" alt=""><span class="ticket-sim">Simulated ticket</span></div>
-              <p class="ticket-event">Berlin Summer Festival</p>
-              <p class="ticket-kind">General admission</p>
-              <p class="ticket-facts">12–14 Jul · Tempelhof, Berlin</p>
-            </div>
-            <div class="ticket-stub">
-              <svg class="ticket-qr" viewBox="0 0 29 29" shape-rendering="crispEdges"><path id="qr-path" fill-rule="evenodd"/></svg>
-              <p class="ticket-price">€93.50</p>
-            </div>
-            <i class="ticket-cover" id="ticket-cover"></i>
-          </div>
-        </div>
-        <i class="ticket-flash" id="ticket-flash"></i>
-      </div>
-      <div class="phone" id="phone">
-        <span class="frame-label" id="frame-label">Redesign</span>
-        <div class="screen" id="screen" data-layer="frame">
-          <div class="p-top">
-            <div class="p-status">
-              <span>9:41</span>
-              <span class="p-island"></span>
-              <span class="p-signal" aria-hidden="true"><i></i><i></i><i></i><i></i><b></b></span>
-            </div>
-            <div class="p-head">
-              <img src="img/logo-dice-white.svg" alt="DICE">
-              <svg class="i"><use href="#i-x"/></svg>
-            </div>
-          </div>
-
-          <div class="p-hero">
-            <img src="img/dice-festival.jpg" alt="Festival stage at night (AI-generated image)">
-            <i class="p-shade"></i>
-            <span class="p-ai">AI-generated image</span>
-            <div class="p-hero-text">
-              <p class="p-hero-title">Berlin Summer Festival</p>
-              <p class="p-hero-meta">12–14 Jul · Tempelhof, Berlin</p>
-            </div>
-          </div>
-
-          <div class="p-sheet" id="sheet">
-            <div class="p-ticket" id="ticket-row">
-              <div class="p-ticket-name">General admission<small>1 ticket</small></div>
-              <div class="p-price">
-                <div class="p-oldprice" id="old-price" data-layer="price"><b>€89</b><small>excl. service fee</small></div>
-                <div class="p-newprice" id="new-price" data-layer="price"><b>€93.50</b><small>incl. fees</small></div>
-              </div>
-            </div>
-
-            <div class="p-account" id="account" data-layer="account" role="button" tabindex="0" aria-label="Remove the Create an account step">
-              <p class="p-account-title">Create an account to continue</p>
-              <span class="p-field">Email</span>
-              <span class="p-field">Password</span>
-              <p class="p-account-foot">Already have an account? Log in</p>
-            </div>
-          </div>
-
-          <div class="p-buybar">
-            <div class="p-cta">
-              <div class="p-continue" id="continue" data-layer="cta">Continue</div>
-              <div class="p-buy" id="buy" data-layer="cta"><span class="p-buy-label" id="buy-label">Buy ticket · €93.50</span></div>
-            </div>
-          </div>
-          <span class="p-home"></span>
-        </div>
-      </div>
-      <i class="phone-dim" id="phone-dim"></i>
-      <div class="trash" id="trash" aria-hidden="true"><svg class="i"><use href="#i-trash"/></svg><span>Remove</span></div>
-      <div class="ceo" id="ceo" aria-hidden="true">
-        <div class="ceo-inner" id="ceo-inner">
-          <svg class="ceo-arrow" viewBox="0 0 24 24"><use href="#i-cursor"/></svg>
-          <span class="ceo-tag">CEO · DICE</span>
-        </div>
-      </div>
-    </div>
-
-    <aside class="panel left" aria-label="Layers">
+  <div class="work">
+    <aside class="panel left" aria-label="Task and layers">
+      <section class="task" aria-label="Your task">
+        <dl class="brief">
+          <dt>Role</dt><dd>UX/UI designer</dd>
+          <dt>Client</dt><dd>DICE (simulated)</dd>
+          <dt class="brief-task">Task</dt>
+        </dl>
+        <p class="task-text">People can't figure out how to buy a ticket. Fix it.</p>
+        <ol class="steps">
+          <li class="step" id="step-price"><i class="step-mark"><span>1</span><svg class="i"><use href="#i-check"/></svg></i>Show the real price</li>
+          <li class="step" id="step-buy"><i class="step-mark"><span>2</span><svg class="i"><use href="#i-check"/></svg></i>Make buying clear</li>
+          <li class="step" id="step-account"><i class="step-mark"><span>3</span><svg class="i"><use href="#i-check"/></svg></i>Remove the account wall</li>
+        </ol>
+      </section>
       <h2 class="panel-title">Layers</h2>
       <div class="layers" id="layers"></div>
     </aside>
 
-    <aside class="panel right" id="components" aria-label="Components">
-      <h2 class="panel-title">Components</h2>
-      <button class="tile" id="tile-price" type="button" aria-label="Place Price with fees on the ticket row">
-        <span class="tile-stage"><span class="mini p-newprice"><b>€93.50</b><small>incl. fees</small></span></span>
-        <span class="tile-foot"><svg class="i"><use href="#i-diamond"/></svg><span class="tile-name">Price with fees</span><svg class="i tile-grip"><use href="#i-grip"/></svg></span>
-      </button>
-      <button class="tile" id="tile-buy" type="button" aria-label="Place Buy button at the bottom of the phone">
-        <span class="tile-stage"><span class="mini mini-buy"><span class="p-buy">Buy ticket · €93.50</span></span></span>
-        <span class="tile-foot"><svg class="i"><use href="#i-diamond"/></svg><span class="tile-name">Buy button</span><svg class="i tile-grip"><use href="#i-grip"/></svg></span>
-      </button>
+    <main class="canvas" id="canvas" aria-label="Canvas">
+      <div class="rig" id="rig">
+        <div class="orig" id="orig" aria-hidden="true">
+          <span class="frame-label">Before</span>
+          <div class="orig-phone">
+            <div class="orig-screen">
+              <div class="orig-photo"><img src="img/dice-festival.jpg" alt=""><span class="orig-ai">AI-generated</span></div>
+              <div class="orig-row"><span>General admission</span><b>€89</b></div>
+              <p class="orig-fine">excl. service fee</p>
+              <div class="orig-account"><b>Create an account</b><i></i><i></i></div>
+              <div class="orig-continue">Continue</div>
+            </div>
+          </div>
+        </div>
+        <div class="comment" id="comment">
+          <p class="comment-text" id="comment-text">This is our checkout. Can you redesign it?</p>
+          <i class="comment-check" aria-hidden="true"><svg class="i"><use href="#i-check"/></svg></i>
+        </div>
+        <div class="slot" id="slot" aria-hidden="true">
+          <div class="ticket" id="ticket">
+            <div class="ticket-paper">
+              <div class="ticket-main">
+                <div class="ticket-top"><img src="img/logo-dice.svg" alt=""><span class="ticket-sim">Simulated ticket</span></div>
+                <p class="ticket-event">Berlin Summer Festival</p>
+                <p class="ticket-kind">General admission</p>
+                <p class="ticket-facts">12–14 Jul · Tempelhof, Berlin</p>
+              </div>
+              <div class="ticket-stub">
+                <svg class="ticket-qr" viewBox="0 0 29 29" shape-rendering="crispEdges"><path id="qr-path" fill-rule="evenodd"/></svg>
+                <p class="ticket-price">€93.50</p>
+              </div>
+              <i class="ticket-cover" id="ticket-cover"></i>
+            </div>
+          </div>
+          <i class="ticket-flash" id="ticket-flash"></i>
+        </div>
+        <div class="phone" id="phone">
+          <span class="frame-label" id="frame-label">Your redesign</span>
+          <div class="screen" id="screen" data-layer="frame">
+            <div class="p-top" data-layer="header">
+              <div class="p-status">
+                <span>9:41</span>
+                <span class="p-island"></span>
+                <span class="p-signal" aria-hidden="true"><i></i><i></i><i></i><i></i><b></b></span>
+              </div>
+              <div class="p-head">
+                <img src="img/logo-dice-white.svg" alt="DICE">
+                <svg class="i"><use href="#i-x"/></svg>
+              </div>
+            </div>
+
+            <div class="p-hero" id="hero" data-layer="hero">
+              <img src="img/dice-festival.jpg" alt="Festival stage at night (AI-generated image)">
+              <i class="p-shade"></i>
+              <span class="p-ai">AI-generated image</span>
+              <div class="p-hero-text" id="hero-text" data-layer="title">
+                <p class="p-hero-title">Berlin Summer Festival</p>
+                <p class="p-hero-meta">12–14 Jul · Tempelhof, Berlin</p>
+              </div>
+            </div>
+
+            <div class="p-sheet" id="sheet">
+              <div class="p-ticket" id="ticket-row" data-layer="row">
+                <div class="p-ticket-name" id="ticket-name" data-layer="kind">General admission<small>1 ticket</small></div>
+                <div class="p-price">
+                  <div class="p-oldprice" id="old-price" data-layer="price"><b>€89</b><small>excl. service fee</small></div>
+                  <div class="p-newprice" id="new-price" data-layer="price"><b>€93.50</b><small>incl. fees</small></div>
+                </div>
+              </div>
+
+              <div class="p-account" id="account" data-layer="account" role="button" tabindex="0" aria-label="Remove the Create an account step">
+                <p class="p-account-title">Create an account to continue</p>
+                <span class="p-field" id="field-email">Email</span>
+                <span class="p-field" id="field-password">Password</span>
+                <p class="p-account-foot">Already have an account? Log in</p>
+              </div>
+            </div>
+
+            <div class="p-buybar">
+              <div class="p-cta">
+                <div class="p-continue" id="continue" data-layer="cta">Continue</div>
+                <div class="p-buy" id="buy" data-layer="cta"><span class="p-buy-label" id="buy-label">Buy ticket · €93.50</span></div>
+              </div>
+            </div>
+            <span class="p-home"></span>
+          </div>
+        </div>
+        <i class="phone-dim" id="phone-dim"></i>
+        <div class="pins" id="pins" aria-hidden="true">
+          <span class="pin" id="pin-price" style="--n:0"><b>1</b>Hidden fee</span>
+          <span class="pin" id="pin-buy" style="--n:2"><b>2</b>Weak button</span>
+          <span class="pin" id="pin-account" style="--n:1"><b>3</b>Account wall</span>
+        </div>
+        <div class="trash" id="trash" aria-hidden="true"><svg class="i"><use href="#i-trash"/></svg></div>
+        <div class="ceo" id="ceo" aria-hidden="true">
+          <div class="ceo-inner" id="ceo-inner">
+            <svg class="ceo-arrow" viewBox="0 0 24 24"><use href="#i-cursor"/></svg>
+            <span class="ceo-tag">CEO · DICE</span>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <aside class="panel right" id="components" aria-label="Design and assets">
+      <div class="tabs" role="tablist">
+        <button class="tab is-on" type="button" role="tab" aria-selected="true" data-tab="design">Design</button>
+        <button class="tab" type="button" role="tab" aria-selected="false" data-tab="assets">Assets</button>
+      </div>
+      <section class="pieces" aria-label="Components">
+        <h2 class="pieces-title">Components<span>Drag or click</span></h2>
+        <button class="tile" id="tile-price" type="button" aria-label="Place Price with fees on the ticket row">
+          <span class="tile-stage"><span class="mini p-newprice"><b>€93.50</b><small>incl. fees</small></span></span>
+          <span class="tile-foot"><svg class="i"><use href="#i-diamond"/></svg><span class="tile-name">Price with fees</span><svg class="i tile-grip"><use href="#i-grip"/></svg><svg class="i tile-check"><use href="#i-check"/></svg></span>
+        </button>
+        <button class="tile" id="tile-buy" type="button" aria-label="Place Buy button at the bottom of the phone">
+          <span class="tile-stage"><span class="mini mini-buy"><span class="p-buy">Buy ticket · €93.50</span></span></span>
+          <span class="tile-foot"><svg class="i"><use href="#i-diamond"/></svg><span class="tile-name">Buy button</span><svg class="i tile-grip"><use href="#i-grip"/></svg><svg class="i tile-check"><use href="#i-check"/></svg></span>
+        </button>
+      </section>
+
+      <section class="props" id="props" aria-label="Properties of the selection">
+        <p class="props-head"><svg class="i"><use id="p-icon" href="#i-frame"/></svg><span class="props-name" id="p-name"></span><span class="props-kind" id="p-kind"></span></p>
+        <div class="props-geo">
+          <h3 class="props-title">Position</h3>
+          <div class="fields">
+            <span class="field"><i>X</i><b id="p-x"></b></span>
+            <span class="field"><i>Y</i><b id="p-y"></b></span>
+          </div>
+          <h3 class="props-title">Layout</h3>
+          <div class="fields">
+            <span class="field"><i>W</i><b id="p-w"></b></span>
+            <span class="field"><i>H</i><b id="p-h"></b></span>
+          </div>
+          <p class="prop"><span>Auto layout</span><b id="p-auto"></b></p>
+          <h3 class="props-title">Appearance</h3>
+          <p class="prop"><span>Radius</span><b id="p-radius"></b></p>
+        </div>
+        <p class="prop"><span>Fill</span><b class="prop-fill"><i class="swatch" id="p-swatch"></i><span id="p-fill"></span></b></p>
+      </section>
+
+      <section class="assets" id="assets" aria-label="Assets in this file" hidden>
+        <p class="asset"><svg class="i"><use href="#i-diamond"/></svg>Price with fees</p>
+        <p class="asset"><svg class="i"><use href="#i-diamond"/></svg>Buy button</p>
+        <p class="asset"><svg class="i"><use href="#i-image"/></svg>DICE logo</p>
+        <p class="asset"><svg class="i"><use href="#i-image"/></svg>Festival photo (AI-generated)</p>
+      </section>
     </aside>
-  </main>
+  </div>
 
   <div class="overlay" id="overlay" aria-hidden="true">
     <div class="zone" id="zone"></div>
     <div class="guides" id="guides"><i class="guide" id="g-left"></i><i class="guide" id="g-right"></i><i class="guide" id="g-top"></i><i class="guide" id="g-bottom"></i></div>
     <div class="hov" id="hov"></div>
-    <div class="sel" id="sel"><i class="tl"></i><i class="tr"></i><i class="bl"></i><i class="br"></i><span class="sel-tag" id="sel-tag"></span></div>
+    <div class="sel" id="sel"><i class="tl"></i><i class="tr"></i><i class="bl"></i><i class="br"></i><span class="sel-tag" id="sel-tag"></span><span class="sel-size" id="sel-size"></span></div>
+  </div>
+
+  <div class="opening" id="opening">
+    <p class="opening-text"><span>Your first task:</span> <span>fix DICE's ticket checkout</span></p>
   </div>
 </div>
 <script src="design-live.js"></script>

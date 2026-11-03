@@ -1,9 +1,12 @@
 /* MAYBE live design editor: three moves on a DICE checkout, each by drag or by click, in any order, and a final.
  * The deck shows it in an iframe at 1440x810, so ← → Space and the numbers stay with the deck.
+ * Nothing starts until window.MAYBE_EDITOR.start(): the opening, then the CEO's cursor. The careers screen loads this page
+ * in an iframe before showing it, so there it waits for the call; opened on its own, it starts by itself. A second call does nothing.
+ * start({ skipOpening: true }) goes straight to the CEO's cursor, for a screen whose own curtain has already said the line.
  * Finish completes whatever is missing, plays the final and only then fires design:finish, once, on document and on
  * the parent's document when it is same-origin. detail.moves lists the moves the person made, in order:
  * 'price-with-fees', 'buy-button', 'remove-account'. The ones the final completed are not in the list.
- * window.MAYBE_EDITOR.reset() returns to the first state without a reload. */
+ * window.MAYBE_EDITOR.reset() returns to the state before start() without a reload. */
 (function () {
   'use strict';
   const $ = (s, root = document) => root.querySelector(s);
@@ -17,10 +20,12 @@
   const TRASH_NEAR = 56;
   const PRICE_ENTRY = 1.45; // the price lands this big and settles
   const DROP = 74; // the button falls from this high
-  const CEO_DELAY = 2000;
+  const OPENING_HOLD = 1200; // the line stands alone this long; its fade closes the 1.5 s
+  const OPENING_END = 1500;
   const STRIP = 28;
   const CLOSE_UP = 1.5; // how close the final gets to the button
-  const TICKET_OVER = 16; // how far the landed ticket lies over the phone: over the edge, never over its words
+  const TICKET_OVER = 8; // how far the landed ticket lies over the phone: over the edge, never over its words
+  const TICKET_SWING = 6; // the little extra of its landing, which must not reach the words either
   const BUY_LABEL = 'Buy ticket · €93.50';
   const EASE_OUT = 'cubic-bezier(.16,1,.3,1)';
   const EASE_MOVE = 'cubic-bezier(.3,.7,.2,1)';
@@ -30,15 +35,20 @@
     : { auto: 400, push: 620, enter: 400, tap: 300, feed: 720, head: 520, land: 340, hold: 600 };
 
   const root = document.documentElement;
+  const alone = window.parent === window;
   const app = $('#app'), rig = $('#rig'), phone = $('#phone'), scr = $('#screen'), overlay = $('#overlay');
   const ticketRow = $('#ticket-row'), oldPrice = $('#old-price'), newPrice = $('#new-price');
   const account = $('#account'), continueBtn = $('#continue'), buy = $('#buy'), buyLabel = $('#buy-label');
-  const trash = $('#trash'), finishBtn = $('#finish'), layersBox = $('#layers'), components = $('#components');
-  const selBox = $('#sel'), selTag = $('#sel-tag'), hovBox = $('#hov'), zoneBox = $('#zone'), guides = $('#guides');
+  const hero = $('#hero'), sheet = $('#sheet');
+  const trash = $('#trash'), finishBtn = $('#finish'), layersBox = $('#layers');
+  const selBox = $('#sel'), selTag = $('#sel-tag'), selSize = $('#sel-size'), hovBox = $('#hov'), zoneBox = $('#zone'), guides = $('#guides');
   const saved = $('#saved'), savedText = $('#saved-text');
-  const frameLabel = $('#frame-label'), comment = $('#comment'), commentText = $('#comment-text');
+  const frameLabel = $('#frame-label'), comment = $('#comment'), commentText = $('#comment-text'), orig = $('#orig');
   const ceo = $('#ceo'), ceoInner = $('#ceo-inner'), phoneDim = $('#phone-dim');
   const slot = $('#slot'), ticket = $('#ticket'), ticketCover = $('#ticket-cover'), ticketFlash = $('#ticket-flash');
+  const opening = $('#opening'), pinsBox = $('#pins');
+  const props = $('#props'), assets = $('#assets'), tabs = $$('.tab');
+  const P = { icon: $('#p-icon'), name: $('#p-name'), kind: $('#p-kind'), x: $('#p-x'), y: $('#p-y'), w: $('#p-w'), h: $('#p-h'), auto: $('#p-auto'), radius: $('#p-radius'), fill: $('#p-fill'), swatch: $('#p-swatch') };
 
   const IDS = ['price', 'buy', 'account'];
   const PIECES = {
@@ -50,23 +60,41 @@
   PIECES.buy.mini = $('.mini', PIECES.buy.tile);
   const TILE_LABELS = { price: PIECES.price.tile.getAttribute('aria-label'), buy: PIECES.buy.tile.getAttribute('aria-label') };
 
+  // The whole file, as the tree on the left. auto is the auto layout the properties show; ink, a layer whose fill is its text.
   const LAYERS = [
-    { id: 'frame', name: 'Redesign', icon: 'i-frame' },
-    { id: 'price', name: 'Price', icon: 'i-type' },
-    { id: 'account', name: 'Create an account', icon: 'i-frame' },
-    { id: 'cta', name: 'Continue', icon: 'i-rect' }
+    { id: 'frame', name: 'Your redesign', icon: 'i-frame', kind: 'Frame', depth: 0 },
+    { id: 'header', name: 'Header', icon: 'i-frame', kind: 'Frame', depth: 1, parent: 'frame', auto: 'Vertical' },
+    { id: 'hero', name: 'Hero', icon: 'i-frame', kind: 'Frame', depth: 1, parent: 'frame', image: true },
+    { id: 'photo', name: 'Festival photo', icon: 'i-image', kind: 'Image', depth: 2, parent: 'hero', image: true },
+    { id: 'title', name: 'Berlin Summer Festival', icon: 'i-type', kind: 'Text', depth: 2, parent: 'hero', ink: true },
+    { id: 'row', name: 'Ticket row', icon: 'i-frame', kind: 'Frame', depth: 1, parent: 'frame', auto: 'Horizontal' },
+    { id: 'kind', name: 'General admission', icon: 'i-type', kind: 'Text', depth: 2, parent: 'row', ink: true },
+    { id: 'price', name: '€89 excl. fee', icon: 'i-type', kind: 'Text', depth: 2, parent: 'row', ink: true },
+    { id: 'account', name: 'Create an account', icon: 'i-frame', kind: 'Frame', depth: 1, parent: 'frame', auto: 'Vertical' },
+    { id: 'email', name: 'Email', icon: 'i-rect', kind: 'Rectangle', depth: 2, parent: 'account', auto: 'Horizontal' },
+    { id: 'password', name: 'Password', icon: 'i-rect', kind: 'Rectangle', depth: 2, parent: 'account', auto: 'Horizontal' },
+    { id: 'cta', name: 'Continue', icon: 'i-rect', kind: 'Rectangle', depth: 1, parent: 'frame' },
+    { id: 'before', name: 'Before', icon: 'i-frame', kind: 'Frame', depth: 0, auto: 'Vertical' } // joins the tree with the first move
   ];
+  const ACCOUNT_LAYERS = ['account', 'email', 'password'];
+  const TAGGED = ['frame', 'hero', 'photo', 'price', 'account', 'cta', 'header'];
+  const SIZE_ABOVE = ['header', 'password']; // below them lies text
+  const LAYER_ELS = { frame: scr, header: $('.p-top'), hero, photo: hero, title: $('#hero-text'), row: ticketRow, kind: $('#ticket-name'), account, email: $('#field-email'), password: $('#field-password'), before: $('.orig-screen') };
 
+  let started = false; // start() was called
+  let live = false; // the opening has lifted: the pieces and Finish answer
   let done = {}; // the move counts
   let shown = {}; // the move is on the phone
   let moves = []; // only the moves the person made
   let layerById = {};
+  let collapsed = new Set();
   let flights = {}; // ghosts on their way back, by piece
   let scale = 1;
   let selected = null;
   let hovered = null;
   let focus = null; // the ghost the selection frame follows
   let focusLabel = '';
+  let settling = 0; // the placed piece is still landing until this moment
   let press = null; // the pointer is down on a piece
   let drag = null; // the piece is moving
   let finale = false;
@@ -108,13 +136,19 @@
   function buildLayers() {
     layersBox.textContent = '';
     layerById = {};
+    collapsed = new Set();
     LAYERS.forEach((def) => {
       const l = { ...def };
+      const group = LAYERS.some((other) => other.parent === l.id);
       const row = document.createElement('button');
       row.type = 'button';
       row.className = 'layer';
-      row.innerHTML = `<svg class="i"><use href="#${l.icon}"/></svg><span>${l.name}</span>`;
-      row.addEventListener('click', () => select(l.id));
+      row.style.setProperty('--d', l.depth);
+      row.innerHTML = `<span class="layer-arrow">${group ? '<svg class="i"><use href="#i-chevron"/></svg>' : ''}</span><svg class="i layer-icon"><use href="#${l.icon}"/></svg><span class="layer-name">${l.name}</span>`;
+      row.addEventListener('click', (e) => {
+        if (group && e.target.closest('.layer-arrow')) toggleGroup(l.id);
+        else select(l.id);
+      });
       row.addEventListener('pointerenter', () => setHover(l.id));
       row.addEventListener('pointerleave', () => setHover(null));
       layersBox.appendChild(row);
@@ -123,12 +157,27 @@
     });
   }
 
+  function syncRows() {
+    Object.values(layerById).forEach((l) => {
+      let up = l.parent, shut = false;
+      while (up && !shut) { shut = collapsed.has(up); up = layerById[up].parent; }
+      l.row.hidden = shut || (l.id === 'before' && !orig.classList.contains('on'));
+      l.row.classList.toggle('is-collapsed', collapsed.has(l.id));
+    });
+  }
+
+  function toggleGroup(id) {
+    if (collapsed.has(id)) collapsed.delete(id);
+    else collapsed.add(id);
+    syncRows();
+  }
+
   function flipRows(mutate) {
-    const rows = Object.values(layerById).filter((l) => l.row.isConnected).map((l) => l.row);
+    const rows = Object.values(layerById).filter((l) => l.row.isConnected && !l.row.hidden).map((l) => l.row);
     const before = new Map(rows.map((row) => [row, row.getBoundingClientRect().top]));
     mutate();
     rows.forEach((row) => {
-      if (!row.isConnected) return;
+      if (!row.isConnected || row.hidden) return;
       const dy = (before.get(row) - row.getBoundingClientRect().top) / scale;
       if (Math.abs(dy) < 0.5) return;
       row.animate([{ transform: `translateY(${dy}px)` }, { transform: 'none' }], { duration: D(320), easing: EASE_MOVE });
@@ -138,42 +187,62 @@
   function turnIntoInstance(id, name) {
     const l = layerById[id];
     l.name = name;
+    l.kind = 'Instance';
+    l.icon = 'i-diamond';
     l.row.classList.add('is-instance');
-    l.row.innerHTML = `<svg class="i"><use href="#i-diamond"/></svg><span>${name}</span>`;
+    $('.layer-icon use', l.row).setAttribute('href', '#i-diamond');
+    $('.layer-name', l.row).textContent = name;
     l.row.animate([{ backgroundColor: '#7c3aed' }, {}], { duration: D(700), easing: 'ease-out' });
   }
 
   // ---------- selection and hover ----------
   function layerEl(id) {
-    if (id === 'frame') return scr;
     if (id === 'price') return shown.price ? newPrice : oldPrice;
     if (id === 'cta') return shown.buy ? buy : continueBtn;
-    return shown.account ? null : account;
+    if (shown.account && ACCOUNT_LAYERS.includes(id)) return null;
+    return LAYER_ELS[id];
   }
 
+  // The hero runs on under the white sheet: only what shows of it counts.
   function frameOf(id) {
     const el = layerEl(id);
-    return el ? rect(el) : null;
+    if (!el) return null;
+    const r = rect(el);
+    if (el !== hero) return r;
+    const bottom = Math.min(r.bottom, rect(sheet).top);
+    return { ...r, bottom, height: bottom - r.top, cy: (r.top + bottom) / 2 };
   }
 
   function select(id) {
     selected = id;
+    let up = id && layerById[id].parent;
+    while (up) { collapsed.delete(up); up = layerById[up].parent; }
+    syncRows();
     Object.values(layerById).forEach((l) => l.row.classList.toggle('is-selected', l.id === id));
     paint();
+    props.animate([{ opacity: 0.35 }, { opacity: 1 }], { duration: D(220), easing: 'ease-out' });
   }
 
   function setHover(id) {
     hovered = id;
+    Object.values(layerById).forEach((l) => l.row.classList.toggle('is-hover', l.id === id));
     paintHover();
   }
 
   function paintSelection() {
     const r = focus ? rect(focus.el) : selected && frameOf(selected);
     selBox.classList.toggle('on', Boolean(r));
-    frameLabel.style.visibility = !focus && selected === 'frame' ? 'hidden' : 'visible';
+    frameLabel.style.visibility = !focus && (selected === 'frame' || selected === 'header') ? 'hidden' : 'visible';
     if (!r) return;
     setBox(selBox, r.left, r.top, r.width, r.height);
     selTag.textContent = focus ? focusLabel : layerById[selected].name;
+    const landing = performance.now() < settling; // a piece on its way down would drag its labels over the words above it
+    selTag.style.display = !landing && (focus || TAGGED.includes(selected)) ? '' : 'none'; // inside a tight stack a name would cover its neighbour: there, the size says enough
+    selSize.textContent = `${Math.round(r.width)} × ${Math.round(r.height)}`;
+    // Nothing to measure yet while a piece flies or settles; a pin takes the place above Continue, and the row has no free side at all.
+    selBox.classList.toggle('is-moving', Boolean(focus) || landing || selected === 'row');
+    selBox.classList.toggle('is-tight', !focus && (SIZE_ABOVE.includes(selected) || (selected === 'cta' && shown.buy) || r.bottom + 34 > app.offsetHeight));
+    selBox.classList.toggle('is-inset', !focus && (selected === 'hero' || selected === 'photo'));
   }
 
   function paintHover() {
@@ -184,9 +253,71 @@
     hovBox.style.borderRadius = getComputedStyle(layerEl(hovered)).borderTopLeftRadius;
   }
 
+  // ---------- properties: read from the real elements, so they change with every move ----------
+  const setText = (el, text) => { if (el.textContent !== text) el.textContent = text; };
+  const toHex = (color) => `#${color.match(/[\d.]+/g).slice(0, 3).map((n) => Math.round(+n).toString(16).padStart(2, '0')).join('').toUpperCase()}`;
+
+  function paintFill(l, el) {
+    if (l && l.image) {
+      setText(P.fill, 'Image');
+      P.swatch.style.backgroundColor = '';
+      P.swatch.style.backgroundImage = 'url(img/dice-festival.jpg)';
+      return;
+    }
+    const source = !l ? app : l.ink ? $('b', el) || el : el;
+    const style = getComputedStyle(source);
+    const color = l && l.ink ? style.color : style.backgroundColor;
+    if (/,\s*0\)$/.test(color)) return; // lifted, the step leaves an empty outline: its fill stays what it was
+    setText(P.fill, toHex(color));
+    P.swatch.style.backgroundImage = 'none';
+    P.swatch.style.backgroundColor = color;
+  }
+
+  function autoLayoutOf(l) {
+    if (l.id === 'price') return shown.price ? 'Vertical' : 'Off';
+    if (l.id === 'cta') return shown.buy ? 'Horizontal' : 'Off';
+    return l.auto || 'Off';
+  }
+
+  function paintProps() {
+    if (finale) return;
+    const l = selected && layerById[selected];
+    const r = l && frameOf(selected);
+    props.classList.toggle('is-page', !r);
+    if (!r) {
+      P.icon.setAttribute('href', '#i-rect');
+      setText(P.name, 'Page 1');
+      setText(P.kind, 'Page');
+      paintFill(null);
+      return;
+    }
+    const s = rect(scr), el = layerEl(selected);
+    P.icon.setAttribute('href', `#${l.icon}`);
+    setText(P.name, l.name);
+    setText(P.kind, l.kind);
+    setText(P.x, String(Math.round(r.left - s.left)));
+    setText(P.y, String(Math.round(r.top - s.top)));
+    setText(P.w, String(Math.round(r.width)));
+    setText(P.h, String(Math.round(r.height)));
+    setText(P.auto, autoLayoutOf(l));
+    setText(P.radius, String(Math.round(parseFloat(getComputedStyle(el).borderTopLeftRadius)) || 0));
+    paintFill(l, el);
+  }
+
+  function showTab(name) {
+    tabs.forEach((tab) => {
+      const on = tab.dataset.tab === name;
+      tab.classList.toggle('is-on', on);
+      tab.setAttribute('aria-selected', String(on));
+    });
+    props.hidden = name !== 'design';
+    assets.hidden = name !== 'assets';
+  }
+
   function paint() {
     paintSelection();
     paintHover();
+    paintProps();
   }
 
   // Keep the frames on the moving elements while the layout animates.
@@ -249,13 +380,21 @@
     ], { duration: D(500) });
   }
 
+  // The first move brings the original out from behind the phone, small: until then there is only one phone.
+  function showBefore() {
+    if (finale || orig.classList.contains('on')) return;
+    orig.classList.add('on');
+    orig.animate([{ transform: 'translateX(150px) scale(.92)' }, { transform: 'none' }], { duration: D(460), easing: EASE_OUT });
+    syncRows();
+    layerById.before.row.animate([{ backgroundColor: '#7c3aed' }, {}], { duration: D(700), easing: 'ease-out' });
+  }
+
   // ---------- the moves ----------
   function placeTile(id) {
     const tile = PIECES[id].tile;
     if (!tile) return;
     tile.classList.add('is-placed');
     tile.removeAttribute('aria-label');
-    if (done.price && done.buy) components.classList.add('is-spent');
   }
 
   function decide(id) {
@@ -265,12 +404,19 @@
     placeTile(id);
   }
 
-  // Puts a decided move on the phone.
+  // Puts a decided move on the phone: its pin goes, its step gets its check.
   function apply(id) {
     if (shown[id]) return;
     shown[id] = true;
     scr.classList.add(`done-${id}`);
-    if (IDS.every((m) => shown[m])) comment.classList.add('is-resolved');
+    $(`#pin-${id}`).classList.add('is-fixed');
+    $(`#step-${id}`).classList.add('is-done');
+    showBefore();
+    if (IDS.every((m) => shown[m])) {
+      comment.classList.add('is-resolved');
+      finishBtn.classList.add('is-ready');
+    }
+    settling = performance.now() + D(id === 'account' ? 0 : 520);
     if (id === 'price') {
       turnIntoInstance('price', 'Price with fees');
       enterPrice();
@@ -280,9 +426,10 @@
       dropButton();
       if (!finale) select('cta');
     } else {
-      flipRows(() => layerById.account.row.remove());
-      if (selected === 'account') select(null);
+      flipRows(() => ACCOUNT_LAYERS.forEach((l) => layerById[l].row.remove()));
+      if (!finale) select('hero'); // the room the step leaves goes to the hero: watch its H grow
     }
+    if (!finale) showTab('design');
     markSaved();
     track(720);
   }
@@ -379,7 +526,7 @@
 
   // A click does the same move a drag does.
   function perform(id) {
-    if (finale) return;
+    if (!live || finale) return;
     if (done[id]) {
       if (shown[id] && id !== 'account') select(PIECES[id].layer);
       return;
@@ -407,7 +554,7 @@
 
   // ---------- drag ----------
   function pressPiece(e, id) {
-    if (e.button !== 0 || finale) return;
+    if (e.button !== 0 || !live || finale) return;
     if (press) {
       if (press.pointerId !== e.pointerId) return;
       cancelGesture(); // its release never arrived: a lost gesture must not block the next one
@@ -588,21 +735,40 @@
     a.id = 'ceo-move';
   }
 
-  // The cursor waits off the stage, to the left, at the height of the place it is going to.
+  // The cursor comes up from below the stage, the one side with no panel in its way, to the corner of its comment.
   function startCeo() {
-    const y = comment.offsetTop + comment.offsetHeight + 7;
-    ceo.style.transform = `translate(${-rect(rig).left - 70}px, ${y}px)`;
-    ceo.classList.remove('on', 'is-idle');
+    if (finale) return;
+    if (!rig.offsetHeight) { later(startCeo, 100); return; } // an iframe still display:none has no layout to aim at
+    const x = comment.offsetLeft + 3, y = comment.offsetTop + comment.offsetHeight + 7;
+    ceo.style.transform = `translate(${x + 70}px, ${rig.offsetHeight + 90}px)`;
+    ceo.classList.remove('is-idle');
+    ceo.classList.add('on');
+    moveCeo(x, y, 860, EASE_OUT);
     later(() => {
       if (finale) return;
-      ceo.classList.add('on');
-      moveCeo(comment.offsetLeft + 3, y, 860, EASE_OUT);
-      later(() => {
-        if (finale) return;
-        comment.classList.add('on');
-        ceo.classList.add('is-idle');
-      }, D(700));
-    }, CEO_DELAY);
+      comment.classList.add('on');
+      ceo.classList.add('is-idle');
+    }, D(700));
+  }
+
+  // ---------- the start ----------
+  function goLive() {
+    live = true;
+    opening.classList.add('is-gone');
+    pinsBox.classList.add('on');
+  }
+
+  function start(options) {
+    if (started) return;
+    started = true;
+    if (options && options.skipOpening) {
+      goLive();
+      startCeo();
+      return;
+    }
+    opening.classList.add('is-playing');
+    later(goLive, OPENING_HOLD);
+    later(startCeo, OPENING_END);
   }
 
   // ---------- finish ----------
@@ -611,7 +777,7 @@
     fired = true;
     const detail = { moves: moves.slice() };
     document.dispatchEvent(new CustomEvent('design:finish', { detail }));
-    if (window.parent === window) return;
+    if (alone) return;
     try {
       window.parent.document.dispatchEvent(new window.parent.CustomEvent('design:finish', { detail }));
     } catch (err) { /* a parent on another origin has no document to reach */ }
@@ -685,7 +851,7 @@
     slot.classList.add('is-free');
     slot.animate([
       { transform: 'rotate(-2.5deg)' },
-      { transform: `translateX(${-TICKET_OVER - 12}px) rotate(.9deg) scale(1.02)`, offset: 0.58 },
+      { transform: `translateX(${-TICKET_OVER - TICKET_SWING}px) rotate(.9deg) scale(1.02)`, offset: 0.58 },
       { transform: `translateX(${-TICKET_OVER}px) rotate(-1deg)` }
     ], { duration: BEATS.land, easing: 'ease-out', fill: 'forwards' });
     phoneDim.animate([{ opacity: 0 }, { opacity: 0.45 }], { duration: BEATS.land, easing: 'ease-out', fill: 'forwards' }); // its words stay above 4.5:1
@@ -730,7 +896,7 @@
   }
 
   function finish() {
-    if (finale) return;
+    if (!live || finale) return;
     finale = true;
     app.classList.add('is-locked');
     cancelGesture();
@@ -742,7 +908,7 @@
     else stageFinale();
   }
 
-  // ---------- back to the first state, without a reload ----------
+  // ---------- back to the state before start(), without a reload ----------
   function reset() {
     timers.forEach((id) => clearTimeout(id));
     timers.clear();
@@ -750,6 +916,8 @@
     document.getAnimations().forEach((a) => a.cancel());
     Object.values(flights).forEach((f) => f.stop());
     $$('.ghost,.flash,.tap-ring', app).forEach((el) => el.remove());
+    started = false;
+    live = false;
     done = {};
     shown = {};
     moves = [];
@@ -761,15 +929,25 @@
     finale = false;
     fired = false;
     trackUntil = 0;
+    settling = 0;
 
     root.classList.remove('is-dragging');
     app.classList.remove('is-finale', 'is-locked');
-    IDS.forEach((id) => scr.classList.remove(`done-${id}`));
+    IDS.forEach((id) => {
+      scr.classList.remove(`done-${id}`);
+      $(`#pin-${id}`).classList.remove('is-fixed');
+      $(`#step-${id}`).classList.remove('is-done');
+    });
+    opening.classList.remove('is-gone', 'is-playing');
+    pinsBox.classList.remove('on');
+    orig.classList.remove('on');
     comment.classList.remove('on', 'is-resolved');
+    ceo.classList.remove('on', 'is-idle');
+    ceo.style.transform = '';
     slot.classList.remove('on', 'is-free');
     ticket.style.transform = '';
     buyLabel.textContent = BUY_LABEL;
-    components.classList.remove('is-spent');
+    finishBtn.classList.remove('is-ready');
     trash.classList.remove('is-armed', 'is-near');
     zoneBox.classList.remove('on', 'is-near');
     guides.classList.remove('on');
@@ -785,10 +963,11 @@
     savedText.textContent = 'Saved';
 
     buildLayers();
-    select(null);
-    startCeo();
+    showTab('design');
+    select('frame');
     void app.offsetWidth; // the first state lands at once, with nothing animating back
     app.classList.remove('no-anim');
+    if (alone) start();
   }
 
   // ---------- wiring ----------
@@ -820,7 +999,7 @@
   Object.keys(PIECES).forEach((id) => {
     const el = PIECES[id].tile || account;
     el.addEventListener('pointerdown', (e) => {
-      if (finale) return;
+      if (!live || finale) return;
       if (id === 'account' && !done.account) select('account');
       else if (done[id] && shown[id] && id !== 'account') select(PIECES[id].layer);
       pressPiece(e, id);
@@ -840,11 +1019,12 @@
   });
   phone.addEventListener('pointerleave', () => setHover(null));
   phone.addEventListener('pointerdown', (e) => {
-    if (e.button !== 0) return;
+    if (e.button !== 0 || !live) return;
     const hit = e.target.closest('[data-layer]');
     if (hit && hit !== account) select(hit.dataset.layer);
   });
-  $('#canvas').addEventListener('pointerdown', (e) => { if (e.target === e.currentTarget) select(null); });
+  $('#canvas').addEventListener('pointerdown', (e) => { if (live && (e.target === e.currentTarget || e.target === rig)) select(null); });
+  tabs.forEach((tab) => tab.addEventListener('click', () => showTab(tab.dataset.tab)));
   finishBtn.addEventListener('click', finish);
 
   window.addEventListener('pointermove', onPointerMove);
@@ -864,11 +1044,11 @@
     if (e.key === ' ' && e.target.closest && e.target.closest('button,[role="button"]')) e.preventDefault();
   }, true));
 
-  window.MAYBE_EDITOR = { reset };
+  window.MAYBE_EDITOR = { start, reset };
 
   fit();
-  select(null);
-  startCeo();
+  select('frame');
+  if (alone) start();
   // The fonts never hold up the first paint on a slow network; when they arrive, the frames fit themselves again.
   if (document.fonts) document.fonts.addEventListener('loadingdone', paint);
 })();
