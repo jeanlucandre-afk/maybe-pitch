@@ -100,14 +100,14 @@ Las decisiones de Boris del 3 de noviembre de 2026 mandan sobre la versión ante
 |---|---|---|
 | Gris `#ECECEC` y todo a tinta | Blanco, panel morado `#7C3AED` sólido y un poco de negro | Marca |
 | Texto en `difference` | Colores sólidos; el número va debajo de las tarjetas, que lo cortan al pasar | `difference` sobre morado da verde, y no cumple el contraste |
-| Texto de 12 px, sin explicar nada | Logo en horizontal, título de 106 px, apoyo, tres pasos y datos de cada carrera, desde 21 px | Un juez debe entenderlo en 3 segundos, en un proyector |
+| Texto de 12 px, sin explicar nada | Logo en horizontal, título de 72 px, apoyo, tres pasos y datos de cada carrera, desde 18 px | Un juez debe entenderlo en 3 segundos, en un proyector, sin que nada le quite protagonismo a la tarjeta activa |
 | Escenario fijo | Llena la ventana: el lado sobrante del 16:9 se reparte entre panel, tarjetas y lista | Pedido expreso |
 | Tarjetas con foto | Fondo sólido, nombre grande arriba, Open Peep y una pieza de interfaz | La banda del nombre es lo que se ve cuando la tarjeta está apilada |
-| Tarjetas sin borde, todas iguales | Contorno de tinta de 2,6 px; la activa crece un 28 % | Morado sobre morado no tendría borde; la activa debe leerse en un proyector |
+| Tarjetas sin borde, todas iguales | Contorno de tinta de 2,6 px; la activa crece un 40 % | Morado sobre morado no tendría borde; la activa es lo principal de la pantalla |
 | Pila con todas las imágenes | Arriba, solo la primera conserva su imagen; abajo, solo la banda con el nombre | Sin caras amontonadas ni textos cortados a la mitad |
 | Hueco de 7 pasos a cada lado | 4,7 arriba y 5,5 abajo; la línea se dobla un poco en cada extremo | Para leer los nombres apilados sin tapar la lista ni el número |
 | 19 proyectos | 6 carreras en un anillo de 12 | El guion del pitch |
-| Transición de unos 5 s | Unos 1,7 s, con telón morado | Es un escenario; no se puede esperar |
+| Transición de unos 5 s | Menos de 3 s, con telón morado y selección de empresa | Es un escenario; no se puede esperar |
 | Página del proyecto | El editor de diseño a pantalla completa | Es el siguiente paso de la demo |
 | Intro de unos 9 s: un personaje empuja una pared hacia la derecha | Menos de 1,5 s: un Open Peep empuja la pared morada hacia la izquierda y esta se queda como panel | Se salta con cualquier tecla |
 | Menú, premios, correo, redes, showreel | Se quitan | Pedido expreso |
@@ -129,10 +129,13 @@ Las decisiones de Boris del 3 de noviembre de 2026 mandan sobre la versión ante
 - **Pantalla completa:** `layout()` en `assets/careers.js` mide la ventana en píxeles del escenario y lo deja en `--cr-w` y `--cr-h`. Un lado vale 1920 o 1080 y el otro es mayor. El deck no cambia.
 - **Editor:** UX/UI Design abre `app/design-live.html` en un iframe escalado a toda la ventana, 1440 de ancho si es 16:9. Se monta al terminar la intro de la diapositiva y se retira al salir, así que cada visita empieza de cero. Si el archivo no existe, sale un aviso provisional.
 - **Contrato con el editor:**
+  - Si existe, se llama a `contentWindow.MAYBE_EDITOR.start({ skipOpening: true })` cuando baja el telón, o al terminar de cargar si aún no estaba listo. Si no existe, no pasa nada. Al volver con Esc y abrir de nuevo, se llama otra vez sin recargar; hoy el editor ignora esa segunda llamada y sigue donde estaba.
   - Debe lanzar `design:finish` en su `document` o en `window.parent.document`; se escuchan los dos.
   - Con el foco dentro, sus teclas suben al deck. Para quedarse con una, debe llamar a `preventDefault()`. Lo que se escribe en un campo de texto no sube, salvo Esc.
   - No debe gastar créditos ni pedir permisos al cargar: se carga antes de que nadie lo abra, y una vez más al abrir el deck, en un `<object>` oculto, para saber si existe. Es la única forma de comprobarlo sin dejar un 404 en la consola.
 - **Eventos:** `career:open` y `career:close` en `document`, con `detail { id }`. `design:finish` pasa a la siguiente diapositiva.
 - **Dibujo:** WebGL2 sin librerías. Si WebGL2 falta, un lienzo 2D dibuja lo mismo sin el doblado.
-- **Sonido:** todo sale de `sound` en `assets/careers.js`, sin archivos. Cada carrera tiene su nota, el soplo sigue la velocidad y al abrir sube aire y se abre un acorde. Se activa por defecto; el navegador lo desbloquea con la primera tecla o clic, y se detiene al salir de la diapositiva. La rueda sola no lo desbloquea: es una regla del navegador.
+- **Selección de empresas:** al abrir UX/UI Design sube el telón, un bloque negro recorre cinco logos blancos, cada vez más lento, se detiene en DICE, y DICE pasa al centro y crece con «Your first task: fix DICE's ticket checkout». Luego baja el telón. Todo corre con un solo reloj desde la pulsación (`PICK` en `assets/careers.js`): unos 2,8 s hasta ver el editor entero. Con `prefers-reduced-motion` se ve DICE directamente. Las empresas y los textos están en `companies()` y `renderVals()` del tablero; el bloque siempre se detiene en la última.
+- **Logos:** `app/img/logo-*.svg` no son los logos reales de las marcas: son el nombre escrito con una fuente genérica. El blanco se aplica por CSS, sin tocar los archivos. Si llegan los reales, basta con sustituir esos archivos y ajustar `h` en `companies()`.
+- **Sonido:** todo sale de `sound` en `assets/careers.js`, sin archivos. Cada carrera tiene su nota, el soplo sigue la velocidad, al abrir sube aire, cada logo tiene un toque y el acorde suena al detenerse en DICE. Se activa por defecto; el navegador lo desbloquea con la primera tecla o clic, y se detiene al salir de la diapositiva. La rueda sola no lo desbloquea: es una regla del navegador.
 - **Imágenes:** `assets/careers/<id>.png`, a 1600x1125, exportadas de `assets/careers/montage.html`. Ese archivo explica cómo volver a exportarlas. La franja superior debe quedar para el nombre, porque es lo que se ve con la tarjeta apilada.

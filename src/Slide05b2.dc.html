@@ -91,7 +91,19 @@ body{margin:0}
 
   <!-- curtain between the cards and the editor -->
   <div class="cr-curtain" data-cr-curtain hidden>
-    <div class="cr-curtain__in" data-cr-curtain-in><div><p class="cr-curtain__title" data-cr-curtain-title></p><p class="cr-curtain__sub" data-cr-curtain-sub></p></div></div>
+    <div class="cr-curtain__in" data-cr-curtain-in><div class="cr-curtain__words" data-cr-curtain-words><p class="cr-curtain__title" data-cr-curtain-title></p><p class="cr-curtain__sub" data-cr-curtain-sub></p></div>
+      <!-- opening UX/UI Design: a highlight walks the companies and stops on the last one -->
+      <div class="cr-pick" data-cr-pick hidden>
+        <div class="cr-pick__row" data-cr-pick-row>
+          <span class="cr-pick__mark" aria-hidden="true"></span>
+          <sc-for list="{{companies}}" as="co" hint-placeholder-count="5">
+            <div class="cr-pick__logo" data-cr-pick-logo><img src="{{co.logo}}" alt="{{co.name}}" style="height: {{co.h}}px;"></div>
+          </sc-for>
+        </div>
+        <p class="cr-pick__task">{{pick.task}}</p>
+        <p class="cr-pick__note">{{pick.note}}</p>
+      </div>
+    </div>
   </div>
 
   <!-- intro: a peep pushes the violet wall to the left until it becomes the panel -->
@@ -146,9 +158,20 @@ class Component extends DCLogic {
         opens: '', image: 'assets/careers/finance.png' }
     ];
   }
+  // The companies shown when UX/UI Design opens. The highlight always stops on the last one. h: logo height, to even them out by eye.
+  companies() {
+    return [
+      { id: 'spotify', name: 'Spotify', logo: 'app/img/logo-spotify.svg', h: 84 },
+      { id: 'zalando', name: 'Zalando', logo: 'app/img/logo-zalando.svg', h: 84 },
+      { id: 'n26', name: 'N26', logo: 'app/img/logo-n26.svg', h: 108 },
+      { id: 'lufthansa', name: 'Lufthansa', logo: 'app/img/logo-lufthansa.svg', h: 72 },
+      { id: 'dice', name: 'DICE', logo: 'app/img/logo-dice-white.svg', h: 100 }
+    ];
+  }
   renderVals() {
     const careers = this.careers();
-    return { careers, first: careers[0], total: String(careers.length).padStart(2, '0') };
+    const pick = { task: "Your first task: fix DICE's ticket checkout", note: 'Example companies. Mockup only, no partnership implied' };
+    return { careers, companies: this.companies(), pick, first: careers[0], total: String(careers.length).padStart(2, '0') };
   }
 }
 </script>

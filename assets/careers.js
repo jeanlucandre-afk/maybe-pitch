@@ -15,7 +15,8 @@
  * window measured in those same stage pixels, so one side is exactly 1920 or 1080 and the other is longer.
  *
  * All copy and images are in the board (src/Slide05b2.dc.html, careers()). A career with `opens` loads that page in an
- * iframe as soon as the slide opens. Opening it fires career:open on document with detail { id }; going back fires
+ * iframe as soon as the slide opens. Opening it fires career:open on document with detail { id }, plays the company pick
+ * on the curtain and calls MAYBE_EDITOR.start({ skipOpening: true }) in the iframe if it has one; going back fires
  * career:close. design:finish on document (ours or the iframe's) moves to the next slide. See docs/careers-reference.md.
  */
 (function () {
@@ -41,14 +42,15 @@
     canvas: $('[data-cr-canvas]'), num: $('[data-cr-num]'), does: $('[data-cr-does]'), who: $('[data-cr-who]'), keeps: $('[data-cr-keeps]'), facts: $('[data-cr-facts]'),
     tryBtn: $('[data-cr-try]'), tryLabel: $('[data-cr-try-label]'), soundBtn: $('[data-cr-sound]'), soundLabel: $('[data-cr-sound-label]'), soundBars: $('.cr-sound__bars'),
     title: $$('[data-cr-title] .cr-title__line > span'), steps: $('[data-cr-steps]'), stepItems: $$('[data-cr-step]'),
-    curtain: $('[data-cr-curtain]'), curtainIn: $('[data-cr-curtain-in]'), curtainTitle: $('[data-cr-curtain-title]'), curtainSub: $('[data-cr-curtain-sub]'),
+    curtain: $('[data-cr-curtain]'), curtainIn: $('[data-cr-curtain-in]'), curtainWords: $('[data-cr-curtain-words]'), curtainTitle: $('[data-cr-curtain-title]'), curtainSub: $('[data-cr-curtain-sub]'),
+    pick: $('[data-cr-pick]'), pickRow: $('[data-cr-pick-row]'), pickLogos: $$('[data-cr-pick-logo]'),
     wall: $('[data-cr-wall]'), peep: $('[data-cr-wall-peep]'), word: $('[data-cr-wall-word]'), editor: $('[data-cr-editor]'), enter: $$('[data-cr-enter]'),
   };
   let S_W = 1920, S_H = 1080; // the window in stage pixels
 
   // ---------- the scene, in stage pixels ----------
   const CARD_W = 540, CARD_H = 380, CARD_R = 16, INK = 2.6; // INK: the card's outline, like the peeps' ink
-  const GROW = .28;               // the active card comes forward: it has to lead, even next to art this loud
+  const GROW = .4;               // the active card comes forward: it has to lead, even next to art this loud
   const UNIT = 120;               // one step in the stack
   const FOCUS_AT = { x: 935, y: 530 }, LINE_AT = { x: 856, y: 595 }; // the active card, and where the stack line passes near it
   const GAP_ABOVE = 4.7, GAP_BELOW = 5.5; // empty steps on each side of the active card: close enough to read the names
@@ -59,7 +61,7 @@
     root.style.setProperty('--cr-w', S_W + 'px');
     root.style.setProperty('--cr-h', S_H + 'px');
     root.style.setProperty('--cr-k', String(clamp(S_W / 1920, 1, 1.12)));
-    FOCUS_AT.x = S_W * .5026; FOCUS_AT.y = S_H * .49;
+    FOCUS_AT.x = S_W * .484; FOCUS_AT.y = S_H * .49;
     LINE_AT.x = FOCUS_AT.x - 79; LINE_AT.y = FOCUS_AT.y + 65;
   }
 
@@ -227,15 +229,28 @@
         windGain.gain.setTargetAtTime(Math.pow(a, 1.4) * .26, t, .06);
         windFilter.frequency.setTargetAtTime(240 + a * a * 2700, t, .08);
       },
-      // air that rises with the curtain, then a chord that opens when it has covered everything
-      open() {
+      // air that rises with the curtain
+      rise() {
         if (!ready()) return;
         const t = ctx.currentTime;
-        air(t, { dur: .62, gain: .24, freq: 280, to: 3200, q: .8, rise: .4, send: .3 });
-        tone(58, t, { dur: .7, gain: .3, to: 96, attack: .12 });
+        air(t, { dur: .5, gain: .22, freq: 280, to: 3200, q: .8, rise: .32, send: .3 });
+        tone(58, t, { dur: .55, gain: .28, to: 96, attack: .1 });
+      },
+      // a soft touch for each logo the highlight reaches, a little higher each time
+      logo(k) {
+        if (!ready()) return;
+        const t = ctx.currentTime, f = 440 * Math.pow(2, [0, 2, 4, 7, 9, 12, 14, 16, 19, 21][k % 10] / 12);
+        tone(f, t, { dur: .18, gain: .1, send: .35 });
+        tone(f * 2.01, t, { dur: .05, gain: .024 });
+        air(t, { dur: .03, gain: .12, freq: 3000, q: 1.4 });
+      },
+      // the chord when it stops
+      chord() {
+        if (!ready()) return;
+        const t = ctx.currentTime;
         [[220, 0], [329.63, .05], [440, .1], [554.37, .16], [659.25, .23], [987.77, .32]].forEach(([f, d], k) => {
-          tone(f, t + .4 + d, { dur: 2.3 - d * 2, gain: .1 - .009 * k, send: .75, attack: .014 });
-          tone(f * 2.003, t + .4 + d, { dur: .8, gain: .02, send: .6, attack: .006 });
+          tone(f, t + d, { dur: 2.3 - d * 2, gain: .1 - .009 * k, send: .75, attack: .014 });
+          tone(f * 2.003, t + d, { dur: .8, gain: .02, send: .6, attack: .006 });
         });
       },
       close() {
@@ -490,16 +505,16 @@
   }
 
   // The active name is big and has its facts under it; the others wait in a small size above and below.
-  const LIST_SMALL = .42, SLOT = 62, FACTS_H = 356, NAME_H = 58;
-  const listY = () => S_H * .457;
+  const LIST_SMALL = .5, SLOT = 44, FACTS_H = 238, NAME_H = 42;
+  const listY = () => S_H * .36;
   function placeList() {
     const y0 = listY();
     careers.forEach((c, i) => {
-      const d = mod(i - listPos + 2, N) - 2; // -2 .. 3.99: one more below than above, the top stack takes that room
+      const d = mod(i - listPos + 2.5, N) - 2.5; // two above and three below at rest; a name only fades while it wraps around
       const big = 1 - clamp(Math.abs(d), 0, 1);
       const above = Math.min(d, 0), below = Math.max(d, 0);
-      const y = y0 + above * SLOT - clamp(-d, 0, 1) * 24 + below * SLOT + clamp(d, 0, 1) * (FACTS_H + NAME_H - 24);
-      const a = clamp((d + 2) / .6, 0, 1) * clamp((2.9 - d) / .4, 0, 1);
+      const y = y0 + above * SLOT - clamp(-d, 0, 1) * 12 + below * SLOT + clamp(d, 0, 1) * (FACTS_H + NAME_H - 12);
+      const a = clamp((d + 2.5) / .5, 0, 1) * clamp((3.5 - d) / .5, 0, 1);
       c.el.style.transform = `translate3d(0, ${y.toFixed(2)}px, 0) scale(${(LIST_SMALL + (1 - LIST_SMALL) * big).toFixed(4)})`;
       c.el.style.opacity = a.toFixed(3);
       c.el.style.pointerEvents = a > .5 ? '' : 'none';
@@ -649,7 +664,7 @@
     wake();
   }
   function onPointerMove(e) {
-    if (!active || view !== 'cards' || intro) return;
+    if (!active || view !== 'cards' || intro || busy) return;
     if (drag && !(e.buttons & 1)) onPointerUp(e); // released outside the window
     if (drag) { onDragMove(e); if (drag.on) return; }
     const hit = pick(toStage(e));
@@ -692,6 +707,7 @@
     if (c.state !== 'open') { nudge(); return; }
     open(c);
   }
+  const slideY = (el, from, to, duration) => el.animate([{ transform: `translateY(${from}%)` }, { transform: `translateY(${to}%)` }], { duration, easing: EASE_CURTAIN, fill: 'both' });
   async function curtain(title, sub, swap) {
     const sid = session;
     busy = true;
@@ -700,15 +716,15 @@
     ui.curtainTitle.textContent = title;
     ui.curtainSub.textContent = sub;
     ui.curtain.hidden = false;
-    const run = (el, from, to, duration, delay) => el.animate([{ transform: `translateY(${from}%)` }, { transform: `translateY(${to}%)` }], { duration, delay: delay || 0, easing: EASE_CURTAIN, fill: 'both' });
-    const up = run(ui.curtain, 100, 0, 460); const upIn = run(ui.curtainIn, -100, 0, 460);
+    ui.pick.hidden = true; ui.curtainWords.hidden = false;
+    const up = slideY(ui.curtain, 100, 0, 460); const upIn = slideY(ui.curtainIn, -100, 0, 460);
     const words = [ui.curtainTitle, ui.curtainSub].map((el, k) => el.animate([{ opacity: 0, filter: 'blur(14px)' }, { opacity: 1, filter: 'blur(0px)' }], { duration: 300, delay: 360 + k * 90, easing: 'ease-out', fill: 'both' }));
     await up.finished.catch(() => {});
     if (sid !== session) return;
     swap();
     await wait(660);
     if (sid !== session) return;
-    const down = run(ui.curtain, 0, 100, 540); const downIn = run(ui.curtainIn, 0, -100, 540);
+    const down = slideY(ui.curtain, 0, 100, 540); const downIn = slideY(ui.curtainIn, 0, -100, 540);
     await down.finished.catch(() => {});
     if (sid !== session) return;
     [up, upIn, down, downIn].concat(words).forEach((a) => a.cancel());
@@ -717,18 +733,91 @@
     document.body.classList.remove('cr-cover');
   }
   const blurIn = (el, delay, px) => el.animate([{ opacity: 0, filter: `blur(${px}px)` }, { opacity: 1, filter: 'blur(0px)' }], { duration: 420, delay, easing: 'cubic-bezier(.22,.61,.36,1)', fill: 'backwards' });
+  // Opening UX/UI Design, on one clock that starts at the press: 3 s at most until the editor is fully in view.
+  // The curtain rises, a highlight walks the logos, slower each time, stops on the last one, and the curtain falls.
+  const PICK = { up: 380, walk: 400, hops: [30, 34, 40, 50, 65, 85, 115, 155, 210], down: 2300, downFor: 480 };
+  function clearPick() {
+    ui.pick.classList.remove('is-walking', 'is-chosen');
+    ui.pickLogos.forEach((el) => el.classList.remove('is-on'));
+  }
+  function hopTo(k, ms) {
+    ui.pickRow.style.setProperty('--at', String(k));
+    ui.pickRow.style.setProperty('--hop', ms + 'ms');
+    ui.pickLogos.forEach((el, i) => el.classList.toggle('is-on', i === k));
+  }
+  function chooseLast() {
+    const last = ui.pickLogos.length - 1;
+    hopTo(last, 0);
+    ui.pick.classList.add('is-walking', 'is-chosen');
+    sound.chord();
+  }
+  function showEditor() {
+    view = 'editor';
+    root.classList.add('is-editor');
+    document.body.classList.add('cr-full');
+    ui.editor.setAttribute('aria-hidden', 'false');
+  }
+  // Keys and clicks wait in `busy`; a deck key that leaves the slide ends this through `session`, and enter() cleans up.
+  async function openWithPick() {
+    const sid = session, t0 = performance.now();
+    const at = (ms) => wait(Math.max(0, t0 + ms - performance.now()));
+    const gone = () => sid !== session;
+    busy = true;
+    document.body.classList.add('cr-cover');
+    clearPick();
+    ui.curtainWords.hidden = true; ui.pick.hidden = false; ui.curtain.hidden = false;
+    let anims;
+    if (REDUCED) {
+      anims = [slideY(ui.curtain, 0, 0, 1), slideY(ui.curtainIn, 0, 0, 1)];
+      chooseLast();
+      showEditor();
+      await at(1500);
+      if (gone()) return;
+    } else {
+      anims = [slideY(ui.curtain, 100, 0, PICK.up), slideY(ui.curtainIn, -100, 0, PICK.up)];
+      sound.rise();
+      await at(PICK.up);
+      if (gone()) return;
+      showEditor(); // behind the curtain, so its screen is ready when the curtain falls
+      await at(PICK.walk);
+      if (gone()) return;
+      const n = ui.pickLogos.length;
+      let when = PICK.walk;
+      ui.pick.classList.add('is-walking');
+      hopTo(0, 0);
+      sound.logo(0);
+      for (let i = 0; i < PICK.hops.length; i++) {
+        when += PICK.hops[i];
+        await at(when);
+        if (gone()) return;
+        const k = (i + 1) % n;
+        hopTo(k, k === 0 ? 0 : Math.round(PICK.hops[i] * .7)); // back to the start in one jump, never across the row
+        sound.logo(i + 1);
+      }
+      chooseLast();
+      await at(PICK.down);
+      if (gone()) return;
+    }
+    startPending = true;
+    startEditor();
+    if (!REDUCED) {
+      anims.forEach((a) => a.cancel());
+      anims = [slideY(ui.curtain, 0, 100, PICK.downFor), slideY(ui.curtainIn, 0, -100, PICK.downFor)];
+      await anims[0].finished.catch(() => {});
+      if (gone()) return;
+    }
+    anims.forEach((a) => a.cancel());
+    ui.curtain.hidden = true; ui.pick.hidden = true; ui.curtainWords.hidden = false;
+    clearPick();
+    busy = false;
+    document.body.classList.remove('cr-cover');
+    focusFrame();
+  }
   function open(c) {
     document.dispatchEvent(new CustomEvent('career:open', { detail: { id: c.id } }));
     hoverCard = -1; root.style.cursor = '';
     holdSteps(1);
-    sound.open();
-    curtain(c.name, 'Do the work', () => {
-      view = 'editor';
-      root.classList.add('is-editor');
-      document.body.classList.add('cr-full');
-      ui.editor.setAttribute('aria-hidden', 'false');
-      focusFrame();
-    });
+    openWithPick();
   }
   function close() {
     if (view !== 'editor' || busy) return;
@@ -749,7 +838,17 @@
   // ---------- the page a career opens, in an iframe, ready before anyone asks for it ----------
   // The first look uses <object> because it is the one loader that fails quietly: fetch and iframe log a 404 in the console.
   const opener = careers.find((c) => c.opens);
-  let frameEl = null, probeEl = null, pageThere = null, frameTimer = 0;
+  let frameEl = null, probeEl = null, pageThere = null, frameTimer = 0, startPending = false;
+  // The editor waits for this call. It may not exist in every build, and the page may still be loading: then its load event tries again.
+  function startEditor() {
+    if (!startPending || !frameEl) return;
+    try {
+      const editor = frameEl.contentWindow && frameEl.contentWindow.MAYBE_EDITOR;
+      if (!editor || !editor.start) return;
+      startPending = false;
+      Promise.resolve(editor.start({ skipOpening: true })).catch(() => {});
+    } catch (err) { /* nothing to start: the page stays as it is */ }
+  }
   function probePage() {
     if (!opener || probeEl || pageThere) return;
     probeEl = document.createElement('object');
@@ -781,6 +880,7 @@
       const w = frameEl.contentWindow;
       w.addEventListener('keydown', onFrameKey);
       w.document.addEventListener('design:finish', onFinish);
+      startEditor();
       if (view === 'editor') w.focus();
     } catch (err) { /* another origin: nothing to wire */ }
   }
@@ -807,7 +907,7 @@
     root.classList.add('is-intro');
     ui.wall.hidden = false;
     x = mid = -7.4; target = 0; introHold = true; velocity = 0; listPos = 0; tickAt = Math.round(x);
-    const START = 170, PUSH = 860, to = S_W * .31 - S_W;
+    const START = 170, PUSH = 860, to = S_W * .26 - S_W;
     const wall = ui.wall.animate([
       { transform: 'translateX(0)', easing: 'cubic-bezier(.2,.7,.3,1)' },
       { transform: `translateX(${to * .66}px)`, offset: .46, easing: 'linear' },
@@ -869,6 +969,7 @@
     introAnims = [];
     setActive(0, false);
     holdSteps(0);
+    clearPick(); ui.pick.hidden = true; ui.curtainWords.hidden = false; startPending = false;
     placeList();
   }
   function lockEsc(on) {
@@ -915,6 +1016,7 @@
   layout();
   reset();
   preload();
+  ui.pickLogos.forEach((el) => { const img = el.firstElementChild; if (img.decode) img.decode().catch(() => {}); }); // ready before the curtain rises
   probePage();
   root.addEventListener('wheel', onWheel, { passive: false });
   root.addEventListener('pointerdown', onPointerDown);

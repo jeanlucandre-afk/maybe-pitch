@@ -10,24 +10,24 @@
 .deck-stage:has(> .cr) { box-shadow: none; }
 
 /* ---------- the violet panel ---------- */
-.cr-panel { position: absolute; left: 0; top: 0; bottom: 0; width: 31%; background: #7C3AED; }
-.cr-logo { position: absolute; z-index: 3; left: 44px; top: 26px; display: flex; align-items: center; gap: 6px; color: #FFFFFF; font-size: 48px; font-weight: 700; line-height: 1; letter-spacing: -.035em; pointer-events: none; }
-.cr-logo__mark { width: 42px; height: 45px; flex: none; }
+.cr-panel { position: absolute; left: 0; top: 0; bottom: 0; width: 26%; background: #7C3AED; }
+.cr-logo { position: absolute; z-index: 3; left: 40px; top: 30px; display: flex; align-items: center; gap: 5px; color: #FFFFFF; font-size: 34px; font-weight: 700; line-height: 1; letter-spacing: -.035em; pointer-events: none; }
+.cr-logo__mark { width: 30px; height: 32px; flex: none; }
 
-.cr-pitch { position: absolute; z-index: 3; left: 46px; top: 90px; width: calc(31% - 92px); color: #FFFFFF; pointer-events: none; }
-.cr-title { font-size: calc(106px * var(--cr-k, 1)); font-weight: 600; line-height: 1; letter-spacing: -.052em; white-space: nowrap; }
+.cr-pitch { position: absolute; z-index: 3; left: 40px; top: 104px; width: calc(26% - 80px); color: #FFFFFF; pointer-events: none; }
+.cr-title { font-size: calc(72px * var(--cr-k, 1)); font-weight: 600; line-height: 1.02; letter-spacing: -.045em; white-space: nowrap; }
 .cr-title__line { display: block; overflow: hidden; padding-bottom: .14em; margin-bottom: -.14em; }
 .cr-title__line > span { display: block; }
-.cr-lead { margin-top: 24px !important; font-size: calc(30px * var(--cr-k, 1)); font-weight: 500; line-height: 1.26; letter-spacing: -.006em; text-wrap: pretty; }
+.cr-lead { margin-top: 24px !important; font-size: calc(22px * var(--cr-k, 1)); font-weight: 500; line-height: 1.34; letter-spacing: -.004em; text-wrap: pretty; }
 
 /* three steps: a white block walks through them */
-.cr-steps { position: relative; margin-top: 24px !important; --step: 0; }
-.cr-steps__mark { position: absolute; left: 0; top: 0; width: 100%; height: 58px; overflow: hidden; border-radius: 10px; background: #FFFFFF; transform: translateY(calc(var(--step) * 60px)); }
-.cr-steps__under { position: absolute; left: 0; top: 0; width: 100%; color: #6D28D9; transform: translateY(calc(var(--step) * -60px)); }
+.cr-steps { position: relative; margin-top: 30px !important; --step: 0; }
+.cr-steps__mark { position: absolute; left: 0; top: 0; width: 100%; height: 42px; overflow: hidden; border-radius: 8px; background: #FFFFFF; transform: translateY(calc(var(--step) * 44px)); }
+.cr-steps__under { position: absolute; left: 0; top: 0; width: 100%; color: #6D28D9; transform: translateY(calc(var(--step) * -44px)); }
 .cr-steps__mark, .cr-steps__under { transition: transform .56s cubic-bezier(.76, 0, .24, 1); }
-.cr-step { position: relative; display: flex; align-items: center; height: 60px; padding: 0 12px 2px 16px; font-size: 32px; font-weight: 600; letter-spacing: -.025em; }
-.cr-step__n { width: 36px; font-family: "Geist Mono", ui-monospace, monospace; font-size: 26px; font-weight: 500; letter-spacing: 0; }
-.cr-step__icon { margin-left: auto; width: 34px; height: 34px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; opacity: 0; transition: opacity .2s ease; }
+.cr-step { position: relative; display: flex; align-items: center; height: 44px; padding: 0 10px 2px 14px; font-size: 22px; font-weight: 600; letter-spacing: -.018em; }
+.cr-step__n { width: 28px; font-family: "Geist Mono", ui-monospace, monospace; font-size: 18px; font-weight: 500; letter-spacing: 0; }
+.cr-step__icon { margin-left: auto; width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; opacity: 0; transition: opacity .2s ease; }
 .cr-step.is-on .cr-step__icon { opacity: 1; }
 .cr-step.is-on .cr-step__icon--pick rect:last-child { animation: cr-pick 1.1s cubic-bezier(.3, .7, .2, 1) infinite alternate; }
 .cr-step.is-on .cr-step__icon--work path { animation: cr-work .5s ease-in-out infinite alternate; transform-origin: 50% 50%; }
@@ -40,49 +40,49 @@
 @keyframes cr-keep { from { stroke-dashoffset: 34; } to { stroke-dashoffset: 0; } }
 
 /* ---------- the big number: under the cards, so a passing card cuts it ---------- */
-.cr-count { position: absolute; z-index: 1; left: 0; top: max(782px, min(calc(100% - 300px), calc(49% + 100px))); width: 31%; height: 300px; color: #FFFFFF; pointer-events: none; }
-.cr-count__num { position: absolute; left: 30px; bottom: -6px; font-size: 306px; font-weight: 500; line-height: 1; letter-spacing: -.07em; font-feature-settings: "tnum"; white-space: nowrap; }
-.cr-count__meta { position: absolute; left: 408px; top: 44px; font-size: 26px; font-weight: 500; line-height: 1.24; letter-spacing: -.01em; }
+.cr-count { position: absolute; z-index: 1; left: 0; bottom: 0; width: 26%; height: 190px; color: #FFFFFF; pointer-events: none; }
+.cr-count__num { position: absolute; left: 32px; bottom: 6px; font-size: 170px; font-weight: 500; line-height: 1; letter-spacing: -.07em; font-feature-settings: "tnum"; white-space: nowrap; }
+.cr-count__meta { position: absolute; left: 240px; top: 42px; font-size: 20px; font-weight: 500; line-height: 1.24; letter-spacing: -.01em; }
 .cr-mono { font-family: "Geist Mono", ui-monospace, monospace; letter-spacing: 0; }
 
 /* ---------- list and facts ---------- */
-.cr-list { position: absolute; z-index: 1; left: 69.8%; top: 0; right: 0; bottom: 0; overflow: hidden; }
+.cr-list { position: absolute; z-index: 1; left: 70.9%; top: 0; right: 0; bottom: 0; overflow: hidden; }
 .cr-list__track { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
-.cr-item { position: absolute; left: 0; top: 0; display: flex; align-items: center; gap: 24px; height: 96px; margin-top: -48px; white-space: nowrap; transform-origin: 0 50%; will-change: transform; cursor: pointer; }
-.cr-item__name { font-size: 88px; font-weight: 500; line-height: 1; letter-spacing: -.045em; color: #52525B; transition: color .28s ease; }
-.cr-item.is-active .cr-item__name { color: #09090B; font-weight: 600; letter-spacing: -.05em; }
-.cr-item__status { display: inline-flex; align-items: center; height: 44px; padding: 0 18px; border-radius: 999px; background: #EDE9FE; color: #5B21B6; font-size: 24px; font-weight: 600; letter-spacing: -.01em; opacity: 0; transition: opacity .2s ease; }
+.cr-item { position: absolute; left: 0; top: 0; display: flex; align-items: center; gap: 16px; height: 64px; margin-top: -32px; white-space: nowrap; transform-origin: 0 50%; will-change: transform; cursor: pointer; }
+.cr-item__name { font-size: 56px; font-weight: 500; line-height: 1; letter-spacing: -.035em; color: #52525B; transition: color .28s ease; }
+.cr-item.is-active .cr-item__name { color: #09090B; font-weight: 600; letter-spacing: -.04em; }
+.cr-item__status { display: inline-flex; align-items: center; height: 32px; padding: 0 13px; border-radius: 999px; background: #EDE9FE; color: #5B21B6; font-size: 18px; font-weight: 600; letter-spacing: -.01em; opacity: 0; transition: opacity .2s ease; }
 .cr-item__status:empty { display: none; }
 .cr-item.is-active .cr-item__status { opacity: 1; }
 .cr-facts { position: absolute; left: 0; top: 0; width: calc(100% - 28px); pointer-events: none; will-change: opacity; }
-.cr-facts > div { padding-left: 16px; border-left: 5px solid transparent; transition: border-color .3s ease; }
-.cr-facts > div + div { margin-top: 14px; }
+.cr-facts > div { padding-left: 14px; border-left: 4px solid transparent; transition: border-color .3s ease; }
+.cr-facts > div + div { margin-top: 12px; }
 /* the steps on the left point at the words here: doing the work is these two lines, the evidence is the last one */
 .cr-facts dd { transition: color .3s ease; }
 .cr-facts[data-step="1"] > div:nth-child(-n+2), .cr-facts[data-step="2"] > div:nth-child(3) { border-left-color: #7C3AED; }
 .cr-facts[data-step="1"] > div:nth-child(3) dd, .cr-facts[data-step="2"] > div:nth-child(-n+2) dd { color: #52525B; }
-.cr-facts dt { font-family: "Geist Mono", ui-monospace, monospace; font-size: 24px; font-weight: 500; line-height: 1.2; color: #6D28D9; }
-.cr-facts dd { margin-top: 2px; font-size: 32px; font-weight: 500; line-height: 1.18; letter-spacing: -.022em; text-wrap: pretty; }
+.cr-facts dt { font-family: "Geist Mono", ui-monospace, monospace; font-size: 18px; font-weight: 500; line-height: 1.2; color: #6D28D9; }
+.cr-facts dd { margin-top: 1px; font-size: 22px; font-weight: 500; line-height: 1.26; letter-spacing: -.012em; text-wrap: pretty; }
 
 /* ---------- button, sound and the small print ---------- */
-.cr-try { position: absolute; z-index: 3; left: 50.26%; top: calc(49% + 256px); transform: translateX(-50%); display: inline-flex; align-items: center; gap: 18px; height: 72px; padding: 0 22px 0 30px; border: 0; border-radius: 14px; background: #09090B; color: #FFFFFF; font: 600 30px/1 Geist, system-ui, sans-serif; letter-spacing: -.02em; white-space: nowrap; cursor: pointer; transition: background .15s ease; }
+.cr-try { position: absolute; z-index: 3; left: 48.4%; top: calc(49% + 282px); transform: translateX(-50%); display: inline-flex; align-items: center; gap: 14px; height: 58px; padding: 0 15px 0 24px; border: 0; border-radius: 12px; background: #09090B; color: #FFFFFF; font: 600 24px/1 Geist, system-ui, sans-serif; letter-spacing: -.02em; white-space: nowrap; cursor: pointer; transition: background .15s ease; }
 .cr-try:hover { background: #27272A; }
 .cr-try:focus-visible, .cr-sound:focus-visible { outline: 3px solid #7C3AED; outline-offset: 3px; }
-.cr-try kbd { padding: 7px 11px; border-radius: 8px; background: #3F3F46; font-size: 21px; font-weight: 500; letter-spacing: 0; }
-.cr-top { position: absolute; z-index: 3; right: 32px; top: 26px; display: flex; align-items: center; gap: 20px; }
-.cr-note { font-size: 21px; font-weight: 500; line-height: 1.24; letter-spacing: -.01em; color: #52525B; text-align: right; white-space: nowrap; pointer-events: none; }
-.cr-sound { flex: none; display: inline-flex; align-items: center; gap: 12px; height: 56px; padding: 0 20px 0 18px; border: 0; border-radius: 12px; background: #09090B; color: #FFFFFF; font: 600 23px/1 Geist, system-ui, sans-serif; letter-spacing: -.015em; white-space: nowrap; cursor: pointer; transition: background .15s ease; }
+.cr-try kbd { padding: 6px 9px; border-radius: 7px; background: #3F3F46; font-size: 17px; font-weight: 500; letter-spacing: 0; }
+.cr-top { position: absolute; z-index: 3; right: 28px; top: 24px; display: flex; align-items: center; gap: 16px; }
+.cr-note { font-size: 18px; font-weight: 500; line-height: 1.24; letter-spacing: -.01em; color: #52525B; text-align: right; white-space: nowrap; pointer-events: none; }
+.cr-sound { flex: none; display: inline-flex; align-items: center; gap: 10px; height: 44px; padding: 0 16px 0 14px; border: 0; border-radius: 10px; background: #09090B; color: #FFFFFF; font: 600 19px/1 Geist, system-ui, sans-serif; letter-spacing: -.015em; white-space: nowrap; cursor: pointer; transition: background .15s ease; }
 .cr-sound:hover { background: #27272A; }
-.cr-sound__bars { display: flex; align-items: center; gap: 3px; width: 24px; height: 24px; --lvl: 0; }
-.cr-sound__bars i { display: block; width: 4px; height: 24px; border-radius: 2px; background: #FFFFFF; transform: scaleY(calc(.2 + var(--lvl) * .8)); transition: transform .06s linear; }
+.cr-sound__bars { display: flex; align-items: center; gap: 2px; width: 19px; height: 20px; --lvl: 0; }
+.cr-sound__bars i { display: block; width: 3px; height: 20px; border-radius: 2px; background: #FFFFFF; transform: scaleY(calc(.2 + var(--lvl) * .8)); transition: transform .06s linear; }
 .cr-sound__bars i:nth-child(1) { transform: scaleY(calc(.2 + var(--lvl) * .35)); }
 .cr-sound__bars i:nth-child(3) { transform: scaleY(calc(.2 + var(--lvl) * .6)); }
 .cr-sound__bars i:nth-child(4) { transform: scaleY(calc(.2 + var(--lvl) * .25)); }
 .cr-sound[aria-pressed="false"] { background: #FFFFFF; color: #09090B; box-shadow: inset 0 0 0 2px #09090B; }
 .cr-sound[aria-pressed="false"]:hover { background: #F4F4F5; }
 .cr-sound[aria-pressed="false"] .cr-sound__bars i { background: #09090B; transform: scaleY(.2); }
-.cr-hint { position: absolute; z-index: 3; left: 50.26%; top: calc(49% + 340px); transform: translateX(-50%); font-size: 21px; font-weight: 500; letter-spacing: -.01em; color: #52525B; white-space: nowrap; pointer-events: none; }
-.cr-hint kbd { font-size: 20px; color: #09090B; }
+.cr-hint { position: absolute; z-index: 3; left: 48.4%; top: calc(49% + 349px); transform: translateX(-50%); font-size: 18px; font-weight: 500; letter-spacing: -.01em; color: #52525B; white-space: nowrap; pointer-events: none; }
+.cr-hint kbd { font-size: 17px; color: #09090B; }
 
 /* ---------- the editor a career opens: an iframe scaled to the whole window, 1440 wide at 16:9 ---------- */
 .cr-editor { position: absolute; inset: 0; z-index: 4; overflow: hidden; background: #FFFFFF; visibility: hidden; cursor: default; }
@@ -103,6 +103,26 @@
 .cr-curtain__in { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; color: #FFFFFF; transform: translateY(-100%); will-change: transform; }
 .cr .cr-curtain__title { font-size: 168px; font-weight: 600; line-height: 1.04; letter-spacing: -.055em; opacity: 0; }
 .cr .cr-curtain__sub { margin-top: 18px; font-size: 40px; font-weight: 500; letter-spacing: -.02em; opacity: 0; }
+.cr-curtain__words[hidden], .cr-pick[hidden] { display: none; }
+
+/* ---------- opening UX/UI Design: five white logos, a black block walks them, and the last one swaps places with the middle one ---------- */
+.cr-pick { position: absolute; inset: 0; --pick-ease: cubic-bezier(.22, .8, .2, 1); }
+.cr-pick__row { --slot: 350px; --at: 0; --hop: 0ms; position: absolute; left: 50%; top: calc(50% - 90px); display: flex; width: calc(var(--slot) * 5); height: 172px; margin: -86px 0 0 calc(var(--slot) * -2.5); }
+.cr-pick__mark { position: absolute; z-index: 1; left: 10px; top: 0; width: calc(var(--slot) - 20px); height: 100%; border-radius: 22px; background: #09090B; opacity: 0; transform: translateX(calc(var(--at) * var(--slot))); transition: transform var(--hop) ease-out; }
+.cr-pick.is-walking .cr-pick__mark { opacity: 1; }
+.cr-pick__logo { position: relative; flex: none; display: grid; place-items: center; width: var(--slot); height: 100%; transition: opacity .14s ease, transform .42s var(--pick-ease); }
+.cr-pick__logo.is-on { z-index: 2; } /* the block passes over the others, never through their words */
+.cr-pick__logo img { display: block; width: auto; filter: brightness(0) invert(1); } /* the files stay as they are: white comes from here */
+.cr .cr-pick__task { position: absolute; left: 0; right: 0; top: calc(50% + 64px); text-align: center; color: #FFFFFF; font-size: 68px; font-weight: 600; line-height: 1.1; letter-spacing: -.04em; opacity: 0; filter: blur(12px); transition: opacity .24s ease, filter .24s ease; }
+.cr .cr-pick__note { position: absolute; left: 0; right: 0; bottom: 44px; text-align: center; color: #FFFFFF; font-size: 22px; font-weight: 500; letter-spacing: -.005em; }
+.cr-pick.is-chosen .cr-pick__mark { transform: translateX(calc(2 * var(--slot))) scale(1.12, 1.2); transition: transform .42s var(--pick-ease); }
+.cr-pick.is-chosen .cr-pick__logo { opacity: .24; }
+.cr-pick.is-chosen .cr-pick__logo:nth-child(2), .cr-pick.is-chosen .cr-pick__logo:nth-child(3) { transform: translateX(-34px); }
+.cr-pick.is-chosen .cr-pick__logo:nth-child(4) { transform: translateX(calc(2 * var(--slot))); animation: cr-pick-swap .42s ease both; }
+@keyframes cr-pick-swap { 0%, 30% { opacity: 0; transform: none; } 31% { opacity: 0; transform: translateX(calc(2 * var(--slot))); } 100% { opacity: .24; transform: translateX(calc(2 * var(--slot))); } }
+.cr-pick.is-chosen .cr-pick__logo:nth-child(5) { transform: translateX(34px); }
+.cr-pick.is-chosen .cr-pick__logo.is-on { opacity: 1; transform: translateX(calc(-2 * var(--slot))) scale(1.55); }
+.cr-pick.is-chosen .cr-pick__task { opacity: 1; filter: none; transition-delay: .06s; }
 
 /* ---------- intro wall: the panel, before it has been pushed into place ---------- */
 .cr-wall { position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: #7C3AED; z-index: 6; will-change: transform; }
@@ -121,6 +141,6 @@ body.cr-cover .deck-nav, body.cr-full .deck-nav { opacity: 0; pointer-events: no
 body.cr-on.show-ui .deck-nav:not(:hover):not(:focus-within) { opacity: 0; }
 
 @media (prefers-reduced-motion: reduce) {
-  .cr-item__name, .cr-steps__mark, .cr-steps__under, .cr-step__icon { transition: none; }
+  .cr-item__name, .cr-steps__mark, .cr-steps__under, .cr-step__icon, .cr-pick__row, .cr-pick__mark, .cr-pick__logo, .cr .cr-pick__task { transition: none !important; animation: none !important; }
   .cr-step__icon * { animation: none !important; }
 }
