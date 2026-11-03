@@ -6,30 +6,30 @@ Design canvas: https://claude.ai/artifact/7ffQa8sB7mqJyxWByXgztf (page "Presenta
 
 Everything below is on `main`. The canvas and `src/` match as of this handoff.
 
-## The deck (21 slides)
+## The deck (16 slides)
+
+The deck follows the canvas grid: rows top to bottom, each row left to right. Boards parked far below the grid stay on the canvas but are left out (now: 05e Employer side, 05f What MAYBE is, 10a–10d market/why now/Europe/business). Move a board back into the grid to bring it back.
 
 | # | Slide | Source file |
 |---|---|---|
 | 1 | Black pre-show | `src/Slide00.dc.html` |
 | 2 | The question | `src/Slide00a.dc.html` |
-| 3 | The experience gap (26 in 100; 100 people walk in, 26 turn violet) | `src/Slide00b.dc.html` |
+| 3 | The experience gap (26 in 100) | `src/Slide00b.dc.html` |
 | 4 | The human cost | `src/Slide00c.dc.html` |
 | 5 | The other side | `src/Slide00d.dc.html` |
 | 6 | The screening | `src/Slide00e.dc.html` |
-| 7 | AI vs AI (11,000 applications a minute; 1 in 5 reject with no human; phone feed of 4 stories) | `src/Slide00e2.dc.html` |
-| 8 | Real people are living this (X post + 3 TikToks) | `src/Slide00e3.dc.html` |
+| 7 | AI vs AI | `src/Slide00e2.dc.html` |
+| 8 | Real people (X post + TikTok flower, no text) | `src/Slide00e3.dc.html` |
 | 9 | The turn | `src/Slide00f.dc.html` |
 | 10 | Title (intro video) | `src/Slide01.dc.html` |
 | 11 | Live call (voice agent, Boris) | `src/Slide05b.dc.html` |
 | 12 | Agent world (Boris) | `src/Slide05c.dc.html` |
-| 13 | Product walkthrough video (plays at 2x) | `src/Slide05d.dc.html` |
-| 14 | Employer side (AI screener vs MAYBE) | `src/Slide05e.dc.html` |
-| 15 | What MAYBE is | `src/Slide05f.dc.html` |
-| 16–19 | Market, Why now, European opportunity, Business | `src/Slide10a–d.dc.html` |
-| 20 | Back to the start | `src/Slide12.dc.html` |
-| 21 | Try it. Prove it. | `src/Slide13.dc.html` |
+| 13 | Product walkthrough video (2x) | `src/Slide05d.dc.html` |
+| 14 | Back to the start | `src/Slide12.dc.html` |
+| 15 | Try it. Prove it. | `src/Slide13.dc.html` |
+| 16 | Product walkthrough video again (2x) | `src/Slide05d-o9hm.dc.html` |
 
-Slide order = file name order (`Slide00e2` comes after `Slide00e`, before `Slide00f`). Speaker notes live in `src/canvas.json` (`notes` → `notesXX`) and show in the deck with **P**.
+Speaker notes live in `src/canvas.json` (`notes`), matched to a slide by their title ("Notes · 05d · …"; a canvas copy like `05d-o9hm` uses `05d`'s notes). Press **P** in the deck.
 
 ## Working in Cursor
 
@@ -62,7 +62,7 @@ node tools/build-deck.mjs        # after any change in src/ → regenerates inde
 
 1. Check the three TikToks play on the live site (slide 8).
 2. Slide 7's phone feed also tells the six-minute story; drop that card if it feels repeated after slide 8.
-3. You asked for slide 8 as a collage (X post in front, TikToks fanned behind it like petals, tilted). Not done yet.
+3. Slides 13 and 16 each contain the walkthrough video twice, stacked (a canvas copy-paste); harmless but decodes twice. Delete one `<video>` per board if the laptop struggles.
 4. Official DICE and Dr. Lipp logos in the prototype marketplace: needs `dice.fm` and `www.drlipp.com` allowed in the Claude environment's network settings, or drop the SVGs into `app/img/` yourself, then re-record the walkthrough (`node tools/walkthrough/record.mjs` with a server on :8765).
 
 ## For Boris

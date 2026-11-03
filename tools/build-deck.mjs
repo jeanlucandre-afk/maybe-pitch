@@ -22,14 +22,34 @@ const blobMap = JSON.parse(read(path.join(ROOT, 'tools', 'blob-map.json')));
 const decodeAttr = (s) => s.replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 
-// Slides: boards on the presentation page, in file-name order.
-const boards = Object.entries(canvas.boards)
+// Slides: boards on the presentation page, in canvas reading order: rows top to bottom, each row left to right.
+// A board counts as in a row when its top is within 3/4 of a slide height of the row's first board.
+// Boards parked far below the grid (a gap of more than ~2.4 slide heights after the last row) stay on the
+// canvas but are left out of the deck.
+const pres = Object.entries(canvas.boards)
   .filter(([, b]) => b.page === 'presentation')
-  .sort(([a], [b]) => a.localeCompare(b, 'en', { numeric: true }));
+  .sort(([, a], [, b]) => a.y - b.y || a.x - b.x);
+const rows = [];
+for (const e of pres) {
+  const row = rows[rows.length - 1];
+  if (row && e[1].y - row.y < e[1].h * 0.75) row.items.push(e);
+  else rows.push({ y: e[1].y, items: [e] });
+}
+const boards = [], parked = [];
+rows.forEach((row, i) => {
+  const gap = i ? row.y - rows[i - 1].y : 0;
+  const into = parked.length || gap > row.items[0][1].h * 2.4 ? parked : boards;
+  into.push(...row.items.sort(([, a], [, b]) => a.x - b.x));
+});
 
 const notes = Object.values(canvas.notes || {}).filter((n) => n.page === 'presentation' && !n.kind);
-function notesFor(b) {
-  const n = notes.find((n) => Math.abs(n.x - b.x) < 40 && n.y >= b.y + b.h && n.y <= b.y + b.h + 600);
+function notesFor(file, b) {
+  // Prefer the note whose title names this board ("Notes · 05d · …"); fall back to the note right under it.
+  const id = file.replace(/^Slide/, '').replace(/\.dc\.html$/, '');
+  const base = id.replace(/-[a-z0-9]{3,6}$/, ''); // canvas copies get a suffix: "05d-o9hm" uses 05d's notes
+  const named = (n) => (n.text.match(/^Notes · ([^ ]+) ·/) || [])[1];
+  const n = notes.find((n) => named(n) === id) || notes.find((n) => named(n) === base)
+    || notes.find((n) => !named(n) && Math.abs(n.x - b.x) < 40 && n.y >= b.y + b.h && n.y <= b.y + b.h + 600);
   if (!n) return '';
   return n.text.replace(/^Notes[^\n]*\n/, '').trim();
 }
@@ -96,8 +116,8 @@ const sections = boards.map(([file, b], i) => {
   const offset = /^Slide00\b/.test(boards[0][0]) ? 1 : 0;
   const body = renumber(r.body, i + 1 - offset, boards.length - offset), styles = r.styles;
   for (const s of styles) { const k = s.trim(); if (k && !seenStyles.has(k)) { seenStyles.add(k); styleBlocks.push(k); } }
-  const title = (b.title || file).replace(/^\d+[a-z]?\d*\s*·\s*/, '');
-  return `<section class="deck-slide" id="slide-${i + 1}" data-title="${esc(title)}" data-notes="${esc(notesFor(b))}" aria-roledescription="slide" aria-label="${i + 1} of ${boards.length}: ${esc(title)}">
+  const title = (b.title || file).replace(/^\d+[a-z]?\d*\s*·\s*/, '').replace(/\s+copy$/i, '');
+  return `<section class="deck-slide" id="slide-${i + 1}" data-title="${esc(title)}" data-notes="${esc(notesFor(file, b))}" aria-roledescription="slide" aria-label="${i + 1} of ${boards.length}: ${esc(title)}">
 <div class="deck-stage">
 ${body}
 </div>
@@ -152,4 +172,5 @@ ${sections.join('\n')}
 
 fs.writeFileSync(path.join(ROOT, 'index.html'), page);
 console.log(`Built index.html: ${boards.length} slides, ${styleBlocks.length} style block(s).`);
+if (parked.length) console.log(`Left out (parked below the grid on the canvas): ${parked.map(([f]) => f).join(', ')}`);
 if (warn.length) { console.log('Warnings:'); for (const w of warn) console.log('  - ' + w); process.exitCode = 0; }

@@ -79,7 +79,7 @@ Design source of truth: the **MAYBE Final** design canvas, https://claude.ai/art
 1. `git pull --rebase origin main`.
 2. Read `project/canvas.json` and every `project/Slide*.dc.html` from the canvas with the Artifact tool, and copy them into `src/`. Luc edits by hand, so always re-read; never reuse old copies.
 3. New images or videos: list the canvas assets (sha256 per id). Download any new one with Artifact read `path: <asset id>`, put it in `deck/img/`, then add `id → sha256` to `src/assets.json` and `sha256 → img/<file>` to `tools/blob-map.json`.
-4. `node tools/build-deck.mjs`. It must finish with no unmapped-image warnings.
+4. `node tools/build-deck.mjs`. It must finish with no unmapped-image warnings. Slide order follows the canvas grid (rows top to bottom, left to right); boards parked far below the grid are left out and listed in the build output.
 5. Quick check: serve the folder locally and step through the slides with ← →. The live-call slide must play the demo, and the title's intro video must start.
 6. Commit with a clear message and `git push origin main`. Vercel deploys in about a minute.
 

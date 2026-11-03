@@ -198,77 +198,85 @@
       "x": 6120,
       "y": 3000
     },
+    "Slide05d-o9hm.dc.html": {
+      "h": 1080,
+      "page": "presentation",
+      "title": "05d · Product walkthrough (video) copy",
+      "w": 1920,
+      "x": 6120,
+      "y": 4401
+    },
     "Slide05d.dc.html": {
       "h": 1080,
       "page": "presentation",
       "title": "05d · Product walkthrough (video)",
       "w": 1920,
       "x": 0,
-      "y": 4500
+      "y": 4361
     },
     "Slide05e.dc.html": {
       "h": 1080,
       "page": "presentation",
       "title": "05e · Employer side",
       "w": 1920,
-      "x": 2040,
-      "y": 4500
+      "x": 602,
+      "y": 9530
     },
     "Slide05f.dc.html": {
       "h": 1080,
       "page": "presentation",
       "title": "05f · What MAYBE is (conclusion)",
       "w": 1920,
-      "x": 4080,
-      "y": 4500
+      "x": -1803,
+      "y": 9530
     },
     "Slide10a.dc.html": {
       "h": 1080,
       "page": "presentation",
       "title": "10a · The market",
       "w": 1920,
-      "x": 6120,
-      "y": 4500
+      "x": 9621,
+      "y": 9692
     },
     "Slide10b.dc.html": {
       "h": 1080,
       "page": "presentation",
       "title": "10b · Why now",
       "w": 1920,
-      "x": 0,
-      "y": 6000
+      "x": 2760,
+      "y": 9530
     },
     "Slide10c.dc.html": {
       "h": 1080,
       "page": "presentation",
       "title": "10c · The European opportunity",
       "w": 1920,
-      "x": 2040,
-      "y": 6000
+      "x": 4918,
+      "y": 9530
     },
     "Slide10d.dc.html": {
       "h": 1080,
       "page": "presentation",
       "title": "10d · The business",
       "w": 1920,
-      "x": 4080,
-      "y": 6000
+      "x": 7183,
+      "y": 9434
     },
     "Slide12.dc.html": {
       "h": 1080,
       "page": "presentation",
       "title": "12 · Back to the start",
       "w": 1920,
-      "x": 6120,
-      "y": 6000
+      "x": 2040,
+      "y": 4361
     },
     "Slide13.dc.html": {
       "h": 1080,
       "page": "presentation",
       "title": "13 · Try it. Prove it.",
       "w": 1920,
-      "x": 0,
-      "y": 7500
+      "x": 4080,
+      "y": 4361
     }
   },
   "createdOnFiles": {
@@ -457,8 +465,8 @@
       "page": "presentation",
       "text": "Notes · 10a · The market\nRecruitment is big and under pressure. AI recruitment software alone is estimated at $5.1 billion in 2026, forecast to roughly double by 2035. In iHire's survey, more than half of employers say they get too many unqualified applicants, and a third want skills assessments. The $34B and $71B figures are separate categories, not our addressable market.",
       "w": 600,
-      "x": 6120,
-      "y": 5600
+      "x": 6100,
+      "y": 5620
     },
     "notes10b": {
       "fill": "gray",
@@ -541,7 +549,8 @@
     "Slide05d.dc.html",
     "Slide05e.dc.html",
     "Slide05f.dc.html",
-    "Piece-r56u.dc.html"
+    "Piece-r56u.dc.html",
+    "Slide05d-o9hm.dc.html"
   ],
   "pages": [
     {
