@@ -10,10 +10,10 @@ The presentation *is* the demo. The product runs live inside the slides, so ther
 
 | Slide | What you see |
 |---|---|
-| **12 · Live call** | A real voice call with **Mara**, an AI customer. Speak into your microphone; she answers live. |
-| **13 · Careers** | Browse real-world jobs and open a trial, such as the DICE design editor. |
-| **14 · Agent world** | Right after the call, a crowd of simulated AI agents reviews it and gives a verdict. |
-| **15 · Product walkthrough** | A recorded run through the working prototype: marketplace, trial, AI review, employer side. |
+| **11 · Live call** | A real voice call with **Mara**, an AI customer. Speak into your microphone; she answers live. |
+| **12 · Careers** | Browse real-world jobs and open a trial, such as the DICE design editor. |
+| **13 · Agent world** | Right after the call, a crowd of simulated AI agents reviews it and gives a verdict. |
+| **14 · Product walkthrough** | A recorded run through the working prototype: marketplace, trial, AI review, employer side. |
 
 **How to use it:** open the link in Chrome, press **→** to move, **F** for full screen, **P** for speaker notes. Allow the microphone on the live-call slide. Without a connection the slides play a demo run instead.
 
