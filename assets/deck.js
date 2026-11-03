@@ -65,7 +65,8 @@
       if (on) { try { pv.currentTime = 0; } catch (e) {} pv.playbackRate = pv.defaultPlaybackRate = parseFloat(pv.dataset.rate) || 1; const p = pv.play(); if (p && p.catch) p.catch(() => {}); }
       else pv.pause();
     });
-    // TikTok cards ([data-tiktok="https://www.tiktok.com/@user/video/123…"]): show the real TikTok in the card while the slide is open (add data-autoplay to start it by itself).
+    // TikTok cards ([data-tiktok="https://www.tiktok.com/@user/video/123…"]): show the real TikTok in the card while the slide is open.
+    // data-autoplay starts it by itself; data-sound keeps its audio (all other clips play muted).
     slide && slide.querySelectorAll('[data-tiktok]').forEach((card) => {
       const id = ((card.getAttribute('data-tiktok') || '').match(/video\/(\d+)/) || [])[1];
       if (!id) return;
@@ -73,8 +74,14 @@
       if (on && !f) {
         f = document.createElement('iframe');
         f.className = 'tt-embed';
-        const auto = card.hasAttribute('data-autoplay') ? 1 : 0; // one clip plays by itself; the others play on click
+        const auto = card.hasAttribute('data-autoplay') ? 1 : 0; // data-autoplay: starts by itself
         f.src = `https://www.tiktok.com/player/v1/${id}?autoplay=${auto}&loop=1&music_info=0&description=0&rel=0`;
+        // Only cards with data-sound keep their audio; the rest are muted once the player is ready.
+        if (!card.hasAttribute('data-sound')) {
+          const mute = () => { try { f.contentWindow.postMessage({ 'x-tiktok-player': true, type: 'mute', value: null }, '*'); } catch (e) {} };
+          f._mute = mute;
+          f.addEventListener('load', () => [300, 1200, 3000].forEach((t) => setTimeout(mute, t)));
+        }
         f.allow = 'autoplay; encrypted-media; fullscreen';
         f.title = 'TikTok video';
         f.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:0;background:transparent;z-index:2';
@@ -238,6 +245,13 @@
       if (btn) btn.click();
     }));
   }
+
+  // TikTok players announce themselves when ready; mute every clip that isn't marked data-sound.
+  window.addEventListener('message', (e) => {
+    const d = e.data;
+    if (!d || typeof d !== 'object' || !d['x-tiktok-player'] || d.type !== 'onPlayerReady') return;
+    document.querySelectorAll('iframe.tt-embed').forEach((f) => { if (f.contentWindow === e.source && f._mute) f._mute(); });
+  });
 
   window.MAYBE_DECK = { go, clientTools };
 })();
