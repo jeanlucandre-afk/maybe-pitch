@@ -70,91 +70,109 @@ await st('cursorTo', 1100, 640, 0);
 await cdp.send('Page.startScreencast', { format: 'jpeg', quality: 92, maxWidth: 1920, maxHeight: 1080, everyNthFrame: 1 });
 await wait(900);
 
-// 1 · Choose a trial
+// 1 · Find a real job: scroll the marketplace, open the Dr. Lipp sales trial
 let f = frame();
-await cap('1', 'Choose a real job to try');
+await cap('1', 'Find a real job to try');
+await wait(900);
+await scrollTo(330, 1500);
+const card = await rect(f.getByText('Sales Rep at Dr. Lipp').first());
+await zoom(card.x + 40, card.y - 60, 1.45);
+await point(f.getByText('Sales Rep at Dr. Lipp').first(), 900);
 await wait(700);
-await click(f.getByRole('button', { name: 'Sales', exact: true }).first());
-await wait(500);
-await click(f.locator('button[aria-label="Dr. Lipp"]').first());
-await scrollTo(260);
-const card = await rect(f.locator('a[href="sales-crm.html"]').first());
-await zoom(card.x - 380, card.y - 200, 1.5);
-await wait(600);
-await point(f.getByText('Sales Rep at Dr. Lipp').first(), 700);
-await wait(500);
-await click(f.locator('a[href="sales-crm.html"]').first());
-await wide(700);
+await click(f.locator('a[href="trial-dr-lipp.html"]').first());
 
-// 2 · Do the real work
+// 2 · Read the brief
+await open('trial-dr-lipp.html');
+f = frame();
+await cap('2', 'Read the brief');
+await wide(600);
+await wait(500);
+const brief = await rect(f.getByText('Sales Rep at Dr. Lipp', { exact: true }).last());
+await zoom(brief.x + 120, brief.y + 50, 1.55);
+await point(f.getByText('trial order of at least 24 units', { exact: false }).first(), 900);
+await wait(900);
+const sc = await rect(f.getByText("How you're scored").first());
+await zoom(sc.x + 170, sc.y + 110, 1.6);
+await wait(1400);
+const start = await rect(f.locator('#start'));
+await zoom(start.x, start.y + 90, 1.5);
+await wait(400);
+await click(f.locator('#start'));
+
+// 3 · Sell: a live call with an AI buyer, written into the transcript
 await open('sales-crm.html');
 f = frame();
-await cap('2', 'Do the real work: call an AI buyer');
-await wait(600);
-const call = await rect(f.getByText('Live call', { exact: true }).first());
-await zoom(call.x + 160, call.y + 180, 1.7);
-await wait(1600);
+await cap('3', 'Sell: call an AI buyer');
+await wide(600);
+await wait(700);
+await scrollTo(150, 900);
+await zoom(1020, 470, 1.38);
+await st('cursorTo', 1250, 640, 600);
+await wait(1100);
+const lines = [
+  ['you', 'Totally fair on shelf space. What if we start with one 24-unit tray next to the till for six weeks?', '02:31'],
+  ['buyer', 'Six weeks. And if it does not sell?', '02:44'],
+  ['you', 'Then you have only lost a little shelf space, and you know exactly what your customers buy.', '02:52'],
+  ['buyer', 'Fair enough. Send me the offer for one tray.', '03:05'],
+];
+for (const [who, text, t] of lines) {
+  await f.evaluate(([w, x, tt]) => window.MAYBE_CRM.say(w, x, tt), [who, text, t]);
+  await wait(who === 'you' ? 2300 : 1700);
+}
+
+// 4 · Log the call in the CRM
+await cap('4', 'Log the call in the CRM');
 const next = f.locator('input').first();
 const nr = await rect(next);
-await zoom(nr.x, nr.y - 40, 1.9);
+await zoom(nr.x, nr.y - 30, 1.85);
 await wait(500);
-await typeInto(next, 'Send trial offer: 24-unit tray + tester, 6 weeks');
+await typeInto(next, 'Send offer: 1 tray, 24 units, 6-week trial');
 await click(f.getByText('Update deal').first(), 700);
-await wait(900);
-const tr = await rect(f.getByText('Live transcript').first());
-await zoom(tr.x + 250, tr.y + 50, 1.6);
-await wait(1600);
-await wide(900);
-await wait(400);
-await click(f.getByText('Save & exit').first());
-
-// 3 · Keep the evidence
-await open('dashboard.html');
-f = frame();
-await cap('3', 'Keep the evidence');
 await wait(500);
-const done = await rect(f.getByText('Sales Rep at Dr. Lipp').first());
-await zoom(done.x + 150, done.y, 1.6);
+await zoom(1100, 150, 1.5);
 await wait(1500);
-await scrollTo(380);
-const sc = await rect(f.getByText('Your latest scores').first());
-await zoom(720, sc.y + 110, 1.45);
-await point(f.getByText('Rule-based').first(), 700);
-await point(f.getByText('AI review').first(), 700);
-await point(f.getByText('Synthetic estimate').first(), 700);
-await wait(500);
-await wide(900);
-await wait(500);
-
-// 4 · Employers see the work
-await cap('4', 'Employers see the work');
-await open('employer-board.html');
-f = frame();
-await wait(500);
-await click(f.getByText('Jean-Luc Andre').first());
-const det = await rect(f.getByText('View full evidence').first());
-await zoom(det.x, det.y - 200, 1.6);
-await wait(1400);
-await click(f.getByText('Invite to interview').first(), 700);
-await wait(700);
-await wide(800);
-await click(f.locator('a[href="candidate-evidence.html"]').first());
-await open('candidate-evidence.html');
-f = frame();
-await wait(400);
-await click(f.getByText('Transcript', { exact: true }).first());
-await wait(900);
-await click(f.getByText('Evidence', { exact: true }).first());
-await scrollTo(260);
-const rs = await rect(f.getByText('Rubric score').first());
-await zoom(rs.x + 330, rs.y + 40, 1.55);
-await wait(1700);
 await wide(900);
 await wait(300);
-await click(f.getByText('Invite to interview').first());
-await wait(800);
+await click(f.getByText('Save & exit').first());
+
+// 5 · Submit and get reviewed by AI
+await open('sales-results.html');
+f = frame();
+await cap('5', 'Get reviewed by AI, scored with sources');
+const rv = await rect(f.locator('#review'));
+await zoom(rv.x, rv.y + 20, 1.35);
+await wait(4300);
+const ring = await rect(f.locator('#rs-num'));
+await zoom(ring.x + 420, ring.y + 40, 1.3);
+await wait(2400);
+const best = await rect(f.getByText('Best moment').first());
+await zoom(best.x + 120, best.y + 40, 1.45);
+await wait(1600);
+const share = await rect(f.locator('#share'));
+await zoom(share.x - 300, share.y - 40, 1.4);
+await click(f.locator('#share'));
+await wait(900);
+
+// 6 · The employer sees the best sale
+await cap('6', 'Dr. Lipp sees your best work');
+await wide(800);
+await open('employer-board.html');
+f = frame();
+await wait(700);
+const top = await rect(f.getByText('Jean-Luc Andre').first());
+await zoom(top.x + 250, top.y + 20, 1.5);
+await point(f.getByText('Jean-Luc Andre').first(), 800);
+await wait(900);
+await click(f.getByText('Jean-Luc Andre').first());
+const det = await rect(f.getByText('View full evidence').first());
+await zoom(det.x, det.y - 220, 1.55);
+await wait(1800);
+await click(f.getByText('Invite to interview').first(), 700);
+await wait(900);
+await wide(1100);
+await wait(900);
 await cap('', '');
-await wait(1200);
+await wait(1100);
 
 await cdp.send('Page.stopScreencast');
 await browser.close();

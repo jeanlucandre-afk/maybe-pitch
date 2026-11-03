@@ -21,7 +21,7 @@ a{color:#09090B}a:hover{color:#52525B}
   <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 7px 20px; background: #09090B; color: #FAFAFA; font-size: 12px;">
     <span style="display: flex; align-items: center; gap: 6px; font-weight: 600;"><svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 4.5 L10.5 13 L10.5 20 M20.5 3.5 L11 14.5" fill="none" stroke="#FAFAFA" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>MAYBE trial</span>
     <span style="color: #A1A1AA;">Simulated scenario · prospects are AI · not an official Dr. Lipp assessment</span>
-    <a href="dashboard.html" style="margin-left: auto; color: #FAFAFA; text-decoration: underline; text-underline-offset: 3px;">Save &amp; exit</a>
+    <a href="sales-results.html" style="margin-left: auto; color: #FAFAFA; text-decoration: underline; text-underline-offset: 3px;">Save &amp; exit</a>
   </div>
 
   <div style="display: flex; flex-wrap: wrap; flex-grow: 1;">
@@ -71,7 +71,7 @@ a{color:#09090B}a:hover{color:#52525B}
           <div style="display: flex; align-items: center; gap: 3px; height: 34px;" aria-hidden="true">
             <template data-for="{{wave}}" data-as="w"><span class="crm-w" style="width: 3px; height: {{w.h}}; border-radius: 2px; background: {{w.c}}; animation: crm-wave {{w.d}} ease-in-out infinite; animation-play-state: {{wavePlay}};"></span></template>
           </div>
-          <div style="width: 100%; padding: 10px 12px; border-radius: 10px; background: #F4F4F5; text-align: left; font-size: 13px; line-height: 1.45;"><span style="display: block; font-size: 11px; color: #71717A; margin-bottom: 2px;">{{cur.first}}</span>{{cur.says}}</div>
+          <div style="width: 100%; padding: 10px 12px; border-radius: 10px; background: #F4F4F5; text-align: left; font-size: 13px; line-height: 1.45;"><span style="display: block; font-size: 11px; color: #71717A; margin-bottom: 2px;">{{cur.first}}</span>{{lastSays}}</div>
           <div style="display: flex; gap: 10px;">
             <button onClick="{{toggleMute}}" aria-label="Mute" style="width: 42px; height: 42px; border-radius: 999px; border: 1px solid #E4E4E7; background: {{muteBg}}; display: grid; place-items: center; cursor: pointer;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="{{muteFg}}" stroke-width="2" aria-hidden="true"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><path d="M12 19v3"></path></svg></button>
             <button onClick="{{togglePause}}" aria-label="Pause" style="width: 42px; height: 42px; border-radius: 999px; border: 0; background: #09090B; display: grid; place-items: center; cursor: pointer;"><svg width="16" height="16" viewBox="0 0 24 24" fill="#FFFFFF" aria-hidden="true"><rect x="6" y="4" width="4" height="16" rx="1"></rect><rect x="14" y="4" width="4" height="16" rx="1"></rect></svg></button>
@@ -91,7 +91,7 @@ a{color:#09090B}a:hover{color:#52525B}
           <div style="padding: 10px 12px; border-radius: 8px; background: #F5F3FF; font-size: 12px; line-height: 1.45; color: #4C1D95;"><strong style="font-weight: 600;">AI coach:</strong> she asked about minimum order twice. Offer the 24-unit display tray as a 6-week trial.</div>
           <div style="height: 1px; background: #E4E4E7;"></div>
           <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 500;">Deal stage<select style="height: 34px; padding: 0 10px; border: 1px solid #E4E4E7; border-radius: 8px; font: 400 13px Geist, sans-serif; background: #FFFFFF;"><option>Negotiation</option><option>Contacted</option><option>Closed won</option><option>Closed lost</option></select></label>
-          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 500;">Next step<input value="Send trial offer: 24 units + tester" style="height: 34px; padding: 0 10px; border: 1px solid #E4E4E7; border-radius: 8px; font: 400 13px Geist, sans-serif;"></label>
+          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 500;">Next step<input value="{{nextStep}}" onInput="{{setNext}}" style="height: 34px; padding: 0 10px; border: 1px solid #E4E4E7; border-radius: 8px; font: 400 13px Geist, sans-serif;"></label>
           <button onClick="{{save}}" style="height: 36px; border: 0; border-radius: 8px; background: #09090B; color: #FAFAFA; font: 500 14px Geist, sans-serif; cursor: pointer;">{{saveLabel}}</button>
         </section>
       </div>
@@ -112,8 +112,7 @@ a{color:#09090B}a:hover{color:#52525B}
         </section>
         <section style="border: 1px solid #E4E4E7; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 8px;">
           <div style="display: flex; justify-content: space-between; align-items: center;"><span style="font-size: 14px; font-weight: 600;">Live transcript</span><span style="padding: 1px 8px; border-radius: 999px; border: 1px solid #A5D8E6; color: #0E6680; font-size: 11px; font-weight: 500;">Saved for evaluation</span></div>
-          <p style="margin: 0; font-size: 13px; line-height: 1.5;"><span style="color: #71717A; font-family: 'Geist Mono', monospace; font-size: 11px;">02:12</span> <strong style="font-weight: 600;">You:</strong> What decides which brands get space near the till?</p>
-          <p style="margin: 0; font-size: 13px; line-height: 1.5;"><span style="color: #71717A; font-family: 'Geist Mono', monospace; font-size: 11px;">02:20</span> <strong style="font-weight: 600;">{{cur.first}}:</strong> {{cur.says}}</p>
+          <template data-for="{{lines}}" data-as="l"><p class="crm-line" style="margin: 0; font-size: 13px; line-height: 1.5;"><span style="color: #71717A; font-family: 'Geist Mono', monospace; font-size: 11px;">{{l.t}}</span> <strong style="font-weight: 600; color: {{l.c}};">{{l.who}}:</strong> {{l.text}}</p></template>
         </section>
       </div>
     </main>
@@ -124,7 +123,10 @@ a{color:#09090B}a:hover{color:#52525B}
 <script src="dc-lite.js"></script>
 <script>
 class Component extends DCLogic {
-  constructor(props) { super(props); this.state = { stage: 'call', pid: 'bk', tab: 'Notes', mute: false, paused: false, saved: false }; }
+  constructor(props) { super(props); this.state = { stage: 'call', pid: 'bk', tab: 'Notes', mute: false, paused: false, saved: false, said: [], next: 'Send trial offer: 24 units + tester' };
+    // Demo hook (walkthrough recording, voice agent): window.MAYBE_CRM.say('you'|'buyer', text, '02:31') appends to the live transcript.
+    window.MAYBE_CRM = { say: (who, text, t) => this.setState({ said: this.state.said.concat([{ who, text, t }]) }), clear: () => this.setState({ said: [] }) };
+  }
   renderVals() {
     const P = {
       student: 'img/peep-student.svg', designer: 'img/peep-designer.svg',
@@ -145,6 +147,8 @@ class Component extends DCLogic {
     ];
     const prospects = people.map((p) => ({ ...p, bg: st.pid === p.id ? '#F5F3FF' : '#FFFFFF', pick: () => this.setState({ pid: p.id, saved: false }) }));
     const cur = people.find((p) => p.id === st.pid) || people[0];
+    const base = [{ who: 'you', t: '02:12', text: 'What decides which brands get space near the till?' }, { who: 'buyer', t: '02:20', text: cur.says }];
+    const lines = base.concat(st.said).map((l) => ({ t: l.t || '', who: l.who === 'you' ? 'You' : cur.first, text: l.text, c: l.who === 'you' ? '#09090B' : '#5B21B6' }));
     const tabsContent = {
       Notes: ['Interested in clean ingredients', 'Concerned about shelf space', 'Asked about minimum order'],
       Objections: ['Price vs current brand', 'Shelf space near the till', 'Minimum order too high'],
@@ -166,7 +170,11 @@ class Component extends DCLogic {
       toggleMute: () => this.setState({ mute: !st.mute }),
       togglePause: () => this.setState({ paused: !st.paused }),
       saveLabel: st.saved ? 'Saved to CRM ✓' : 'Update deal',
-      save: () => this.setState({ saved: true })
+      save: () => this.setState({ saved: true, stage: 'neg' }),
+      lines,
+      nextStep: st.next,
+      setNext: (e) => { this.state.next = e.target.value; },
+      lastSays: (st.said.filter((l) => l.who === 'buyer').slice(-1)[0] || { text: cur.says }).text
     };
   }
 }
