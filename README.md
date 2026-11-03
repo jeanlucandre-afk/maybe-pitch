@@ -1,54 +1,61 @@
-# MAYBE hackathon presentation
+# MAYBE. Try real work before you choose it.
 
-Live: https://maybe-pitch.vercel.app · ← → to move · F full screen · P notes
+**Macromedia × CODE Hackathon 2026 · Team: Boris & Luc**
 
-**Working together:** read `CLAUDE.md` first (branches, who owns which files, previews, secrets). Luc owns `main` and merges; the partner works on `voice` and opens pull requests.
+## ▶ Presentation (the demo is inside)
 
-# MAYBE hackathon presentation
+**https://maybe-pitch.vercel.app**
 
-A static site: scroll slides with live product screens and a voice agent. No build step. Deploy the `maybe/pitch` folder to Vercel as-is.
+The presentation *is* the demo. The product runs live inside the slides, so there is no separate demo link:
 
-## Presenting
+| Slide | What you see |
+|---|---|
+| **12 · Live call** | A real voice call with **Mara**, an AI customer. Speak into your microphone; she answers live. |
+| **13 · Careers** | Browse real-world jobs and open a trial, such as the DICE design editor. |
+| **14 · Agent world** | Right after the call, a crowd of simulated AI agents reviews it and gives a verdict. |
+| **15 · Product walkthrough** | A recorded run through the working prototype: marketplace, trial, AI review, employer side. |
 
-- Scroll, or use the keyboard: → ↓ Space PageDown for next, ← ↑ PageUp for back, Home and End, 1–9 to jump (0 = slide 10).
-- F: fullscreen. P: presenter notes (bottom right). Esc closes notes.
-- Deep links: `/#slide-6` opens the DICE slide.
-- Live slides (4, 5, 6, 8, 9) load the real prototype in a browser frame from `app/*.html`. You can scroll and click inside. "Open full screen" opens it in a new tab.
-- On a projector, use 1920×1080 at 100% zoom. Present from Chrome.
+**How to use it:** open the link in Chrome, press **→** to move, **F** for full screen, **P** for speaker notes. Allow the microphone on the live-call slide. Without a connection the slides play a demo run instead.
 
-## Voice agent
+## What MAYBE is
 
-1. Review `agent-prompt.md`.
-2. Create the ElevenLabs agent from it and add the client tools listed there.
-3. Put the agent id in `assets/site.js`: `const AGENT_ID = 'agent_…';`.
-4. In the agent's security settings, allow the Vercel domain.
+Students pick a real job from a company, **try** the actual task for about an hour (simulated and safe to fail), and **keep the proof**: transcripts, files and scores that say where they came from. Employers see the work, not just the CV, and a person decides who gets invited to interview.
 
-Without an id the "Talk to MAYBE" button stays visible but disabled ("Agent not connected yet"). The agent can move slides through `goToSlide`, `nextSlide`, `prevSlide`, `openScreen` and `getCurrentSlide`.
+> AI creates the chance; people make the decision.
 
-## Files
+Companies shown (DICE, Dr. Lipp, Spotify and others) are examples: mockup only, no partnership implied. AI-generated images and simulated agents are labelled as such.
 
-- `index.html`: the 11 slides. Notes for each slide are in its `data-notes`.
-- `assets/site.css`, `assets/site.js`: styles and behaviour. Tokens match the MAYBE Product Design System.
-- `assets/img/`: AI-generated covers and Open Peeps (CC0) drawings.
-- `app/`: the live product screens.
-- `vercel.json`: clean URLs and caching.
+## How it's built
 
-Companies shown are examples. Mockup only, no partnership implied. Cover images are AI-generated.
+| Part | Where |
+|---|---|
+| Slides: generated from our design canvas into one static page | `index.html` ← `src/*.dc.html` via `tools/build-deck.mjs` |
+| Live voice call with Mara (OpenAI Realtime, short-lived key from the server) | `api/realtime-session.js`, `assets/voice/mara.js`, `assets/live-call.js` |
+| AI review of the call: agents, rubric, evidence | `api/review-sales.js`, `api/_review/`, `assets/voice/agent-world-live.js`, `assets/agent-world.js` |
+| Clickable product prototype (student and employer screens) | `app/` |
+| Images, videos, slide assets | `deck/img/` |
 
-## Presentation deck (index.html)
+Hosting: Vercel (static files + Node serverless functions in `api/`). API keys live only in Vercel environment variables; `.env.example` lists the names.
 
-`index.html` is now the left/right presentation. It is **generated** from the slide boards on the "Presentation" page of the MAYBE Final design canvas, so design slides there, not in this file. The previous scrolling version is kept at `scroll.html`.
+## Run it locally
 
-- Keys: → / Space / PageDown next, ← / PageUp previous, Home / End, 1–9 jump, F full screen, P speaker notes. Swipe on touch screens. Arrow buttons bottom-right appear when the mouse moves.
-- Live screens: any element on a slide board with `data-live="<screen>"` gets `app/<screen>.html` in an iframe when the slide opens (the canvas screenshot is the fallback). Arrow keys still work after clicking inside a live screen, except while typing in a field.
-- Speaker notes come from the grey sticky note under each board on the canvas.
+```bash
+python3 -m http.server 8000
+```
 
-### Rebuild after editing slides on the canvas
+Then open http://localhost:8000. To run the voice call and AI review locally too, use `vercel dev` with a `.env` (names in `.env.example`). After editing anything in `src/`, run `node tools/build-deck.mjs` to regenerate `index.html`.
 
-1. Copy the boards `project/SlideNN.dc.html` and `project/canvas.json` from the canvas into `src/`.
-2. If a slide uses a new image, add its canvas asset id → sha256 to `src/assets.json` and sha256 → file to `tools/blob-map.json`, and put the file in `deck/img/`. The build warns about any image it cannot map.
-3. `node tools/build-deck.mjs`
+## Repository map
 
-### Voice agent
+```
+index.html           the presentation (generated, don't edit by hand)
+src/                 slide designs + canvas.json (order, speaker notes)
+app/                 product prototype screens shown inside the slides
+assets/              deck behaviour and styles; assets/voice/ = voice + review client code
+api/                 serverless functions: realtime voice session, call review
+deck/img/            images and videos
+tools/               deck builder, walkthrough recorder
+docs/                reference notes
+```
 
-Set `AGENT_ID` at the top of `assets/deck.js`. The deck exposes the same client tools as before (`goToSlide`, `nextSlide`, `prevSlide`, `openScreen`, `getCurrentSlide`); `getCurrentSlide` now also returns the live `screens` on the slide. See `agent-prompt.md`.
+Team docs: [`CLAUDE.md`](CLAUDE.md) (how we work: branches, lanes, secrets) · [`HANDOFF.md`](HANDOFF.md) (current state) · [`LIVE-CALL.md`](LIVE-CALL.md) · [`AGENT-WORLD.md`](AGENT-WORLD.md) · [`agent-prompt.md`](agent-prompt.md). `scroll.html` is an earlier scrolling version of the deck, kept for reference.
