@@ -1,0 +1,15 @@
+<!-- PATTERN: the walking crowd. Stat headline left, 100 people walk in on the right; the stat's share turns accent.
+     A second, supporting number lands last with a growing bar. -->
+<div class="slide-root">
+  <div style="position:absolute; left:160px; top:0; bottom:0; width:700px; display:flex; flex-direction:column; justify-content:center; gap:56px;">
+    <h2 class="h-1 rv" style="--d:.05; font-size:76px; max-width:13ch;">Only <span class="hl">26 in 100</span> people are where they hoped to be.</h2>
+    <div class="rv" style="--d:1.6; display:flex; flex-direction:column; gap:12px; width:640px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:24px;"><span class="body-l" style="font-size:24px;">What holds them back most: [reason]</span><span class="num num-s">66<span class="pt">.</span>8%</span></div>
+      <span class="bar"><i class="grow" style="--d:1.75; width:66.8%;"></i></span>
+    </div>
+    <p class="source rv" style="--d:1.9;">[Source, year]. Replace with a real, checked source.</p>
+  </div>
+  <div style="position:absolute; right:200px; top:50%; margin-top:-308px;">
+    <x-crowd total="100" on="26" cols="10" size="46" gap="14" start="0.25" label="100 people walk in; 26 are highlighted"></x-crowd>
+  </div>
+</div>

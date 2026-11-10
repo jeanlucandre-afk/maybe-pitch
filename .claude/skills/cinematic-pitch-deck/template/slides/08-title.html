@@ -1,0 +1,15 @@
+<!-- PATTERN: the title, revealed by an intro video. The slide is black until the video starts, the video plays over
+     the title and fades out at its last frame, the giant wordmark is left standing. No intro file? Delete the
+     <video> and .intro-black and the title shows at once. -->
+<div class="slide-root" data-intro>
+  <p class="eyebrow" style="position:absolute; left:120px; top:112px;"><span style="color:var(--accent-deep);">[Event name]</span> · [year]</p>
+  <div style="position:absolute; left:120px; right:120px; bottom:120px; display:flex; flex-direction:column; gap:64px;">
+    <h1 class="display" style="font-size:506px; margin-left:-20px;">BRAND<span class="hl">.</span></h1>
+    <div style="display:flex; justify-content:space-between; align-items:flex-end; gap:48px;">
+      <h2 class="h-2" style="line-height:1;">[The promise in six words.]</h2>
+      <div style="display:flex; flex-direction:column; gap:10px; flex-shrink:0;"><p class="kicker" style="font-size:18px; letter-spacing:.12em;">By</p><p class="h-2" style="line-height:1;">[Name] &amp; [Name]</p></div>
+    </div>
+  </div>
+  <video class="intro-video" src="media/intro.mp4" muted playsinline preload="auto" aria-hidden="true"></video>
+  <div class="intro-black" aria-hidden="true"></div>
+</div>

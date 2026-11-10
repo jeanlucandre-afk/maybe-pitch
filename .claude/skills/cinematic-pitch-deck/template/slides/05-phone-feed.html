@@ -1,0 +1,21 @@
+<!-- PATTERN: numbers left, a phone right whose feed cycles through 4 real stories by itself (18s loop).
+     Every story names where it was reported. -->
+<div class="slide-root">
+  <div style="position:absolute; left:160px; top:0; bottom:0; width:900px; display:flex; flex-direction:column; justify-content:center; gap:56px;">
+    <h2 class="h-1 rv" style="--d:.05; font-size:76px; max-width:17ch;">[Side A] uses AI to [verb]. [Side B] uses AI to <span class="hl">[verb]</span>.</h2>
+    <div style="display:flex; gap:64px;">
+      <div class="rv" style="--d:.4; display:flex; flex-direction:column; gap:8px;"><span class="num num-l">11,000</span><span class="body-l" style="max-width:26ch;">[what per minute]</span><span class="source">[Source, date]</span></div>
+      <div class="rv" style="--d:.6; display:flex; flex-direction:column; gap:8px;"><span class="num num-l">1 in 5</span><span class="body-l" style="max-width:26ch;">[what share does what]</span><span class="source">[Source, date]</span></div>
+    </div>
+  </div>
+  <div class="phone fin" style="--d:.2; left:1180px; top:90px; width:450px; height:900px;">
+    <div class="screen">
+      <div class="feed" style="position:absolute; left:0; top:0; width:100%; height:400%;">
+        <article style="height:25%; padding:56px 30px 34px; display:flex; flex-direction:column; gap:18px; color:#FAFAFA;"><span class="callout" style="align-self:flex-start; background:rgba(255,255,255,.12); border:0; color:#FAFAFA; font-size:15px; font-weight:600;">Story 1</span><span style="font:15px var(--font-mono); color:#A1A1AA;">@handle · Month year</span><p style="margin:6px 0 0; font-size:31px; font-weight:600; line-height:1.22; letter-spacing:-.02em;">[One sentence, with the <span style="color:var(--accent-on-dark)">key phrase</span> highlighted.]</p><p style="margin:auto 0 0; font-size:14px; color:#A1A1AA;">Reported by [outlet]</p></article>
+        <article style="height:25%; padding:56px 30px 34px; display:flex; flex-direction:column; gap:18px; color:#FAFAFA;"><span class="callout" style="align-self:flex-start; background:rgba(255,255,255,.12); border:0; color:#FAFAFA; font-size:15px; font-weight:600;">Story 2</span><p style="margin:6px 0 0; font-size:31px; font-weight:600; line-height:1.22;">[Second story]</p></article>
+        <article style="height:25%; padding:56px 30px 34px; display:flex; flex-direction:column; gap:18px; color:#FAFAFA;"><span class="callout" style="align-self:flex-start; background:rgba(255,255,255,.12); border:0; color:#FAFAFA; font-size:15px; font-weight:600;">Story 3</span><p style="margin:6px 0 0; font-size:31px; font-weight:600; line-height:1.22;">[Third story]</p></article>
+        <article style="height:25%; padding:56px 30px 34px; display:flex; flex-direction:column; gap:18px; color:#FAFAFA;"><span class="callout" style="align-self:flex-start; background:rgba(255,255,255,.12); border:0; color:#FAFAFA; font-size:15px; font-weight:600;">Story 4</span><p style="margin:6px 0 0; font-size:31px; font-weight:600; line-height:1.22;">[Fourth story]</p></article>
+      </div>
+    </div>
+  </div>
+</div>

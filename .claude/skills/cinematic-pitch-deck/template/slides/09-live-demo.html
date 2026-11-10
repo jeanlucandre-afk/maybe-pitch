@@ -1,0 +1,10 @@
+<!-- PATTERN: the product, live inside the slide. A real page in an iframe (scaled from 1440px wide), clickable.
+     Explain on the left in at most three steps. Put a recorded fallback on the next slide in case the network dies. -->
+<div class="slide-root">
+  <div style="position:absolute; left:120px; top:0; bottom:0; width:470px; display:flex; flex-direction:column; justify-content:center; gap:28px;">
+    <p class="kicker rv" style="--d:.05;">Live prototype</p>
+    <h2 class="h-1 rv" style="--d:.15; font-size:64px;">[What the audience is looking at]</h2>
+    <p class="body-l rv" style="--d:.35;">[One sentence: what to watch for.]</p>
+  </div>
+  <div class="fin" data-live="app/index.html" aria-label="Live prototype: [screen]" style="--d:.2; left:660px; top:110px; width:1140px; height:860px; box-shadow:var(--shadow-device);"></div>
+</div>

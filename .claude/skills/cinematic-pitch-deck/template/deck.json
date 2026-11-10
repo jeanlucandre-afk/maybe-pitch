@@ -1,0 +1,24 @@
+{
+  "title": "BRAND · Pitch",
+  "lang": "en",
+  "fonts": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap",
+  "css": [],
+  "scripts": [],
+  "slides": [
+    { "file": "00-black.html", "title": "Black (press next to start)", "uncounted": true },
+    { "file": "01-question.html", "title": "The question", "notes": "Pause on black first, then let the question land. Don't answer it." },
+    { "file": "02-crowd-stat.html", "title": "The gap", "notes": "Let the people walk in. Say the number only once the 26 turn colour." },
+    { "file": "03-pictograms.html", "title": "The human cost", "notes": "Two numbers, two feelings. Say what the sources do NOT prove." },
+    { "file": "04-twist.html", "title": "The other side", "notes": "Pause before 'Right?'." },
+    { "file": "05-phone-feed.html", "title": "The escalation", "notes": "The phone tells four stories by itself; don't read them, point at them." },
+    { "file": "06-social-flower.html", "title": "Real people", "notes": "No text on the slide. Tell the story of the post. These are individual accounts." },
+    { "file": "07-turn.html", "title": "The turn", "notes": "Both problems in one line, then the 'What if'. Next slide: the name." },
+    { "file": "08-title.html", "title": "Title", "notes": "Hi, we're [names]. [Brand] lets [who] [do what] before [decision]." },
+    { "file": "09-live-demo.html", "title": "Live demo", "notes": "Click through it live. If the network fails, skip to the walkthrough." },
+    { "file": "10-walkthrough.html", "title": "Product walkthrough", "notes": "Narrate each caption as it appears: find, try, review, share, invite." },
+    { "file": "11-market.html", "title": "The market", "notes": "Say which numbers are separate categories and not your addressable market." },
+    { "file": "12-timeline.html", "title": "Why now", "notes": "Date, what changes, and that this is not a compliance claim." },
+    { "file": "13-callback.html", "title": "Back to the start", "notes": "Same question as the opening, then its mirror." },
+    { "file": "14-close.html", "title": "Close", "notes": "Old world, new world, name, tagline, thank you." }
+  ]
+}

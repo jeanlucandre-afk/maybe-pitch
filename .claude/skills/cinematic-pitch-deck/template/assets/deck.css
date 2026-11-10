@@ -1,0 +1,74 @@
+/* deck.css: stage, slide primitives and controls. Reads brand.css; no brand values here. */
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; overflow: hidden; background: var(--letterbox); color: var(--ink); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; }
+
+/* ---- one 1920x1080 stage per slide, scaled to the window, cross-fading ---- */
+.deck { position: fixed; inset: 0; }
+.deck-slide { position: absolute; inset: 0; overflow: hidden; visibility: hidden; opacity: 0; transition: opacity .35s ease, visibility 0s linear .35s; }
+.deck-slide.is-active { visibility: visible; opacity: 1; transition: opacity .35s ease; z-index: 1; }
+.deck-stage { position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px; transform: translate(-50%, -50%) scale(var(--scale, 1)); transform-origin: center; background: var(--bg); overflow: hidden; }
+.deck-slide:not(.is-active) .deck-stage * { animation-play-state: paused !important; }
+
+/* ---- slide root: light by default, .dark for the emotional beats ---- */
+.slide-root { position: absolute; inset: 0; background: var(--bg); color: var(--ink); }
+.slide-root.dark { background: var(--bg-dark); color: var(--ink-dark); }
+.slide-root.black { background: #000; }
+
+/* the 4px progress line across the top (width set by the runtime from the slide position) */
+.progress { position: absolute; left: 0; top: 0; height: 4px; width: var(--progress, 0%); background: var(--accent); z-index: 5; transition: width .6s cubic-bezier(.2,.7,.2,1); }
+
+/* ---- type scale (1920 stage). Big, tight, few words. ---- */
+.display  { margin: 0; font-weight: var(--display-weight); line-height: .78; letter-spacing: -0.065em; }          /* the wordmark: 360-506px */
+.h-hero   { margin: 0; font-size: 104px; font-weight: var(--display-weight); line-height: 1.02; letter-spacing: var(--display-tracking); } /* dark question slides */
+.h-1      { margin: 0; font-size: 80px; font-weight: var(--display-weight); line-height: 1.02; letter-spacing: var(--display-tracking); }  /* data slide headline */
+.h-2      { margin: 0; font-size: 68px; font-weight: 600; line-height: 1.05; letter-spacing: -0.04em; }  /* tagline, closing line */
+.lede     { margin: 0; font-size: 36px; line-height: 1.35; color: var(--ink-2); }  /* setup sentence above a hero line */
+.dark .lede { color: var(--ink-dark-2); }
+.body-l   { margin: 0; font-size: 26px; line-height: 1.35; color: var(--ink-2); }  /* the sentence under a big number */
+.source   { margin: 0; font-size: 15px; line-height: 1.45; color: var(--ink-3); }  /* every number carries one */
+.dark .source { color: var(--ink-dark-2); }
+.eyebrow  { margin: 0; font-family: var(--font-mono); font-size: 24px; font-weight: 500; letter-spacing: .02em; color: var(--ink-3); }
+.kicker   { margin: 0; font-family: var(--font-mono); font-size: 16px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.num      { font-family: var(--font-mono); font-weight: 500; letter-spacing: var(--mono-tracking); line-height: .95; font-variant-numeric: tabular-nums; }
+.num-xl   { font-size: 120px; } .num-l { font-size: 96px; } .num-m { font-size: 80px; } .num-s { font-size: 40px; }
+.num .pt  { margin: 0 -0.22em; } /* tighten the decimal point in mono numbers: 66<span class="pt">.</span>8% */
+.hl       { color: var(--accent); }        /* the one highlighted word */
+.dark .hl { color: var(--accent-on-dark); }
+.muted    { color: var(--ink-3); }
+
+/* ---- layout helpers: 160px side margins for statement slides, 120px for title/close ---- */
+.pad      { position: absolute; left: 160px; right: 160px; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; }
+.pad-wide { position: absolute; left: 120px; right: 120px; }
+
+/* ---- small components ---- */
+.bar      { display: block; height: 14px; border-radius: var(--radius-pill); background: var(--track); overflow: hidden; }
+.bar > i  { display: block; height: 100%; border-radius: inherit; background: var(--ink); }
+.bar > i.accent { background: var(--accent); }
+.chip     { display: inline-block; padding: 12px 20px; border-radius: var(--radius-pill); border: 1px solid var(--line); font-size: 22px; font-weight: 500; }
+.phone    { position: absolute; box-sizing: border-box; border-radius: 64px; background: #09090B; padding: 14px; box-shadow: var(--shadow-device), inset 0 0 0 2px #27272A; }
+.phone > .screen { position: relative; width: 100%; height: 100%; border-radius: 52px; overflow: hidden; background: #18181B; }
+.callout  { display: inline-flex; flex-direction: column; gap: 2px; padding: 10px 16px; border-radius: 14px; background: var(--bg); border: 1px solid var(--line); box-shadow: var(--shadow-float); color: var(--ink); }
+.ai-label { position: absolute; right: 16px; bottom: 14px; padding: 4px 10px; border-radius: var(--radius-pill); background: rgba(0,0,0,.6); color: #fff; font: 500 13px var(--font-sans); }
+
+/* live prototype frames ([data-live]): the runtime mounts an iframe, scaled */
+[data-live] { position: absolute; overflow: hidden; border-radius: var(--radius-card); border: 1px solid var(--line); background: var(--bg); }
+[data-live] iframe { position: absolute; left: 0; top: 0; border: 0; transform-origin: 0 0; background: #fff; }
+.live-badge { position: absolute; right: 12px; bottom: 12px; z-index: 2; display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: var(--radius-pill); background: rgba(9,9,11,.82); color: #fafafa; font: 500 13px var(--font-sans); pointer-events: none; }
+.live-badge::before { content: ""; width: 7px; height: 7px; border-radius: 999px; background: #22c55e; }
+
+/* ---- controls: invisible until the mouse moves ---- */
+.deck-nav { position: fixed; right: 16px; bottom: 14px; z-index: 40; display: flex; align-items: center; gap: 6px; padding: 4px; border-radius: 12px; background: rgba(255,255,255,.92); border: 1px solid #e4e4e7; box-shadow: var(--shadow-float); opacity: 0; transition: opacity .2s; }
+.deck-nav:hover, .deck-nav:focus-within, body.show-ui .deck-nav { opacity: 1; }
+.deck-btn { width: 40px; height: 40px; display: grid; place-items: center; border: 0; border-radius: 8px; background: transparent; color: #09090b; cursor: pointer; }
+.deck-btn:hover { background: #f4f4f5; }
+.deck-btn:focus-visible { outline: 1.5px solid var(--accent); outline-offset: 2px; }
+.deck-btn:disabled { color: #d4d4d8; cursor: default; background: transparent; }
+.deck-count { font: 500 13px var(--font-mono); color: #52525b; padding: 0 6px; min-width: 64px; text-align: center; }
+
+/* speaker notes (P) */
+.deck-notes { position: fixed; left: 50%; bottom: 72px; transform: translateX(-50%); z-index: 50; width: min(760px, calc(100vw - 32px)); padding: 18px 20px; border-radius: 12px; background: #09090b; color: #fafafa; box-shadow: 0 20px 50px -20px rgba(0,0,0,.5); }
+.deck-notes__title { margin: 0 0 6px; font: 600 13px var(--font-mono); color: var(--accent-on-dark); }
+.deck-notes__text { margin: 0; font-size: 17px; line-height: 1.5; white-space: pre-line; }
+.deck-notes__hint { margin: 10px 0 0; font-size: 12px; color: #a1a1aa; }
+
+@media (prefers-reduced-motion: reduce) { .deck-slide { transition: none; } }

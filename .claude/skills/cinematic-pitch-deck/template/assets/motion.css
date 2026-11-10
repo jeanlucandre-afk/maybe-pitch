@@ -1,0 +1,75 @@
+/* motion.css: the choreography library.
+ * Every animated element gets a class below plus a delay in seconds: style="--d:.4".
+ * The slide root carries .anim-on (the runtime re-adds it every time the slide opens, so the
+ * choreography replays) and --spd (1 = normal, 1.5 = slow, .6 = fast) which scales every duration and delay.
+ * Easing: one house curve, cubic-bezier(.2,.7,.2,1): fast out, long soft landing. */
+.slide-root { --spd: 1; }
+
+@keyframes rv      { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+@keyframes rise    { 0% { transform: translateY(105%) rotate(4deg); } 60% { transform: translateY(-6%) rotate(-2deg); } 80% { transform: translateY(2%); } 100% { transform: none; } }
+@keyframes fin     { from { opacity: 0; transform: translateY(40px) scale(.97); } to { opacity: 1; transform: none; } }
+@keyframes grow    { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes growy   { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@keyframes pop     { from { opacity: 0; transform: scale(.4); } to { opacity: 1; transform: none; } }
+@keyframes draw    { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes drift   { from { transform: scale(1.08) translateY(0); } to { transform: scale(1.08) translateY(-4%); } }
+@keyframes shot    { 0%,15% { transform: translateY(0); } 55%,70% { transform: translateY(var(--shot-scroll, -18%)); } 100% { transform: translateY(0); } }
+
+/* reveal: the default for every text block (0.7s) */
+.anim-on .rv    { animation: rv calc(.7s * var(--spd)) cubic-bezier(.2,.7,.2,1) calc(var(--d, 0) * 1s * var(--spd)) both; }
+/* rise: a drawn character or object springs up from the bottom edge, with overshoot */
+.anim-on .rise  { animation: rise calc(.8s * var(--spd)) cubic-bezier(.3,.7,.2,1) calc(var(--d, 0) * 1s * var(--spd)) both; }
+/* fin: frames, phones, screenshots land from below */
+.anim-on .fin   { animation: fin calc(.9s * var(--spd)) cubic-bezier(.2,.7,.2,1) calc(var(--d, 0) * 1s * var(--spd)) both; }
+/* grow: horizontal bars and timelines fill from the left */
+.anim-on .grow  { transform-origin: left center; animation: grow calc(.9s * var(--spd)) cubic-bezier(.2,.7,.2,1) calc(var(--d, 0) * 1s * var(--spd)) both; }
+/* growy: vertical bars grow from the baseline */
+.anim-on .growy { transform-origin: center bottom; animation: growy calc(1s * var(--spd)) cubic-bezier(.2,.7,.2,1) calc(var(--d, 0) * 1s * var(--spd)) both; }
+/* pop: dots and pictogram icons appear with a small spring */
+.anim-on .pop   { animation: pop calc(.5s * var(--spd)) cubic-bezier(.2,.7,.2,1.2) calc(var(--d, 0) * 1s * var(--spd)) both; }
+/* draw: SVG strokes (pathLength="1") draw themselves */
+.anim-on .draw  { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw calc(1.4s * var(--spd)) cubic-bezier(.4,0,.2,1) calc(var(--d, 0) * 1s * var(--spd)) both; }
+/* drift: a slow Ken Burns on a background photo */
+.anim-on .drift { animation: drift calc(9s * var(--spd)) ease-in-out infinite alternate; }
+/* shot: a tall screenshot inside a frame scrolls down, holds, scrolls back */
+.anim-on .shot  { animation: shot calc(14s * var(--spd)) ease-in-out 1.4s infinite; }
+
+/* ---- signature: the walking crowd (<x-crowd>) ----
+ * Each person walks in from the right with a little bob, staggered; the highlighted ones turn accent
+ * at --t, after everyone has arrived. The audience counts them with their eyes. */
+@keyframes walk-in  { from { transform: translateX(var(--walk-from, 980px)); } to { transform: none; } }
+@keyframes walk-bob { 0% { transform: translateY(0) rotate(-4deg); } 100% { transform: translateY(-5px) rotate(4deg); } }
+@keyframes walk-on  { to { fill: var(--accent); } }
+.walker svg { display: block; fill: var(--ghost); }
+.anim-on .walker { animation: walk-in calc(2.1s * var(--spd)) cubic-bezier(.3,.55,.35,1) calc(var(--wd) * 1s * var(--spd)) both; }
+.anim-on .walker svg { transform-origin: 50% 100%; animation: walk-bob calc(.26s * var(--spd)) ease-in-out calc(var(--wd) * 1s * var(--spd)) 8 alternate; }
+.anim-on .walker.on svg { animation: walk-bob calc(.26s * var(--spd)) ease-in-out calc(var(--wd) * 1s * var(--spd)) 8 alternate, walk-on calc(.45s * var(--spd)) ease calc(var(--wt) * 1s * var(--spd)) forwards; }
+.anim-off .walker.on svg { fill: var(--accent); }
+
+/* ---- signature: 3D "flower" of phones (social proof) ---- */
+@keyframes post-in  { from { opacity: 0; transform: perspective(1600px) translateZ(520px) rotateX(-18deg) rotate(4deg); } to { opacity: 1; transform: perspective(1600px) rotate(-1.5deg); } }
+@keyframes petal-in { from { opacity: 0; transform: perspective(1600px) translate3d(var(--fx), var(--fy), -1400px) rotateX(60deg) rotateY(var(--fry)); } to { opacity: 1; transform: var(--rest); } }
+@keyframes petal-sway { 0%,100% { transform: var(--rest); } 50% { transform: var(--rest) translateY(-10px) rotate(1.2deg); } }
+.hero-post { transform: perspective(1600px) rotate(-1.5deg); }
+.petal { transform: var(--rest); transform-origin: 50% 80%; }
+.anim-on .hero-post { animation: post-in calc(1s * var(--spd)) cubic-bezier(.16,.9,.25,1) calc(var(--d, 0) * 1s * var(--spd)) both; }
+.anim-on .petal { animation: petal-in calc(1.3s * var(--spd)) cubic-bezier(.16,.9,.25,1) calc(var(--d, 0) * 1s * var(--spd)) both,
+                               petal-sway calc(7s * var(--spd)) ease-in-out calc((var(--d, 0) + 1.3) * 1s * var(--spd)) infinite; }
+
+/* ---- signature: the phone feed (stories that change by themselves) ----
+ * 4 cards stacked in a 400%-tall column; each holds ~4s then slides up. Dots on the side track it. */
+@keyframes feed { 0%,21% { transform: translateY(0); } 25%,46% { transform: translateY(-25%); } 50%,71% { transform: translateY(-50%); } 75%,96% { transform: translateY(-75%); } 100% { transform: translateY(0); } }
+.anim-on .feed { animation: feed calc(18s * var(--spd)) cubic-bezier(.7,0,.2,1) 1s infinite; }
+
+/* ---- signature: title intro video over a black cover ----
+ * The slide shows black until the video starts, the video plays over the title, then fades out to reveal it. */
+@keyframes intro-out { 0%,96% { opacity: 1; visibility: visible; } 100% { opacity: 0; visibility: hidden; } }
+.intro-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.intro-black { position: absolute; inset: 0; background: #000; }
+.intro-playing .intro-video { animation: intro-out var(--intro-len, 6.4s) linear both; }
+.intro-playing .intro-black, .intro-done .intro-black, .intro-done .intro-video { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .rv, .rise, .fin, .grow, .growy, .pop, .draw, .drift, .shot, .walker, .walker svg, .hero-post, .petal, .feed { animation: none !important; stroke-dashoffset: 0; }
+  .walker.on svg { fill: var(--accent); }
+}

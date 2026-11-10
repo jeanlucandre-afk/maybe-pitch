@@ -1,0 +1,34 @@
+/* MAYBE brand preset for the cinematic-pitch-deck engine. Copy over template/assets/brand.css.
+ * Values are the ones used in the Macromedia × CODE Hackathon deck and the "MAYBE Product" design system. */
+:root {
+  --bg: #FFFFFF;
+  --ink: #09090B;
+  --ink-2: #52525B;
+  --ink-3: #71717A;          /* 4.8:1 on white */
+  --line: #E4E4E7;
+  --track: #F4F4F5;
+  --ghost: #D4D4D8;
+
+  --bg-dark: #09090B;
+  --ink-dark: #FAFAFA;
+  --ink-dark-2: #A1A1AA;     /* lede on dark; #D4D4D8 for the mirror line on the callback slide */
+  --line-dark: #27272A;
+
+  --accent: #7C3AED;         /* the one violet */
+  --accent-deep: #5B21B6;    /* violet small text (eyebrow event name), 7.6:1 */
+  --accent-soft: #EDE9FE;    /* forecast bar, halo */
+  --accent-on-dark: #C4B5FD; /* the accent word on dark slides */
+
+  --font-sans: Geist, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --display-weight: 700;
+  --display-tracking: -0.045em;
+  --mono-tracking: -0.05em;
+
+  --radius-pill: 999px;
+  --radius-card: 12px;
+  --shadow-float: 0 8px 22px -10px rgba(0,0,0,.25);
+  --shadow-device: 0 50px 100px -40px rgba(9,9,11,.6);
+
+  --letterbox: #F4F4F5;
+}
