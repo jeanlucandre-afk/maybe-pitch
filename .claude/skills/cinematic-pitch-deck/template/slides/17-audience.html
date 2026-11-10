@@ -1,16 +1,18 @@
 <!-- PATTERN: the room votes (assets/live/audience.js, vote.html, api/poll.js, polls.json).
-     QR left (big enough to scan from row 10: 360px+), question and live bars right. Use it to open a section
-     ("Who here chose their degree without trying the job?") or to close the loop after the demo.  Delete data-template from the root once the content is yours (tools/check.mjs blocks it). -->
-<div class="slide-root" data-shoot-wait="4500" data-template data-poll data-demo-question="Would you have tried it before choosing?" data-demo-options='["Yes, definitely","Maybe","No, I knew already"]'>
-  <div class="fin" style="--d:.1; position:absolute; left:160px; top:50%; margin-top:-250px; width:420px; display:flex; flex-direction:column; gap:18px; align-items:center;">
-    <div class="qr" data-qr style="width:420px; height:420px;"></div>
-    <span class="num" data-poll-url style="font-size:24px; color:var(--ink-2);"></span>
+     Left: the question as a data-slide headline, results as the deck's own bar rows (label, big mono %, bar;
+     the leader in the accent). Right: the QR on a CSS phone, the short link under it. One quiet status line.
+     Delete data-template once the content is yours. -->
+<div class="slide-root" data-template data-shoot-wait="6000" data-poll data-demo-question="Would you have tried it before choosing?" data-demo-options='["Yes, definitely","Maybe","No, I knew already"]'>
+  <div style="position:absolute; left:160px; top:140px; width:1000px;">
+    <h2 class="h-1 rv" data-poll-question style="--d:.05; max-width:17ch;">Would you have <span class="hl">tried</span> it before choosing?</h2>
   </div>
-  <div style="position:absolute; left:760px; right:160px; top:0; bottom:0; display:flex; flex-direction:column; justify-content:center; gap:40px;">
-    <p class="kicker rv" style="--d:.05;">Scan and vote</p>
-    <h2 class="h-1 rv" data-poll-question style="--d:.15; font-size:68px; max-width:20ch;">Would you have tried it before choosing?</h2>
-    <div data-poll-rows class="rv" style="--d:.35; display:flex; flex-direction:column; gap:26px;"></div>
-    <p class="source rv" data-poll-total style="--d:.5; font-size:20px;"></p>
+  <div class="poll-rows rv" data-poll-rows style="--d:.4; position:absolute; left:160px; top:520px; width:900px;"></div>
+  <p class="live-note rv" data-poll-status style="--d:.6; position:absolute; left:160px; bottom:96px;"><span data-poll-total>0 votes</span></p>
+  <div class="phone fin" style="--d:.2; left:1290px; top:90px; width:450px; height:900px;">
+    <div class="screen" style="background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:34px; padding:56px;">
+      <p class="kicker" style="font-size:18px;">Scan to vote</p>
+      <div class="qr" data-qr></div>
+      <p class="num" data-poll-url style="margin:0; font-size:22px; letter-spacing:-0.02em; color:var(--ink-2); text-align:center;"></p>
+    </div>
   </div>
-  <span class="live-status" data-poll-status data-state="connecting" style="right:72px; top:72px;">Connecting…</span>
 </div>

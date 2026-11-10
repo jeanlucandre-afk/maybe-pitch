@@ -1,12 +1,16 @@
 /* live.css: the live-demo slides (voice call, agent panel, audience poll). Reads brand.css. */
 
-/* ---- status pill (every live slide says honestly what it is: Live, Connecting, Demo) ---- */
-.live-status { position: absolute; z-index: 6; display: inline-flex; align-items: center; gap: 10px; padding: 10px 18px; border-radius: 999px; background: var(--bg); border: 1px solid var(--line); box-shadow: var(--shadow-float); font: 500 20px var(--font-sans); color: var(--ink-2); }
-.live-status::before { content: ""; width: 10px; height: 10px; border-radius: 999px; background: var(--ghost); }
-.live-status[data-state="live"]::before { background: #22c55e; box-shadow: 0 0 0 6px rgba(34,197,94,.18); }
-.live-status[data-state="connecting"]::before { background: #f59e0b; animation: live-blink 1s ease-in-out infinite; }
-.live-status[data-state="demo"]::before { background: var(--accent); }
-@keyframes live-blink { 50% { opacity: .3; } }
+/* ---- call notice: under the orb, only when something needs the presenter (ported from the MAYBE live call) ---- */
+.call-notice { position: absolute; z-index: 5; display: flex; justify-content: center; pointer-events: none; }
+.call-notice[hidden] { display: none; }
+.call-notice > div { display: inline-flex; align-items: center; gap: 18px; padding: 14px 20px; border-radius: 14px; background: var(--bg); border: 1px solid var(--line); box-shadow: 0 8px 22px -10px rgba(0,0,0,.25); color: var(--ink); font-size: 22px; line-height: 1.3; pointer-events: auto; }
+.call-notice button { flex: none; padding: 10px 18px; border: 0; border-radius: 10px; background: var(--ink); color: var(--bg); font: inherit; font-size: 20px; font-weight: 600; cursor: pointer; }
+.call-notice button[hidden] { display: none; }
+
+/* ---- a quiet status line (poll): words, not a badge ---- */
+.live-note { margin: 0; display: inline-flex; align-items: center; gap: 10px; font: 500 18px var(--font-mono); color: var(--ink-3); }
+.live-note::before { content: ""; width: 9px; height: 9px; border-radius: 999px; background: var(--ghost); }
+.live-note[data-state="live"]::before { background: var(--accent); }
 
 /* ---- voice orb: a liquid sphere in the accent, smaller the louder the sound ---- */
 .orb { position: relative; width: 600px; height: 600px; border-radius: 50%; overflow: hidden; background: var(--accent-soft);
@@ -38,39 +42,20 @@
 .avatar.is-talking img { animation: talk-bob .32s ease-in-out infinite alternate; }
 @keyframes talk-bob { to { transform: translateY(-6px) rotate(-1.6deg); } }
 
-/* ---- agent panel: simulated people in a ring, each with a speech bubble and a verdict ---- */
-.ring { position: absolute; }
-.agent-node { position: absolute; width: 132px; margin-left: -66px; display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; transition: transform .6s cubic-bezier(.2,.7,.2,1), opacity .6s; }
-.agent-node.is-hidden { opacity: 0; transform: scale(.5); }
-.agent-face { width: 96px; height: 96px; border-radius: 999px; display: grid; place-items: center; background: var(--track); border: 2px solid var(--line); font: 600 30px var(--font-sans); color: var(--ink-2); transition: background .4s, border-color .4s, color .4s; }
-.agent-node.is-speaking .agent-face { border-color: var(--accent); box-shadow: 0 0 0 8px var(--accent-soft); }
-.agent-node[data-verdict="yes"] .agent-face { background: var(--accent); border-color: var(--accent); color: #fff; }
-.agent-node[data-verdict="maybe"] .agent-face { background: var(--accent-soft); border-color: var(--accent-on-dark); color: var(--accent-deep); }
-.agent-node[data-verdict="no"] .agent-face { background: var(--bg); border-color: var(--ink); color: var(--ink); }
-.agent-name { font: 500 17px var(--font-sans); color: var(--ink-2); }
-.agent-verdict { font: 500 15px var(--font-mono); color: var(--ink-3); min-height: 20px; }
-.agent-say { position: absolute; bottom: 150px; left: 50%; width: 300px; transform: translateX(-50%) translateY(8px); padding: 12px 16px; border-radius: 16px; background: var(--bg); border: 1px solid var(--line); box-shadow: var(--shadow-float); font-size: 19px; line-height: 1.35; color: var(--ink); opacity: 0; transition: opacity .35s, transform .35s; pointer-events: none; z-index: 3; }
-.agent-node.is-speaking .agent-say { opacity: 1; transform: translateX(-50%); }
-.agent-think { font-style: italic; color: var(--ink-3); }
-.review { position: absolute; display: flex; flex-direction: column; gap: 22px; }
-.review h3 { margin: 0; font: 500 16px var(--font-mono); text-transform: uppercase; letter-spacing: .08em; color: var(--ink-3); }
-.review ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
-.review li { font-size: 22px; line-height: 1.35; padding-left: 30px; position: relative; opacity: 0; transform: translateY(10px); transition: opacity .4s, transform .4s; }
-.review li.is-in { opacity: 1; transform: none; }
-.review li::before { position: absolute; left: 0; top: 0; font-family: var(--font-mono); }
-.review .pros li::before { content: "+"; color: var(--accent); }
-.review .cons li::before { content: "−"; color: var(--ink-3); }
-.tally { font: 500 64px var(--font-mono); letter-spacing: -0.05em; line-height: 1; }
-.provenance { align-self: flex-start; display: inline-flex; padding: 4px 12px; border-radius: 999px; border: 1px solid #fde68a; background: #fffbeb; color: #92400e; font: 500 15px var(--font-sans); }
-
-/* ---- audience poll ---- */
-.qr { background: #fff; padding: 22px; border-radius: 22px; box-shadow: var(--shadow-float); border: 1px solid var(--line); }
-.qr svg { display: block; width: 100%; height: auto; }
-.poll-row { display: grid; grid-template-columns: 1fr 120px; gap: 6px 24px; align-items: baseline; }
-.poll-row .label { font-size: 30px; font-weight: 600; letter-spacing: -0.02em; }
-.poll-row .val { font: 500 40px var(--font-mono); letter-spacing: -0.04em; text-align: right; }
-.poll-row .track { grid-column: 1 / -1; height: 22px; border-radius: 999px; background: var(--track); overflow: hidden; }
-.poll-row .fill { display: block; height: 100%; width: 0; border-radius: inherit; background: var(--ink); transition: width .8s cubic-bezier(.2,.7,.2,1); }
+/* ---- audience poll: QR on a phone, results as the deck's own bar rows ---- */
+.qr { width: 100%; aspect-ratio: 1; }
+.qr svg { display: block; width: 100%; height: 100%; }
+.qr svg rect[fill="#ffffff"], .qr svg rect[fill="white"] { fill: transparent; }
+.poll-rows { display: flex; flex-direction: column; gap: 34px; }
+.poll-row { display: flex; flex-direction: column; gap: 14px; }
+.poll-row .top { display: flex; justify-content: space-between; align-items: baseline; gap: 24px; }
+.poll-row .label { font-size: 30px; line-height: 1.25; color: var(--ink-2); transition: color .4s; }
+.poll-row .val { font-family: var(--font-mono); font-size: 64px; font-weight: 500; letter-spacing: var(--mono-tracking); line-height: .9; font-variant-numeric: tabular-nums; }
+.poll-row .val .pc { font-size: .55em; margin-left: .04em; }
+.poll-row .track { display: block; height: 14px; border-radius: 999px; background: var(--track); overflow: hidden; }
+.poll-row .fill { display: block; height: 100%; width: 0; border-radius: inherit; background: var(--ink); transition: width .9s cubic-bezier(.2,.7,.2,1); }
+.poll-row.is-lead .label { color: var(--ink); }
 .poll-row.is-lead .fill { background: var(--accent); }
+.poll-row.is-lead .val { color: var(--accent); }
 
-@media (prefers-reduced-motion: reduce) { .avatar.is-talking img { animation: none; } .bubble, .agent-node, .review li, .poll-row .fill { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .avatar.is-talking img { animation: none; } .bubble, .poll-row .fill { transition: none; } }

@@ -14,6 +14,7 @@ Engine: `template/` next to this file. References (read the one for the step you
 
 | Read | When |
 |---|---|
+| `references/design-bar.md` | Always. The standard (`references/look/*.jpg` = the original deck) and the vibe-code tells. |
 | `references/brand-gate.md` | Step 1, always. Brand brief → `brand.css` + image style. |
 | `references/story-arc.md` | Step 2. The beat sheet. |
 | `references/slide-patterns.md` | Step 4. Every layout with measurements. |
@@ -32,10 +33,12 @@ Engine: `template/` next to this file. References (read the one for the step you
 4. **Honest.** Every number has a source line on the slide and its caveat in the notes. No invented numbers,
    users, prices, logos or testimonials. Example companies say "mockup only". AI images are labelled. Simulated
    people and AI characters say so, on screen.
-5. **Motion explains, never decorates.** Reading order; claim before proof; one house curve; reduced-motion safe.
-6. **Live, with a net.** Every live demo shows Live / Connecting / Demo and falls back to a labelled demo in
-   seconds; a recorded walkthrough follows the live part.
-7. **Keys stay on the server.** Only names in chat, code and commits; values live in Vercel env vars or a
+5. **It must look like the original deck.** Compare every screenshot with `references/look/` (design-bar.md);
+   no status pills, no developer text on stage, no unloaded fonts, no dashboard-card look.
+6. **Motion explains, never decorates.** Reading order; claim before proof; one house curve; reduced-motion safe.
+7. **Live, with a net.** Every live demo falls back to a labelled demo within seconds, and says so
+   quietly (a notice under the orb, a mode tag on the panel, a short line under the poll); a recorded walkthrough follows the live part.
+8. **Keys stay on the server.** Only names in chat, code and commits; values live in Vercel env vars or a
    gitignored `.env`.
 
 ## Questions to ask first (only what you can't find out)
@@ -65,7 +68,8 @@ Engine: `template/` next to this file. References (read the one for the step you
 5. **Media and live demos.** Characters and images via `tools/media/gen-image.mjs` (Codex → API). Intro film,
    walkthrough recording (`tools/walkthrough/record.mjs`), TikToks. Live demos: write `api/_persona.js`,
    `api/_agents.js`, `polls.json`, the demo scripts, and the prototype in `app/`.
-6. **QA.** `node tools/shoot.mjs http://localhost:8000` and **look at every PNG**; `node tools/check.mjs` must say
+6. **QA.** `node tools/shoot.mjs http://localhost:8000`, then **compare every PNG with its reference in
+   `references/look/`** (design-bar.md) and fix what looks busier or more app-like; `node tools/check.mjs` must say
    "Ready to push"; click through with ← → and P; test every live slide with and without a key.
 7. **Publish.** web-and-deploy.md: GitHub repo, Vercel project linked to it, env var names for the person to fill,
    then verify the production URL (`/api/health`, each live slide, a phone vote).

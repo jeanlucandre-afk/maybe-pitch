@@ -30,7 +30,18 @@
   let link = null, demoTimers = [], session = 0, endTimer = 0, wasLive = false;
 
   // ---------- look ----------
-  function setStatus(state, text) { if (statusEl) { statusEl.dataset.state = state; statusEl.textContent = text; } }
+  // the notice under the orb: hidden while the call is live; words (+ an optional button) only when needed
+  const noticeText = statusEl && statusEl.querySelector('span'), noticeBtn = statusEl && statusEl.querySelector('button');
+  let noticeAction = null;
+  if (noticeBtn) noticeBtn.addEventListener('click', () => { noticeBtn.blur(); if (noticeAction) noticeAction(); });
+  function setStatus(state, text, action) {
+    if (!statusEl) return;
+    statusEl.dataset.state = state;
+    statusEl.hidden = state === 'live' || !text;
+    if (noticeText) noticeText.textContent = text || '';
+    if (noticeBtn) { noticeBtn.hidden = !action; noticeBtn.textContent = action ? action.label : ''; noticeAction = action ? action.run : null; }
+  }
+  const retry = { label: 'Try again', run: () => connect() };
   function setMode(m) { mode = m === 'you' || m === 'agent' ? m : 'idle'; avatar && avatar.classList.toggle('is-talking', mode === 'agent'); }
   function setLevel(v) { target = Math.max(0, Math.min(1, +v || 0)); }
   function frame(t) {
@@ -82,8 +93,8 @@
   function clear() { bubbles.innerHTML = ''; turns = []; byId.clear(); }
 
   // ---------- demo (no connection) ----------
-  function playDemo(reason) {
-    setStatus('demo', reason || 'Demo · not connected');
+  function playDemo(reason, action) {
+    setStatus('demo', reason || 'Demo call · not connected.', action);
     let at = 600;
     script.forEach((line) => {
       const who = line.role === 'agent' ? 'agent' : 'you', words = String(line.text).split(' ');
@@ -100,14 +111,15 @@
   async function connect() {
     const my = ++session;
     disconnectLink(); clear(); setMode('idle'); setLevel(0); wasLive = false;
-    if (!window.RTCPeerConnection || !navigator.mediaDevices) return playDemo('Demo · browser has no live audio');
+    if (!window.RTCPeerConnection || !navigator.mediaDevices) return playDemo('Demo call · this browser can’t do live audio. Use Chrome.');
     setStatus('connecting', 'Connecting…');
+    const micTimer = setTimeout(() => { if (my === session && link && !link.pc) setStatus('connecting', 'Allow the microphone to start the call.'); }, 1200);
     let token, model = '';
     try {
       const r = await fetch('api/realtime-session', { method: 'POST' });
-      if (!r.ok) { const j = await r.json().catch(() => ({})); return my === session && playDemo(j.code === 'no_credits' ? 'Demo · voice has no credits' : 'Demo · voice not configured'); }
+      if (!r.ok) { const j = await r.json().catch(() => ({})); return my === session && playDemo(j.code === 'no_credits' ? 'Demo call · the voice service is out of credits.' : 'Demo call · live voice isn’t set up yet.'); }
       const j = await r.json(); token = j.value; model = j.model || '';
-    } catch (e) { return my === session && playDemo('Demo · offline'); }
+    } catch (e) { return my === session && playDemo('Demo call · offline.', retry); }
     if (my !== session) return;
     const L = link = { pc: null, stream: null, ctx: null };
     try {
@@ -119,23 +131,23 @@
       L.meter = () => Math.max(mode === 'agent' ? remote() : 0, mic());
       L.pc = new RTCPeerConnection();
       L.audio = new Audio(); L.audio.autoplay = true;
-      L.pc.ontrack = (e) => { L.audio.srcObject = e.streams[0]; remote = meter(e.streams[0]); L.audio.play().catch(() => setStatus('live', 'Live · click once to hear the voice')); };
+      L.pc.ontrack = (e) => { L.audio.srcObject = e.streams[0]; remote = meter(e.streams[0]); L.audio.play().catch(() => setStatus('blocked', `${AGENT} can’t play sound yet.`, { label: 'Turn on sound', run: () => { L.audio.play().catch(() => {}); setStatus('live', ''); } })); };
       L.pc.addTrack(L.stream.getAudioTracks()[0], L.stream);
       const ch = L.pc.createDataChannel('oai-events');
       ch.onopen = () => { clearTimeout(L.openTimer); if (my === session) { wasLive = true; setStatus('live', `Live · ${AGENT} is listening`); } };
       ch.onmessage = (e) => { try { onEvent(JSON.parse(e.data), L); } catch (err) {} };
-      L.pc.onconnectionstatechange = () => { if (L.pc.connectionState === 'failed' && my === session) { disconnectLink(L); setStatus('demo', 'Connection lost'); } };
+      L.pc.onconnectionstatechange = () => { if (L.pc.connectionState === 'failed' && my === session) { disconnectLink(L); setStatus('demo', 'Connection lost.', retry); } };
       const offer = await L.pc.createOffer(); await L.pc.setLocalDescription(offer);
       const r = await fetch('https://api.openai.com/v1/realtime/calls' + (model ? `?model=${encodeURIComponent(model)}` : ''), { method: 'POST', headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/sdp' }, body: offer.sdp });
       if (!r.ok) throw new Error('calls ' + r.status);
       await L.pc.setRemoteDescription({ type: 'answer', sdp: await r.text() });
       // venue wifi that blocks WebRTC never opens the channel: don't hang on "Connecting…"
-      L.openTimer = setTimeout(() => { if (my === session && link === L && (!L.pc || L.pc.connectionState !== 'connected')) { disconnectLink(L); playDemo('Demo · network blocks live audio'); } }, 12000);
+      L.openTimer = setTimeout(() => { if (my === session && link === L && (!L.pc || L.pc.connectionState !== 'connected')) { disconnectLink(L); playDemo(`${AGENT} could not connect. This network may block live audio.`, retry); } }, 12000);
       clearTimeout(endTimer); endTimer = setTimeout(() => hangUp(), MAX_CALL_MS);
     } catch (e) {
       console.warn('[voice-call]', e.name, e.message);
       disconnectLink(L);
-      if (my === session) playDemo(e.name === 'NotAllowedError' ? 'Demo · microphone blocked' : 'Demo · could not connect');
+      if (my === session) playDemo(e.name === 'NotAllowedError' ? 'Microphone blocked. Allow it in the address bar, then try again.' : `${AGENT} could not connect.`, retry);
     }
   }
 
@@ -177,7 +189,7 @@
     if (link === L) link = null;
   }
   function ended() { document.dispatchEvent(new CustomEvent('call:ended', { detail: { turns: window.LIVE_CALL.getTranscript() } })); }
-  function hangUp() { const had = !!link; disconnectLink(); clearTimeout(endTimer); setMode('idle'); setLevel(0); if (had) { setStatus('demo', 'Call ended'); ended(); } }
+  function hangUp() { const had = !!link; disconnectLink(); clearTimeout(endTimer); setMode('idle'); setLevel(0); if (had) { setStatus('ended', ''); ended(); } }
   function disconnect() { session++; demoTimers.forEach(clearTimeout); demoTimers = []; hangUp(); }
 
   document.addEventListener('deck:slidechange', (e) => {

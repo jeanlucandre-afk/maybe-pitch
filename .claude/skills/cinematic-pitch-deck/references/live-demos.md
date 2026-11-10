@@ -1,15 +1,17 @@
 # Live demos inside the slides
 
-Four ready demos ship in the template. Each one works in three states and says which one it is on screen with a
-status pill: **Live** (real AI or real votes), **Connecting…**, **Demo** (scripted fallback, labelled). A live
-slide must never look broken: no key, no network, a blocked mic or venue wifi that blocks WebRTC all fall back
-to the demo within seconds.
+Four ready demos ship in the template, designed like the original deck (compare with `look/11-live-call.jpg` and
+`look/13-agent-world.jpg`). Each works live or falls back to a scripted demo within seconds (no key, no network, a
+blocked mic, venue wifi that blocks WebRTC) and says so quietly: the voice slide shows the original notice card
+under the orb only when something needs the presenter; the agent panel's mode tag reads "Demo simulation" /
+"Live agents" / "Review of the demo call"; the poll has one short line under the results. Never a status badge,
+never developer text on stage (setup hints go to the browser console).
 
 | Demo | Slide | Browser code | Server | Config to write per deck |
 |---|---|---|---|---|
 | Clickable prototype | `09-live-demo` | `deck.js` mounts `[data-live]` iframes | none | `app/*.html` (your product screens) |
 | Voice call with an AI character | `15-voice-call` | `assets/live/voice-call.js` | `api/realtime-session.js` | `api/_persona.js` (who, voice, win/lose sentences), `data-call-script` (offline demo), `media/caller.webp` |
-| Simulated people react | `16-agents` | `assets/live/agents.js` | `api/agents-review.js` | `api/_agents.js` (the panel), `data-demo` (offline review) |
+| Simulated people react (the original agent world) | `16-agents` | `assets/live/agent-world.js` (+ `.css`) draws it, `assets/live/agents.js` feeds it | `api/agents-review.js` | `api/_agents.js` (panel, faces, labels), `data-demo` (offline story), `media/peeps/` (faces) |
 | Audience vote by QR | `17-audience` | `assets/live/audience.js` + `vote.html` | `api/poll.js` | `polls.json` (question, options, id) |
 
 All are loaded through `deck.json` → `scripts` and `css` (already set in the template). Delete a demo by removing
@@ -47,13 +49,19 @@ at `http://<laptop-ip>:8000/vote` (the QR shows `localhost` locally: use the dep
 - The MAYBE repo's `assets/voice/mara.js` is the production-hardened version (reconnects, mic tail, wrap-up nudges);
   port pieces from it if a demo has to survive a long or noisy call.
 
-## Simulated people (the MAYBE "agent world" pattern)
-- `api/_agents.js`: 5-8 people with different stakes (buyer, user, rival, coach, skeptic…), and the task.
-- The model returns, per person, one spoken line, one private thought and a verdict (yes/maybe/no), plus pros,
-  cons and a one-line summary, as strict JSON. The slide plays them one by one, 1.5s apart, then the tally.
-- Honesty: the slide always shows "Synthetic estimate · simulated people, not real opinions". Never present it as
-  market research. Keep it separate from any real outcome.
-- Model: `OPENAI_AGENTS_MODEL` (default `gpt-5.4-mini`, ~3s).
+## Simulated people (the MAYBE "agent world", ported 1:1)
+- The ball of ~240 people with 5-8 named, drawn faces; four steps (Spawn, Talk, Think, Verdict); speech bubbles
+  where people answer each other; points flying into the card from whoever raised them; qualification chips (dashed
+  = a gap); the room splitting into three clusters; a stamped conclusion. Colours and fonts come from brand.css.
+- `api/_agents.js`: the task, the named people (`id`, `role`, `face` 0-4 = `media/peeps/peep-*.svg`, `cares`),
+  crowd roles, cluster labels, conclusion labels. Replace the peeps with the brand's own drawings if it has some.
+- The API returns the whole review as strict JSON (talk lines with `to` and points, private thoughts and
+  verdicts, qualifications, the crowd split in %, a conclusion); agents.js plays it at the original pacing
+  (bubbles 1.8s apart) in about 35 seconds. Model: `OPENAI_AGENTS_MODEL` (default `gpt-5.4-mini`, ~5s).
+- `data-demo` on the slide: the offline story in the same shape as the engine's built-in demo (roles, cast, talk,
+  quals, candidate, conclusion, deal). Keep it consistent with the call slide's demo script.
+- Honesty is on the slide: "Synthetic estimate · AI review of 1 call", "Simulated people, AI-generated · not real
+  opinions", the real outcome kept separate. Never present it as market research.
 
 ## Audience vote
 - `polls.json`: `id`, `question`, `options`. Change `id` to reset for a new session.

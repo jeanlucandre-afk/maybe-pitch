@@ -6,7 +6,8 @@
 
 ## Every build
 - [ ] `node tools/check.mjs` says "Ready to push" (build, placeholders, secrets, missing media, AI labels).
-- [ ] `node tools/shoot.mjs` run; every screenshot looked at, not just generated.
+- [ ] `node tools/shoot.mjs` run; every screenshot compared with its reference in `references/look/` (design-bar.md).
+- [ ] No status badges or developer text on stage; the brand fonts actually load (no system-font fallback).
 - [ ] No text outside the stage; no widow (single word on the last line of a headline; fix with `max-width` in ch).
 - [ ] Exactly one accent word per headline; accent used nowhere decorative.
 - [ ] Every number: mono font, meaning sentence, source line, caveat in notes.

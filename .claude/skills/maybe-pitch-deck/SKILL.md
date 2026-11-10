@@ -61,6 +61,10 @@ beat sheet. Adapt the arc to the audience:
 - **Employers:** lead with the other side and the screening; show the employer board and candidate evidence;
   "A screener reads the CV. You see the work."
 
+## The bar
+`../cinematic-pitch-deck/references/look/*.jpg` ARE this deck: compare every new slide's screenshot with the
+matching one before showing it (engine `references/design-bar.md`).
+
 ## MAYBE details that must be there
 - Black pre-show slide first (not counted). Progress line in violet.
 - Dark question slides use `--accent-on-dark` #C4B5FD for the accent word; light slides #7C3AED.

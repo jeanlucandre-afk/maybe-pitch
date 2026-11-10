@@ -1,18 +1,37 @@
-<!-- PATTERN: simulated people review what just happened (assets/live/agents.js, api/agents-review.js, api/_agents.js).
-     Ring of people right: each says one line, then turns to a verdict colour. Review panel left fills in.
-     Always labelled "simulated" and "Synthetic estimate". data-demo is the offline review.  Delete data-template from the root once the content is yours (tools/check.mjs blocks it). -->
-<div class="slide-root" data-shoot-wait="25000" data-template data-agents data-demo='{"agents":[{"id":"buyer","name":"Retail buyer","says":"Clear test offer, but no margin details.","verdict":"maybe"},{"id":"owner","name":"Shop owner","says":"A six week trial at the till is low risk.","verdict":"yes"},{"id":"shopper","name":"Regular shopper","says":"I still don’t know why it’s worth it.","verdict":"maybe"},{"id":"rival","name":"Rival seller","says":"No proof behind ‘sells fast’.","verdict":"no"},{"id":"coach","name":"Sales coach","says":"Good question first, clean close.","verdict":"yes"},{"id":"skeptic","name":"Skeptic","says":"Claims without evidence.","verdict":"no"}],"pros":["Asked what sells first","Handled the objection with a trial","Clear, low-risk close"],"cons":["No proof for the claim","Thin discovery"],"summary":"A concise pitch with a workable close and little proof.","verdictLabels":{"yes":"Would buy","maybe":"Maybe","no":"Would not buy"}}'>
-  <div style="position:absolute; left:120px; top:110px; width:640px;">
-    <p class="kicker rv" style="--d:.05;">After the call · simulated review</p>
-    <h2 class="h-1 rv" style="--d:.15; font-size:64px; margin-top:16px;">A market <span class="hl">reviews</span> your call.</h2>
+<!-- PATTERN: a market of simulated people reviews the call that just happened (the MAYBE "agent world", ported 1:1).
+     assets/live/agent-world.js draws the ball of people; assets/live/agents.js feeds it from api/agents-review.js
+     (panel in api/_agents.js). Without the API it plays data-demo, labelled "Demo simulation". Keep data-demo's
+     story consistent with the call slide's demo script. Delete data-template once the content is yours. -->
+<div class="slide-root" data-template data-shoot-wait="40000" data-swarm data-swarm-img="media/peeps/" data-demo="{&quot;candidate&quot;: {&quot;name&quot;: &quot;The presenter&quot;, &quot;meta&quot;: &quot;Live call · 1 call reviewed&quot;}, &quot;clusters&quot;: {&quot;yes&quot;: {&quot;label&quot;: &quot;Convinced&quot;}, &quot;maybe&quot;: {&quot;label&quot;: &quot;Needs more proof&quot;}, &quot;no&quot;: {&quot;label&quot;: &quot;Not convinced&quot;}}, &quot;roles&quot;: [&quot;Shopper&quot;, &quot;Store buyer&quot;, &quot;Shop assistant&quot;, &quot;Area manager&quot;, &quot;Student&quot;, &quot;Parent&quot;, &quot;Café owner&quot;, &quot;Retiree&quot;, &quot;Tourist&quot;, &quot;Nurse&quot;], &quot;cast&quot;: [[&quot;buyer&quot;, &quot;Store buyer&quot;, 1, &quot;yes&quot;, &quot;Asking what sells first was smart.&quot;], [&quot;rival&quot;, &quot;Rival brand&quot;, 2, &quot;no&quot;, &quot;No proof it sells. Easy to beat.&quot;], [&quot;coach&quot;, &quot;Sales coach&quot;, 4, &quot;maybe&quot;, &quot;Good opening. The close never came.&quot;], [&quot;owner&quot;, &quot;Shop owner&quot;, 3, &quot;yes&quot;, null], [&quot;skeptic&quot;, &quot;Skeptic&quot;, 3, &quot;maybe&quot;, &quot;I need numbers before I believe it.&quot;], [&quot;shopper&quot;, &quot;Regular shopper&quot;, 0, &quot;yes&quot;, &quot;I would try one at the till.&quot;]], &quot;talk&quot;: [[0.6, &quot;buyer&quot;, &quot;rival&quot;, &quot;They asked what sells at my till. That&#x27;s the right start.&quot;, [&quot;pro&quot;, &quot;Asked what sells before pitching&quot;]], [2.3, &quot;rival&quot;, &quot;buyer&quot;, &quot;Still no reason to pick them over gum.&quot;, [&quot;con&quot;, &quot;No reason to switch from what sells&quot;]], [4.4, &quot;coach&quot;, &quot;owner&quot;, &quot;The call ended before any ask. No close.&quot;, [&quot;con&quot;, &quot;No clear ask or next step&quot;]], [6.1, &quot;owner&quot;, &quot;coach&quot;, &quot;But it felt like a conversation, not a pitch.&quot;, [&quot;pro&quot;, &quot;Kept it a real conversation&quot;]]], &quot;quals&quot;: [[0.8, &quot;Listens first&quot;, false, &quot;buyer&quot;], [2.4, &quot;Asks questions&quot;, false, &quot;owner&quot;], [4.0, &quot;Closing&quot;, true, &quot;coach&quot;]], &quot;conclusion&quot;: {&quot;wanted&quot;: false, &quot;title&quot;: &quot;Not yet&quot;, &quot;small&quot;: &quot;SYNTHETIC ESTIMATE&quot;, &quot;list&quot;: &quot;Simulated market&quot;, &quot;added&quot;: &quot;needs a close&quot;, &quot;summary&quot;: &quot;A good opening that listens first. Next time end with a concrete ask and one proof point.&quot;}, &quot;deal&quot;: &quot;The call ended before an ask.&quot;, &quot;dealLabel&quot;: &quot;Real call&quot;}">
+  <div style="position:absolute; left:96px; top:96px; width:704px;">
+    <p class="rv" style="--d:0; margin:0 0 10px; font-family:var(--font-mono); font-size:17px; font-weight:500; letter-spacing:.02em; color:var(--ink-3);">After the call · Market review</p>
+    <h2 class="rv" style="--d:.08; margin:0; font-size:50px; font-weight:700; line-height:1; letter-spacing:-0.045em;">A market reviews your call.</h2>
+    <ol class="sw-steps rv" style="--d:.16; margin-top:22px;">
+      <li data-swarm-step="spawn">01 Spawn</li><li data-swarm-step="talk">02 Talk</li><li data-swarm-step="think">03 Think</li><li data-swarm-step="result">04 Verdict</li>
+    </ol>
   </div>
-  <div class="review" data-review style="left:120px; top:400px; width:640px;">
-    <div style="display:flex; align-items:baseline; gap:18px;"><span class="tally" data-tally></span><span class="body-l" data-tally-label style="font-size:22px;"></span></div>
-    <div><h3>What worked</h3><ul class="pros" data-pros></ul></div>
-    <div><h3>What didn’t</h3><ul class="cons" data-cons></ul></div>
-    <p class="body-l" data-summary style="font-size:22px; color:var(--ink);"></p>
-    <span class="provenance">Synthetic estimate · simulated people, not real opinions</span>
-  </div>
-  <div class="ring" data-ring data-radius="300" style="left:1000px; top:200px; width:600px; height:600px;"></div>
-  <span class="live-status" data-agents-status data-state="connecting" style="right:72px; top:72px;">Waiting…</span>
+  <section class="sw-card rv" data-swarm-panel aria-live="polite" style="--d:.24;">
+    <div class="sw-head">
+      <img src="media/peeps/peep-student.svg" alt="">
+      <div><div class="sw-name" data-swarm-cand-name>The presenter</div><div class="sw-meta" data-swarm-cand-meta>Live call · 1 call reviewed</div></div>
+      <span class="sw-mode" data-swarm-mode>Demo simulation</span>
+    </div>
+    <div class="sw-cols">
+      <div><p class="sw-label">What worked</p><ul class="sw-list" data-swarm-pros><li class="sw-empty" style="display:block;animation:none">Listening to the agents…</li></ul></div>
+      <div><p class="sw-label">What didn’t</p><ul class="sw-list is-con" data-swarm-cons><li class="sw-empty" style="display:block;animation:none">Listening to the agents…</li></ul></div>
+    </div>
+    <div class="sw-quals"><p class="sw-label">Qualifications found</p><div class="sw-chips" data-swarm-quals></div></div>
+    <div class="sw-outcome" data-swarm-outcome>
+      <p class="sw-label">Where the market stands</p>
+      <div class="sw-tally" data-swarm-tally>
+        <span>Convinced</span><i><b data-tally="yes" style="background:var(--ink)"></b></i>
+        <span>Needs more proof</span><i><b data-tally="maybe" style="background:var(--mid)"></b></i>
+        <span>Not convinced</span><i><b data-tally="no" style="background:var(--bg)"></b></i>
+      </div>
+      <div data-swarm-verdict hidden></div>
+    </div>
+    <div class="sw-prov"><span>Synthetic estimate · AI review of 1 call</span><span data-swarm-deal>Real outcome kept separate</span></div>
+  </section>
+  <canvas data-swarm-canvas width="1920" height="1080" aria-hidden="true" style="position:absolute; inset:0; width:1920px; height:1080px; pointer-events:none;"></canvas>
+  <div style="position:absolute; right:180px; bottom:32px; font-family:var(--font-mono); font-size:14px; color:var(--ink-3);">Simulated people, AI-generated · not real opinions</div>
 </div>

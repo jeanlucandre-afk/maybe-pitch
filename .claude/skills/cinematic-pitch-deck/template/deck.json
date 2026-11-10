@@ -1,13 +1,15 @@
 {
   "title": "BRAND · Pitch",
   "lang": "en",
-  "fonts": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap",
+  "fonts": "https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap",
   "css": [
-    "assets/live/live.css"
+    "assets/live/live.css",
+    "assets/live/agent-world.css"
   ],
   "scripts": [
     "assets/live/vendor/qrcode.js",
     "assets/live/voice-call.js",
+    "assets/live/agent-world.js",
     "assets/live/agents.js",
     "assets/live/audience.js"
   ],
@@ -69,8 +71,8 @@
     },
     {
       "file": "16-agents.html",
-      "title": "The panel reviews the call",
-      "notes": "Simulated people review what just happened, live. Say it out loud: simulated, a synthetic estimate, not real opinions."
+      "title": "A market reviews the call",
+      "notes": "Right after the call, a small market of simulated people argues about it, then each decides alone. Left: what worked, what didn’t, the skills found, where the market stands. Say it: a synthetic estimate, not real opinions, kept apart from the real outcome."
     },
     {
       "file": "17-audience.html",

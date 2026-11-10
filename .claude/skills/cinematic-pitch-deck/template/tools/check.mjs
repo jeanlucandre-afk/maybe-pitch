@@ -33,12 +33,19 @@ for (const [f, s] of Object.entries(slides)) {
   if (/class="[^"]*slide-root[^"]*"[^>]*\bdata-template\b/.test(s)) fail.push(`${f}: still the template's example content (data-template on the root). Write your own, then remove data-template.`);
 }
 // live-demo config files still holding the template's example (Mara, the gum-selling panel, the sample poll)
-const usesCall = Object.values(slides).some((s) => /\bdata-call\b/.test(s)), usesAgents = Object.values(slides).some((s) => /\bdata-agents\b/.test(s)), usesPoll = Object.values(slides).some((s) => /\bdata-poll\b/.test(s));
+const usesCall = Object.values(slides).some((s) => /\bdata-call\b/.test(s)), usesAgents = Object.values(slides).some((s) => /\bdata-swarm\b/.test(s)), usesPoll = Object.values(slides).some((s) => /\bdata-poll\b/.test(s));
 for (const [file, used] of [['api/_persona.js', usesCall], ['api/_agents.js', usesAgents], ['polls.json', usesPoll]]) {
   const abs = path.join(ROOT, file);
   if (used && fs.existsSync(abs) && /["']?template["']?\s*:\s*true/.test(fs.readFileSync(abs, 'utf8'))) fail.push(`${file}: still the template example. Write it for this deck, then delete the "template: true" line.`);
 }
 if (/^BRAND ·|^\s*$/.test(deck.title || '')) fail.push('deck.json: title is still the template\'s');
+
+// 2b. the brand fonts are actually loaded (a missing font falls back to a system face: the "vibe code" look)
+for (const fam of [...brand.matchAll(/--font-(?:sans|mono):\s*([^;]+);/g)].map((m) => m[1].split(',')[0].trim().replace(/['"]/g, ''))) {
+  if (/^(system-ui|ui-|-apple-system|sans-serif|serif|monospace|Menlo|Arial|Helvetica)/i.test(fam)) continue;
+  const local = /@font-face[^}]*font-family:\s*['"]?([^;'"]+)/g.test(brand) && brand.includes(fam);
+  if (!local && !new RegExp(`family=${fam.replace(/ /g, '\\+')}(?=[:&]|$)`).test(deck.fonts || '')) fail.push(`font "${fam}" is in brand.css but not loaded: add it to deck.json → fonts (Google Fonts URL) or an @font-face in brand.css`);
+}
 
 // 3. secrets in files that git would ship
 let tracked = [];

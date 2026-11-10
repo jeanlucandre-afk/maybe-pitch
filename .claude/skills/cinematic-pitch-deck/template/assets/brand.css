@@ -11,6 +11,7 @@
   --line: #E4E4E7;          /* hairlines, pill borders, empty track */
   --track: #F4F4F5;         /* bar tracks */
   --ghost: #D4D4D8;         /* the "not highlighted" people, comparison bars */
+  --mid: #A1A1AA;           /* decorative mid grey: "maybe" in the agent world, never text */
 
   /* dark slides (.dark on the slide root) */
   --bg-dark: #0B0B0C;
@@ -25,8 +26,8 @@
   --accent-on-dark: #FDBA9F;/* the accent word on dark slides (4.5:1+ on --bg-dark) */
 
   /* type: one sans for words, one mono for numbers */
-  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --font-sans: Geist, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, Menlo, monospace;
   --display-weight: 700;
   --display-tracking: -0.045em;   /* tight display type is half the look */
   --mono-tracking: -0.05em;

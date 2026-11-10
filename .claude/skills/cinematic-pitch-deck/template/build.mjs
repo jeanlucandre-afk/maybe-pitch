@@ -120,5 +120,12 @@ ${(deck.scripts || []).map((s) => `<script src="${esc(s)}" defer></script>`).joi
 `;
 
 fs.writeFileSync(path.join(ROOT, 'index.html'), page);
+// the phone vote page gets the deck's fonts too
+const votePath = path.join(ROOT, 'vote.html');
+if (fs.existsSync(votePath)) {
+  const v = fs.readFileSync(votePath, 'utf8');
+  const fonts = deck.fonts ? `<link href="${esc(deck.fonts)}" rel="stylesheet">` : '';
+  fs.writeFileSync(votePath, v.replace(/<!-- fonts:start[^>]*-->[\s\S]*?<!-- fonts:end -->/, (m) => m.replace(/-->[\s\S]*?<!-- fonts:end -->/, `-->${fonts}<!-- fonts:end -->`)));
+}
 console.log(`Built index.html: ${deck.slides.length} slides.`);
 if (warn.length) { console.log('Warnings:'); for (const w of warn) console.log('  - ' + w); }
