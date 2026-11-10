@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // shoot.mjs: screenshot every slide after its choreography settles, plus a contact sheet.
-//   python3 -m http.server 8000      (in the deck folder, keep it running)
+//   node tools/serve.mjs      (in the deck folder, keep it running)
 //   node tools/shoot.mjs [baseUrl] [settleMs]     -> shots/slide-NN.png, shots/contact.html
 // Use it after every build: check the crowd highlight, the bars, overflow, the accent word, the progress line.
 import { createRequire } from 'node:module';

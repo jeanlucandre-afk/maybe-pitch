@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vote</title>
+<link rel="stylesheet" href="assets/brand.css">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--ink); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; padding: 28px 20px calc(28px + env(safe-area-inset-bottom)); }
+  main { max-width: 480px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+  .kicker { font: 500 13px var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); margin: 0; }
+  h1 { margin: 0; font-size: 30px; line-height: 1.12; font-weight: 700; letter-spacing: -0.035em; }
+  button { width: 100%; min-height: 60px; padding: 16px 20px; border-radius: 14px; border: 1.5px solid var(--line); background: var(--bg); color: var(--ink); font: 600 19px var(--font-sans); text-align: left; cursor: pointer; }
+  button[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+  button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .opts { display: flex; flex-direction: column; gap: 12px; }
+  .note { margin: 0; font-size: 15px; color: var(--ink-3); min-height: 22px; }
+  .bar { height: 8px; border-radius: 999px; background: var(--track); overflow: hidden; margin-top: 10px; } .bar i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .6s; }
+</style>
+</head>
+<body>
+<main>
+  <p class="kicker" id="brand"></p>
+  <h1 id="q">Loading…</h1>
+  <div class="opts" id="opts"></div>
+  <p class="note" id="note" aria-live="polite"></p>
+</main>
+<script>
+(function () {
+  let voter; try { voter = localStorage.getItem('voter'); if (!voter) { voter = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(36).slice(2)).replace(/[^a-z0-9-]/gi, ''); localStorage.setItem('voter', voter); } } catch (e) { voter = 'anon-' + Math.random().toString(36).slice(2, 12); }
+  let mine = null; try { mine = localStorage.getItem('vote'); } catch (e) {}
+  const opts = document.getElementById('opts'), note = document.getElementById('note');
+  document.getElementById('brand').textContent = 'Live poll';
+  function render(p) {
+    document.getElementById('q').textContent = p.question;
+    if (!opts.children.length) p.options.forEach((o, i) => { const b = document.createElement('button'); b.type = 'button'; b.innerHTML = '<span></span><span class="bar"><i></i></span>'; b.firstChild.textContent = o; b.onclick = () => vote(i); opts.appendChild(b); });
+    [...opts.children].forEach((b, i) => { b.setAttribute('aria-pressed', String(String(i) === mine)); b.querySelector('i').style.width = (mine !== null && p.total ? Math.round(p.counts[i] / p.total * 100) : 0) + '%'; });
+  }
+  async function vote(i) {
+    note.textContent = 'Sending…';
+    try {
+      const r = await fetch('api/poll', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ option: i, voter }) });
+      if (!r.ok) throw new Error(r.status);
+      mine = String(i); try { localStorage.setItem('vote', mine); } catch (e) {}
+      render(await r.json()); note.textContent = 'Thanks. Watch the screen. You can change your vote.';
+    } catch (e) { note.textContent = 'Could not send. Try again.'; }
+  }
+  fetch('api/poll', { cache: 'no-store' }).then((r) => r.json()).then(render).catch(() => { document.getElementById('q').textContent = 'The poll is not open right now.'; });
+})();
+</script>
+</body>
+</html>

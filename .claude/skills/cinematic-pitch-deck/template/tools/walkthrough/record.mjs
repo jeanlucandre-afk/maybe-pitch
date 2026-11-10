@@ -4,7 +4,7 @@
 // clicks with a ripple, the page smooth-scrolls, text is typed key by key, a camera zooms on what matters, and a
 // numbered caption names each step. Recorded with the Chrome screencast (sharper than Playwright video).
 //
-//   python3 -m http.server 8765          (in the deck folder, keep it running)
+//   node tools/serve.mjs 8765            (in the deck folder, keep it running)
 //   node tools/walkthrough/record.mjs     (needs Playwright + ffmpeg)
 //
 // Write the STEPS section for your product: 4-6 steps, each = caption + 2-4 actions + one zoom. Aim for 60-90 s

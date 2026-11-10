@@ -1,0 +1,18 @@
+<!-- PATTERN: simulated people review what just happened (assets/live/agents.js, api/agents-review.js, api/_agents.js).
+     Ring of people right: each says one line, then turns to a verdict colour. Review panel left fills in.
+     Always labelled "simulated" and "Synthetic estimate". data-demo is the offline review. -->
+<div class="slide-root" data-agents data-demo='{"agents":[{"id":"buyer","name":"Retail buyer","says":"Clear test offer, but no margin details.","verdict":"maybe"},{"id":"owner","name":"Shop owner","says":"A six week trial at the till is low risk.","verdict":"yes"},{"id":"shopper","name":"Regular shopper","says":"I still don’t know why it’s worth it.","verdict":"maybe"},{"id":"rival","name":"Rival seller","says":"No proof behind ‘sells fast’.","verdict":"no"},{"id":"coach","name":"Sales coach","says":"Good question first, clean close.","verdict":"yes"},{"id":"skeptic","name":"Skeptic","says":"Claims without evidence.","verdict":"no"}],"pros":["Asked what sells first","Handled the objection with a trial","Clear, low-risk close"],"cons":["No proof for the claim","Thin discovery"],"summary":"A concise pitch with a workable close and little proof.","verdictLabels":{"yes":"Would buy","maybe":"Maybe","no":"Would not buy"}}'>
+  <div style="position:absolute; left:120px; top:110px; width:640px;">
+    <p class="kicker rv" style="--d:.05;">After the call · simulated review</p>
+    <h2 class="h-1 rv" style="--d:.15; font-size:64px; margin-top:16px;">A market <span class="hl">reviews</span> your call.</h2>
+  </div>
+  <div class="review" data-review style="left:120px; top:400px; width:640px;">
+    <div style="display:flex; align-items:baseline; gap:18px;"><span class="tally" data-tally></span><span class="body-l" style="font-size:22px;">would buy</span></div>
+    <div><h3>What worked</h3><ul class="pros" data-pros></ul></div>
+    <div><h3>What didn’t</h3><ul class="cons" data-cons></ul></div>
+    <p class="body-l" data-summary style="font-size:22px; color:var(--ink);"></p>
+    <span class="provenance">Synthetic estimate · simulated people, not real opinions</span>
+  </div>
+  <div class="ring" data-ring data-radius="300" style="left:1000px; top:200px; width:600px; height:600px;"></div>
+  <span class="live-status" data-agents-status data-state="connecting" style="right:72px; top:72px;">Waiting…</span>
+</div>

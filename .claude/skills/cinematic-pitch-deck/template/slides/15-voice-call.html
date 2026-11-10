@@ -1,0 +1,21 @@
+<!-- PATTERN: live voice call with an AI character (assets/live/voice-call.js, api/realtime-session.js, api/_persona.js).
+     Orb left reacts to sound; bubbles right stream the words; the drawn character rises from the bottom edge.
+     The status pill always says the truth: Live / Connecting / Demo. data-call-script is the offline demo. -->
+<div class="slide-root" data-call data-agent-name="Mara" data-you-name="You"
+  data-call-script='[{"role":"you","text":"Hi, sorry to interrupt. Do you have a minute?"},{"role":"agent","text":"A minute, sure. What is it?"},{"role":"you","text":"What sells best at your till right now?"},{"role":"agent","text":"Gum, mostly. Why do you ask?"}]'>
+  <span class="live-status" data-call-status data-state="connecting" style="left:120px; top:72px;">Connecting…</span>
+  <div class="fin" style="--d:.1; position:absolute; left:180px; top:50%; margin-top:-300px;">
+    <div class="orb" data-orb role="img" aria-label="Voice activity">
+      <div class="orb__swirl"></div>
+      <div class="orb__wave orb__wave--b"><svg viewBox="0 0 200 100" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" d="M0 40 Q25 20 50 40 T100 40 T150 40 T200 40 V100 H0Z"/></svg></div>
+      <div class="orb__wave orb__wave--a"><svg viewBox="0 0 200 100" preserveAspectRatio="none" aria-hidden="true"><path fill="currentColor" d="M0 50 Q25 30 50 50 T100 50 T150 50 T200 50 V100 H0Z"/></svg></div>
+      <div class="orb__shine"></div>
+    </div>
+  </div>
+  <div class="bubbles" data-bubbles aria-live="polite" style="left:1000px; right:120px; top:60px; bottom:470px;"></div>
+  <div class="avatar" data-avatar style="position:absolute; right:150px; bottom:-260px; width:440px;">
+    <img class="rise" src="media/caller.webp" alt="Drawing of Mara, the AI buyer, on a headset" style="--d:.4; width:440px;">
+    <span class="callout rv" style="--d:.7; position:absolute; left:-250px; top:30px;"><strong style="font-size:20px;">Mara</strong><span style="font-size:16px; color:var(--ink-3);">Potential buyer · AI</span></span>
+    <span class="ai-label" style="right:20px; bottom:280px;">AI-generated image</span>
+  </div>
+</div>

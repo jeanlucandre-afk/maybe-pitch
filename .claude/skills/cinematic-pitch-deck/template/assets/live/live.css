@@ -1,0 +1,76 @@
+/* live.css: the live-demo slides (voice call, agent panel, audience poll). Reads brand.css. */
+
+/* ---- status pill (every live slide says honestly what it is: Live, Connecting, Demo) ---- */
+.live-status { position: absolute; z-index: 6; display: inline-flex; align-items: center; gap: 10px; padding: 10px 18px; border-radius: 999px; background: var(--bg); border: 1px solid var(--line); box-shadow: var(--shadow-float); font: 500 20px var(--font-sans); color: var(--ink-2); }
+.live-status::before { content: ""; width: 10px; height: 10px; border-radius: 999px; background: var(--ghost); }
+.live-status[data-state="live"]::before { background: #22c55e; box-shadow: 0 0 0 6px rgba(34,197,94,.18); }
+.live-status[data-state="connecting"]::before { background: #f59e0b; animation: live-blink 1s ease-in-out infinite; }
+.live-status[data-state="demo"]::before { background: var(--accent); }
+@keyframes live-blink { 50% { opacity: .3; } }
+
+/* ---- voice orb: a liquid sphere in the accent, smaller the louder the sound ---- */
+.orb { position: relative; width: 600px; height: 600px; border-radius: 50%; overflow: hidden; background: var(--accent-soft);
+  box-shadow: 0 50px 100px -45px var(--accent), inset 0 0 0 1px color-mix(in srgb, var(--accent) 14%, transparent);
+  transform: scale(calc(1 - var(--level, 0) * .22)); will-change: transform; }
+.orb__swirl { position: absolute; inset: -25%; will-change: transform;
+  background: radial-gradient(circle at 30% 35%, color-mix(in srgb, var(--accent-on-dark) 85%, transparent), transparent 50%),
+              radial-gradient(circle at 70% 65%, color-mix(in srgb, var(--accent) 50%, transparent), transparent 55%); }
+.orb__wave { position: absolute; left: 0; width: 200%; filter: blur(8px); will-change: transform; }
+.orb__wave svg { display: block; width: 100%; height: 100%; }
+.orb__wave--a { height: calc(60% + var(--level, 0) * 22%); bottom: -6%; opacity: .95; color: var(--accent); }
+.orb__wave--b { height: 52%; bottom: -12%; opacity: .7; color: var(--accent-on-dark); }
+.orb__shine { position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 32% 22%, rgba(255,255,255,.75), transparent 32%); }
+
+/* ---- conversation bubbles ---- */
+.bubbles { position: absolute; display: flex; flex-direction: column; justify-content: flex-end; gap: 16px; overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 90px); mask-image: linear-gradient(to bottom, transparent 0, #000 90px); }
+.bubble { max-width: 600px; padding: 16px 22px; font-size: 26px; line-height: 1.4; box-shadow: 0 1px 2px rgba(0,0,0,.04);
+  transition: transform .45s cubic-bezier(.2,.7,.2,1), opacity .45s; }
+.bubble b { display: block; font-size: 15px; font-weight: 600; letter-spacing: .02em; margin-bottom: 4px; }
+.bubble--you { align-self: flex-end; background: var(--ink); color: var(--bg); border-radius: 22px 22px 6px 22px; }
+.bubble--you b { color: var(--ghost); }
+.bubble--agent { align-self: flex-start; background: var(--bg); color: var(--ink); border: 1px solid var(--line); border-radius: 22px 22px 22px 6px; }
+.bubble--agent b { color: var(--accent-deep); }
+.bubble.is-new { transform: translateY(24px); opacity: 0; }
+
+/* ---- the AI character rising from the bottom edge; bobs while talking ---- */
+.avatar img { display: block; transform-origin: 50% 85%; }
+.avatar.is-talking img { animation: talk-bob .32s ease-in-out infinite alternate; }
+@keyframes talk-bob { to { transform: translateY(-6px) rotate(-1.6deg); } }
+
+/* ---- agent panel: simulated people in a ring, each with a speech bubble and a verdict ---- */
+.ring { position: absolute; }
+.agent-node { position: absolute; width: 132px; margin-left: -66px; display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; transition: transform .6s cubic-bezier(.2,.7,.2,1), opacity .6s; }
+.agent-node.is-hidden { opacity: 0; transform: scale(.5); }
+.agent-face { width: 96px; height: 96px; border-radius: 999px; display: grid; place-items: center; background: var(--track); border: 2px solid var(--line); font: 600 30px var(--font-sans); color: var(--ink-2); transition: background .4s, border-color .4s, color .4s; }
+.agent-node.is-speaking .agent-face { border-color: var(--accent); box-shadow: 0 0 0 8px var(--accent-soft); }
+.agent-node[data-verdict="yes"] .agent-face { background: var(--accent); border-color: var(--accent); color: #fff; }
+.agent-node[data-verdict="maybe"] .agent-face { background: var(--accent-soft); border-color: var(--accent-on-dark); color: var(--accent-deep); }
+.agent-node[data-verdict="no"] .agent-face { background: var(--bg); border-color: var(--ink); color: var(--ink); }
+.agent-name { font: 500 17px var(--font-sans); color: var(--ink-2); }
+.agent-verdict { font: 500 15px var(--font-mono); color: var(--ink-3); min-height: 20px; }
+.agent-say { position: absolute; bottom: 150px; left: 50%; width: 300px; transform: translateX(-50%) translateY(8px); padding: 12px 16px; border-radius: 16px; background: var(--bg); border: 1px solid var(--line); box-shadow: var(--shadow-float); font-size: 19px; line-height: 1.35; color: var(--ink); opacity: 0; transition: opacity .35s, transform .35s; pointer-events: none; z-index: 3; }
+.agent-node.is-speaking .agent-say { opacity: 1; transform: translateX(-50%); }
+.agent-think { font-style: italic; color: var(--ink-3); }
+.review { position: absolute; display: flex; flex-direction: column; gap: 22px; }
+.review h3 { margin: 0; font: 500 16px var(--font-mono); text-transform: uppercase; letter-spacing: .08em; color: var(--ink-3); }
+.review ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.review li { font-size: 22px; line-height: 1.35; padding-left: 30px; position: relative; opacity: 0; transform: translateY(10px); transition: opacity .4s, transform .4s; }
+.review li.is-in { opacity: 1; transform: none; }
+.review li::before { position: absolute; left: 0; top: 0; font-family: var(--font-mono); }
+.review .pros li::before { content: "+"; color: var(--accent); }
+.review .cons li::before { content: "−"; color: var(--ink-3); }
+.tally { font: 500 64px var(--font-mono); letter-spacing: -0.05em; line-height: 1; }
+.provenance { align-self: flex-start; display: inline-flex; padding: 4px 12px; border-radius: 999px; border: 1px solid #fde68a; background: #fffbeb; color: #92400e; font: 500 15px var(--font-sans); }
+
+/* ---- audience poll ---- */
+.qr { background: #fff; padding: 22px; border-radius: 22px; box-shadow: var(--shadow-float); border: 1px solid var(--line); }
+.qr svg { display: block; width: 100%; height: auto; }
+.poll-row { display: grid; grid-template-columns: 1fr 120px; gap: 6px 24px; align-items: baseline; }
+.poll-row .label { font-size: 30px; font-weight: 600; letter-spacing: -0.02em; }
+.poll-row .val { font: 500 40px var(--font-mono); letter-spacing: -0.04em; text-align: right; }
+.poll-row .track { grid-column: 1 / -1; height: 22px; border-radius: 999px; background: var(--track); overflow: hidden; }
+.poll-row .fill { display: block; height: 100%; width: 0; border-radius: inherit; background: var(--ink); transition: width .8s cubic-bezier(.2,.7,.2,1); }
+.poll-row.is-lead .fill { background: var(--accent); }
+
+@media (prefers-reduced-motion: reduce) { .avatar.is-talking img { animation: none; } .bubble, .agent-node, .review li, .poll-row .fill { transition: none; } }

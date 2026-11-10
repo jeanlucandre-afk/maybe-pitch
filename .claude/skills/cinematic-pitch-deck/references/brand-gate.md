@@ -47,11 +47,16 @@ Contrast checks (compute them, don't eyeball):
 Avoid: gradients as decoration, more than one accent, purple-blue "AI" gradients, emoji, drop shadows on text,
 centred body copy, stock photos of people at laptops.
 
-## 5. Brand board (what you show for approval)
+## 5. Image style
+Write `media/image-style.txt` from the imagery row of the brief (images.md has examples) and generate 2-3 test
+images with `tools/media/gen-image.mjs` to show next to the brand board.
+
+## 6. Brand board (what you show for approval)
 Build three slides with the real tokens and show screenshots (tools/shoot.mjs, or one Playwright shot each):
 1. the title slide (giant wordmark + promise + names),
 2. one light data slide (headline with the accent word, a big mono number, a grown bar, a source line),
 3. one dark question slide (104px, one accent word).
 
 Ask: "Is this the brand? Anything to change before I build the whole deck?" Do not continue without a yes.
-When the person changes a token later, change brand.css only; the slides follow.
+When approved, add `/* brand approved: <date> */` at the top of brand.css (tools/check.mjs looks for it if the
+accent is still the placeholder). When the person changes a token later, change brand.css only; the slides follow.

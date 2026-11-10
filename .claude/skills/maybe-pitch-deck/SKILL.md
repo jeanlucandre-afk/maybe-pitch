@@ -15,6 +15,7 @@ MAYBE-specific. The brand gate is already passed: the MAYBE brand below is appro
 | `brand/maybe.css` | The brand preset: replaces the engine's `template/assets/brand.css`. |
 | `brand/deck.json` | Starter deck.json with the Geist fonts. |
 | `brand/intro.mp4` | The real title intro (MAYBE wordmark), 0.5 MB. |
+| `brand/image-style.txt` | The image style for generated characters (Open Peeps line drawings). |
 | `brand/peep-*.svg` | Open Peeps (CC0) drawn people: student, seller, designer, recruiter, thinker. |
 | `references/brand.md` | Colours, type, voice, honesty rules, imagery, what never to say. |
 | `references/hackathon-deck.md` | The original deck slide by slide: copy, numbers, sources, timing, notes. Precedent for every new MAYBE deck. |
@@ -32,8 +33,18 @@ MAYBE-specific. The brand gate is already passed: the MAYBE brand below is appro
 cp -r <skills>/cinematic-pitch-deck/template ./deck && cd deck
 cp <skills>/maybe-pitch-deck/brand/maybe.css assets/brand.css
 cp <skills>/maybe-pitch-deck/brand/deck.json deck.json        # then add slides
-mkdir -p media && cp <skills>/maybe-pitch-deck/brand/intro.mp4 media/ && cp <skills>/maybe-pitch-deck/brand/peep-*.svg media/
+cp <skills>/maybe-pitch-deck/brand/intro.mp4 <skills>/maybe-pitch-deck/brand/image-style.txt media/ && cp <skills>/maybe-pitch-deck/brand/peep-*.svg media/
+python3 - <<'PY'   # keep the live-demo scripts and css from the template's deck.json
+import json; t=json.load(open('deck.json')); m=json.load(open('<skills>/maybe-pitch-deck/brand/deck.json'))
+m['css'], m['scripts'] = t['css'], t['scripts']; json.dump(m, open('deck.json','w'), indent=2)
+PY
 ```
+It is a website from the start: `node tools/serve.mjs` locally, then its own GitHub repo + Vercel project
+(engine `references/web-and-deploy.md`), e.g. `maybe-<audience>-deck`. Live demos (engine
+`references/live-demos.md`) fit MAYBE naturally: the voice call is a trial ("call an AI buyer"), the panel is the
+"market reviews your call" moment, the poll asks the room the opening question. New characters (buyers,
+recruiters, students) come from `tools/media/gen-image.mjs` with `brand/image-style.txt` (Open Peeps line style),
+labelled AI-generated.
 Then follow the engine workflow from step 2 (story) using `references/hackathon-deck.md` as the default
 beat sheet. Adapt the arc to the audience:
 - **Jury / demo day:** the full hackathon arc (question → gap → cost → other side → screening → AI vs AI →

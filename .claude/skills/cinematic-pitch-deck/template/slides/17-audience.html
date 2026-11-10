@@ -1,0 +1,16 @@
+<!-- PATTERN: the room votes (assets/live/audience.js, vote.html, api/poll.js, polls.json).
+     QR left (big enough to scan from row 10: 360px+), question and live bars right. Use it to open a section
+     ("Who here chose their degree without trying the job?") or to close the loop after the demo. -->
+<div class="slide-root" data-poll data-demo-question="Would you have tried it before choosing?" data-demo-options='["Yes, definitely","Maybe","No, I knew already"]'>
+  <div class="fin" style="--d:.1; position:absolute; left:160px; top:50%; margin-top:-250px; width:420px; display:flex; flex-direction:column; gap:18px; align-items:center;">
+    <div class="qr" data-qr style="width:420px; height:420px;"></div>
+    <span class="num" data-poll-url style="font-size:24px; color:var(--ink-2);"></span>
+  </div>
+  <div style="position:absolute; left:760px; right:160px; top:0; bottom:0; display:flex; flex-direction:column; justify-content:center; gap:40px;">
+    <p class="kicker rv" style="--d:.05;">Scan and vote</p>
+    <h2 class="h-1 rv" data-poll-question style="--d:.15; font-size:68px; max-width:20ch;">Would you have tried it before choosing?</h2>
+    <div data-poll-rows class="rv" style="--d:.35; display:flex; flex-direction:column; gap:26px;"></div>
+    <p class="source rv" data-poll-total style="--d:.5; font-size:20px;"></p>
+  </div>
+  <span class="live-status" data-poll-status data-state="connecting" style="right:72px; top:72px;">Connecting…</span>
+</div>

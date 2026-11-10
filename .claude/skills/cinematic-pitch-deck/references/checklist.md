@@ -5,7 +5,7 @@
 - [ ] Beat sheet approved: one line per slide, one accent word, every number with a source.
 
 ## Every build
-- [ ] `node build.mjs` prints no warnings (missing notes, unknown generators, missing files).
+- [ ] `node tools/check.mjs` says "Ready to push" (build, placeholders, secrets, missing media, AI labels).
 - [ ] `node tools/shoot.mjs` run; every screenshot looked at, not just generated.
 - [ ] No text outside the stage; no widow (single word on the last line of a headline; fix with `max-width` in ch).
 - [ ] Exactly one accent word per headline; accent used nowhere decorative.
@@ -24,6 +24,12 @@
 - [ ] Live demo has a recorded fallback right after it.
 - [ ] Animations replay when you come back to a slide; nothing animates on hidden slides.
 - [ ] `prefers-reduced-motion` shows final states.
+
+## Live and web
+- [ ] Each live slide tested three ways: with the key (Live), without it (Demo), with the network off (Demo within ~12s).
+- [ ] Production URL: `/api/health` shows `openai: true` (and `pollStore: true` with a poll); a phone voted via the QR.
+- [ ] Env var names given to the person; no value in chat, code or git.
+- [ ] Videos are muted + playsinline (autoplay); the one clip with sound is intended.
 
 ## Honesty
 - [ ] No invented numbers, users, prices, testimonials or partnerships.

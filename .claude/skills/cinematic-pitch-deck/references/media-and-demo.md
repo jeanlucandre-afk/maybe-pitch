@@ -25,14 +25,11 @@
 - The slide plays it full-bleed at 2x (`data-play data-rate="2"`), restarting on every visit. Put it right
   after the live demo (fallback) and again after the close (loops during Q&A).
 
-Run: `python3 -m http.server 8765` in the deck folder, then `node tools/walkthrough/record.mjs`.
+Run: `node tools/serve.mjs 8765` in the deck folder, then `node tools/walkthrough/record.mjs`.
 Needs Playwright (preinstalled in Claude cloud sessions; else `npm i playwright`) and ffmpeg.
 
-## Live prototype in the slide
-`<div data-live="app/screen.html" style="left;top;width;height">`: the runtime mounts an iframe designed at
-1440px wide, scales it to the box, adds a "Live · click and scroll" badge, preloads the next slide's frame,
-and forwards ← → from inside the iframe. Build the prototype as static HTML in `app/` with the same tokens.
-Demo data only; companies shown as examples say "mockup only, no partnership implied".
+## Live prototype, voice call, simulated panel, audience vote
+See `live-demos.md`.
 
 ## Real people (TikToks, posts)
 - `data-tiktok="https://www.tiktok.com/@user/video/<id>"` on a phone screen embeds the official player while
@@ -40,21 +37,6 @@ Demo data only; companies shown as examples say "mockup only, no partnership imp
   all others are muted through the player API. Needs internet at the venue; check every clip loads.
 - Screenshot posts as WebP. Credit the account in the notes; say "individual accounts, not typical cases".
 
-## Live voice agent (optional, the MAYBE "live call")
-Pattern: a big audio-reactive orb (left), conversation bubbles streaming in word by word (right), a drawn
-character rising from the bottom edge with a name callout ("Mara · Potential buyer · AI") that bobs while it
-talks. Architecture:
-- A serverless function mints a short-lived session key (`api/realtime-session.js` with the provider key in
-  env vars). The page never sees the real key.
-- The page connects over WebRTC (OpenAI Realtime or ElevenLabs Conversational AI), feeds mic/agent levels
-  into `setLevel(0..1)`, and transcript events into `addMessage(role, text, {replaceLast})`.
-- Without a connection, the slide plays a scripted demo conversation so it never looks broken.
-- Start/stop on `deck:slidechange`; end the call when the presenter leaves the slide; the agent says it is
-  AI if asked.
-The MAYBE repo (`assets/live-call.js`, `assets/voice/mara.js`, `api/realtime-session.js`, LIVE-CALL.md) is a
-complete working reference.
-
 ## Images
-- One imagery style per deck. Drawn people (e.g. Open Peeps, CC0) age better than photos.
-- AI-generated images carry a small "AI-generated" label (`.ai-label`) on the slide.
-- Compress: JPG/WebP ≤ 300 KB for full-bleed, SVG for drawings and logos. Reference as `media/<file>`.
+Generated images and characters: see `images.md`. Photos and drawings you already have: JPG/WebP ≤ 300 KB for
+full-bleed, SVG for drawings and logos, referenced as `media/<file>`. One imagery style per deck.
