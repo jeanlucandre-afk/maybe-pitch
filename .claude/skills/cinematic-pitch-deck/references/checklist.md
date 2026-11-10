@@ -35,7 +35,7 @@
 - [ ] No invented numbers, users, prices, testimonials or partnerships.
 - [ ] Companies used as examples: "mockup only, no partnership implied".
 - [ ] AI-generated images labelled; simulated agents say they are AI; estimates say "estimate".
-- [ ] No secret key anywhere in the repo or page (`grep -rniE "sk-|api[_-]?key|secret" .`).
+- [ ] No secret key anywhere in the repo or page (`node tools/check.mjs` scans every file git would ship).
 
 ## Venue
 - [ ] Open the deployed URL on the presenting laptop in Chrome, full screen (F), at the projector resolution.

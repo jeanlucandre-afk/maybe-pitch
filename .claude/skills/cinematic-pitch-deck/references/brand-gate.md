@@ -58,5 +58,5 @@ Build three slides with the real tokens and show screenshots (tools/shoot.mjs, o
 3. one dark question slide (104px, one accent word).
 
 Ask: "Is this the brand? Anything to change before I build the whole deck?" Do not continue without a yes.
-When approved, add `/* brand approved: <date> */` at the top of brand.css (tools/check.mjs looks for it if the
-accent is still the placeholder). When the person changes a token later, change brand.css only; the slides follow.
+When approved, add `/* brand approved: <date> */` at the top of brand.css (tools/check.mjs blocks the placeholder
+accent #E4572E unless this line says the approved brand really uses it). When the person changes a token later, change brand.css only; the slides follow.

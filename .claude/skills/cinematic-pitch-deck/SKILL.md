@@ -46,16 +46,19 @@ Engine: `template/` next to this file. References (read the one for the step you
 - Codex installed and logged in? Otherwise the OpenAI API key pays for images.
 
 ## Workflow
+0. **Set up the folder.** Copy the engine OUTSIDE any existing repo (cloud: `/home/user/<name>`; laptop: next to
+   your projects): `cp -r <this skill>/template ../<brand>-pitch && cd ../<brand>-pitch`. `<this skill>` is the
+   folder holding this SKILL.md (`.claude/skills/…` in a repo, `~/.claude/skills/…` on a laptop; otherwise
+   `find / -path '*cinematic-pitch-deck/SKILL.md' 2>/dev/null`). Run `which codex`: if it's missing (normal in
+   cloud sessions) pass `--engine api` to gen-image.mjs instead of asking.
 1. **Brand gate.** brand-gate.md: brief → `assets/brand.css` (add `/* brand approved: <date> */`),
-   `media/image-style.txt`, 2-3 test images (images.md), a three-slide brand board. Stop until approved.
+   `media/image-style.txt`, 2-3 test images (images.md), a three-slide brand board. Show it where the person can
+   see it: in a cloud session publish the screenshots as an Artifact page (or push and share a Vercel preview);
+   on a laptop open the PNGs. Stop until approved.
 2. **Story.** story-arc.md: beat sheet (slide, headline with the accent word, visual, number + source, note).
    Get it approved.
 3. **Facts.** Sources table for every number; drop numbers that can't be sourced.
-4. **Build.**
-   ```bash
-   cp -r <this skill>/template ./<brand>-pitch && cd ./<brand>-pitch
-   node build.mjs && node tools/serve.mjs        # http://localhost:8000 (deck + api)
-   ```
+4. **Build.** `node build.mjs && node tools/serve.mjs` → http://localhost:8000 (deck + api).
    Start each slide from the closest template slide; keep the motion classes and `--d` delays; change words,
    numbers and generator attributes (`<x-crowd on="26">`, `<x-pictos value="51.2">`, `<x-dots on="1">`).
    Remove unused slides from `deck.json`.
@@ -66,6 +69,11 @@ Engine: `template/` next to this file. References (read the one for the step you
    "Ready to push"; click through with ← → and P; test every live slide with and without a key.
 7. **Publish.** web-and-deploy.md: GitHub repo, Vercel project linked to it, env var names for the person to fill,
    then verify the production URL (`/api/health`, each live slide, a phone vote).
+
+## Where it runs
+- Claude Code (cloud or laptop): everything, including repo, deploy and live tests.
+- claude.ai / Claude app with the skill uploaded: brand gate, story, slides and a zip of the deck folder; pushing,
+  Vercel and live-API tests need Claude Code or the person's own terminal.
 
 ## Verify before saying done
 Give the person: the production URL, the repo, which slides are live and what each falls back to, which env vars

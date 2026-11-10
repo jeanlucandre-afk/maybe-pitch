@@ -4,8 +4,10 @@
 1. **Codex CLI** (`codex exec`, sandboxed to the deck folder) using its built-in image generation, paid by the
    person's ChatGPT/Codex plan credits.
 2. If Codex is not installed, not logged in, has no image tool, is out of credits or makes no file →
-   **OpenAI Images API** with `OPENAI_API_KEY` (from the environment or `.env`; in Claude Code cloud the proxy
-   injects it). Models: `gpt-image-2` (default), `gpt-image-1.5` for transparent cut-outs (gpt-image-2 has no
+   **OpenAI Images API** with `OPENAI_API_KEY` (from the environment or `.env`; in Claude Code cloud, if
+   api.openai.com is a proxy-injected credential the script works without one, else use `request_credential`).
+   Whether a given Codex version can generate images depends on its plan and version; the script detects it and
+   falls back, so you never need to ask. Models: `gpt-image-2` (default), `gpt-image-1.5` for transparent cut-outs (gpt-image-2 has no
    transparent background).
 
 It prints which engine ran (`codex: codex out of credits → api: ok`) and records every image in
@@ -23,7 +25,7 @@ Generate 2-3 test images and show them with the brand board for approval.
 ```bash
 node tools/media/gen-image.mjs --name caller --prompt "a retail buyer with a headset, waist up, facing left" --size 1024x1536 --transparent --webp
 node tools/media/gen-image.mjs --name hero --prompt "a festival stage at dusk seen from the crowd" --size 1536x1024 --quality high --webp
-node tools/media/gen-image.mjs --name caller-happy --ref media/caller.png --prompt "same person, smiling, nodding" --transparent --webp
+node tools/media/gen-image.mjs --name caller-happy --ref media/caller.webp --prompt "same person, smiling, nodding" --transparent --webp
 ```
 - Characters that rise from the bottom edge: waist-up, transparent, `1024x1536`, facing into the slide.
 - Use `--ref` for every later pose of the same character, so it stays the same person.

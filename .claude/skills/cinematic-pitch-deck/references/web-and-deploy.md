@@ -15,8 +15,9 @@ maybe-pitch.vercel.app.
 git init -b main && git add -A && git commit -m "Deck: first version"
 gh repo create <owner>/<name> --private --source . --push
 ```
-**Claude Code cloud:** sessions can't create repositories for the user. Ask them to create an EMPTY repo on
-github.com (no README), then attach it with `add_repo` (access "push"), add it as the remote and push:
+**Claude Code cloud:** if the session's GitHub tools may create repositories (a `create_repository` tool that the
+session rules don't forbid), create it there. Otherwise ask the person to create an EMPTY repo on github.com
+(no README), attach it with `add_repo` (access "push"), add it as the remote and push:
 ```bash
 git init -b main && git add -A && git commit -m "Deck: first version"
 git remote add origin https://github.com/<owner>/<name>.git && git push -u origin main
@@ -42,7 +43,9 @@ The Vercel GitHub app must have access to the repo (Vercel asks for it the first
 Tell the person exactly: "In Vercel → <project> → Settings → Environment Variables add `OPENAI_API_KEY` for
 Production and Preview, then redeploy." Never ask them to paste a key into chat; never pass a key to
 `create_project_env` yourself. Locally: copy `.env.example` to `.env` (gitignored).
-In Claude Code cloud the proxy injects the OpenAI key for local testing; that does NOT configure Vercel.
+Claude Code cloud: if `api.openai.com` is listed as a proxy-injected credential, `tools/serve.mjs` sets a
+placeholder key and the proxy adds the real one; otherwise ask for it with `request_credential` (host
+`api.openai.com`). Neither configures Vercel: the person still adds `OPENAI_API_KEY` there.
 
 ## 4. Verify the live site
 1. `list_deployments` (or the Vercel dashboard): the deployment is READY.

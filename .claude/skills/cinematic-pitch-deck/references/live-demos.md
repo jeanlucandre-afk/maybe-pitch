@@ -29,6 +29,8 @@ at `http://<laptop-ip>:8000/vote` (the QR shows `localhost` locally: use the dep
 - Writing the persona (`api/_persona.js`): a person with a reason to say no; replies of one or two sentences; one
   objection, once; an exact sentence for yes and one for no, each followed by `end_call`; says it's an AI if asked.
   Rehearse it 5 times out loud and tighten until a good pitch wins in about a minute.
+- Renaming the character: change `api/_persona.js` AND, on slide 15, `data-agent-name`, the callout name, the
+  image alt text and `media/caller.webp` (generate a new one), plus the slide notes in deck.json.
 - The presenter speaks first; say the setup on the slide before, since the mic is live as soon as this slide opens.
 - `call:ended` fires on document with `{ turns }`; the agent slide reads the transcript from there.
 - Models: `OPENAI_REALTIME_MODEL` (default `gpt-realtime-2.1`), `OPENAI_TRANSCRIBE_MODEL` (default `gpt-4o-transcribe`).

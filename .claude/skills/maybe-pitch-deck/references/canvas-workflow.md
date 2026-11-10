@@ -21,12 +21,8 @@ lanes (Luc: design, Boris: voice), branch and secrets rules, which override this
   `tools/blob-map.json` (sha256 → deck/img/file).
 
 ## Rebuild the deck after canvas edits
-1. `git pull --rebase origin main`.
-2. Read `project/canvas.json` and every `project/Slide*.dc.html` from the canvas with the Artifact tool and copy them into `src/`. Always re-read; Luc edits by hand.
-3. New images: list canvas assets, download new ones (Artifact read `path: <asset id>`), put them in `deck/img/`, add the two map entries.
-4. `node tools/build-deck.mjs`: no unmapped-image warnings.
-5. Serve locally and step through: the live-call slide plays its demo, the title intro starts.
-6. Commit and push `main` (deploys to https://maybe-pitch.vercel.app in about a minute).
+Follow "Rebuild the deck" in the maybe-pitch repo's CLAUDE.md (pull, re-read the canvas boards into `src/`,
+map new images, `node tools/build-deck.mjs`, check locally, push `main`).
 
 ## Making a new slide on the canvas
 Duplicate the closest board (the catalogue in hackathon-deck.md), keep its helmet and props, change the copy

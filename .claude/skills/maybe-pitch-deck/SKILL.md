@@ -1,6 +1,6 @@
 ---
 name: maybe-pitch-deck
-description: Build a new presentation in the MAYBE brand (maybe.center - students try real work from real companies before they choose; employers see the work, not the CV), with the exact look, voice, motion and touches of the Macromedia × CODE Hackathon 2026 deck (https://maybe-pitch.vercel.app) - white and near-black slides, the one violet #7C3AED, Geist / Geist Mono, giant "MAYBE." wordmark, walking-crowd and pictogram stats, the intro video, the live call with Mara, the 2x product walkthrough. Use for any MAYBE pitch, investor deck, school or parent presentation, partner deck, demo day or update deck. For any other brand use cinematic-pitch-deck.
+description: "Build a new presentation in the MAYBE brand (maybe.center - students try real work from real companies before they choose; employers see the work, not the CV), with the exact look, voice, motion and touches of the Macromedia × CODE Hackathon 2026 deck (https://maybe-pitch.vercel.app) - white and near-black slides, the one violet #7C3AED, Geist / Geist Mono, giant \"MAYBE.\" wordmark, walking-crowd and pictogram stats, the intro video, the live call with Mara, the 2x product walkthrough. Use for any MAYBE pitch, investor deck, school or parent presentation, partner deck, demo day or update deck. For any other brand use cinematic-pitch-deck."
 ---
 
 # MAYBE pitch deck
@@ -22,22 +22,27 @@ MAYBE-specific. The brand gate is already passed: the MAYBE brand below is appro
 | `references/canvas-workflow.md` | Working inside the maybe-pitch repo with the MAYBE Final design canvas (Luc's flow). |
 
 ## Before anything
-- Call Brain `find` for "MAYBE" to get the current state (pilot, partners, numbers, decisions). The brand
+- If the Brain connector is available, call `find` for "MAYBE" to get the current state (pilot, partners, numbers, decisions). The brand
   and facts move; the brain is newer than this file. Do not reuse a number from the hackathon deck without
   checking it is still the latest and its source still holds.
 - Ask (only what you can't infer): who is in the room (jury, investors, schools, parents, employers), how
   long, live demo or not, presenters' names, event name and date.
 
 ## Build a new MAYBE deck
+Find the two skill folders first (`<skills>` below): in this repo `.claude/skills`; on a laptop `~/.claude/skills`;
+anywhere else `dirname "$(find / -path '*cinematic-pitch-deck/template/build.mjs' 2>/dev/null | head -1)"` gives
+the engine template. Build the deck OUTSIDE any existing repo (cloud: `/home/user/<name>`; laptop: next to your
+other projects), never inside maybe-pitch.
 ```bash
-cp -r <skills>/cinematic-pitch-deck/template ./deck && cd deck
-cp <skills>/maybe-pitch-deck/brand/maybe.css assets/brand.css
-cp <skills>/maybe-pitch-deck/brand/deck.json deck.json        # then add slides
-cp <skills>/maybe-pitch-deck/brand/intro.mp4 <skills>/maybe-pitch-deck/brand/image-style.txt media/ && cp <skills>/maybe-pitch-deck/brand/peep-*.svg media/
-python3 - <<'PY'   # keep the live-demo scripts and css from the template's deck.json
-import json; t=json.load(open('deck.json')); m=json.load(open('<skills>/maybe-pitch-deck/brand/deck.json'))
-m['css'], m['scripts'] = t['css'], t['scripts']; json.dump(m, open('deck.json','w'), indent=2)
+NAME=maybe-<audience>-deck; SK=<skills>
+cp -r "$SK/cinematic-pitch-deck/template" "../$NAME" && cd "../$NAME"
+cp "$SK/maybe-pitch-deck/brand/maybe.css" assets/brand.css
+cp "$SK/maybe-pitch-deck/brand/intro.mp4" "$SK/maybe-pitch-deck/brand/image-style.txt" "$SK"/maybe-pitch-deck/brand/peep-*.svg media/
+SK="$SK" python3 - <<'PY'   # MAYBE title + fonts, keep the template's slides, live-demo css and scripts
+import json, os; t = json.load(open('deck.json')); m = json.load(open(os.environ['SK'] + '/maybe-pitch-deck/brand/deck.json'))
+t['title'], t['fonts'] = m['title'], m['fonts']; json.dump(t, open('deck.json', 'w'), indent=2, ensure_ascii=False)
 PY
+node build.mjs && node tools/serve.mjs   # then replace the template slides with the MAYBE beat sheet
 ```
 It is a website from the start: `node tools/serve.mjs` locally, then its own GitHub repo + Vercel project
 (engine `references/web-and-deploy.md`), e.g. `maybe-<audience>-deck`. Live demos (engine
@@ -77,4 +82,4 @@ beat sheet. Adapt the arc to the audience:
   full-bleed walkthrough ground).
 
 ## After
-Save to Brain (src "claude"): a Timeline line on the MAYBE page saying which deck was made, for whom, and where it lives.
+If the Brain connector is available, save to Brain (src "claude"): a Timeline line on the MAYBE page saying which deck was made, for whom, and where it lives.
