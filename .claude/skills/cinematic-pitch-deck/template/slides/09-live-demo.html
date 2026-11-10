@@ -1,10 +1,16 @@
-<!-- PATTERN: the product, live inside the slide. A real page in an iframe (scaled from 1440px wide), clickable.
-     Explain on the left in at most three steps. Put a recorded fallback on the next slide in case the network dies. -->
+<!-- PATTERN: the product, live in a browser inside the slide (the default live moment).
+     A browser window (frame + address bar) holds a real, clickable page: your prototype in app/ or any https site
+     that allows framing. The presenter clicks and scrolls it live; ← → still change slides. Explain on the left in
+     one headline and one sentence. Put the recorded walkthrough on the next slide as the fallback.
+     data-live: the page (app/x.html or https://…) · data-url: what the address bar shows (your real domain)
+     · data-width: the page's design width (default 1440) · put data-fixed on .browser-url to freeze its text. -->
 <div class="slide-root">
   <div style="position:absolute; left:120px; top:0; bottom:0; width:470px; display:flex; flex-direction:column; justify-content:center; gap:28px;">
-    <p class="kicker rv" style="--d:.05;">Live prototype</p>
-    <h2 class="h-1 rv" style="--d:.15; font-size:64px;">[What the audience is looking at]</h2>
-    <p class="body-l rv" style="--d:.35;">[One sentence: what to watch for.]</p>
+    <h2 class="h-1 rv" style="--d:.1; font-size:64px;">[What the audience is looking at]</h2>
+    <p class="body-l rv" style="--d:.3;">[One sentence: what to watch for.]</p>
   </div>
-  <div class="fin" data-live="app/index.html" aria-label="Live prototype: [screen]" style="--d:.2; left:660px; top:110px; width:1140px; height:860px; box-shadow:var(--shadow-device);"></div>
+  <div class="browser fin" style="--d:.2; left:660px; top:96px; width:1160px; height:888px;">
+    <div class="browser-bar"><span class="dots"><i></i><i></i><i></i></span><span class="browser-url">yourproduct.com</span></div>
+    <div data-live="app/index.html" data-url="yourproduct.com" aria-label="Live prototype: [screen]"></div>
+  </div>
 </div>

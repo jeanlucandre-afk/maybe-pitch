@@ -1,5 +1,14 @@
 # Live demos inside the slides
 
+**Default: the product, live in a browser on the slide** (template slide 09). A browser window (frame + address
+bar) holds a real, clickable page: the prototype in `app/` or any https site that allows being framed (many big
+sites send `X-Frame-Options` and show blank: then use the prototype or the walkthrough video). The address bar
+shows `data-url` and follows clicks; ← → keep working after clicking inside; `data-width` sets the page's design
+width (default 1440). Always follow it with the recorded walkthrough slide as the fallback.
+
+**Optional extras, only when the person asks for them** (they are not in the default `deck.json`; to add one, copy
+its slide, css and scripts from `deck.json` → `optional`):
+
 Four ready demos ship in the template, designed like the original deck (compare with `look/11-live-call.jpg` and
 `look/13-agent-world.jpg`). Each works live or falls back to a scripted demo within seconds (no key, no network, a
 blocked mic, venue wifi that blocks WebRTC) and says so quietly: the voice slide shows the original notice card

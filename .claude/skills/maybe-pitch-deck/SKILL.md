@@ -45,9 +45,10 @@ PY
 node build.mjs && node tools/serve.mjs   # then replace the template slides with the MAYBE beat sheet
 ```
 It is a website from the start: `node tools/serve.mjs` locally, then its own GitHub repo + Vercel project
-(engine `references/web-and-deploy.md`), e.g. `maybe-<audience>-deck`. Live demos (engine
-`references/live-demos.md`) fit MAYBE naturally: the voice call is a trial ("call an AI buyer"), the panel is the
-"market reviews your call" moment, the poll asks the room the opening question. New characters (buyers,
+(engine `references/web-and-deploy.md`), e.g. `maybe-<audience>-deck`. The live moment is the MAYBE prototype in a browser on the slide (copy maybe-pitch's `app/` into the deck's
+`app/`, point slide 09 at e.g. `app/marketplace.html` with `data-url="maybe.center"`), then the walkthrough video.
+The voice call, the simulated market and the audience vote are optional extras (engine `references/live-demos.md`),
+added only when asked. New characters (buyers,
 recruiters, students) come from `tools/media/gen-image.mjs` with `brand/image-style.txt` (Open Peeps line style),
 labelled AI-generated.
 Then follow the engine workflow from step 2 (story) using `references/hackathon-deck.md` as the default

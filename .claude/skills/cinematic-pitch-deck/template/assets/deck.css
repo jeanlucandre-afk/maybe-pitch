@@ -50,6 +50,13 @@ html, body { margin: 0; height: 100%; overflow: hidden; background: var(--letter
 .callout  { display: inline-flex; flex-direction: column; gap: 2px; padding: 10px 16px; border-radius: 14px; background: var(--bg); border: 1px solid var(--line); box-shadow: var(--shadow-float); color: var(--ink); }
 .ai-label { position: absolute; right: 16px; bottom: 14px; padding: 4px 10px; border-radius: var(--radius-pill); background: rgba(0,0,0,.6); color: #fff; font: 500 13px var(--font-sans); }
 
+/* a browser window inside the slide: window frame + address bar around a live, clickable page */
+.browser { position: absolute; display: flex; flex-direction: column; border-radius: 18px; overflow: hidden; background: var(--bg); box-shadow: 0 60px 120px -50px rgba(0,0,0,.45), 0 0 0 1px var(--line); }
+.browser-bar { flex: none; height: 52px; display: flex; align-items: center; gap: 16px; padding: 0 18px; background: var(--track); border-bottom: 1px solid var(--line); }
+.browser-bar .dots { display: flex; gap: 8px; } .browser-bar .dots i { width: 13px; height: 13px; border-radius: 50%; background: var(--ghost); }
+.browser-url { flex: 1; height: 32px; display: flex; align-items: center; padding: 0 14px; border-radius: 8px; background: var(--bg); border: 1px solid var(--line); font: 16px var(--font-mono); color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.browser > [data-live] { position: relative; flex: 1; border: 0; border-radius: 0; }
+
 /* live prototype frames ([data-live]): the runtime mounts an iframe, scaled */
 [data-live] { position: absolute; overflow: hidden; border-radius: var(--radius-card); border: 1px solid var(--line); background: var(--bg); }
 [data-live] iframe { position: absolute; left: 0; top: 0; border: 0; transform-origin: 0 0; background: #fff; }

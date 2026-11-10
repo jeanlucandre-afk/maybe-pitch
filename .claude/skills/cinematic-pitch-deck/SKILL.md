@@ -1,6 +1,6 @@
 ---
 name: cinematic-pitch-deck
-description: Build and publish a cinematic pitch presentation as a live website (own GitHub repo + Vercel, like maybe-pitch.vercel.app) for ANY brand - huge tight type, one accent colour, choreographed reveals, walking-crowd and pictogram stats, autoplaying videos, a title revealed by an intro film, and live demos inside the slides (clickable prototype, a voice call with an AI character, simulated people reacting live, the audience voting by QR). Generates brand-styled images and characters with Codex, falling back to the OpenAI API. Use for pitch decks, demo days, hackathons, investor or keynote presentations that should look designed and move, not PowerPoint. Requires an approved brand BEFORE any slide. For the MAYBE brand use maybe-pitch-deck.
+description: Build and publish a cinematic pitch presentation as a live website (own GitHub repo + Vercel, like maybe-pitch.vercel.app) for ANY brand - huge tight type, one accent colour, choreographed reveals, walking-crowd and pictogram stats, autoplaying videos, a title revealed by an intro film, and the product live inside the slides in a browser window, with a recorded walkthrough as fallback. Optional live extras (voice call with an AI character, simulated market reviewing it, audience QR vote). Generates brand-styled images with Codex, falling back to the OpenAI API. Use for pitch decks, demo days, hackathons, investor or keynote presentations that should look designed and move, not PowerPoint. Requires an approved brand BEFORE any slide. For the MAYBE brand use maybe-pitch-deck.
 ---
 
 # Cinematic pitch deck
@@ -44,7 +44,9 @@ Engine: `template/` next to this file. References (read the one for the step you
 ## Questions to ask first (only what you can't find out)
 - Audience, length, date and venue (projector? wifi? can the presenter use a mic?).
 - Brand sources (design system, site, logo files) or "make one".
-- Which live moments: prototype, voice call, simulated panel, audience vote. What the product really does today.
+- What to show live: by default the product in a browser on the slide (their prototype in `app/`, or their live
+  site if it allows framing) plus a recorded walkthrough. Offer the extras (voice call, simulated market, audience
+  vote) only as options; add them only on a yes. What the product really does today.
 - Presenters' names, event name. GitHub owner and Vercel team for the repo; public or private.
 - Codex installed and logged in? Otherwise the OpenAI API key pays for images.
 
@@ -66,8 +68,9 @@ Engine: `template/` next to this file. References (read the one for the step you
    numbers and generator attributes (`<x-crowd on="26">`, `<x-pictos value="51.2">`, `<x-dots on="1">`).
    Remove unused slides from `deck.json`.
 5. **Media and live demos.** Characters and images via `tools/media/gen-image.mjs` (Codex → API). Intro film,
-   walkthrough recording (`tools/walkthrough/record.mjs`), TikToks. Live demos: write `api/_persona.js`,
-   `api/_agents.js`, `polls.json`, the demo scripts, and the prototype in `app/`.
+   walkthrough recording (`tools/walkthrough/record.mjs`), TikToks. The live product: the prototype in `app/` (or
+   the real site) in slide 09's browser. Optional extras only if asked: add them from `deck.json` → `optional`
+   and write `api/_persona.js`, `api/_agents.js`, `polls.json` (live-demos.md).
 6. **QA.** `node tools/shoot.mjs http://localhost:8000`, then **compare every PNG with its reference in
    `references/look/`** (design-bar.md) and fix what looks busier or more app-like; `node tools/check.mjs` must say
    "Ready to push"; click through with ← → and P; test every live slide with and without a key.

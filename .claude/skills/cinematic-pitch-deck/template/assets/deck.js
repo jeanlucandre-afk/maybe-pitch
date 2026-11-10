@@ -96,16 +96,21 @@
   function mountLive(slide) {
     slide.querySelectorAll('[data-live]').forEach((box) => {
       if (box.querySelector('iframe')) return;
-      const scale = box.clientWidth / APP_WIDTH;
+      const appWidth = +box.dataset.width || APP_WIDTH;          // the page's design width (data-width to override)
+      const scale = box.clientWidth / appWidth;
       const f = document.createElement('iframe');
       f.src = box.dataset.live;
       f.title = box.getAttribute('aria-label') || 'Live prototype';
-      f.style.width = APP_WIDTH + 'px';
+      f.style.width = appWidth + 'px';
       f.style.height = Math.ceil(box.clientHeight / scale) + 'px';
       f.style.transform = `scale(${scale})`;
-      f.addEventListener('load', () => { try { f.contentWindow.addEventListener('keydown', onKey); } catch (e) {} });
+      const bar = box.closest('.browser') && box.closest('.browser').querySelector('.browser-url');
+      f.addEventListener('load', () => {
+        try { f.contentWindow.addEventListener('keydown', onKey); } catch (e) {}               // ← → keep working inside
+        try { if (bar && !bar.dataset.fixed) bar.textContent = (box.dataset.url || '') + f.contentWindow.location.pathname.replace(/^\/app(?=\/)/, '').replace(/\/(index)?(\.html)?$/, '/').replace(/\.html$/, ''); } catch (e) {}
+      });
       box.appendChild(f);
-      const b = document.createElement('span'); b.className = 'live-badge'; b.textContent = 'Live · click and scroll'; box.appendChild(b);
+      if (!box.closest('.browser')) { const b = document.createElement('span'); b.className = 'live-badge'; b.textContent = 'Live · click and scroll'; box.appendChild(b); }
     });
   }
 

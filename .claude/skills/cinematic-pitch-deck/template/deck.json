@@ -2,17 +2,8 @@
   "title": "BRAND · Pitch",
   "lang": "en",
   "fonts": "https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap",
-  "css": [
-    "assets/live/live.css",
-    "assets/live/agent-world.css"
-  ],
-  "scripts": [
-    "assets/live/vendor/qrcode.js",
-    "assets/live/voice-call.js",
-    "assets/live/agent-world.js",
-    "assets/live/agents.js",
-    "assets/live/audience.js"
-  ],
+  "css": [],
+  "scripts": [],
   "slides": [
     {
       "file": "00-black.html",
@@ -61,23 +52,8 @@
     },
     {
       "file": "09-live-demo.html",
-      "title": "Live demo",
-      "notes": "Click through it live. If the network fails, skip to the walkthrough."
-    },
-    {
-      "file": "15-voice-call.html",
-      "title": "Live call",
-      "notes": "Say the approach on the slide before: the mic opens as soon as this slide shows. Talk to Mara; the orb follows the sound. If the pill says Demo, narrate the demo instead."
-    },
-    {
-      "file": "16-agents.html",
-      "title": "A market reviews the call",
-      "notes": "Right after the call, a small market of simulated people argues about it, then each decides alone. Left: what worked, what didn’t, the skills found, where the market stands. Say it: a synthetic estimate, not real opinions, kept apart from the real outcome."
-    },
-    {
-      "file": "17-audience.html",
-      "title": "Audience vote",
-      "notes": "Ask the room to scan and vote. Wait for ~20 votes, read the result, move on."
+      "title": "The product, live",
+      "notes": "Click through the real product in the browser on the slide. If the network fails, go to the next slide: the recorded walkthrough."
     },
     {
       "file": "10-walkthrough.html",
@@ -104,5 +80,38 @@
       "title": "Close",
       "notes": "Old world, new world, name, tagline, thank you."
     }
-  ]
+  ],
+  "optional": {
+    "_": "Optional live extras. Add only if the person wants them: put the slide in 'slides' (after the live demo) and the css/scripts below into 'css'/'scripts'. See references/live-demos.md.",
+    "voice call with an AI character": {
+      "slide": "15-voice-call.html",
+      "css": [
+        "assets/live/live.css"
+      ],
+      "scripts": [
+        "assets/live/voice-call.js"
+      ]
+    },
+    "simulated market reviews the call": {
+      "slide": "16-agents.html",
+      "css": [
+        "assets/live/agent-world.css"
+      ],
+      "scripts": [
+        "assets/live/agent-world.js",
+        "assets/live/agents.js"
+      ],
+      "needs": "the voice call slide right before it"
+    },
+    "audience vote by QR": {
+      "slide": "17-audience.html",
+      "css": [
+        "assets/live/live.css"
+      ],
+      "scripts": [
+        "assets/live/vendor/qrcode.js",
+        "assets/live/audience.js"
+      ]
+    }
+  }
 }
