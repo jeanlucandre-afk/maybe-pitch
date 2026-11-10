@@ -61,9 +61,9 @@ If you have no image generation tool or no credits for it, print NO_IMAGE_TOOL a
 Image prompt:
 ${prompt}`;
   const r = spawnSync('codex', ['exec', '--skip-git-repo-check', '--sandbox', 'workspace-write', '-C', ROOT, task], { encoding: 'utf8', timeout: 6 * 60 * 1000 });
-  const log = `${r.stdout || ''}\n${r.stderr || ''}`;
+  const log = `${r.stdout || ''}\n${r.stderr || ''}`.split(task).join(''); // codex may echo the task; don't match our own words
   if (isPng(out) && fs.statSync(out).mtimeMs > before) return { ok: true, model: 'codex image tool' };
-  const why = /NO_IMAGE_TOOL/.test(log) ? 'codex has no image tool or no credits for it'
+  const why = /^\s*NO_IMAGE_TOOL\s*$/m.test(log) ? 'codex has no image tool or no credits for it'
     : NO_CREDITS.test(log) ? 'codex out of credits or not logged in'
     : r.error ? `codex failed (${r.error.code || r.error.message})` : 'codex made no PNG';
   return { ok: false, why };
@@ -79,7 +79,8 @@ async function tryApi() {
       const form = new FormData();
       for (const [k, v] of Object.entries(common)) form.append(k, String(v));
       const ref = path.resolve(String(args.ref));
-      form.append('image[]', new Blob([fs.readFileSync(ref)], { type: 'image/png' }), path.basename(ref));
+      const mime = { '.png': 'image/png', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg' }[path.extname(ref).toLowerCase()] || 'image/png';
+      form.append('image[]', new Blob([fs.readFileSync(ref)], { type: mime }), path.basename(ref));
       res = await fetch('https://api.openai.com/v1/images/edits', { method: 'POST', headers: { Authorization: `Bearer ${key}` }, body: form, signal: AbortSignal.timeout(180000) });
     } else {
       res = await fetch('https://api.openai.com/v1/images/generations', { method: 'POST', headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' }, body: JSON.stringify(common), signal: AbortSignal.timeout(180000) });

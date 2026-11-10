@@ -20,6 +20,21 @@
   }
   window.addEventListener('resize', fit); fit();
 
+  // [data-fit]: big one-line type (the wordmark) shrinks until it fits its own box, so long names never run off
+  function fitText() {
+    document.querySelectorAll('[data-fit]').forEach((el) => {
+      const max = parseFloat(el.dataset.fit) || parseFloat(getComputedStyle(el).fontSize);
+      el.style.fontSize = max + 'px';
+      const slide = el.closest('.deck-slide'), hidden = slide && !slide.classList.contains('is-active');
+      if (hidden) slide.style.visibility = 'visible';           // measure hidden slides too
+      const natural = el.scrollWidth, room = el.clientWidth;
+      if (hidden) slide.style.visibility = '';
+      if (natural > room && room > 0) el.style.fontSize = Math.floor(max * room / natural * 0.98) + 'px';
+    });
+  }
+  fitText();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitText);
+
   // progress line: share of the counted slides reached (a black pre-show slide is not counted)
   slides.forEach((s) => {
     const n = counted.indexOf(s) + 1;

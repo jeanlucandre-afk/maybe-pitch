@@ -1,7 +1,7 @@
 <!-- PATTERN: the room votes (assets/live/audience.js, vote.html, api/poll.js, polls.json).
      QR left (big enough to scan from row 10: 360px+), question and live bars right. Use it to open a section
-     ("Who here chose their degree without trying the job?") or to close the loop after the demo. -->
-<div class="slide-root" data-poll data-demo-question="Would you have tried it before choosing?" data-demo-options='["Yes, definitely","Maybe","No, I knew already"]'>
+     ("Who here chose their degree without trying the job?") or to close the loop after the demo.  Delete data-template from the root once the content is yours (tools/check.mjs blocks it). -->
+<div class="slide-root" data-shoot-wait="4500" data-template data-poll data-demo-question="Would you have tried it before choosing?" data-demo-options='["Yes, definitely","Maybe","No, I knew already"]'>
   <div class="fin" style="--d:.1; position:absolute; left:160px; top:50%; margin-top:-250px; width:420px; display:flex; flex-direction:column; gap:18px; align-items:center;">
     <div class="qr" data-qr style="width:420px; height:420px;"></div>
     <span class="num" data-poll-url style="font-size:24px; color:var(--ink-2);"></span>

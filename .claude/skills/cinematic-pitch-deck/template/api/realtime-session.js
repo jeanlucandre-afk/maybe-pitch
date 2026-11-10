@@ -16,7 +16,7 @@ const session = () => ({
   audio: {
     input: {
       noise_reduction: { type: 'far_field' }, // a stage mic picks up the room
-      transcription: { model: TRANSCRIBE, language: persona.language || 'en', prompt: persona.context },
+      transcription: { model: TRANSCRIBE, language: persona.language || 'en', prompt: [persona.context, (persona.keywords || []).length ? `Names and words: ${persona.keywords.join(', ')}.` : ''].filter(Boolean).join(' ') },
       turn_detection: { type: 'semantic_vad', eagerness: 'medium', create_response: true, interrupt_response: true },
     },
     output: { voice: persona.voice || 'marin' },
@@ -28,7 +28,7 @@ const session = () => ({
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return sendJson(res, 405, { error: 'Method not allowed' });
   if (!originAllowed(req)) return sendJson(res, 403, { error: 'Origin not allowed', code: 'origin' });
-  if (rateLimited(req, 20)) return sendJson(res, 429, { error: 'Too many requests', code: 'rate_limited' });
+  if (rateLimited(req, 20) || rateLimited(req, 12, 'all')) return sendJson(res, 429, { error: 'Too many requests', code: 'rate_limited' }); // per IP, and per instance overall (each call spends credits)
   if (!process.env.OPENAI_API_KEY) return sendJson(res, 503, { error: 'Voice is not configured', code: 'not_configured' });
   try {
     const data = await openai('realtime/client_secrets', { session: session() }, 8000);

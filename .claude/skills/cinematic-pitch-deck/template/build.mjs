@@ -34,7 +34,7 @@ function attrs(s) {
 
 const generators = {
   crowd(a) {
-    const total = +a.total || 100, on = +a.on || 0, cols = +a.cols || 10, size = +a.size || 46, gap = +a.gap || 14, start = +(a.start ?? 0.25);
+    const total = +a.total || 100, on = a.on != null ? +a.on : 0, cols = +a.cols || 10, size = +a.size || 46, gap = +a.gap || 14, start = +(a.start ?? 0.25);
     let out = '';
     for (let i = 0; i < total; i++) {
       const r = Math.floor(i / cols), c = i % cols;
@@ -56,7 +56,7 @@ const generators = {
     return `<div role="img" aria-label="${esc(a.label || value + '%')}" style="display:flex;gap:${+a.gap || 12}px">${out}</div>`;
   },
   dots(a) {
-    const total = +a.total || 100, on = +a.on || 1, cols = +a.cols || 10, size = +a.size || 14, start = +(a.start ?? 0);
+    const total = +a.total || 100, on = a.on != null ? +a.on : 1, cols = +a.cols || 10, size = +a.size || 14, start = +(a.start ?? 0);
     let out = '';
     for (let i = 0; i < total; i++) out += `<span class="pop" style="--d:${r2(start + i * 0.02)};display:block;width:${size}px;height:${size}px;border-radius:999px;background:${i < on ? 'var(--accent)' : 'var(--ghost)'}"></span>`;
     return `<div role="img" aria-label="${esc(a.label || `${on} of ${total}`)}" style="display:grid;grid-template-columns:repeat(${cols},${size}px);gap:${Math.round(size * 0.43)}px">${out}</div>`;

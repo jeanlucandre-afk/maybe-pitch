@@ -21,14 +21,16 @@
   const setStatus = (state, text) => { if (statusEl) { statusEl.dataset.state = state; statusEl.textContent = text; } };
   const initials = (n) => n.split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase();
 
+  // returns { turns, live }: live only when the transcript came from a real call, not the call slide's demo script
   function transcript() {
+    const live = !!(window.LIVE_CALL && window.LIVE_CALL.wasLive && window.LIVE_CALL.wasLive());
     let t = window.LIVE_CALL ? window.LIVE_CALL.getTranscript() : [];
     if (!t.length) { try { t = JSON.parse(sessionStorage.getItem('live-call-turns') || '[]'); } catch (e) {} }
     if (!t.length) {
       const call = document.querySelector('[data-call]');
       try { t = JSON.parse(call && call.dataset.callScript || '[]').map((l) => ({ speaker: l.role === 'agent' ? 'agent' : 'presenter', text: l.text })); } catch (e) {}
     }
-    return t.filter((x) => x.text && x.text.trim());
+    return { turns: t.filter((x) => x && x.text && x.text.trim()), live };
   }
 
   function layout(agents) {
@@ -53,11 +55,11 @@
     (items || []).forEach((txt, i) => { const li = document.createElement('li'); li.textContent = txt; ul.appendChild(li); later(start + i * 220, () => li.classList.add('is-in')); });
   }
 
-  function play(review, my, isDemo) {
+  function play(review, my, isDemo, demoCall) {
     if (my !== run) return;
     const labels = review.verdictLabels || { yes: 'Yes', maybe: 'Maybe', no: 'No' };
     const nodes = layout(review.agents);
-    setStatus(isDemo ? 'demo' : 'live', isDemo ? 'Demo review · simulated people' : 'Live review · simulated people');
+    setStatus(isDemo || demoCall ? 'demo' : 'live', isDemo ? 'Demo review · simulated people' : demoCall ? 'Review of the demo call · simulated people' : 'Live review · simulated people');
     let at = 900;
     review.agents.forEach((a, i) => {
       const el = nodes[i];
@@ -67,25 +69,29 @@
     });
     later(at, () => nodes.forEach((n) => n.classList.remove('is-speaking')));
     const yes = review.agents.filter((a) => a.verdict === 'yes').length;
-    later(at + 200, () => { const t = $('[data-tally]'); if (t) t.textContent = `${yes} of ${review.agents.length}`; });
+    later(at + 200, () => {
+      const t = $('[data-tally]'); if (t) t.textContent = `${yes} of ${review.agents.length}`;
+      const l = $('[data-tally-label]'); if (l) l.textContent = String(labels.yes || 'yes').toLowerCase();
+    });
     fillList('[data-pros]', review.pros, at + 400);
     fillList('[data-cons]', review.cons, at + 400 + (review.pros || []).length * 220);
-    later(at + 1400, () => { const s = $('[data-summary]'); if (s) s.textContent = review.summary || ''; });
+    later(at + 1400, () => { const s = $('[data-summary]'); if (s) s.textContent = review.summary || ''; root.dataset.done = '1'; });
   }
 
   async function start() {
     const my = ++run;
     stop(false);
+    delete root.dataset.done;
     ['[data-pros]', '[data-cons]'].forEach((s) => { const el = $(s); if (el) el.innerHTML = ''; });
-    ['[data-summary]', '[data-tally]'].forEach((s) => { const el = $(s); if (el) el.textContent = ''; });
-    const t = transcript();
+    ['[data-summary]', '[data-tally]', '[data-tally-label]'].forEach((s) => { const el = $(s); if (el) el.textContent = ''; });
+    const { turns: t, live } = transcript();
     if (demo.agents) layout(demo.agents.map((a) => ({ name: a.name, id: a.id })));
     setStatus('connecting', 'The panel is thinking…');
     try {
       if (!t.length) throw new Error('no transcript');
       const r = await fetch('api/agents-review', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ transcript: t }) });
       if (!r.ok) throw new Error('review ' + r.status);
-      play(await r.json(), my, false);
+      play(await r.json(), my, false, !live);
     } catch (e) {
       if (demo.agents) play(demo, my, true); else setStatus('demo', 'Review unavailable');
     }

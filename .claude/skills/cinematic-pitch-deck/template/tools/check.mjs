@@ -30,26 +30,53 @@ for (const [f, s] of Object.entries(slides)) {
   const ph = text.match(/\[[A-Z][^\]]{1,60}\]|\bBRAND\b/g);
   if (ph) fail.push(`${f}: placeholder text left: ${[...new Set(ph)].slice(0, 4).join(', ')}`);
   if (/data-tiktok="[^"]*video\/0{10,}/.test(s)) fail.push(`${f}: template TikTok ids (000…) left`);
+  if (/class="[^"]*slide-root[^"]*"[^>]*\bdata-template\b/.test(s)) fail.push(`${f}: still the template's example content (data-template on the root). Write your own, then remove data-template.`);
 }
+// live-demo config files still holding the template's example (Mara, the gum-selling panel, the sample poll)
+const usesCall = Object.values(slides).some((s) => /\bdata-call\b/.test(s)), usesAgents = Object.values(slides).some((s) => /\bdata-agents\b/.test(s)), usesPoll = Object.values(slides).some((s) => /\bdata-poll\b/.test(s));
+for (const [file, used] of [['api/_persona.js', usesCall], ['api/_agents.js', usesAgents], ['polls.json', usesPoll]]) {
+  const abs = path.join(ROOT, file);
+  if (used && fs.existsSync(abs) && /["']?template["']?\s*:\s*true/.test(fs.readFileSync(abs, 'utf8'))) fail.push(`${file}: still the template example. Write it for this deck, then delete the "template: true" line.`);
+}
+if (/^BRAND ·|^\s*$/.test(deck.title || '')) fail.push('deck.json: title is still the template\'s');
 
 // 3. secrets in files that git would ship
 let tracked = [];
-try { tracked = execFileSync('git', ['ls-files', '--cached', '--others', '--exclude-standard'], { cwd: ROOT, encoding: 'utf8' }).split('\n').filter(Boolean); }
+try { tracked = execFileSync('git', ['ls-files', '--cached', '--others', '--exclude-standard'], { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).split('\n').filter(Boolean); }
 catch (e) { tracked = []; warn.push('not a git repo yet: secret scan covers slides/, api/, assets/ only'); }
 const scan = tracked.length ? tracked : ['slides', 'api', 'assets', 'deck.json'].flatMap(function walk(p) { const a = path.join(ROOT, p); return !fs.existsSync(a) ? [] : fs.statSync(a).isDirectory() ? fs.readdirSync(a).flatMap((c) => walk(path.join(p, c))) : [p]; });
 const SECRET = /\b(sk-(?:proj-|live-)?[A-Za-z0-9_-]{20,}|ek_[A-Za-z0-9]{20,}|ghp_[A-Za-z0-9]{30,}|xox[bp]-[A-Za-z0-9-]{20,})|(?:API_KEY|TOKEN|SECRET)\s*=\s*['"]?[A-Za-z0-9_\-]{16,}/;
 for (const f of scan) {
   if (/\.(png|jpe?g|webp|gif|mp4|webm|woff2?|ico|zip)$/i.test(f) || f === '.env.example') continue;
   const abs = path.join(ROOT, f); if (!fs.existsSync(abs) || fs.statSync(abs).size > 2e6) continue;
-  if (SECRET.test(fs.readFileSync(abs, 'utf8'))) fail.push(`${f}: looks like it contains a secret. Remove it, rotate the key, keep keys in env vars.`);
+  if (SECRET.test(fs.readFileSync(abs, 'utf8').replaceAll('sk-injected-by-proxy', ''))) fail.push(`${f}: looks like it contains a secret. Remove it, rotate the key, keep keys in env vars.`);
 }
 if (tracked.includes('.env')) fail.push('.env is tracked by git. Remove it from the repo and rotate the keys in it.');
 
 // 4. media referenced exist; sizes
 const html = Object.values(slides).join('\n') + fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
-for (const m of new Set([...html.matchAll(/(?:src|href|data-live)="((?:media|app|assets)\/[^"#?]+)"/g)].map((x) => x[1]))) {
-  if (!fs.existsSync(path.join(ROOT, m))) fail.push(`missing file: ${m}`);
+const refs = [
+  ...[...html.matchAll(/(?:src|href|data-live|poster)="(?:\.?\/)?((?:media|app|assets)\/[^"#?]+)"/g)].map((x) => x[1]),
+  ...[...html.matchAll(/srcset="([^"]+)"/g)].flatMap((x) => x[1].split(',').map((c) => c.trim().split(/\s+/)[0].replace(/^\.?\//, ''))),
+  ...[...html.matchAll(/url\(\s*['"]?(?:\.?\/)?((?:media|app|assets)\/[^'")?#]+)/g)].map((x) => x[1]),
+].filter((r) => /^(media|app|assets)\//.test(r));
+for (const m of new Set(refs)) {
+  if (!fs.existsSync(path.join(ROOT, m))) fail.push(`missing file: ${m}${/intro\.mp4$/.test(m) ? ' (no intro film? delete the <video> and .intro-black in the title slide)' : /walkthrough\.mp4$/.test(m) ? ' (record it: tools/walkthrough/record.mjs, or drop the walkthrough slide)' : ''}`);
 }
+// media nobody uses still ships (and costs load time)
+if (fs.existsSync(path.join(ROOT, 'media'))) {
+  const all = html + ['api', 'app'].map((d) => fs.existsSync(path.join(ROOT, d)) ? fs.readdirSync(path.join(ROOT, d)).map((f) => fs.statSync(path.join(ROOT, d, f)).isFile() ? fs.readFileSync(path.join(ROOT, d, f), 'utf8') : '').join('') : '').join('');
+  const unused = fs.readdirSync(path.join(ROOT, 'media')).filter((f) => /\.(png|jpe?g|webp|gif|mp4|webm|svg)$/i.test(f) && !all.includes(`media/${f}`));
+  if (unused.length) warn.push(`unused media (delete or reference): ${unused.map((f) => 'media/' + f).join(', ')}`);
+}
+// the last screenshot run (tools/shoot.mjs) found text running off a slide
+const report = path.join(ROOT, 'shots/report.json');
+if (fs.existsSync(report)) {
+  const newestSlide = Math.max(...slideFiles.map((f) => fs.statSync(f).mtimeMs), fs.statSync(path.join(ROOT, 'assets/brand.css')).mtimeMs);
+  const r = JSON.parse(fs.readFileSync(report, 'utf8'));
+  if (fs.statSync(report).mtimeMs < newestSlide) warn.push('screenshots are older than the slides: run tools/shoot.mjs again');
+  else for (const o of r.filter((x) => x.over)) fail.push(`slide ${o.n} "${o.title}": ${o.over} text element(s) run off the slide (shots/${o.file})`);
+} else warn.push('no screenshots yet: run tools/shoot.mjs and look at every slide');
 if (fs.existsSync(path.join(ROOT, 'media'))) for (const f of fs.readdirSync(path.join(ROOT, 'media'))) {
   const size = fs.statSync(path.join(ROOT, 'media', f)).size;
   if (size > 25e6) fail.push(`media/${f} is ${(size / 1e6).toFixed(0)} MB: too big for a smooth deck (compress; videos ≤ 15 MB)`);

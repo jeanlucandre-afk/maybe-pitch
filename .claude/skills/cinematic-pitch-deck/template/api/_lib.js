@@ -17,16 +17,19 @@ function originAllowed(req) {
   const allowed = new Set((process.env.DECK_ORIGINS || '').split(',').map((s) => s.trim()).filter(Boolean));
   for (const k of ['VERCEL_URL', 'VERCEL_BRANCH_URL', 'VERCEL_PROJECT_PRODUCTION_URL']) if (process.env[k]) allowed.add(`https://${process.env[k]}`);
   if (allowed.has(origin)) return true;
-  return process.env.VERCEL_ENV !== 'production' && /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
+  if (process.env.VERCEL_ENV === 'production') return false;
+  // rehearsals: localhost, and phones on the same wifi opening http://<laptop-ip>:8000 (origin host = this host)
+  try { if (new URL(origin).host === req.headers.host) return true; } catch (e) { return false; }
+  return /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin);
 }
 
 // Best-effort per-instance throttle, not a security boundary.
 const hits = new Map();
-function rateLimited(req, perMinute) {
+function rateLimited(req, perMinute, by) {
   const now = Date.now();
   for (const [k, r] of hits) if (r.until <= now) hits.delete(k);
   const ip = String(req.headers['x-forwarded-for'] || req.socket?.remoteAddress || '?').split(',')[0].trim();
-  const key = `${req.url?.split('?')[0]}|${ip}`;
+  const key = `${req.url?.split('?')[0]}|${by || ip}`; // `by` (e.g. a voter id): venue wifi puts a whole room on one IP
   const r = hits.get(key) || { n: 0, until: now + 60000 };
   r.n += 1; hits.set(key, r);
   return r.n > perMinute;

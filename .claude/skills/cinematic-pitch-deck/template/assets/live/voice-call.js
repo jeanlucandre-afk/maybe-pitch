@@ -27,7 +27,7 @@
   let script = []; try { script = JSON.parse(root.dataset.callScript || '[]'); } catch (e) {}
 
   let turns = [], mode = 'idle', target = 0, level = 0, phaseA = 0, phaseB = 0, rot = 0, raf = 0, last = 0;
-  let link = null, demoTimers = [], session = 0, endTimer = 0;
+  let link = null, demoTimers = [], session = 0, endTimer = 0, wasLive = false;
 
   // ---------- look ----------
   function setStatus(state, text) { if (statusEl) { statusEl.dataset.state = state; statusEl.textContent = text; } }
@@ -47,26 +47,39 @@
     raf = requestAnimationFrame(frame);
   }
 
+  // opts.id: a Realtime item id; the same id always updates the same bubble and turn, wherever it is (transcripts
+  // of the presenter often arrive after the AI has started answering). opts.replaceLast: extend the newest bubble.
+  const byId = new Map();
   function addMessage(role, text, opts = {}) {
     const who = role === 'agent' ? 'agent' : 'you';
-    let el = opts.replaceLast ? [...bubbles.querySelectorAll(`.bubble--${who}`)].pop() : null;
-    if (el && el !== bubbles.lastElementChild) el = null;   // only extend the newest bubble
-    if (!el) {
-      el = document.createElement('div');
+    let rec = opts.id ? byId.get(opts.id) : null;
+    if (!rec && opts.replaceLast) {
+      const el = bubbles.lastElementChild;
+      if (el && el.classList.contains(`bubble--${who}`) && el._turn) rec = { el, turn: el._turn };
+    }
+    if (!rec) {
+      const el = document.createElement('div');
       el.className = `bubble bubble--${who} is-new`;
-      el.innerHTML = `<b></b><span></span>`;
+      el.innerHTML = '<b></b><span></span>';
       el.querySelector('b').textContent = who === 'agent' ? AGENT : YOU;
       bubbles.appendChild(el);
       requestAnimationFrame(() => requestAnimationFrame(() => el.classList.remove('is-new')));
       while (bubbles.children.length > MAX_BUBBLES) bubbles.firstElementChild.remove();
-      turns.push({ speaker: who === 'agent' ? 'agent' : 'presenter', text: '' });
+      const turn = { speaker: who === 'agent' ? 'agent' : 'presenter', text: '' };
+      turns.push(turn);
+      el._turn = turn;
+      rec = { el, turn };
+      if (opts.id) byId.set(opts.id, rec);
     }
-    el.querySelector('span').textContent = text;
-    const t = [...turns].reverse().find((x) => x.speaker === (who === 'agent' ? 'agent' : 'presenter'));
-    if (t) t.text = text;
-    try { sessionStorage.setItem('live-call-turns', JSON.stringify(turns)); } catch (e) {}
+    rec.el.querySelector('span').textContent = text;
+    rec.turn.text = text;
+    try { sessionStorage.setItem('live-call-turns', JSON.stringify(turns.filter((t) => t.text && t.text !== '…'))); } catch (e) {}
   }
-  function clear() { bubbles.innerHTML = ''; turns = []; }
+  function dropMessage(id) {
+    const rec = byId.get(id); if (!rec) return;
+    rec.el.remove(); turns = turns.filter((t) => t !== rec.turn); byId.delete(id);
+  }
+  function clear() { bubbles.innerHTML = ''; turns = []; byId.clear(); }
 
   // ---------- demo (no connection) ----------
   function playDemo(reason) {
@@ -86,7 +99,7 @@
   // ---------- live ----------
   async function connect() {
     const my = ++session;
-    disconnectLink(); clear(); setMode('idle'); setLevel(0);
+    disconnectLink(); clear(); setMode('idle'); setLevel(0); wasLive = false;
     if (!window.RTCPeerConnection || !navigator.mediaDevices) return playDemo('Demo · browser has no live audio');
     setStatus('connecting', 'Connecting…');
     let token, model = '';
@@ -109,7 +122,7 @@
       L.pc.ontrack = (e) => { L.audio.srcObject = e.streams[0]; remote = meter(e.streams[0]); L.audio.play().catch(() => setStatus('live', 'Live · click once to hear the voice')); };
       L.pc.addTrack(L.stream.getAudioTracks()[0], L.stream);
       const ch = L.pc.createDataChannel('oai-events');
-      ch.onopen = () => { clearTimeout(L.openTimer); if (my === session) setStatus('live', `Live · ${AGENT} is listening`); };
+      ch.onopen = () => { clearTimeout(L.openTimer); if (my === session) { wasLive = true; setStatus('live', `Live · ${AGENT} is listening`); } };
       ch.onmessage = (e) => { try { onEvent(JSON.parse(e.data), L); } catch (err) {} };
       L.pc.onconnectionstatechange = () => { if (L.pc.connectionState === 'failed' && my === session) { disconnectLink(L); setStatus('demo', 'Connection lost'); } };
       const offer = await L.pc.createOffer(); await L.pc.setLocalDescription(offer);
@@ -127,28 +140,43 @@
   }
 
   function onEvent(ev, L) {
-    const t = ev.type;
+    const t = ev.type, id = ev.item_id;
     if (t === 'input_audio_buffer.speech_started') setMode('you');
     else if (t === 'input_audio_buffer.speech_stopped') setMode('idle');
-    else if (t === 'conversation.item.input_audio_transcription.delta') { L.you = (L.you || '') + ev.delta; addMessage('you', L.you, { replaceLast: !!L.youOpen }); L.youOpen = true; }
-    else if (t === 'conversation.item.input_audio_transcription.completed') { if (ev.transcript && ev.transcript.trim()) addMessage('you', ev.transcript.trim(), { replaceLast: !!L.youOpen }); L.you = ''; L.youOpen = false; }
-    else if (t === 'response.output_audio_transcript.delta') { setMode('agent'); L.ag = (L.ag || '') + ev.delta; addMessage('agent', L.ag, { replaceLast: !!L.agOpen }); L.agOpen = true; }
-    else if (t === 'response.output_audio_transcript.done') { if (ev.transcript) addMessage('agent', ev.transcript, { replaceLast: !!L.agOpen }); L.ag = ''; L.agOpen = false; }
-    else if (t === 'output_audio_buffer.stopped' || t === 'response.done') { if (mode === 'agent') setMode('idle'); if (L.hangAfter) setTimeout(hangUp, 600); }
-    else if (t === 'response.function_call_arguments.done' && ev.name === 'end_call') L.hangAfter = true;
+    // reserve the presenter's bubble when their audio is committed, so it stays before the AI's answer
+    else if (t === 'input_audio_buffer.committed' && id) { L.text = L.text || {}; L.text[id] = ''; addMessage('you', '…', { id }); }
+    else if (t === 'conversation.item.input_audio_transcription.delta') { L.text = L.text || {}; L.text[id] = (L.text[id] || '') + (ev.delta || ''); addMessage('you', L.text[id], { id }); }
+    else if (t === 'conversation.item.input_audio_transcription.completed') { const tx = (ev.transcript || '').trim(); if (tx) addMessage('you', tx, { id }); else dropMessage(id); }
+    else if (t === 'conversation.item.input_audio_transcription.failed') dropMessage(id);
+    else if (t === 'response.output_audio_transcript.delta') { setMode('agent'); L.text = L.text || {}; L.text[id] = (L.text[id] || '') + (ev.delta || ''); addMessage('agent', L.text[id], { id }); }
+    else if (t === 'response.output_audio_transcript.done') { if (ev.transcript) addMessage('agent', ev.transcript, { id }); }
+    else if (t === 'response.function_call_arguments.done' && ev.name === 'end_call') wantsHangUp(L);
+    else if (t === 'response.done') {
+      if ((ev.response && ev.response.output || []).some((o) => o.type === 'function_call' && o.name === 'end_call')) wantsHangUp(L);
+    }
+    else if (t === 'output_audio_buffer.stopped') {
+      if (mode === 'agent') setMode('idle');
+      if (L.hangAfter) { clearTimeout(L.hangTimer); L.hangTimer = setTimeout(() => { if (link === L) hangUp(); }, 500); } // after the last word is heard
+    }
     else if (t === 'error') console.warn('[voice-call] realtime error', ev.error && ev.error.code);
+  }
+  function wantsHangUp(L) {
+    if (L.hangAfter) return;
+    L.hangAfter = true;
+    clearTimeout(L.hangTimer);
+    L.hangTimer = setTimeout(() => { if (link === L) hangUp(); }, 10000); // safety net if the audio-stopped event never comes
   }
 
   function disconnectLink(L = link) {
     if (!L) return;
-    clearTimeout(L.openTimer);
+    clearTimeout(L.openTimer); clearTimeout(L.hangTimer);
     try { L.pc && L.pc.close(); } catch (e) {}
     L.stream && L.stream.getTracks().forEach((tr) => tr.stop());
     L.ctx && L.ctx.close().catch(() => {});
     if (L.audio) { L.audio.pause(); L.audio.srcObject = null; }
     if (link === L) link = null;
   }
-  function ended() { document.dispatchEvent(new CustomEvent('call:ended', { detail: { turns: turns.slice() } })); }
+  function ended() { document.dispatchEvent(new CustomEvent('call:ended', { detail: { turns: window.LIVE_CALL.getTranscript() } })); }
   function hangUp() { const had = !!link; disconnectLink(); clearTimeout(endTimer); setMode('idle'); setLevel(0); if (had) { setStatus('demo', 'Call ended'); ended(); } }
   function disconnect() { session++; demoTimers.forEach(clearTimeout); demoTimers = []; hangUp(); }
 
@@ -157,5 +185,5 @@
     if (here) { if (!raf) raf = requestAnimationFrame(frame); connect(); }
     else if (raf || link || demoTimers.length) { disconnect(); cancelAnimationFrame(raf); raf = 0; }
   });
-  window.LIVE_CALL = { connect, disconnect, setMode, setLevel, addMessage, clear, getTranscript: () => turns.slice() };
+  window.LIVE_CALL = { wasLive: () => wasLive, connect, disconnect, setMode, setLevel, addMessage, clear, getTranscript: () => turns.filter((t) => t.text && t.text !== '…').map((t) => ({ ...t })) };
 })();

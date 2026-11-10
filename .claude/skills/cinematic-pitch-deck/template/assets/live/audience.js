@@ -13,7 +13,7 @@
   const slide = root.closest('.deck-slide');
   const $ = (s) => root.querySelector(s);
   const statusEl = $('[data-poll-status]');
-  let timer = 0, demoCounts = null, built = false;
+  let timer = 0, demoCounts = null, built = '', everLive = false, failures = 0;
   const setStatus = (state, text) => { if (statusEl) { statusEl.dataset.state = state; statusEl.textContent = text; } };
 
   function drawQr() {
@@ -29,10 +29,11 @@
   function render(p) {
     $('[data-poll-question]') && ($('[data-poll-question]').textContent = p.question);
     const rows = $('[data-poll-rows]');
-    if (!built) {
+    const sig = JSON.stringify(p.options);
+    if (built !== sig) {   // rebuild when the options change (demo → live, or a new polls.json)
       rows.innerHTML = p.options.map(() => '<div class="poll-row"><span class="label"></span><span class="val">0%</span><span class="track"><i class="fill"></i></span></div>').join('');
       [...rows.children].forEach((r, i) => { r.querySelector('.label').textContent = p.options[i]; });
-      built = true;
+      built = sig;
     }
     const max = Math.max(...p.counts);
     [...rows.children].forEach((r, i) => {
@@ -49,10 +50,12 @@
       const r = await fetch('api/poll', { cache: 'no-store' });
       if (!r.ok) throw new Error(r.status);
       const p = await r.json();
-      render(p);
+      render(p); everLive = true; failures = 0;
       setStatus('live', p.store === 'memory' ? 'Live · test store (add Upstash for the event)' : 'Live · scan to vote');
     } catch (e) {
-      // demo: simulated votes so the slide is never empty; labelled as such
+      // once it has been live, a hiccup keeps the last real result on screen; never swap in simulated votes
+      if (everLive) { failures++; if (failures > 2) setStatus('connecting', 'Reconnecting… (showing the last result)'); return; }
+      // never live (static hosting, offline): simulated votes so the slide is never empty, labelled as such
       const opts = JSON.parse(root.dataset.demoOptions || '["Yes","Maybe","No"]');
       demoCounts = demoCounts || opts.map(() => 0);
       demoCounts = demoCounts.map((c, i) => c + (Math.random() < [0.6, 0.35, 0.15][i % 3] ? 1 : 0));

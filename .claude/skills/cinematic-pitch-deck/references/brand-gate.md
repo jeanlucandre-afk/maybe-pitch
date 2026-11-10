@@ -48,8 +48,9 @@ Avoid: gradients as decoration, more than one accent, purple-blue "AI" gradients
 centred body copy, stock photos of people at laptops.
 
 ## 5. Image style
-Write `media/image-style.txt` from the imagery row of the brief (images.md has examples) and generate 2-3 test
-images with `tools/media/gen-image.mjs` to show next to the brand board.
+Write `media/image-style.txt` from the imagery row of the brief (images.md has examples). If the deck will use
+generated images, make 2-3 test images (`--quality low`, a few cents each on the API) to show next to the brand
+board; skip this if it won't. Delete test images you don't keep (check.mjs lists unused media).
 
 ## 6. Brand board (what you show for approval)
 Build three slides with the real tokens and show screenshots (tools/shoot.mjs, or one Playwright shot each):

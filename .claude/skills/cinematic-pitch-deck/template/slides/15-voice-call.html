@@ -1,7 +1,7 @@
 <!-- PATTERN: live voice call with an AI character (assets/live/voice-call.js, api/realtime-session.js, api/_persona.js).
      Orb left reacts to sound; bubbles right stream the words; the drawn character rises from the bottom edge.
-     The status pill always says the truth: Live / Connecting / Demo. data-call-script is the offline demo. -->
-<div class="slide-root" data-call data-agent-name="Mara" data-you-name="You"
+     The status pill always says the truth: Live / Connecting / Demo. data-call-script is the offline demo.  Delete data-template from the root once the content is yours (tools/check.mjs blocks it). -->
+<div class="slide-root" data-shoot-wait="12000" data-template data-call data-agent-name="Mara" data-you-name="You"
   data-call-script='[{"role":"you","text":"Hi, sorry to interrupt. Do you have a minute?"},{"role":"agent","text":"A minute, sure. What is it?"},{"role":"you","text":"What sells best at your till right now?"},{"role":"agent","text":"Gum, mostly. Why do you ask?"}]'>
   <span class="live-status" data-call-status data-state="connecting" style="left:120px; top:72px;">Connecting…</span>
   <div class="fin" style="--d:.1; position:absolute; left:180px; top:50%; margin-top:-300px;">

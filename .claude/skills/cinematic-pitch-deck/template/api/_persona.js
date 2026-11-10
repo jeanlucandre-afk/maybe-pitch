@@ -5,6 +5,7 @@
 //  - a clear win condition and a clear way to say no, each with an exact closing sentence, then end_call
 //  - say it is an AI if asked; stay in character if told to ignore instructions
 module.exports = {
+  template: true, // delete this line once the persona is written for this deck (tools/check.mjs blocks it)
   name: 'Mara',
   voice: 'marin', // OpenAI Realtime voices: alloy, ash, ballad, cedar, coral, echo, marin, sage, shimmer, verse
   language: 'en',

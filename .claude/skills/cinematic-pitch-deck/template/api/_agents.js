@@ -2,6 +2,7 @@
 // Edit per deck: who would really judge this moment? Keep 5-8, with different stakes. They are SIMULATED and
 // the slide says so; their verdicts are a synthetic estimate, never presented as real people's opinions.
 module.exports = {
+  template: true, // delete this line once the panel is written for this deck (tools/check.mjs blocks it)
   task: 'The presenter just did a live sales call with an AI buyer on stage. Judge how well he sold.',
   verdictLabels: { yes: 'Would buy', maybe: 'Maybe', no: 'Would not buy' },
   agents: [

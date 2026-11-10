@@ -18,7 +18,7 @@ html, body { margin: 0; height: 100%; overflow: hidden; background: var(--letter
 .progress { position: absolute; left: 0; top: 0; height: 4px; width: var(--progress, 0%); background: var(--accent); z-index: 5; transition: width .6s cubic-bezier(.2,.7,.2,1); }
 
 /* ---- type scale (1920 stage). Big, tight, few words. ---- */
-.display  { margin: 0; font-weight: var(--display-weight); line-height: .78; letter-spacing: -0.065em; }          /* the wordmark: 360-506px */
+.display  { margin: 0; font-weight: var(--display-weight); line-height: .78; letter-spacing: -0.065em; white-space: nowrap; } /* data-fit: shrinks to its box (long names) */          /* the wordmark: 360-506px */
 .h-hero   { margin: 0; font-size: 104px; font-weight: var(--display-weight); line-height: 1.02; letter-spacing: var(--display-tracking); } /* dark question slides */
 .h-1      { margin: 0; font-size: 80px; font-weight: var(--display-weight); line-height: 1.02; letter-spacing: var(--display-tracking); }  /* data slide headline */
 .h-2      { margin: 0; font-size: 68px; font-weight: 600; line-height: 1.05; letter-spacing: -0.04em; }  /* tagline, closing line */

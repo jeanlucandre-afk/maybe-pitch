@@ -15,6 +15,16 @@ to the demo within seconds.
 All are loaded through `deck.json` → `scripts` and `css` (already set in the template). Delete a demo by removing
 its slide and its script entry.
 
+**Template content is blocked until replaced.** Slides 15-17 carry `data-template` on their root, and
+`api/_persona.js`, `api/_agents.js`, `polls.json` carry `template: true`. `tools/check.mjs` fails while they are
+still there: write each one for this deck, then delete the marker.
+
+**The voice and agent slides are a pair.** The agent slide reviews the call that just happened (from
+`LIVE_CALL.getTranscript()`). Keep them adjacent and keep the two offline stories consistent: the call slide's
+`data-call-script` and the agent slide's `data-demo` must describe the same call, and the people in `data-demo`
+must match `api/_agents.js` (ids and names). A review of the scripted demo call is labelled "Review of the demo
+call", never "Live review".
+
 ## Run them locally
 ```bash
 node tools/serve.mjs            # deck + api on http://localhost:8000, reads .env
@@ -51,6 +61,14 @@ at `http://<laptop-ip>:8000/vote` (the QR shows `localhost` locally: use the dep
 - Production needs Upstash Redis (Vercel Marketplace, free tier) or votes split across function instances; the
   status pill says "test store" until it's connected.
 - QR at 420px is readable from about 10 rows back; for a big hall make it 600px and put the short URL under it.
+
+## Cost and abuse
+Every call mints a Realtime session and spends credits. Use an OpenAI project key with a monthly spend limit for
+the deck. Functions accept only the deck's own origins and are rate-limited per IP, per voter and per instance;
+that keeps casual abuse out but is not a security boundary.
+
+## Screenshots of live slides
+Live slides set `data-shoot-wait="<ms>"` on their root and `data-done` when finished; `tools/shoot.mjs` waits for it.
 
 ## Ideas for other live moments (build on the same three states)
 Live coding result in an iframe, a camera demo (ask permission on the slide before), a live chart fed by

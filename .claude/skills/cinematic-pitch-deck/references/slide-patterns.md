@@ -13,7 +13,7 @@ All measurements are on the 1920x1080 stage. Each pattern names its template sli
 ## Type scale
 | Role | Size / weight / leading / tracking | Class |
 |---|---|---|
-| Wordmark (title) | 506px / 700 / .78 / -0.065em, nudged left 20px to optically align | `.display` |
+| Wordmark (title) | 506px / 700 / .78 / -0.065em, nudged left 20px to optically align; `data-fit="506"` shrinks long names to fit | `.display` |
 | Wordmark (close) | 360px | `.display` |
 | Question / hero (dark) | 104px / 700 / 1.02 / -0.045em | `.h-hero` |
 | Data headline | 76-80px / 700 / 1.02 / -0.045em | `.h-1` |

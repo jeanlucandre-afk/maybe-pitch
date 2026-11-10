@@ -23,8 +23,8 @@ module.exports = async (req, res) => {
   if (rateLimited(req, 10)) return sendJson(res, 429, { error: 'Too many requests', code: 'rate_limited' });
   if (!process.env.OPENAI_API_KEY) return sendJson(res, 503, { error: 'Not configured', code: 'not_configured' });
   let body;
-  try { body = await readJson(req); } catch (e) { return sendJson(res, 400, { error: 'Bad JSON', code: 'bad_request' }); }
-  const turns = (Array.isArray(body.transcript) ? body.transcript : []).slice(-60)
+  try { body = (await readJson(req)) || {}; } catch (e) { return sendJson(res, 400, { error: 'Bad JSON', code: 'bad_request' }); }
+  const turns = (Array.isArray(body.transcript) ? body.transcript : []).filter((t) => t && typeof t === 'object' && String(t.text || '').trim()).slice(-60)
     .map((t) => `${t.speaker === 'agent' ? 'AI character' : 'Presenter'}: ${String(t.text || '').slice(0, 600)}`);
   if (!turns.length) return sendJson(res, 400, { error: 'Empty transcript', code: 'bad_request' });
   const prompt = `${panel.task}
