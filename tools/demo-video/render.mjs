@@ -16,7 +16,7 @@ if (audio) args.push('-i', audio, '-c:a', 'aac', '-b:a', '192k', '-shortest');
 args.push('-c:v', 'libx264', '-preset', 'slow', '-crf', '18', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', out);
 const ff = spawn('ffmpeg', args, { stdio: ['pipe', 'inherit', 'inherit'] });
 for (let i = 0; i < n; i++) {
-  await pg.evaluate(t => window.seek(t), Math.min(i / fps, 30));
+  await pg.evaluate(t => window.seek(t), Math.min(i / fps, secs));
   const buf = await pg.screenshot({ type: 'png' });
   if (!ff.stdin.write(buf)) await new Promise(r => ff.stdin.once('drain', r));
   if (i % 150 === 0) console.log(`frame ${i}/${n}`);

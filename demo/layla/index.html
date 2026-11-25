@@ -29,7 +29,7 @@ body{font-family:Geist,system-ui,sans-serif;color:var(--ink);-webkit-font-smooth
 #A{background:#09090B;color:#FAFAFA}
 .roller{position:absolute;left:0;right:0;top:560px;height:150px;overflow:hidden;text-align:center}
 .roller .list{position:absolute;left:0;right:0;top:0}
-.roller .item{height:150px;line-height:150px;font-size:120px;font-weight:700;letter-spacing:-.05em;color:#3F3F46}
+.roller .item{height:150px;line-height:150px;font-size:120px;font-weight:700;letter-spacing:-.05em;color:#71717A}
 .roller .item.on{color:var(--vd)}
 
 /* B: CV wall */
@@ -40,20 +40,21 @@ body{font-family:Geist,system-ui,sans-serif;color:var(--ink);-webkit-font-smooth
 .cv b{position:absolute;right:16px;top:16px;width:34px;height:34px;border-radius:50%;background:var(--track)}
 .scan{position:absolute;top:0;bottom:0;width:6px;background:var(--v);box-shadow:0 0 40px 12px rgba(124,58,237,.35)}
 .over{position:absolute;left:0;right:0;text-align:center;font-size:150px;font-weight:700;letter-spacing:-.055em;line-height:1}
-.over span{background:#fff;padding:0 30px;box-decoration-break:clone}
+.over span{padding:0 30px}
 .tagline-s{position:absolute;left:0;right:0;text-align:center;font-family:'Geist Mono',monospace;font-size:30px;color:var(--ink3)}
 
 /* C: rounds */
 #C{background:#fff}
 .track{position:absolute;left:0;top:520px;height:200px;white-space:nowrap}
-.stp{display:inline-flex;align-items:center;justify-content:center;height:150px;padding:0 70px;margin-right:120px;border:3px solid var(--ink);border-radius:999px;font-size:68px;font-weight:700;letter-spacing:-.04em;background:#fff;position:relative}
+.stp{display:inline-flex;align-items:center;justify-content:center;height:150px;width:520px;margin-right:120px;border:3px solid var(--ink);border-radius:999px;font-size:68px;font-weight:700;letter-spacing:-.04em;background:#fff;position:relative}
 .stp:after{content:"";position:absolute;right:-123px;top:72px;width:120px;height:3px;background:var(--ink)}
 .stp:last-child:after{display:none}
-.runner{position:absolute;width:56px;height:56px;border-radius:50%;background:var(--v);left:932px;top:420px}
+.runner{position:absolute;width:56px;height:56px;border-radius:50%;background:var(--v);left:932px;top:430px}
 
 /* D: question + flip */
-#D{background:#fff;perspective:2200px}
-.flip{position:absolute;left:760px;top:480px;width:400px;height:520px;transform-style:preserve-3d}
+#D{background:#fff}
+.flipw{position:absolute;left:760px;top:480px;width:400px;height:520px;perspective:2200px}
+.flip{position:absolute;inset:0;transform-style:preserve-3d}
 .face{position:absolute;inset:0;border-radius:28px;backface-visibility:hidden;-webkit-backface-visibility:hidden}
 .face.front{background:#fff;border:3px solid var(--ink);padding:44px 38px}
 .face.front i{display:block;height:16px;border-radius:8px;background:var(--line);margin-bottom:22px}
@@ -138,7 +139,7 @@ body{font-family:Geist,system-ui,sans-serif;color:var(--ink);-webkit-font-smooth
 .wcard .who b{font-size:26px;display:block;letter-spacing:-.02em}
 .wcard .who span{font-size:17px;opacity:.85}
 .wcard .creative{width:440px;height:560px;border-radius:26px;overflow:hidden;position:relative;background:#fff;box-shadow:0 30px 70px rgba(30,10,80,.35)}
-.wtitle{position:absolute;left:0;right:0;top:110px;text-align:center;color:#fff;font-size:64px;font-weight:700;letter-spacing:-.045em}
+.wtitle{position:absolute;left:0;right:0;top:140px;text-align:center;color:#fff;font-size:64px;font-weight:700;letter-spacing:-.045em}
 .wtitle span{color:#DDD6FE}
 
 /* board */
@@ -161,6 +162,18 @@ body{font-family:Geist,system-ui,sans-serif;color:var(--ink);-webkit-font-smooth
 #G{background:#fff}
 .mini{position:absolute;width:44px;height:56px;border-radius:7px;border:2px solid var(--ghost);background:#fff}
 
+/* G: value prop */
+.vp{position:absolute;left:150px;right:150px;top:300px}
+.vph{display:grid;grid-template-columns:1fr 1fr;gap:80px;font-family:'Geist Mono',monospace;font-size:24px;color:var(--ink3);letter-spacing:.06em;text-transform:uppercase;padding-bottom:18px}
+.vpr{display:grid;grid-template-columns:1fr 1fr;gap:80px;height:124px;align-items:center;border-top:1.5px solid var(--line)}
+.vl{position:relative;display:inline-block;font-size:48px;font-weight:600;letter-spacing:-.035em;color:#A1A1AA}
+.strike{position:absolute;left:-8px;right:-8px;top:54%;height:5px;background:#09090B;transform-origin:left}
+.vr{display:flex;align-items:center;gap:22px;font-size:50px;font-weight:700;letter-spacing:-.035em}
+.vr i{width:56px;height:56px;flex:none;border-radius:50%;background:var(--v);display:grid;place-items:center}
+.vr svg{width:32px;height:32px;fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.toast{position:absolute;left:50%;top:930px;z-index:55;height:64px;padding:0 30px;border-radius:32px;background:#09090B;color:#fff;font-size:24px;font-weight:600;display:flex;align-items:center;white-space:nowrap;transform:translateX(-50%)}
+.thumb{width:64px;height:82px;border-radius:9px;margin-right:16px;flex:none;position:relative;overflow:hidden;font-size:9px;font-weight:700;line-height:1.05;padding:7px;letter-spacing:-.02em}
+.cta{position:absolute;right:150px;top:752px;height:116px;padding:0 50px;border-radius:999px;background:var(--v);color:#fff;font-size:54px;font-weight:600;letter-spacing:-.035em;display:flex;align-items:center;white-space:nowrap}
 /* H: close */
 #H{background:#fff}
 .wm2{font-size:360px;font-weight:700;letter-spacing:-.065em;line-height:.8;position:absolute;left:138px;top:330px;padding-right:.2em}
@@ -176,7 +189,7 @@ body{font-family:Geist,system-ui,sans-serif;color:var(--ink);-webkit-font-smooth
 
 <!-- A · Layla is hiring -->
 <section class="layer dk" id="A">
-  <div class="abs mono" id="a-ey" style="left:0;right:0;top:330px;text-align:center;font-size:28px;color:#A1A1AA">Berlin · AI trip planner · now part of Expedia Group</div>
+  <div class="abs mono" id="a-ey" style="left:0;right:0;top:290px;text-align:center;font-size:40px;color:#A1A1AA">Berlin · AI trip planner · now part of Expedia Group</div>
   <div class="abs kin" style="left:0;right:0;top:400px;text-align:center;font-size:130px">
     <span class="mask"><span class="word" id="a1">Layla</span></span>
     <span class="mask"><span class="word" id="a2">is</span></span>
@@ -185,7 +198,6 @@ body{font-family:Geist,system-ui,sans-serif;color:var(--ink);-webkit-font-smooth
   <div class="roller" id="roller"><div class="list" id="rlist">
     <div class="item">Sales Expert</div><div class="item">Travel Curator</div><div class="item">Content Writer</div><div class="item on">Senior Growth Marketer</div>
   </div></div>
-  <div class="abs mono" id="a-src" style="left:0;right:0;top:760px;text-align:center;font-size:20px;color:#71717A">Roles from Layla's public job listings, 2026</div>
 </section>
 
 <!-- B · the CV wall -->
@@ -194,7 +206,7 @@ body{font-family:Geist,system-ui,sans-serif;color:var(--ink);-webkit-font-smooth
   <div class="scan" id="scan"></div>
   <div class="over" id="b1" style="top:400px"><span>Applications.</span></div>
   <div class="over" id="b2" style="top:400px;font-size:132px"><span>Every CV looks <span class="acc">the same.</span></span></div>
-  <div class="tagline-s" id="b3" style="top:620px"><span style="background:#fff;padding:6px 16px">screened by keywords</span></div>
+  <div class="tagline-s" id="b3" style="top:600px;font-size:48px;color:#09090B">screened by keywords</div>
 </section>
 
 <!-- C · round after round -->
@@ -212,16 +224,15 @@ body{font-family:Geist,system-ui,sans-serif;color:var(--ink);-webkit-font-smooth
     <span class="mask"><span class="word" id="d1">What if they could</span></span><br>
     <span class="mask"><span class="word" id="d2">just <span class="acc">show</span> you?</span></span>
   </div>
-  <div class="flip" id="flip">
-    <div class="face front"><i class="h"></i><i></i><i style="width:80%"></i><i style="width:64%"></i><i></i><i style="width:72%"></i><i style="width:50%"></i><i style="width:85%"></i></div>
-    <div class="face back"><b>Try the<br>real job.</b><span>about an hour · open to everyone</span></div>
-  </div>
+  <div class="flipw" id="flipw"><div class="flip" id="flip">
+    <div class="face front" id="ffront"><i class="h"></i><i></i><i style="width:80%"></i><i style="width:64%"></i><i></i><i style="width:72%"></i><i style="width:50%"></i><i style="width:85%"></i></div>
+    <div class="face back" id="fback"><b>Try the<br>real job.</b><span>about an hour · open to everyone</span></div>
+  </div></div>
 </section>
 
 <!-- E · MAYBE. -->
 <section class="layer" id="E">
   <div class="wm" id="wm"><span class="l">M</span><span class="l">A</span><span class="l">Y</span><span class="l">B</span><span class="l">E</span><span class="l dotw" id="edot"></span></div>
-  <div class="abs" id="e-tag" style="left:0;right:0;top:720px;text-align:center;font-size:64px;font-weight:600;letter-spacing:-.04em">Try real work before you choose it.</div>
 </section>
 
 <!-- F · product -->
@@ -250,13 +261,13 @@ body{font-family:Geist,system-ui,sans-serif;color:var(--ink);-webkit-font-smooth
 
   <!-- F2..F4 inside a browser window -->
   <div class="win" id="win">
-    <div class="bar"><i></i><i></i><i></i><div class="url" id="url">maybe.center/experience/layla-growth-marketer</div></div>
+    <div class="bar"><i></i><i></i><i></i><div class="url" id="url">maybe.center/experience/layla-growth-marketer</div><div id="who2" style="display:flex;align-items:center;gap:10px;margin-left:16px;height:34px;padding:0 14px 0 4px;border-radius:17px;background:var(--soft);color:var(--deep);font-size:16px;font-weight:600;white-space:nowrap"><img src="../../deck/img/peep-seller.svg" alt="" style="width:28px;height:28px;border-radius:50%;background:#fff;object-fit:cover;object-position:top">Jonas · career changer</div></div>
 
     <div class="am" id="am">
       <div class="col l">
         <div class="blk"><h4>Objective</h4>
           <div class="opt" id="o1"><i></i>Awareness</div>
-          <div class="opt" id="o2"><i></i>App installs</div>
+          <div class="opt sel" id="o2"><i></i>App installs</div>
         </div>
         <div class="blk"><h4>Audience · Italy</h4>
           <div class="chips"><span class="chip" id="c-1">18–34</span><span class="chip" id="c-2">City breaks</span><span class="chip" id="c-3">Group trips</span><span class="chip" id="c-4">Students</span></div>
@@ -271,8 +282,8 @@ body{font-family:Geist,system-ui,sans-serif;color:var(--ink);-webkit-font-smooth
         <div class="phone adph" id="adph"><div class="scr">
           <div class="ad-top"><b>L</b><div><span>Layla</span><small>Sponsored · mockup</small></div></div>
           <div class="ad-img" id="adimg">
-            <img src="../../deck/img/peep-designer.svg" alt="" style="position:absolute;left:20px;bottom:-30px;height:310px">
-            <div id="pin1" style="position:absolute;right:40px;top:50px;background:#fff;border-radius:12px;padding:10px 12px;font-size:14px;font-weight:600;box-shadow:0 8px 20px rgba(9,9,11,.12)">Rome · 3 days</div>
+            <img src="../../deck/img/peep-seller.svg" alt="" style="position:absolute;left:10px;bottom:-30px;height:300px">
+            <div id="pin1" style="position:absolute;right:40px;top:50px;background:#fff;border-radius:12px;padding:10px 12px;font-size:14px;font-weight:600;box-shadow:0 8px 20px rgba(9,9,11,.12)">Florence · 4 days</div>
             <div id="pin2" style="position:absolute;right:26px;top:110px;background:#09090B;color:#fff;border-radius:12px;padding:10px 12px;font-size:14px;font-weight:600">Planned in 1 chat</div>
           </div>
           <div class="ad-cta"><b id="headline"></b><span>Plan my trip</span></div>
@@ -291,7 +302,7 @@ body{font-family:Geist,system-ui,sans-serif;color:var(--ink);-webkit-font-smooth
           <path id="line2" d="M0 236 C80 232 140 222 200 214 S330 196 400 186 S500 176 540 170" fill="none" stroke="#C4B5FD" stroke-width="4" stroke-dasharray="2 10" stroke-linecap="round"/>
         </svg></div>
         <div style="display:flex;gap:22px;margin-top:14px;font-size:15px;color:var(--ink3)"><span>━ your campaign</span><span style="color:#8B5CF6">┅ market benchmark (synthetic)</span></div>
-        <div id="ins" style="margin-top:26px;padding:18px 20px;border-left:3px solid var(--v);background:#FAFAFA;font-size:19px;line-height:1.45">“Group-trip angle wins. Next: shift budget to Reels, test a student offer.”<div class="mono" style="font-size:14px;color:var(--ink3);margin-top:8px">Candidate's pitch · AI review attached</div></div>
+        <div id="ins" style="margin-top:26px;padding:18px 20px;border-left:3px solid var(--v);background:#FAFAFA;font-size:19px;line-height:1.45">“Group-chat angle wins. Next: shift budget to Reels and test a student offer.”<div class="mono" style="font-size:14px;color:var(--ink3);margin-top:8px">Candidate's pitch · AI review attached</div></div>
       </div>
     </div>
 
@@ -325,7 +336,7 @@ body{font-family:Geist,system-ui,sans-serif;color:var(--ink);-webkit-font-smooth
         <div style="position:absolute;left:32px;right:32px;bottom:40px">
           <div style="background:#27272A;border-radius:16px;padding:12px 16px;font-size:17px;margin-bottom:10px;width:70%">"where are we going??"</div>
           <div style="background:#27272A;border-radius:16px;padding:12px 16px;font-size:17px;margin-bottom:10px;width:60%;margin-left:auto">"no idea lol"</div>
-          <div style="background:#C4B5FD;color:#09090B;border-radius:16px;padding:12px 16px;font-size:17px;font-weight:600;width:76%">Layla: Lisbon, 4 days, here's the plan</div>
+          <div style="background:#C4B5FD;color:#09090B;border-radius:16px;padding:12px 16px;font-size:17px;font-weight:600;width:76%">Layla: Florence, 4 days, here's the plan</div>
         </div>
       </div>
     </div>
@@ -342,29 +353,33 @@ body{font-family:Geist,system-ui,sans-serif;color:var(--ink);-webkit-font-smooth
 
   <svg class="cursor" id="cur" viewBox="0 0 24 28"><path d="M3 2l17 11-8 1.5L8 23z" fill="#09090B" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg>
   <div class="ring" id="ring"></div>
-  <div class="abs" id="mock" style="right:40px;bottom:22px;font-size:15px;color:#DDD6FE">Mockup only, no partnership implied · candidates, budgets and results simulated</div>
+  <div class="toast" id="toast">Jonas invited to interview · a person decided</div>
+  <div class="abs" id="mock" style="right:40px;bottom:22px;font-size:15px;color:#DDD6FE;z-index:60">Mockup only, no partnership implied · candidates, budgets and results simulated</div>
 </section>
 
-<!-- G · at scale -->
+<!-- G · why it beats normal hiring -->
 <section class="layer" id="G">
-  <div id="minis"></div>
-  <div class="abs" id="g-txt" style="left:120px;top:330px;width:900px;background:#fff;padding:30px 30px 30px 30px;border-radius:24px">
-    <div class="kin" style="font-size:96px"><span class="mask"><span class="word" id="g1">Not only motivated.</span></span></div>
-    <div class="kin acc" style="font-size:96px;margin-top:10px"><span class="mask"><span class="word" id="g2">Creative problem solvers.</span></span></div>
-    <div id="g3" style="font-size:32px;color:var(--ink2);margin-top:30px;line-height:1.35">One experience, open to every applicant. It runs at scale, not as another interview round.</div>
+  <div class="abs kin" id="g-t" style="left:150px;top:120px;font-size:92px">Why it beats <span class="acc">normal hiring.</span></div>
+  <div class="vp">
+    <div class="vph"><div id="vh1">Normal hiring</div><div id="vh2" style="color:var(--deep)">With MAYBE</div></div>
+    <div class="vpr" id="vr0"><div><span class="vl">Reads the CV<u class="strike"></u></span></div><div class="vr"><i><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i>Sees the work</div></div>
+    <div class="vpr" id="vr1"><div><span class="vl">Keywords drop people<u class="strike"></u></span></div><div class="vr"><i><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i>Everyone gets to show it</div></div>
+    <div class="vpr" id="vr2"><div><span class="vl">Round after round<u class="strike"></u></span></div><div class="vr"><i><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i>One experience, at scale</div></div>
+    <div class="vpr" id="vr3"><div><span class="vl">Hires on a guess<u class="strike"></u></span></div><div class="vr"><i><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i>Decides on evidence</div></div>
   </div>
+  <div class="abs kin" id="g-sub" style="left:150px;top:900px;font-size:52px;letter-spacing:-.04em">Not only motivated people. <span class="acc">Creative problem solvers.</span></div>
 </section>
+<div class="layer" id="wipe" style="background:var(--v);transform-origin:bottom;z-index:20"></div>
 
 <!-- H · close -->
-<section class="layer" id="H">
-  <div class="abs eyebrow" id="h-ey" style="left:150px;top:160px">Layla × Expedia <span>· a pilot for one role</span></div>
+<section class="layer" id="H" style="z-index:21">
+ <div id="hin" style="position:absolute;inset:0">
+  <div class="abs eyebrow" id="h-ey" style="left:150px;top:160px;font-size:30px">Layla × Expedia <span>· pilot proposal</span></div>
   <div class="wm2" id="wm2">MAYBE<i id="h-dot"></i></div>
-  <div class="abs" id="h1" style="left:150px;top:740px;font-size:72px;font-weight:600;letter-spacing:-.04em">Try it. Prove it.</div>
-  <div class="abs" id="h2" style="right:150px;top:735px;text-align:right">
-    <div class="mono" style="font-size:20px;color:var(--ink3);letter-spacing:.08em">NEXT</div>
-    <div style="font-size:56px;font-weight:600;letter-spacing:-.035em">Let's pilot it with Layla.</div>
-  </div>
+  <div class="abs" id="h1" style="left:150px;top:760px;font-size:76px;font-weight:600;letter-spacing:-.04em">Try it. Prove it.</div>
+  <div class="cta" id="h2">Let's pilot one role with Layla</div>
   <div class="fine">Mockup only, no partnership implied. Candidates, budgets and results are simulated.</div>
+ </div>
 </section>
 </div>
 
@@ -381,190 +396,208 @@ function A(el, kf, t, d, ease = 'out', snd) {
   const first = !seen.has(el); seen.set(el, 1);
   el.animate(kf, { delay: t * 1000, duration: d * 1000, fill: first ? 'both' : 'forwards', easing: EASE[ease] || ease });
   if (snd) cue(t, ...[].concat(snd));
+  return el;
 }
-function cue(t, type, p = 0) { CUES.push([+t.toFixed(3), type, p]); }
+function cue(t, type, p = 0) { if (type) CUES.push([+t.toFixed(3), type, p]); }
 const show = (el, t0, t1, fade = .25) => A(el, [{ opacity: 0 }, { opacity: 1, offset: fade / (t1 - t0) }, { opacity: 1, offset: 1 - fade / (t1 - t0) }, { opacity: 0 }], t0, t1 - t0, 'lin');
 const up = (el, t, d = .8, dist = 110) => A(el, [{ transform: `translateY(${dist}%)` }, { transform: 'none' }], t, d, 'out');
 const fadeIn = (el, t, d = .5, y = 30) => A(el, [{ opacity: 0, transform: `translateY(${y}px)` }, { opacity: 1, transform: 'none' }], t, d, 'out');
 let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
 
-A('prog', [{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }], 0, 30, 'lin');
+const END = 31.0;
+A('prog', [{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }], 0, END, 'lin');
+const cut = (el, t0, t1) => A(el, [{ opacity: 0 }, { opacity: 1, offset: .001 }, { opacity: 1, offset: .999 }, { opacity: 0 }], t0, t1 - t0, 'lin');
 
-// ---------- A · Layla is hiring (0 – 3.3) ----------
-A('A', [{ opacity: 1, transform: 'none' }, { opacity: 1, transform: 'none', offset: .88 }, { opacity: 0, transform: 'scale(.92)' }], 0, 3.3, 'lin');
-fadeIn('a-ey', .15, .6);
-up('a1', .3, .7); cue(.3, 'pluck', 0); up('a2', .45, .7); cue(.45, 'pluck', 1); up('a3', .6, .7); cue(.6, 'pluck', 2);
-fadeIn('roller', .9, .4, 20);
-['1.2', '1.55', '1.9'].forEach((s, k) => { A('rlist', [{ transform: `translateY(${-150 * k}px)` }, { transform: `translateY(${-150 * (k + 1)}px)` }], +s, .3, 'out', ['tick', k]); });
-A('roller', [{ transform: 'scale(1)' }, { transform: 'scale(1.08)' }, { transform: 'scale(1)' }], 1.9, .5, 'spring');
-cue(2.0, 'chordS');
-fadeIn('a-src', 2.1, .5, 10);
-cue(3.0, 'whoosh', 1);
+// ---------- A · Layla is hiring (0 – 3.0): moving from frame 0 ----------
+cut('A', 0, 3.0);
+up('a1', .02, .6); cue(.05, 'motif', 0); up('a2', .12, .6); cue(.18, 'motif', 1); up('a3', .22, .6); cue(.31, 'motif', 2);
+fadeIn('a-ey', .35, .5);
+A('roller', [{ opacity: 0, transform: 'translateY(40px)' }, { opacity: 1, transform: 'none' }], .2, .4, 'out');
+[.5, .78, 1.06].forEach((s, k) => A('rlist', [{ transform: `translateY(${-150 * k}px)` }, { transform: `translateY(${-150 * (k + 1)}px)` }], s, .26, 'out', ['tick', k]));
+A('roller', [{ transform: 'scale(1)' }, { transform: 'scale(1.1)' }, { transform: 'scale(1)' }], 1.06, .5, 'spring');
+cue(1.1, 'motif', 3);
+A('a3', [{ color: '#C4B5FD' }, { color: '#fff' }, { color: '#C4B5FD' }], 2.2, .5, 'lin');
+cue(2.75, 'riser', .3);
 
-// ---------- B · the CV wall (3.1 – 6.9) ----------
-A('B', [{ opacity: 0, transform: 'scale(1.15)' }, { opacity: 1, transform: 'scale(1)', offset: .1 }, { opacity: 1, transform: 'scale(.98)', offset: .92 }, { opacity: 0, transform: 'scale(.9)' }], 3.1, 3.8, 'lin');
+// ---------- B · the CV wall (3.0 – 6.55): hard cut in ----------
+A('B', [{ opacity: 0, transform: 'none' }, { opacity: 1, transform: 'none', offset: .001 }, { opacity: 1, transform: 'none', offset: .9 }, { opacity: 1, transform: 'scale(4.5)', offset: 1 }], 3.0, 3.55, 'lin', 'hit');
+A('B', [{ transformOrigin: '915px 338px' }, { transformOrigin: '915px 338px' }], 0, .01, 'lin');
 (() => {
   const wall = $('wall'), cols = 12, rows = 5, keep = new Set([17, 42]);
   for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
     const k = r * cols + c, d = document.createElement('div'); d.className = 'cv';
     d.innerHTML = '<b></b><i class="h"></i><i></i><i style="width:80%"></i><i style="width:62%"></i><i style="width:74%"></i><i style="width:55%"></i>';
-    const x = 40 + c * 160, y = 30 + r * 210;
-    d.style.left = x + 'px'; d.style.top = y + 'px'; wall.appendChild(d);
-    const t = 3.15 + (c + r) * .045 + rnd() * .05;
-    A(d, [{ transform: `translate(${(rnd() - .5) * 300}px,${700 + rnd() * 300}px) rotate(${(rnd() - .5) * 40}deg)`, opacity: 0 }, { transform: `rotate(${(rnd() - .5) * 4}deg)`, opacity: 1 }], t, .8, 'out');
-    // the scan: most drop out
-    const ts = 5.0 + c * .085;
-    if (!keep.has(k)) A(d, [{ borderColor: '#09090B', opacity: 1, transform: 'none' }, { borderColor: '#D4D4D8', opacity: .9, transform: 'translateY(0)', offset: .25 }, { borderColor: '#D4D4D8', opacity: 0, transform: `translateY(${260 + rnd() * 200}px) rotate(${(rnd() - .5) * 30}deg)` }], ts, .9, 'in');
-    else A(d, [{ transform: 'none', borderColor: '#09090B' }, { transform: 'scale(1.12)', borderColor: '#7C3AED' }], ts, .4, 'spring');
+    d.style.left = (40 + c * 160) + 'px'; d.style.top = (30 + r * 210) + 'px'; wall.appendChild(d);
+    const t = 2.98 + (c + r) * .035 + rnd() * .04;
+    A(d, [{ transform: `translate(${(rnd() - .5) * 300}px,${700 + rnd() * 300}px) rotate(${(rnd() - .5) * 40}deg)`, opacity: 0 }, { transform: `rotate(${(rnd() - .5) * 4}deg)`, opacity: 1 }], t, .7, 'out');
+    const ts = 5.0 + c * .08;
+    if (!keep.has(k)) A(d, [{ borderColor: '#09090B', opacity: 1, transform: 'none' }, { borderColor: '#D4D4D8', opacity: .9, transform: 'translateY(0)', offset: .25 }, { borderColor: '#D4D4D8', opacity: 0, transform: `translateY(${260 + rnd() * 200}px) rotate(${(rnd() - .5) * 30}deg)` }], ts, .85, 'in');
+    else A(d, [{ transform: 'none', borderColor: '#09090B', background: '#fff' }, { transform: 'scale(1.15)', borderColor: '#7C3AED', background: '#7C3AED' }], ts, .4, 'spring');
   }
-  for (let k = 0; k < 7; k++) cue(3.2 + k * .14, 'tick', k);
-  for (let c = 0; c < 12; c += 2) cue(5.0 + c * .085, 'nudge', c);
+  for (let k = 0; k < 6; k++) cue(3.0 + k * .125, 'tick', k);
 })();
-A('scan', [{ transform: 'translateX(-40px)', opacity: 1 }, { transform: 'translateX(1960px)', opacity: 1 }], 4.9, 1.15, 'inout');
-cue(4.9, 'scan');
-A('b1', [{ opacity: 0, transform: 'scale(.6)' }, { opacity: 1, transform: 'scale(1)', offset: .3 }, { opacity: 1, transform: 'scale(1)', offset: .8 }, { opacity: 0, transform: 'scale(1.1)' }], 3.5, 1.0, 'lin', 'hit');
-A('b2', [{ opacity: 0, transform: 'translateY(40px)' }, { opacity: 1, transform: 'none', offset: .25 }, { opacity: 1, transform: 'none', offset: .85 }, { opacity: 0 }], 4.45, 1.6, 'lin', ['pluck', 3]);
-A('b3', [{ opacity: 0 }, { opacity: 1, offset: .2 }, { opacity: 1, offset: .8 }, { opacity: 0 }], 5.2, 1.4, 'lin');
+// the wall dims under the words instead of white label boxes
+A('wall', [{ opacity: 1 }, { opacity: .18, offset: .15 }, { opacity: .18, offset: .85 }, { opacity: 1 }], 3.3, 1.9, 'lin');
+A('b1', [{ opacity: 0, transform: 'scale(.7)', easing: EASE.out }, { opacity: 1, transform: 'scale(1)', offset: .3 }, { opacity: 1, transform: 'scale(1)', offset: .82 }, { opacity: 0, transform: 'scale(1.06)' }], 3.3, .95, 'lin', ['pluck', 0]);
+A('b2', [{ opacity: 0, transform: 'translateY(40px)', easing: EASE.out }, { opacity: 1, transform: 'none', offset: .3 }, { opacity: 1, transform: 'none', offset: .85 }, { opacity: 0 }], 4.2, 1.0, 'lin', ['pluck', 2]);
+A('scan', [{ transform: 'translateX(-40px)', opacity: 1 }, { transform: 'translateX(1960px)', opacity: 1 }], 4.95, 1.05, 'inout', 'scan');
+for (let c = 0; c < 12; c += 3) cue(5.0 + c * .08, 'nudge', c);
+A('b3', [{ opacity: 0 }, { opacity: 1, offset: .15 }, { opacity: 1, offset: .85 }, { opacity: 0 }], 5.1, 1.0, 'lin');
+cue(5.95, 'pluck', 4);
+cue(6.25, 'riser', .3);
 
-// ---------- C · round after round (6.7 – 9.0) ----------
-A('C', [{ opacity: 0, transform: 'translateX(300px)' }, { opacity: 1, transform: 'none', offset: .12 }, { opacity: 1, transform: 'none', offset: .9 }, { opacity: 0, transform: 'translateX(-200px)' }], 6.7, 2.4, 'lin');
-cue(6.7, 'whoosh', 0);
-up('c1', 6.8, .6, 40);
-A('ctrack', [{ transform: 'translateX(1920px)' }, { transform: 'translateX(-2900px)' }], 6.75, 2.2, 'inout');
-for (let k = 0; k < 6; k++) cue(7.2 + k * .2, 'pass', k);
-A('runner', [{ transform: 'scale(0)' }, { transform: 'scale(1)' }], 6.9, .3, 'spring');
-A('runner', [{ transform: 'scale(1)' }, { transform: 'scale(1.6)', offset: .5 }, { transform: 'scale(1)' }], 7.4, .5, 'inout');
+// ---------- C · round after round (6.5 – 8.95): stepped, readable ----------
+cut('C', 6.5, 8.95);
+cue(6.55, 'hit', .5);
+up('c1', 6.55, .5, 40);
+const stepX = k => 700 - 640 * k;
+A('ctrack', [{ transform: `translateX(${stepX(0) + 900}px)` }, { transform: `translateX(${stepX(0)}px)` }], 6.5, .3, 'out');
+for (let k = 1; k < 6; k++) A('ctrack', [{ transform: `translateX(${stepX(k - 1)}px)` }, { transform: `translateX(${stepX(k)}px)` }], 6.75 + k * .36, .26, 'out', ['pass', k]);
+A('runner', [{ transform: 'scale(0)' }, { transform: 'scale(1)' }], 6.5, .25, 'spring');
+for (let k = 1; k < 6; k++) A('runner', [{ transform: 'translateY(0)' }, { transform: 'translateY(-70px)', offset: .5 }, { transform: 'translateY(0)' }], 6.75 + k * .36, .3, 'inout');
+A('runner', [{ transform: 'scale(1)' }, { transform: 'scale(0)' }], 8.75, .2, 'in');
 
-// ---------- D · show you + flip (8.9 – 11.4) ----------
-A('D', [{ opacity: 0 }, { opacity: 1, offset: .08 }, { opacity: 1, offset: .9 }, { opacity: 0, transform: 'scale(1.05)' }], 8.9, 2.5, 'lin');
-cue(8.9, 'hush');
-up('d1', 9.0, .7); cue(9.0, 'pluck', 2); up('d2', 9.2, .7); cue(9.2, 'pluck', 4);
-A('flip', [{ transform: 'translateY(300px) rotateX(30deg)', opacity: 0 }, { transform: 'none', opacity: 1 }], 9.1, .7, 'out');
-A('flip', [{ transform: 'rotateY(0) scale(1)' }, { transform: 'rotateY(90deg) scale(1.12)', offset: .45 }, { transform: 'rotateY(180deg) scale(1.08)' }], 10.05, .75, 'inout', 'rise');
-cue(10.6, 'chord');
+// ---------- D · show you + flip (8.95 – 11.45) ----------
+cut('D', 8.95, 11.45);
+cue(8.95, 'hush');
+up('d1', 9.0, .6); cue(9.0, 'pluck', 1); up('d2', 9.15, .6); cue(9.15, 'pluck', 3);
+A('flipw', [{ transform: 'translateY(300px)', opacity: 0 }, { transform: 'none', opacity: 1 }], 9.05, .6, 'out');
+A('flip', [{ transform: 'rotateY(0) scale(1)' }, { transform: 'rotateY(90deg) scale(1.12)', offset: .5 }, { transform: 'rotateY(180deg) scale(1.1)' }], 9.75, .64, 'inout', 'rise');
+A('ffront', [{ opacity: 1 }, { opacity: 1, offset: .5 }, { opacity: 0, offset: .52 }, { opacity: 0 }], 9.75, .64, 'lin');
+A('fback', [{ opacity: 0 }, { opacity: 0, offset: .5 }, { opacity: 1, offset: .52 }, { opacity: 1 }], 9.75, .64, 'lin');
+cue(10.1, 'chord');
 
-// ---------- E · MAYBE. (11.3 – 13.0) ----------
-A('E', [{ opacity: 0 }, { opacity: 1, offset: .05 }, { opacity: 1 }], 11.3, 1.9, 'lin');
-document.querySelectorAll('#wm .l:not(.dotw)').forEach((l, k) => { A(l, [{ transform: 'translateY(120%) rotate(8deg)', opacity: 0 }, { transform: 'none', opacity: 1 }], 11.35 + k * .06, .6, 'out', ['logo', k]); });
-// the dot lands, then becomes the violet ground
-A('edot', [{ transform: 'translateY(-500px) scale(.4)', opacity: 0 }, { transform: 'none', opacity: 1 }], 11.75, .45, 'spring', 'drop');
-fadeIn('e-tag', 11.9, .5);
-A('edot', [{ transform: 'scale(1)' }, { transform: 'scale(70)' }], 12.6, .55, 'in', 'rise');
+// ---------- E · MAYBE. (11.45 – 12.95) ----------
+A('E', [{ opacity: 0 }, { opacity: 1, offset: .001 }, { opacity: 1 }], 11.45, 1.5, 'lin');
+document.querySelectorAll('#wm .l:not(.dotw)').forEach((l, k) => A(l, [{ transform: 'translateY(120%) rotate(8deg)', opacity: 0 }, { transform: 'none', opacity: 1 }], 11.45 + k * .06, .55, 'out', k < 4 ? ['motif', k] : null));
+A('edot', [{ transform: 'translateY(-500px) scale(.4)', opacity: 0 }, { transform: 'none', opacity: 1 }], 11.85, .4, 'spring', 'drop');
+cue(12.0, 'riser', .9);
+A('edot', [{ transform: 'scale(1)' }, { transform: 'scale(80)' }], 12.4, .5, 'inout');
 
-// ---------- F · product (13.0 – 24.4) ----------
-A('F', [{ opacity: 0 }, { opacity: 1 }], 13.0, .05, 'lin');
-A('F', [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'scale(.94)' }], 24.1, .4, 'in');
-const pill = (t, n, txt, url) => { A('pill', [{ transform: 'translateY(-20px) scale(.9)', opacity: 0 }, { transform: 'none', opacity: 1 }], t, .45, 'spring', ['pluck', +n + 1]);
-  PILL.push([t, n, txt, url]); };
+// ---------- F · product (12.9 – 24.9) ----------
+A('F', [{ opacity: 0 }, { opacity: 1 }], 12.9, .02, 'lin', 'impact');
+A('F', [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'scale(.94)' }], 24.6, .3, 'in');
 const PILL = [];
-pill(13.05, '1', 'A real Layla job, as an experience', 'maybe.center/explore');
-// F1 job card pops, chat types
-A('job', [{ transform: 'translateY(160px) scale(.85)', opacity: 0 }, { transform: 'none', opacity: 1 }], 13.05, .7, 'out');
-fadeIn('jb1', 13.45, .35, 14); cue(13.45, 'pop', 0);
-fadeIn('jb2', 13.75, .35, 14); cue(13.75, 'pop', 1);
-fadeIn('jb3', 14.05, .35, 14); cue(14.05, 'pop', 2);
-// cursor → start button, click, card expands into the window
-A('cur', [{ transform: 'translate(1700px,1100px)' }, { transform: 'translate(1150px,815px)' }], 13.4, .9, 'inout');
-A('startb', [{ transform: 'scale(1)' }, { transform: 'scale(.92)' }, { transform: 'scale(1)' }], 14.35, .25, 'out', 'click');
-A('ring', [{ transform: 'translate(1120px,785px) scale(.3)', opacity: 0 }, { transform: 'translate(1120px,785px) scale(.3)', opacity: 1, offset: .01 }, { transform: 'translate(1120px,785px) scale(1.6)', opacity: 0 }], 14.35, .45, 'out');
-A('job', [{ transform: 'none', opacity: 1 }, { transform: 'scale(1.35)', opacity: 0 }], 14.55, .45, 'in', 'whoosh');
-A('win', [{ opacity: 0, transform: 'scale(.7)' }, { opacity: 1, transform: 'none' }], 14.6, .6, 'out');
-// F2 ads manager
-pill(14.7, '2', 'Build the launch campaign', '');
-A('am', [{ opacity: 1 }, { opacity: 1 }], 14.6, .1, 'lin');
-A('cur', [{ transform: 'translate(1150px,815px)' }, { transform: 'translate(400px,385px)' }], 14.6, .55, 'inout');
-A('o2', [{ transform: 'scale(1)' }, { transform: 'scale(.96)' }, { transform: 'scale(1)' }], 15.2, .2, 'out', 'click');
-A('o2', [{ borderColor: '#E4E4E7' }, { borderColor: '#09090B' }], 15.2, .1, 'lin');
-A(document.querySelector('#o2 i'), [{ border: '2px solid #D4D4D8' }, { border: '6px solid #09090B' }], 15.2, .15, 'out');
-['c-1', 'c-2', 'c-3', 'c-4'].forEach((c, k) => { A(c, [{ transform: 'scale(.4)', opacity: 0, background: '#fff', color: '#09090B' }, { transform: 'none', opacity: 1, background: '#09090B', color: '#fff' }], 15.45 + k * .12, .4, 'spring', ['tick', k + 2]); });
-A('cur', [{ transform: 'translate(400px,385px)' }, { transform: 'translate(170px,655px)' }, { transform: 'translate(330px,655px)' }], 15.6, 1.0, 'inout');
-A('knob', [{ transform: 'translateX(0)' }, { transform: 'translateX(160px)' }], 16.0, .6, 'inout', 'slide');
-A('sl', [{ transform: 'scaleX(.04)' }, { transform: 'scaleX(.42)' }], 16.0, .6, 'inout');
-// headline types on the ad
-const HL = 'Rome in one chat.'; for (let k = 0; k <= HL.length; k++) KEY.push([15.4 + k * .045, HL.slice(0, k)]);
-A('adph', [{ transform: 'translateY(40px)', opacity: .0 }, { transform: 'none', opacity: 1 }], 14.9, .6, 'out');
-A('pin1', [{ transform: 'scale(0)' }, { transform: 'scale(1)' }], 15.9, .4, 'spring', ['pop', 3]);
-A('pin2', [{ transform: 'scale(0)' }, { transform: 'scale(1)' }], 16.1, .4, 'spring', ['pop', 4]);
-// publish
-A('cur', [{ transform: 'translate(330px,655px)' }, { transform: 'translate(260px,960px)' }], 16.65, .45, 'inout');
-A('pub', [{ transform: 'scale(1)', background: '#09090B' }, { transform: 'scale(.95)', background: '#7C3AED' }, { transform: 'scale(1)', background: '#7C3AED' }], 17.1, .3, 'out', 'click');
-cue(17.2, 'chordS');
-A('line', [{ strokeDashoffset: 700 }, { strokeDashoffset: 0 }], 17.25, 1.6, 'soft');
-A('line2', [{ opacity: 0 }, { opacity: 1 }], 17.25, .6, 'lin');
-COUNT.push(['k1', 17.3, 1.4, 0, 2.4, 1], ['k2', 17.3, 1.4, 0, 312, 0], ['k3', 17.3, 1.4, 4.8, 1.6, 2]);
-for (let k = 0; k < 8; k++) cue(17.3 + k * .17, 'tick', k);
-fadeIn('ins', 18.4, .5, 16); cue(18.4, 'pop', 5);
-// camera push into the results
-A('win', [{ transform: 'none' }, { transform: 'scale(1.1) translate(-180px,10px)' }], 17.2, 1.7, 'inout');
-A('win', [{ transform: 'scale(1.1) translate(-180px,10px)' }, { transform: 'scale(.6) translateY(300px)', opacity: 0 }], 19.0, .45, 'in', 'whoosh');
-A('am', [{ opacity: 1 }, { opacity: 0 }], 19.4, .05, 'lin');
+const pill = (t, n, txt, url) => { A('pill', [{ transform: 'translateY(-20px) scale(.9)', opacity: 0 }, { transform: 'none', opacity: 1 }], t, .45, 'spring', ['pluck', +n]); PILL.push([t, n, txt, url]); };
+pill(13.0, '1', 'A real Layla job, as an experience', 'maybe.center/explore');
+A('job', [{ transform: 'translateY(160px) scale(.85)', opacity: 0 }, { transform: 'none', opacity: 1 }], 12.95, .6, 'out');
+fadeIn('jb1', 13.3, .3, 14); cue(13.375, 'pop', 0);
+fadeIn('jb2', 13.55, .3, 14); cue(13.625, 'pop', 1);
+fadeIn('jb3', 13.8, .3, 14); cue(13.875, 'pop', 2);
+A('cur', [{ transform: 'translate(1700px,1100px)' }, { transform: 'translate(1080px,742px)' }], 13.3, .8, 'inout');
+A('startb', [{ transform: 'scale(1)' }, { transform: 'scale(.92)' }, { transform: 'scale(1)' }], 14.125, .25, 'out', 'click');
+A('ring', [{ transform: 'translate(1050px,712px) scale(.3)', opacity: 0 }, { transform: 'translate(1050px,712px) scale(.3)', opacity: 1, offset: .01 }, { transform: 'translate(1050px,712px) scale(1.6)', opacity: 0 }], 14.125, .45, 'out');
+// card grows into the window (same centre and size at the hand-off)
+A('job', [{ transform: 'none', opacity: 1 }, { transform: 'translateY(40px) scale(1.35)', opacity: 1, offset: .55 }, { transform: 'translateY(40px) scale(1.35)', opacity: 0 }], 14.3, .5, 'inout', 'whoosh');
+A('win', [{ opacity: 0, transform: 'translateY(-40px) scale(.74)' }, { opacity: 1, transform: 'none', offset: .55 }, { opacity: 1, transform: 'none' }], 14.3, .5, 'inout');
+// F2 Jonas builds the campaign
+pill(14.5, '2', 'Jonas builds the launch campaign', '');
+A('am', [{ opacity: 1 }, { opacity: 1 }], 14.3, .1, 'lin');
+A('line2', [{ opacity: 0 }, { opacity: 1 }], 14.9, .5, 'lin');
+A('cur', [{ transform: 'translate(1080px,742px)' }, { transform: 'translate(310px,392px)' }], 14.45, .5, 'inout');
+['c-1', 'c-2', 'c-3', 'c-4'].forEach((c, k) => A(c, [{ transform: 'scale(.4)', opacity: 0, background: '#fff', color: '#09090B' }, { transform: 'none', opacity: 1, background: '#09090B', color: '#fff' }], 15.0 + k * .125, .35, 'spring', k % 2 ? null : ['tick', k + 2]));
+A('adph', [{ transform: 'translateY(40px)', opacity: 0 }, { transform: 'none', opacity: 1 }], 14.7, .5, 'out');
+const HL = 'POV: your group chat finally agrees.'; for (let k = 0; k <= HL.length; k++) KEY.push([15.1 + k * .03, HL.slice(0, k)]);
+A('pin1', [{ transform: 'scale(0)' }, { transform: 'scale(1)' }], 15.625, .35, 'spring', ['pop', 3]);
+A('pin2', [{ transform: 'scale(0)' }, { transform: 'scale(1)' }], 15.875, .35, 'spring', ['pop', 4]);
+A('cur', [{ transform: 'translate(310px,392px)' }, { transform: 'translate(175px,622px)' }], 15.45, .45, 'inout');
+A('cur', [{ transform: 'translate(175px,622px)' }, { transform: 'translate(335px,622px)' }], 16.0, .5, 'inout');
+A('knob', [{ transform: 'translateX(0)' }, { transform: 'translateX(160px)' }], 16.0, .5, 'inout', 'slide');
+A('sl', [{ transform: 'scaleX(.04)' }, { transform: 'scaleX(.42)' }], 16.0, .5, 'inout');
+A('cur', [{ transform: 'translate(335px,622px)' }, { transform: 'translate(260px,958px)' }], 16.55, .4, 'inout');
+A('pub', [{ transform: 'scale(1)', background: '#09090B' }, { transform: 'scale(.95)', background: '#7C3AED' }, { transform: 'scale(1)', background: '#7C3AED' }], 17.0, .3, 'out', 'click');
+cue(17.0, 'chordS');
+A('cur', [{ opacity: 1 }, { opacity: 0 }], 17.2, .2, 'lin');
+A('line', [{ strokeDashoffset: 700 }, { strokeDashoffset: 0 }], 17.05, 1.3, 'soft');
+COUNT.push(['k1', 17.1, 1.2, 0, 2.4, 1], ['k2', 17.1, 1.2, 0, 218, 0], ['k3', 17.1, 1.2, 4.8, 1.6, 2]);
+for (let k = 0; k < 5; k++) cue(17.125 + k * .25, 'tick', k);
+// camera push onto the results and the pitch
+A('win', [{ transform: 'none' }, { transform: 'scale(1.45) translate(-430px,27px)' }], 17.3, .7, 'inout');
+fadeIn('ins', 17.9, .45, 16); cue(18.0, 'pop', 5);
+A('win', [{ transform: 'scale(1.45) translate(-430px,27px)' }, { transform: 'scale(.7) translateY(300px)', opacity: 0 }], 19.0, .35, 'in', 'whoosh');
+A('am', [{ opacity: 1 }, { opacity: 0 }], 19.35, .05, 'lin');
 // F3 three ways
-pill(19.3, '3', 'Everyone solves it their own way', '');
-A('ways', [{ opacity: 0 }, { opacity: 1 }], 19.25, .1, 'lin');
-A('cur', [{ transform: 'translate(260px,960px)' }, { transform: 'translate(260px,1200px)' }], 19.0, .4, 'in');
-fadeIn('wt', 19.3, .5, 40);
-['w1', 'w2', 'w3'].forEach((w, k) => A(w, [{ transform: `translateY(900px) rotate(${(k - 1) * 10}deg)` }, { transform: `rotate(${(k - 1) * 2}deg)` }], 19.45 + k * .16, .8, 'out', ['pluck', k + 2]));
-A('ways', [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'scale(1.1)' }], 21.45, .35, 'in');
-// F4 employer board
-pill(21.6, '4', 'Layla sees the work, not just the CV', 'maybe.center/employer/layla/candidates');
-A('win', [{ transform: 'scale(.85)', opacity: 0 }, { transform: 'none', opacity: 1 }], 21.55, .5, 'out', 'whoosh');
-A('brd', [{ opacity: 0 }, { opacity: 1 }], 21.55, .1, 'lin');
+pill(19.15, '3', 'Same brief. Everyone solves it their own way', '');
+A('ways', [{ opacity: 0 }, { opacity: 1 }], 19.1, .1, 'lin');
+fadeIn('wt', 19.15, .45, 40);
+['w1', 'w2', 'w3'].forEach((w, k) => A(w, [{ transform: `translateY(900px) rotate(${(k - 1) * 10}deg)` }, { transform: `rotate(${(k - 1) * 2}deg)` }], 19.25 + k * .125, .7, 'out', ['pluck', k + 2]));
+A('wt', [{ opacity: 1 }, { opacity: 0 }], 20.9, .2, 'lin');
+// the work becomes the row: each creative shrinks into its row on the board
+const ROWY = idx => 399 + 130 * idx;      // stage y of a row's centre
+const ARR = { w1: 0, w2: 2, w3: 3 };      // arrival rows: Lena 0, Jonas 2, Alex 3
+['w1', 'w2', 'w3'].forEach((w, k) => {
+  const L = [180, 740, 1300][k], cx = L + 220, cy = 572, tx = 512 - cx, ty = ROWY(ARR[w]) - cy;
+  A(w, [{ transform: `rotate(${(k - 1) * 2}deg)`, opacity: 1 }, { transform: `translate(${tx}px,${ty}px) scale(.145)`, opacity: 1, offset: .9 }, { transform: `translate(${tx}px,${ty}px) scale(.145)`, opacity: 0 }], 21.0 + k * .06, .6, 'inout');
+});
+cue(21.0, 'whoosh');
+A('ways', [{ opacity: 1 }, { opacity: 0 }], 21.7, .05, 'lin');
+pill(21.15, '4', 'Layla sees the work, not just the CV', 'maybe.center/employer/layla/candidates');
+A('win', [{ transform: 'scale(.92)', opacity: 0 }, { transform: 'none', opacity: 1 }], 21.0, .45, 'out');
+A('brd', [{ opacity: 0 }, { opacity: 1 }], 21.0, .1, 'lin');
 (() => {
   const host = $('rows');
+  const TH = { Jonas: '<div class="thumb" style="background:#09090B;color:#fff">POV: your group chat finally agrees.</div>',
+               Lena: '<div class="thumb" style="background:#fff;border:1.5px solid #E4E4E7">Rome in one chat.</div>',
+               Alex: '<div class="thumb" style="background:#EDE9FE">48h in Milan, planned while…</div>',
+               Sam: '<div class="thumb" style="background:#F4F4F5;color:#52525B">20% off your first trip</div>' };
   const C = [['peep-seller', 'Jonas', 'Career changer · Berlin', 'Group-chat meme ad', 91],
              ['peep-student', 'Lena', 'Economics · Munich', 'Product-led, clean', 88],
              ['peep-designer', 'Alex', 'Design · Lisbon', 'Creator-style Reel', 86],
-             ['peep-thinker', 'Sam', 'Marketing · Milan', 'Discount offer', 74]];
-  // rows start in arrival order, then sort by score
+             ['peep-recruiter', 'Sam', 'Marketing · Milan', 'Discount offer', 74]];
   const start = [2, 0, 3, 1];
   C.forEach((c, k) => {
     const r = document.createElement('div'); r.className = 'row';
-    r.innerHTML = `<img src="../../deck/img/${c[0]}.svg" alt=""><div class="n"><b>${c[1]}</b><span>${c[2]}</span></div><div class="ap">${c[3]}</div><div class="sc"><div class="tr"><u></u></div><span class="num">${c[4]}</span></div>${k === 0 ? '<span class="btn inv" style="position:static;border:0" id="inv">Invite to interview</span>' : '<span class="btn inv" style="position:static;border:0;background:#fff;color:#09090B;box-shadow:inset 0 0 0 1.5px #E4E4E7">View work</span>'}`;
+    r.innerHTML = `${TH[c[1]]}<img src="../../deck/img/${c[0]}.svg" alt="" style="width:44px;height:44px"><div class="n"><b>${c[1]}</b><span>${c[2]}</span></div><div class="ap">${c[3]}</div><div class="sc"><div class="tr"><u></u></div><span class="num">${c[4]}</span></div>${k === 0 ? '<span class="btn inv" style="opacity:0" id="inv">Invite to interview</span>' : '<span class="btn inv" style="background:#fff;color:#09090B;box-shadow:inset 0 0 0 1.5px #E4E4E7">View work</span>'}`;
     r.style.top = (150 + start[k] * 130) + 'px'; host.appendChild(r);
-    A(r, [{ opacity: 0, transform: 'translateX(80px)' }, { opacity: 1, transform: 'none' }], 21.75 + start[k] * .08, .45, 'out');
-    A(r.querySelector('u'), [{ transform: 'scaleX(0)' }, { transform: `scaleX(${c[4] / 100})` }], 22.0 + start[k] * .08, .6, 'out');
-    A(r, [{ transform: 'translateY(0)' }, { transform: `translateY(${(k - start[k]) * 130}px)` }], 22.75, .55, 'inout');
-    if (k === 0) A(r, [{ background: '#fff', borderColor: '#E4E4E7' }, { background: '#F5F3FF', borderColor: '#7C3AED' }], 23.2, .3, 'out');
+    A(r, [{ opacity: 0, transform: 'translateX(40px)' }, { opacity: 1, transform: 'none' }], 21.45 + start[k] * .05, .3, 'out');
+    A(r.querySelector('u'), [{ transform: 'scaleX(0)' }, { transform: `scaleX(${c[4] / 100})` }], 21.75 + start[k] * .08, .5, 'out');
+    const lift = k === 0 ? [{ transform: 'translateY(0)', zIndex: 5, boxShadow: '0 0 0 rgba(0,0,0,0)' }, { transform: `translateY(${(k - start[k]) * 65}px) scale(1.03)`, zIndex: 5, boxShadow: '0 20px 40px rgba(30,10,80,.18)', offset: .5 }, { transform: `translateY(${(k - start[k]) * 130}px)`, zIndex: 5, boxShadow: '0 8px 20px rgba(30,10,80,.10)' }]
+                         : [{ transform: 'translateY(0)' }, { transform: `translateY(${(k - start[k]) * 130}px)` }];
+    A(r, lift, 22.4, .6, 'inout');
+    if (k === 0) A(r, [{ background: '#fff', borderColor: '#E4E4E7' }, { background: '#F5F3FF', borderColor: '#7C3AED' }], 22.9, .3, 'out');
   });
-  for (let k = 0; k < 4; k++) cue(22.0 + k * .08, 'tick', k + 3);
-  cue(22.75, 'sort');
+  for (let k = 0; k < 4; k++) cue(21.75 + k * .125, 'tick', k + 3);
+  cue(22.4, 'sort');
 })();
-A('cur', [{ transform: 'translate(1700px,1150px)' }, { transform: 'translate(1525px,445px)' }], 22.5, 1.1, 'inout');
-A('inv', [{ transform: 'scale(1)', background: '#09090B' }, { transform: 'scale(.92)', background: '#7C3AED' }, { transform: 'scale(1)', background: '#7C3AED' }], 23.65, .3, 'out', 'click');
-A('ring', [{ transform: 'translate(1495px,415px) scale(.3)', opacity: 1 }, { transform: 'translate(1495px,415px) scale(1.8)', opacity: 0 }], 23.65, .5, 'out');
-INV.push(23.7); cue(23.75, 'chord');
+A('inv', [{ opacity: 0, transform: 'scale(.8)' }, { opacity: 1, transform: 'none' }], 23.0, .3, 'spring');
+A('cur', [{ transform: 'translate(1750px,1150px)', opacity: 1 }, { transform: 'translate(1605px,393px)', opacity: 1 }], 22.6, .75, 'inout');
+A('inv', [{ transform: 'scale(1)', background: '#09090B' }, { transform: 'scale(.92)', background: '#7C3AED' }, { transform: 'scale(1)', background: '#7C3AED' }], 23.375, .3, 'out', 'click');
+A('ring', [{ transform: 'translate(1590px,369px) scale(.3)', opacity: 1 }, { transform: 'translate(1590px,369px) scale(1.8)', opacity: 0 }], 23.375, .5, 'out');
+INV.push(23.42); cue(23.45, 'chord');
+A('toast', [{ opacity: 0, transform: 'translate(-50%,40px)' }, { opacity: 1, transform: 'translate(-50%,0)' }], 23.6, .4, 'spring', ['pop', 6]);
 
-// ---------- G · at scale (24.3 – 27.3) ----------
-A('G', [{ opacity: 0, transform: 'scale(1.2)' }, { opacity: 1, transform: 'none', offset: .12 }, { opacity: 1, offset: .9 }, { opacity: 0, transform: 'scale(.96)' }], 24.3, 3.0, 'lin');
-(() => {
-  const host = $('minis'), cols = 30, rows = 14;
-  for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
-    const m = document.createElement('div'); m.className = 'mini';
-    m.style.left = (40 + c * 62) + 'px'; m.style.top = (40 + r * 72) + 'px'; host.appendChild(m);
-    const dist = Math.hypot(c - 22, r - 7);
-    A(m, [{ transform: 'scale(0)' }, { transform: 'scale(1)' }], 24.35 + dist * .03, .35, 'spring');
-    if (rnd() < .14) A(m, [{ background: '#fff', borderColor: '#D4D4D8' }, { background: '#7C3AED', borderColor: '#7C3AED' }], 25.0 + rnd() * 1.4, .25, 'out');
-  }
-  for (let k = 0; k < 10; k++) cue(24.4 + k * .1, 'tick', k);
-  for (let k = 0; k < 7; k++) cue(25.1 + k * .2, 'pop', k);
-})();
-A('g-txt', [{ opacity: 0, transform: 'translateX(-60px)' }, { opacity: 1, transform: 'none' }], 24.45, .5, 'out');
-up('g1', 24.55, .7); up('g2', 25.0, .7); cue(25.0, 'pluck', 4); fadeIn('g3', 25.5, .6, 20);
+// ---------- G · why it beats normal hiring (24.85 – 27.35) ----------
+cut('G', 24.85, 27.6);
+up('g-t', 24.9, .55, 60);
+fadeIn('vh1', 25.05, .3, 10); fadeIn('vh2', 25.05, .3, 10);
+for (let k = 0; k < 4; k++) {
+  const t = 25.25 + k * .3, row = $('vr' + k);
+  A(row, [{ opacity: 0, transform: 'translateY(24px)' }, { opacity: 1, transform: 'none' }], t, .3, 'out');
+  A(row.querySelector('.strike'), [{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }], t + .12, .22, 'out', ['nudge', k]);
+  A(row.querySelector('.vr'), [{ opacity: 0, transform: 'translateX(-30px)' }, { opacity: 1, transform: 'none' }], t + .18, .3, 'out', ['motif', k]);
+  A(row.querySelector('.vr i'), [{ transform: 'scale(0)' }, { transform: 'scale(1)' }], t + .2, .35, 'spring');
+}
+fadeIn('g-sub', 26.55, .45, 24); cue(26.55, 'pluck', 5);
+cue(26.0, 'riser', 1.35);
+A('wipe', [{ opacity: 1, transform: 'scaleY(0)' }, { opacity: 1, transform: 'scaleY(1)' }], 27.25, .2, 'in');
+A('wipe', [{ opacity: 1 }, { opacity: 0 }], 27.6, .01, 'lin');
 
-// ---------- H · close (27.2 – 30) ----------
-A('H', [{ opacity: 0 }, { opacity: 1 }], 27.2, .25, 'lin');
-fadeIn('h-ey', 27.3, .5, 14);
-A('wm2', [{ opacity: 0, transform: 'translateY(80px)', letterSpacing: '-.02em' }, { opacity: 1, transform: 'none', letterSpacing: '-.065em' }], 27.3, .9, 'out', 'close');
-A('h-dot', [{ transform: 'translateY(-600px)' }, { transform: 'none' }], 27.75, .5, 'spring', 'drop');
-fadeIn('h1', 28.0, .6); fadeIn('h2', 28.2, .6);
-cue(28.1, 'chordEnd');
+// ---------- H · close (27.6 – 31) ----------
+A('H', [{ opacity: 0 }, { opacity: 1, offset: .001 }, { opacity: 1 }], 27.6, 3.4, 'lin', 'impact');
+A('hin', [{ transform: 'scale(1)' }, { transform: 'scale(1.025)' }], 27.6, 3.4, 'lin');
+A('wm2', [{ opacity: 0, transform: 'translateY(60px)', letterSpacing: '-.02em' }, { opacity: 1, transform: 'none', letterSpacing: '-.065em' }], 27.6, .7, 'out');
+fadeIn('h-ey', 27.75, .4, 14);
+A('h-dot', [{ transform: 'translateY(-600px)' }, { transform: 'none' }], 28.0, .45, 'spring', 'resolve');
+fadeIn('h1', 28.35, .5);
+A('h2', [{ opacity: 0, transform: 'translateY(30px) scale(.9)' }, { opacity: 1, transform: 'none' }], 28.75, .55, 'spring', ['pluck', 0]);
+cue(28.0, 'chordEnd');
 
 // ---------- things that are not CSS properties: text, counters, pill labels ----------
 function textAt(t) {
   let h = ''; for (const [s, v] of KEY) if (t >= s) h = v; $('headline').textContent = h;
-  for (const [id, s, d, a, b, dec] of COUNT) { const p = Math.max(0, Math.min(1, (t - s) / d)); const e = 1 - Math.pow(1 - p, 3); $(id).textContent = (a + (b - a) * e).toFixed(dec); }
+  for (const [id, s, d, a, b, dec] of COUNT) { const p = Math.max(0, Math.min(1, (t - s) / d)); const e = 1 - Math.pow(1 - p, 3); $(id).textContent = (id === 'k3' && t < s) ? '—' : (a + (b - a) * e).toFixed(dec); }
   let cur = PILL[0]; for (const p of PILL) if (t >= p[0]) cur = p; $('pn').textContent = cur[1]; $('pt').textContent = cur[2]; if (cur[3]) $('url').textContent = cur[3];
-  if (t < 15.3) $('url').textContent = 'maybe.center/experience/layla-growth-marketer';
+  if (t < 14.4) $('url').textContent = 'maybe.center/experience/layla-growth-marketer';
   const b = Math.round(10 + 40 * Math.max(0, Math.min(1, (t - 16) / .6))); $('bud').textContent = b;
   $('inv').textContent = t >= INV[0] ? 'Invited ✓' : 'Invite to interview';
 }
@@ -576,7 +609,7 @@ function fit() { const k = Math.min(innerWidth / 1920, innerHeight / 1080); stag
 addEventListener('resize', fit); fit();
 const P = new URLSearchParams(location.search);
 if (P.has('render')) seek(+P.get('t') || 0);
-else { let t0 = performance.now(); const loop = () => { seek(((performance.now() - t0) / 1000) % 31); requestAnimationFrame(loop); };
+else { let t0 = performance.now(); const loop = () => { seek(((performance.now() - t0) / 1000) % 31.5); requestAnimationFrame(loop); };
   addEventListener('click', () => t0 = performance.now()); document.fonts.ready.then(() => { t0 = performance.now(); loop(); }); }
 </script>
 </body>
