@@ -1,0 +1,465 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MAYBE × leyla.ai · Expedia demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* 30-second demo for leyla.ai × Expedia. Every animation sits on one global clock (seconds from 0),
+   so the page plays live in a browser and tools/demo-video/render.mjs can seek it frame by frame. */
+:root{
+  --ink:#09090B; --ink2:#52525B; --ink3:#71717A; --line:#E4E4E7; --track:#F4F4F5; --ghost:#D4D4D8;
+  --accent:#7C3AED; --deep:#5B21B6; --soft:#EDE9FE; --on-dark:#C4B5FD;
+  --e:cubic-bezier(.2,.8,.2,1);
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#09090B;overflow:hidden}
+body{font-family:Geist,system-ui,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
+.mono{font-family:'Geist Mono',monospace}
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:0 0;overflow:hidden;background:#fff}
+.scene{position:absolute;inset:0;opacity:0;animation:scene var(--d) linear var(--s) both}
+@keyframes scene{0%{opacity:0}4%{opacity:1}96%{opacity:1}100%{opacity:0}}
+.scene.first{animation-name:sceneFirst}
+@keyframes sceneFirst{0%{opacity:1}96%{opacity:1}100%{opacity:0}}
+.scene.last{animation-name:sceneLast}
+@keyframes sceneLast{0%{opacity:0}6%{opacity:1}100%{opacity:1}}
+.dark{background:#09090B;color:#FAFAFA}
+.violet{background:var(--accent)}
+.light{background:#fff}
+
+/* motion vocabulary (same names as the deck) */
+.rise{animation:rise .9s var(--e) calc(var(--s) + var(--o,0s)) both}
+@keyframes rise{from{opacity:0;transform:translateY(46px)}to{opacity:1;transform:none}}
+.fin{animation:fin .7s ease calc(var(--s) + var(--o,0s)) both}
+@keyframes fin{from{opacity:0}to{opacity:1}}
+.pop{animation:pop .6s cubic-bezier(.3,1.5,.5,1) calc(var(--s) + var(--o,0s)) both}
+@keyframes pop{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+.drift{animation:drift .9s var(--e) calc(var(--s) + var(--o,0s)) both}
+@keyframes drift{from{opacity:0;transform:translateX(-60px)}to{opacity:1;transform:none}}
+.grow{transform-origin:left center;animation:grow 1s var(--e) calc(var(--s) + var(--o,0s)) both}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+
+.eyebrow{font-family:'Geist Mono',monospace;font-size:24px;color:var(--deep);letter-spacing:.01em}
+.eyebrow span{color:var(--ink3)}
+h1{margin:0;font-size:84px;line-height:1.02;font-weight:700;letter-spacing:-.045em}
+.acc{color:var(--accent)}
+.dark .acc{color:var(--on-dark)}
+.src{position:absolute;right:56px;bottom:40px;font-size:15px;color:var(--ink3)}
+
+/* progress line */
+#progress{position:absolute;left:0;top:0;height:4px;width:1920px;background:var(--accent);transform-origin:left;z-index:50;
+  animation:prog 30s linear 0s both}
+@keyframes prog{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+
+/* ---------- S1 channels ---------- */
+.chips{position:absolute;left:930px;top:250px;display:flex;flex-direction:column;gap:22px}
+.chip{display:flex;align-items:center;gap:18px;height:84px;padding:0 30px 0 22px;border:1.5px solid var(--line);border-radius:18px;background:#fff;font-size:30px;font-weight:600;letter-spacing:-.02em;box-shadow:0 10px 30px rgba(9,9,11,.06)}
+.chip svg{width:34px;height:34px;stroke:var(--ink);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.chip small{font-family:'Geist Mono',monospace;font-size:18px;color:var(--ink3);font-weight:400;margin-left:6px}
+.cv{position:absolute;width:92px;height:120px;border-radius:10px;background:#fff;border:1.5px solid var(--ghost);box-shadow:0 6px 18px rgba(9,9,11,.08);padding:14px 12px}
+.cv i{display:block;height:7px;border-radius:4px;background:var(--line);margin-bottom:9px}
+.cv i:first-child{width:46%;background:var(--ink);height:9px}
+.cv b{display:block;width:26px;height:26px;border-radius:50%;background:var(--track);position:absolute;right:12px;top:12px}
+.pilelabel{position:absolute;left:1520px;top:790px;width:330px;text-align:center;font-family:'Geist Mono',monospace;font-size:22px;color:var(--ink3)}
+
+/* ---------- S2 pipeline ---------- */
+.stages{position:absolute;left:120px;right:120px;top:650px;height:160px}
+.rail{position:absolute;left:0;right:0;top:78px;height:3px;background:var(--line)}
+.stage{position:absolute;top:0;width:250px;height:160px;margin-left:-125px;border:1.5px solid var(--line);border-radius:20px;background:#fff;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:8px;text-align:center}
+.stage b{font-size:28px;letter-spacing:-.02em}
+.stage span{font-family:'Geist Mono',monospace;font-size:18px;color:var(--ink3)}
+.stage.ai{border-color:var(--ink)}
+.dot{position:absolute;width:22px;height:22px;border-radius:50%;background:var(--ink);top:-60px;left:0}
+.caption{position:absolute;left:120px;top:880px;font-size:30px;color:var(--ink2);max-width:1200px;line-height:1.35}
+
+/* ---------- S3 question ---------- */
+.q{position:absolute;left:150px;top:300px;font-size:112px;line-height:1.02;font-weight:700;letter-spacing:-.05em;max-width:1600px}
+
+/* ---------- S4 in between ---------- */
+.flow{position:absolute;left:150px;right:150px;top:600px;height:200px;display:flex;align-items:center;justify-content:space-between}
+.node{height:150px;border-radius:22px;border:1.5px solid var(--line);display:flex;flex-direction:column;justify-content:center;padding:0 40px;background:#fff}
+.node b{font-size:34px;letter-spacing:-.025em}
+.node span{font-family:'Geist Mono',monospace;font-size:19px;color:var(--ink3);margin-top:8px}
+.node.exp{border:3px solid var(--accent);box-shadow:0 0 0 14px var(--soft);width:640px}
+.node.exp b{color:var(--accent)}
+.arrow{flex:1;height:3px;background:var(--ink);margin:0 34px;position:relative}
+.arrow:after{content:"";position:absolute;right:-2px;top:-8px;border:9px solid transparent;border-left:14px solid var(--ink);border-right:0}
+
+/* ---------- S5 product ---------- */
+.pill{position:absolute;left:64px;top:52px;z-index:5;display:flex;align-items:center;gap:16px;height:64px;padding:0 30px 0 12px;background:#09090B;color:#fff;border-radius:40px;font-size:28px;font-weight:600;letter-spacing:-.02em}
+.pill em{font-style:normal;width:42px;height:42px;border-radius:50%;background:#fff;color:#09090B;display:grid;place-items:center;font-family:'Geist Mono',monospace;font-size:22px;font-weight:500}
+.win{position:absolute;left:240px;top:120px;width:1440px;height:880px;border-radius:18px;background:#fff;box-shadow:0 40px 90px rgba(30,10,80,.35);overflow:hidden}
+.bar{height:52px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;padding:0 20px}
+.bar i{width:13px;height:13px;border-radius:50%;background:var(--line)}
+.url{margin-left:20px;height:32px;flex:1;border-radius:8px;background:var(--track);font-family:'Geist Mono',monospace;font-size:16px;color:var(--ink3);display:flex;align-items:center;padding:0 14px}
+.panel{position:absolute;left:0;right:0;top:52px;bottom:0;opacity:0}
+.tag{display:inline-flex;align-items:center;height:32px;padding:0 12px;border-radius:8px;font-size:17px;font-weight:500;background:var(--track);color:var(--ink2);margin-right:8px}
+.tag.v{background:var(--soft);color:var(--deep)}
+.btn{display:inline-flex;align-items:center;gap:10px;height:56px;padding:0 26px;border-radius:12px;background:#09090B;color:#fff;font-size:22px;font-weight:600}
+.btn.v{background:var(--accent)}
+.cursor{position:absolute;width:34px;height:40px;z-index:20}
+
+/* panel A: the experience */
+.cover{position:absolute;left:40px;top:40px;width:700px;height:740px;border-radius:18px;background:#F4F4F5;overflow:hidden}
+.cover img{position:absolute;left:30px;bottom:40px;height:470px}
+.cover .card{position:absolute;right:36px;top:70px;width:330px;border-radius:16px;background:#fff;box-shadow:0 18px 40px rgba(9,9,11,.14);padding:22px}
+.card h6{margin:0 0 4px;font-size:20px;letter-spacing:-.01em}
+.card p{margin:0;font-size:14px;color:var(--ink3)}
+.chart{height:130px;display:flex;align-items:flex-end;gap:12px;margin-top:20px;border-bottom:1px solid var(--line)}
+.chart u{flex:1;background:#09090B;border-radius:4px 4px 0 0}
+.chart u.low{background:var(--accent)}
+.cover .ai{position:absolute;left:22px;bottom:14px;z-index:2;font-family:'Geist Mono',monospace;font-size:14px;color:var(--ink3)}
+.brief{position:absolute;left:800px;top:70px;right:60px}
+.brief .co{font-size:22px;font-weight:600;color:var(--ink2);margin-bottom:14px}
+.brief h2{margin:22px 0 18px;font-size:56px;line-height:1.05;letter-spacing:-.04em}
+.brief p{font-size:24px;line-height:1.45;color:var(--ink2);margin:0 0 24px}
+.meta{font-family:'Geist Mono',monospace;font-size:18px;color:var(--ink3);margin-bottom:40px;line-height:1.7}
+
+/* panel B: own ways */
+.ways{position:absolute;left:50px;right:50px;top:150px;display:flex;gap:30px}
+.way{flex:1;height:620px;border:1.5px solid var(--line);border-radius:20px;padding:30px;position:relative;background:#fff}
+.way .who{display:flex;align-items:center;gap:16px}
+.way .who img{width:84px;height:84px;border-radius:50%;background:var(--track);object-fit:cover;object-position:top}
+.way .who b{font-size:26px;letter-spacing:-.02em;display:block}
+.way .who span{font-size:17px;color:var(--ink3)}
+.way h4{font-size:30px;line-height:1.15;letter-spacing:-.03em;margin:30px 0 22px}
+.art{position:absolute;left:30px;right:30px;bottom:30px;height:250px;border-radius:14px;background:var(--track);padding:22px}
+.art .row{height:16px;border-radius:8px;background:#fff;margin-bottom:14px}
+.bub{display:inline-block;max-width:84%;padding:12px 16px;border-radius:14px;background:#fff;font-size:17px;line-height:1.35;margin-bottom:12px}
+.bub.me{background:#09090B;color:#fff;margin-left:16%}
+.waytitle{position:absolute;left:50px;top:52px;font-size:40px;font-weight:700;letter-spacing:-.035em}
+.waytitle span{color:var(--ink3);font-weight:500}
+
+/* panel C: the board */
+.side{position:absolute;left:0;top:0;bottom:0;width:250px;border-right:1px solid var(--line);padding:30px 24px}
+.side .brand{font-weight:700;font-size:22px;letter-spacing:-.03em}
+.side .brand i{display:inline-block;width:8px;height:8px;background:var(--accent);margin-left:2px}
+.side .nav{margin-top:40px;font-size:18px;color:var(--ink2);line-height:2.4}
+.side .nav b{color:var(--ink)}
+.main{position:absolute;left:250px;right:0;top:0;bottom:0;padding:34px 40px}
+.crumbs{font-size:16px;color:var(--ink3)}
+.main h3{margin:8px 0 26px;font-size:36px;letter-spacing:-.03em}
+.table{width:760px;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.tr{display:flex;align-items:center;height:96px;border-top:1px solid var(--line);padding:0 22px;font-size:18px}
+.tr.th{height:52px;border-top:0;background:#FAFAFA;font-size:15px;color:var(--ink3);font-weight:500}
+.tr.hi{background:#F5F3FF}
+.tr img{width:52px;height:52px;border-radius:50%;object-fit:cover;object-position:top;background:var(--track);margin-right:14px}
+.c1{width:280px;display:flex;align-items:center}
+.c1 b{display:block;font-size:19px}
+.c1 span{font-size:14px;color:var(--ink3)}
+.c2{width:200px;font-size:16px;color:var(--ink2)}
+.c3{flex:1;display:flex;align-items:center;gap:12px}
+.track{flex:1;height:8px;border-radius:4px;background:var(--track);overflow:hidden}
+.track u{display:block;height:100%;background:#09090B;border-radius:4px}
+.num{font-family:'Geist Mono',monospace;font-size:18px;width:30px}
+.prov{display:inline-flex;height:26px;padding:0 10px;align-items:center;border-radius:6px;font-size:13px;font-weight:500;background:var(--soft);color:var(--deep)}
+.prov.rb{background:#CCFBF1;color:#115E59}
+.ev{position:absolute;left:1050px;top:120px;width:360px;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:#fff}
+.ev .top{height:150px;background:var(--track);position:relative}
+.ev .top img{position:absolute;left:24px;bottom:0;height:140px}
+.ev .body{padding:22px}
+.ev h5{margin:0;font-size:24px;letter-spacing:-.02em}
+.ev .sub{font-size:15px;color:var(--ink3);margin:4px 0 16px}
+.ring{width:92px;height:92px;border-radius:50%;background:conic-gradient(var(--accent) 0 88%,var(--track) 0);display:grid;place-items:center;float:left;margin-right:18px}
+.ring span{width:72px;height:72px;border-radius:50%;background:#fff;display:grid;place-items:center;font-family:'Geist Mono',monospace;font-size:26px}
+.quote{clear:both;padding-top:16px;font-size:16px;line-height:1.45;border-left:3px solid var(--accent);padding-left:12px;margin:16px 0}
+.mock{position:absolute;right:30px;bottom:22px;font-size:14px;color:var(--ink3)}
+
+/* ---------- S6 many ---------- */
+.crowd{position:absolute;left:1040px;top:220px;display:grid;grid-template-columns:repeat(12,58px);gap:14px 10px}
+.p{width:58px;height:58px;position:relative}
+.p:before{content:"";position:absolute;left:19px;top:2px;width:20px;height:20px;border-radius:50%;background:currentColor}
+.p:after{content:"";position:absolute;left:8px;top:26px;width:42px;height:28px;border-radius:21px 21px 6px 6px;background:currentColor}
+.p{color:var(--ghost)}
+.lede{font-size:34px;line-height:1.4;color:var(--ink2);margin-top:40px;max-width:760px}
+
+/* ---------- S7 close ---------- */
+.wordmark{font-size:360px;font-weight:700;letter-spacing:-.065em;line-height:.8;position:relative;display:inline-block;padding-right:.2em}
+.wordmark i{position:absolute;right:0;bottom:.035em;width:.15em;height:.15em;background:var(--accent)}
+.tagline{font-size:68px;font-weight:600;letter-spacing:-.04em}
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="progress"></div>
+
+  <!-- S1 · every channel sends a CV (0 – 5.5s) -->
+  <section class="scene light first" style="--s:0s;--d:5.6s" id="s1">
+    <div style="position:absolute;left:150px;top:300px;--s:0s">
+      <div class="eyebrow fin" style="--o:.1s">Today <span>· how candidates reach Expedia</span></div>
+      <h1 class="rise" style="margin-top:34px;--o:.25s">Every channel<br>sends a <span class="acc">CV.</span></h1>
+      <p class="lede rise" style="--o:.6s;max-width:620px">Applications, events, fairs. Hundreds of pages that all look the same.</p>
+    </div>
+    <div class="chips" style="--s:0s">
+      <div class="chip drift" style="--o:.5s"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 11v5M8 8v.01M12 16v-5M16 16v-3a2 2 0 0 0-4 0"/></svg>LinkedIn <small>applications</small></div>
+      <div class="chip drift" style="--o:.7s"><svg viewBox="0 0 24 24"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg>Hackathons <small>events</small></div>
+      <div class="chip drift" style="--o:.9s"><svg viewBox="0 0 24 24"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg>Campus fairs <small>universities</small></div>
+      <div class="chip drift" style="--o:1.1s"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>Job boards <small>postings</small></div>
+      <div class="chip drift" style="--o:1.3s"><svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2M16 3.13a4 4 0 0 1 0 7.75M21 21v-2a4 4 0 0 0-3-3.85"/></svg>Referrals <small>people</small></div>
+    </div>
+    <div id="cvs"></div>
+    <div class="pilelabel fin" style="--s:0s;--o:2.6s">the CV pile</div>
+  </section>
+
+  <!-- S2 · screener, then rounds (5.5 – 10.5s) -->
+  <section class="scene light" style="--s:5.5s;--d:4.4s" id="s2">
+    <div style="position:absolute;left:120px;top:170px">
+      <div class="eyebrow fin" style="--o:.1s">Then <span>· the hiring funnel</span></div>
+      <h1 class="rise" style="margin-top:30px;--o:.2s">A screener reads the CV.<br>Then <span class="acc">round after round.</span></h1>
+    </div>
+    <div class="stages" id="stages">
+      <div class="rail grow" style="--o:.4s"></div>
+    </div>
+    <div class="caption fin" style="--o:2.5s">Most are filtered on keywords before a person sees what they can do.</div>
+  </section>
+
+  <!-- S3 · the question (10.5 – 13.5s) -->
+  <section class="scene dark" style="--s:9.8s;--d:3.2s">
+    <div class="q">
+      <span class="rise" style="display:inline-block;--o:.1s">What if the right person</span><br>
+      <span class="rise" style="display:inline-block;--o:.35s">never gets <span class="acc">through?</span></span>
+    </div>
+  </section>
+
+  <!-- S4 · an experience in between (13.5 – 16s) -->
+  <section class="scene light" style="--s:12.9s;--d:2.55s">
+    <div style="position:absolute;left:150px;top:220px">
+      <div class="eyebrow fin" style="--o:.05s">MAYBE <span>· for leyla.ai × Expedia</span></div>
+      <h1 class="rise" style="margin-top:30px;--o:.12s">We put an <span class="acc">experience</span><br>in between.</h1>
+    </div>
+    <div class="flow">
+      <div class="node fin" style="--o:.3s"><b>CV</b><span>who they say they are</span></div>
+      <div class="arrow grow" style="--o:.45s"></div>
+      <div class="node exp pop" style="--o:.7s"><b>Try the real job</b><span>about an hour · open to everyone</span></div>
+      <div class="arrow grow" style="--o:.95s"></div>
+      <div class="node fin" style="--o:1.1s"><b>Interview</b><span>a person decides</span></div>
+    </div>
+  </section>
+
+  <!-- S5 · the product (16 – 24s) -->
+  <section class="scene violet" style="--s:15.35s;--d:7.35s" id="s5">
+    <div class="pill" id="pill"><em id="pilln">1</em><span id="pillt">Anyone can try the real job</span></div>
+    <div class="win rise" style="--o:0s">
+      <div class="bar"><i></i><i></i><i></i><div class="url" id="url">maybe.center/explore/expedia-product-analyst</div></div>
+
+      <!-- A: the experience -->
+      <div class="panel" id="pa">
+        <div class="cover">
+          <img src="../../deck/img/peep-thinker.svg" alt="">
+          <div class="card">
+            <h6>City hotel bookings</h6>
+            <p>Week over week · simulated data</p>
+            <div class="chart"><u style="height:70%"></u><u style="height:78%"></u><u style="height:74%"></u><u style="height:82%"></u><u style="height:80%"></u><u class="low" style="height:44%"></u></div>
+          </div>
+          <div class="ai">Illustration: Open Peeps · data simulated</div>
+        </div>
+        <div class="brief">
+          <div class="co">Expedia <span style="color:var(--ink3);font-weight:400">· hiring with leyla.ai</span></div>
+          <span class="tag v">Product · Data</span><span class="tag">Entry level</span><span class="tag">Simulated scenario</span>
+          <h2>Junior Product Analyst at Expedia</h2>
+          <p>Hotel bookings in one city dropped this week. Dig into the data, find out why, and pitch a fix to an AI team lead.</p>
+          <div class="meta">~60 min · data sheet · AI stakeholder call<br>Same brief for everyone · your own approach</div>
+          <span class="btn" id="startbtn">Start the experience →</span>
+        </div>
+      </div>
+
+      <!-- B: everyone solves it differently -->
+      <div class="panel" id="pb">
+        <div class="waytitle">Same brief. <span>Three different ways to shine.</span></div>
+        <div class="ways">
+          <div class="way">
+            <div class="who"><img src="../../deck/img/peep-student.svg" alt=""><div><b>Lena</b><span>Economics · no product job yet</span></div></div>
+            <h4>Digs into the data: the drop is mobile checkout only.</h4>
+            <div class="art"><div class="chart" style="height:150px;margin-top:10px;border:0"><u style="height:60%;background:var(--ghost)"></u><u style="height:62%;background:var(--ghost)"></u><u style="height:30%"></u><u style="height:64%;background:var(--ghost)"></u><u style="height:61%;background:var(--ghost)"></u></div><div class="mono" style="font-size:15px;color:var(--ink3);margin-top:14px">desktop · tablet · mobile · app · web</div></div>
+          </div>
+          <div class="way">
+            <div class="who"><img src="../../deck/img/peep-designer.svg" alt=""><div><b>Alex</b><span>Design student · hackathon builder</span></div></div>
+            <h4>Talks to three AI travellers: the fees show up too late.</h4>
+            <div class="art"><div class="bub me">Why did you stop booking?</div><div class="bub">The final price jumped at the last step.</div><div class="mono" style="font-size:14px;color:var(--ink3)">AI traveller · simulated</div></div>
+          </div>
+          <div class="way">
+            <div class="who"><img src="../../deck/img/peep-seller.svg" alt=""><div><b>Jonas</b><span>Career changer · ex-hospitality</span></div></div>
+            <h4>Pitches a test: show the full price on the first screen.</h4>
+            <div class="art"><div class="row" style="width:80%"></div><div class="row" style="width:62%"></div><div class="row" style="width:70%"></div><div style="display:flex;gap:12px;margin-top:20px"><span class="tag" style="background:#fff">A · today</span><span class="tag v">B · full price first</span></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- C: Expedia sees the work -->
+      <div class="panel" id="pc">
+        <div class="side"><div class="brand">MAYBE<i></i></div><div style="font-size:14px;color:var(--ink3)">for Employers</div>
+          <div class="nav"><div>Overview</div><div><b>Candidates</b></div><div>Experiences</div><div>Interviews</div></div></div>
+        <div class="main">
+          <div class="crumbs">Experiences / Junior Product Analyst</div>
+          <h3>Candidates, by the work</h3>
+          <div class="table">
+            <div class="tr th"><div class="c1">Candidate</div><div class="c2">Approach</div><div class="c3">Rubric score <span class="prov">AI review</span></div></div>
+            <div class="tr hi"><div class="c1"><img src="../../deck/img/peep-designer.svg" alt=""><div><b>Alex</b><span>Design · Lisbon</span></div></div><div class="c2">Traveller interviews</div><div class="c3"><div class="track"><u class="grow" style="width:91%;--o:4.9s"></u></div><span class="num">91</span></div></div>
+            <div class="tr"><div class="c1"><img src="../../deck/img/peep-student.svg" alt=""><div><b>Lena</b><span>Economics · Munich</span></div></div><div class="c2">Data deep-dive</div><div class="c3"><div class="track"><u class="grow" style="width:89%;--o:5.0s"></u></div><span class="num">89</span></div></div>
+            <div class="tr"><div class="c1"><img src="../../deck/img/peep-seller.svg" alt=""><div><b>Jonas</b><span>Hospitality · Berlin</span></div></div><div class="c2">A/B test pitch</div><div class="c3"><div class="track"><u class="grow" style="width:86%;--o:5.1s"></u></div><span class="num">86</span></div></div>
+          </div>
+          <div class="mono" style="font-size:14px;color:var(--ink3);margin-top:16px">Candidates chose to share their work · a person decides who is invited</div>
+        </div>
+        <div class="ev">
+          <div class="top"><img src="../../deck/img/peep-designer.svg" alt=""></div>
+          <div class="body">
+            <h5>Alex</h5><div class="sub">Junior Product Analyst experience</div>
+            <div class="ring"><span>91</span></div>
+            <div style="font-size:15px;color:var(--ink2);line-height:1.6;padding-top:6px">Problem framing<br>Evidence<br>Recommendation</div>
+            <div class="quote">“The fee appears on the last step. Show the full price first and test it.”</div>
+            <span class="prov rb">Rubric · transcript</span> <span class="prov">AI review</span>
+            <div style="margin-top:18px;display:flex;gap:10px"><span class="btn" style="background:#fff;color:#09090B;border:1px solid var(--line);font-size:15px;height:46px;padding:0 14px;white-space:nowrap">View evidence</span><span class="btn v" id="invite" style="font-size:15px;height:46px;padding:0 14px;white-space:nowrap">Invite to interview</span></div>
+          </div>
+        </div>
+        <div class="mock">Mockup only, no partnership implied · candidates simulated</div>
+      </div>
+    </div>
+    <svg class="cursor" id="cursor" viewBox="0 0 24 28"><path d="M3 2l17 11-8 1.5L8 23z" fill="#09090B" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg>
+  </section>
+
+  <!-- S6 · not only motivated: creative solvers (24 – 27s) -->
+  <section class="scene light" style="--s:22.6s;--d:3.8s">
+    <div style="position:absolute;left:150px;top:250px;width:840px">
+      <h1 class="rise" style="--o:.05s;font-size:76px">Not only motivated people.<br><span class="acc">Creative problem solvers.</span></h1>
+      <p class="lede rise" style="--o:.3s">Everyone can try. Everyone shows it their own way. One experience runs for every applicant, so it scales without another interview round.</p>
+    </div>
+    <div class="crowd" id="crowd"></div>
+  </section>
+
+  <!-- S7 · close (27 – 30s) -->
+  <section class="scene light last" style="--s:26.3s;--d:3.7s">
+    <div style="position:absolute;left:150px;top:150px">
+      <div class="eyebrow fin" style="--o:.05s">leyla.ai × Expedia <span>· pilot proposal</span></div>
+    </div>
+    <div style="position:absolute;left:138px;top:330px"><div class="wordmark rise" style="--o:.1s">MAYBE<i></i></div></div>
+    <div class="tagline rise" style="position:absolute;left:150px;top:740px;--o:.35s">Try it. Prove it.</div>
+    <div class="rise" style="position:absolute;right:150px;top:745px;text-align:right;--o:.55s">
+      <div class="mono" style="font-size:20px;color:var(--ink3);letter-spacing:.08em">NEXT</div>
+      <div style="font-size:52px;font-weight:600;letter-spacing:-.035em">Let’s pilot one role.</div>
+    </div>
+    <div class="src">Mockup only, no partnership implied. Candidates, data and scores in this video are simulated.</div>
+  </section>
+</div>
+
+<script>
+// ---------- generated elements, all on the global clock ----------
+const S = s => s * 1000;
+// deterministic pseudo random
+let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+
+// S1: CVs fly from the channel chips into a pile
+(() => {
+  const host = document.getElementById('cvs');
+  for (let k = 0; k < 34; k++) {
+    const d = document.createElement('div'); d.className = 'cv';
+    d.innerHTML = '<b></b><i></i><i></i><i style="width:80%"></i><i style="width:64%"></i><i style="width:72%"></i>';
+    host.appendChild(d);
+    const row = k % 5, x0 = 1380, y0 = 270 + row * 106;
+    const x1 = 1600 + (rnd() - .5) * 150, y1 = 560 + (rnd() - .5) * 220 - k * 2;
+    const r1 = (rnd() - .5) * 36;
+    d.style.left = '0px'; d.style.top = '0px'; d.style.zIndex = k;
+    d.animate([
+      { transform: `translate(${x0}px,${y0}px) scale(.5) rotate(0deg)`, opacity: 0 },
+      { transform: `translate(${x0 + 40}px,${y0}px) scale(.8) rotate(${r1/3}deg)`, opacity: 1, offset: .15 },
+      { transform: `translate(${x1}px,${y1}px) scale(1) rotate(${r1}deg)`, opacity: 1 }
+    ], { duration: 900, delay: S(1.0 + k * 0.11), fill: 'both', easing: 'cubic-bezier(.2,.8,.2,1)' });
+  }
+})();
+
+// S2: stages and candidate dots (most filtered at the AI screener)
+(() => {
+  const host = document.getElementById('stages');
+  const names = [['Applications','the pile'],['AI screener','keyword match'],['Recruiter call','30 min'],['Interview rounds','2 – 3 rounds'],['Case & final','a person decides']];
+  const W = 1680, xs = names.map((_, i) => 125 + i * (W - 250) / 4);
+  names.forEach(([b, s], i) => {
+    const el = document.createElement('div'); el.className = 'stage' + (i === 1 ? ' ai' : '');
+    el.style.left = xs[i] + 'px'; el.innerHTML = `<b>${b}</b><span>${s}</span>`;
+    host.appendChild(el);
+    el.animate([{ opacity: 0, transform: 'translateY(30px)' }, { opacity: 1, transform: 'none' }],
+      { duration: 600, delay: S(5.5 + .4 + i * .18), fill: 'both', easing: 'cubic-bezier(.2,.8,.2,1)' });
+  });
+  const N = 30;
+  for (let k = 0; k < N; k++) {
+    const d = document.createElement('div'); d.className = 'dot'; host.appendChild(d);
+    const reach = k < 2 ? 4 : k < 4 ? 3 : k < 8 ? 2 : 1; // last stage index reached
+    const jitter = (rnd() - .5) * 110, lane = -34 - (k % 4) * 24;
+    const frames = [{ transform: `translate(${xs[0] + jitter}px,${lane}px)`, opacity: 0, background: '#09090B' }];
+    frames.push({ transform: `translate(${xs[0] + jitter}px,${lane}px)`, opacity: 1, background: '#09090B', offset: .12 });
+    for (let s = 1; s <= reach; s++) frames.push({ transform: `translate(${xs[s] + jitter * .6}px,${lane}px)`, opacity: 1, background: '#09090B', offset: .12 + s * .2 });
+    const last = frames[frames.length - 1].transform;
+    if (reach < 4) {
+      frames.push({ transform: last.replace(/,(-?\d+)px\)/, (m, y) => `,${+y + 210}px)`), opacity: .0, background: '#D4D4D8', offset: Math.min(.12 + reach * .2 + .14, .99) });
+    }
+    frames.push({ ...frames[frames.length - 1], offset: 1 });
+    d.animate(frames, { duration: 2900, delay: S(6.2 + k * .025), fill: 'both', easing: 'ease-in-out' });
+  }
+})();
+
+// S5: panels, step pill, cursor
+(() => {
+  const s = 15.35;
+  const show = (id, a, b) => document.getElementById(id).animate(
+    [{ opacity: 0 }, { opacity: 1, offset: .06 }, { opacity: 1, offset: .94 }, { opacity: 0 }],
+    { duration: S(b - a), delay: S(s + a), fill: 'both' });
+  show('pa', 0.25, 2.5); show('pb', 2.45, 4.85); show('pc', 4.8, 7.3);
+  // step pill text changes at fixed times
+  const steps = [[0, '1', 'Anyone can try the real job', 'maybe.center/explore/expedia-product-analyst'],
+                 [2.45, '2', 'Everyone solves it their own way', 'maybe.center/experience/expedia-product-analyst'],
+                 [4.8, '3', 'Expedia sees the work, not just the CV', 'maybe.center/employer/candidates']];
+  window.__pill = t => { let cur = steps[0]; for (const st of steps) if (t >= s + st[0]) cur = st;
+    pilln.textContent = cur[1]; pillt.textContent = cur[2]; url.textContent = cur[3]; };
+  document.getElementById('pill').animate([{ opacity: 0, transform: 'translateY(-20px)' }, { opacity: 1, transform: 'none' }], { duration: 500, delay: S(s + .2), fill: 'both' });
+  // cursor path (stage coords): to Start, click; drift; to Invite, click
+  const c = document.getElementById('cursor');
+  c.animate([
+    { transform: 'translate(1500px,1000px)', opacity: 0, offset: 0 },
+    { transform: 'translate(1500px,1000px)', opacity: 1, offset: .05 },
+    { transform: 'translate(1250px,745px)', offset: .22 },
+    { transform: 'translate(1250px,745px) scale(.85)', offset: .25 },
+    { transform: 'translate(1250px,745px)', offset: .28 },
+    { transform: 'translate(1500px,700px)', opacity: 1, offset: .33 },
+    { transform: 'translate(1500px,700px)', opacity: 0, offset: .36 },
+    { transform: 'translate(1700px,1000px)', opacity: 0, offset: .66 },
+    { transform: 'translate(1700px,1000px)', opacity: 1, offset: .70 },
+    { transform: 'translate(1560px,790px)', offset: .86 },
+    { transform: 'translate(1560px,790px) scale(.85)', offset: .89 },
+    { transform: 'translate(1560px,790px)', opacity: 1, offset: 1 }
+  ], { duration: S(7.25), delay: S(s), fill: 'both', easing: 'ease-in-out' });
+  document.getElementById('startbtn').animate([{ transform: 'none' }, { transform: 'scale(.95)' }, { transform: 'none' }], { duration: 300, delay: S(s + 1.7), fill: 'both' });
+  document.getElementById('invite').animate([{ transform: 'none', boxShadow: '0 0 0 0 rgba(124,58,237,0)' }, { transform: 'scale(.94)', boxShadow: '0 0 0 10px rgba(124,58,237,.25)' }, { transform: 'none', boxShadow: '0 0 0 18px rgba(124,58,237,0)' }], { duration: 700, delay: S(s + 6.4), fill: 'both' });
+})();
+
+// S6: crowd, scattered people light up violet (different people, different ways)
+(() => {
+  const host = document.getElementById('crowd');
+  const lit = new Set([3, 14, 22, 29, 37, 41, 50, 58, 63, 70, 76, 81, 88, 93]);
+  for (let k = 0; k < 96; k++) {
+    const p = document.createElement('div'); p.className = 'p'; host.appendChild(p);
+    p.animate([{ opacity: 0, transform: 'translateY(16px)' }, { opacity: 1, transform: 'none' }], { duration: 400, delay: S(22.65 + (k % 12) * .03 + Math.floor(k / 12) * .03), fill: 'both' });
+    if (lit.has(k)) p.animate([{ color: '#D4D4D8' }, { color: '#7C3AED' }], { duration: 300, delay: S(23.4 + rnd() * 1.4), fill: 'both' });
+  }
+})();
+
+// ---------- clock: live playback, or seek for rendering ----------
+const all = () => document.getAnimations();
+function seek(t) { for (const a of all()) { a.pause(); a.currentTime = t * 1000; } window.__pill(t); }
+window.seek = seek;
+function fit() { const k = Math.min(innerWidth / 1920, innerHeight / 1080);
+  stage.style.transform = `scale(${k}) translate(-50%,-50%)`; stage.style.left = '50%'; stage.style.top = '50%';
+  stage.style.transform = `translate(-50%,-50%) scale(${k})`; stage.style.transformOrigin = 'center'; }
+addEventListener('resize', fit); fit();
+const params = new URLSearchParams(location.search);
+if (params.has('render')) { seek(+params.get('t') || 0); }
+else {
+  // live: loop the 30s clock; click to restart
+  let t0 = performance.now();
+  const audio = params.has('sound') ? new Audio('leyla-expedia-demo.m4a') : null;
+  const tick = () => { const t = ((performance.now() - t0) / 1000) % 30.5; seek(Math.min(t, 30)); requestAnimationFrame(tick); };
+  addEventListener('click', () => { t0 = performance.now(); if (audio) { audio.currentTime = 0; audio.play(); } });
+  document.fonts.ready.then(() => { t0 = performance.now(); tick(); });
+}
+</script>
+</body>
+</html>
