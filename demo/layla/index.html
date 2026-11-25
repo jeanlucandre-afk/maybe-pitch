@@ -1,0 +1,583 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MAYBE × Layla · launch film</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* 30s launch film, no voice. Everything runs on one clock (window.seek(t)), so the page plays live
+   and tools/demo-video/render.mjs renders it frame by frame. Sound cues are collected in window.CUES. */
+:root{--ink:#09090B;--ink2:#52525B;--ink3:#71717A;--line:#E4E4E7;--track:#F4F4F5;--ghost:#D4D4D8;
+  --v:#7C3AED;--deep:#5B21B6;--soft:#EDE9FE;--vd:#C4B5FD;--amber:#B45309;--amberbg:#FEF3C7}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#000;overflow:hidden}
+body{font-family:Geist,system-ui,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased}
+.mono{font-family:'Geist Mono',monospace}
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;overflow:hidden;background:#fff;transform-origin:center}
+.layer{position:absolute;inset:0;opacity:0;will-change:transform,opacity}
+.abs{position:absolute}
+.acc{color:var(--v)}
+.dk .acc{color:var(--vd)}
+.kin{font-weight:700;letter-spacing:-.05em;line-height:1}
+.word{display:inline-block;will-change:transform}
+.mask{display:inline-block;overflow:hidden;vertical-align:bottom;padding-bottom:.08em}
+#prog{position:absolute;left:0;top:0;height:4px;width:100%;background:var(--v);transform-origin:left;z-index:99}
+
+/* A: hiring */
+#A{background:#09090B;color:#FAFAFA}
+.roller{position:absolute;left:0;right:0;top:560px;height:150px;overflow:hidden;text-align:center}
+.roller .list{position:absolute;left:0;right:0;top:0}
+.roller .item{height:150px;line-height:150px;font-size:120px;font-weight:700;letter-spacing:-.05em;color:#3F3F46}
+.roller .item.on{color:var(--vd)}
+
+/* B: CV wall */
+#B{background:#fff}
+.cv{position:absolute;width:150px;height:196px;border-radius:14px;background:#fff;border:2px solid var(--ink);padding:18px 16px}
+.cv i{display:block;height:9px;border-radius:5px;background:var(--line);margin-bottom:12px}
+.cv i.h{width:52%;height:12px;background:var(--ink)}
+.cv b{position:absolute;right:16px;top:16px;width:34px;height:34px;border-radius:50%;background:var(--track)}
+.scan{position:absolute;top:0;bottom:0;width:6px;background:var(--v);box-shadow:0 0 40px 12px rgba(124,58,237,.35)}
+.over{position:absolute;left:0;right:0;text-align:center;font-size:150px;font-weight:700;letter-spacing:-.055em;line-height:1}
+.over span{background:#fff;padding:0 30px;box-decoration-break:clone}
+.tagline-s{position:absolute;left:0;right:0;text-align:center;font-family:'Geist Mono',monospace;font-size:30px;color:var(--ink3)}
+
+/* C: rounds */
+#C{background:#fff}
+.track{position:absolute;left:0;top:520px;height:200px;white-space:nowrap}
+.stp{display:inline-flex;align-items:center;justify-content:center;height:150px;padding:0 70px;margin-right:120px;border:3px solid var(--ink);border-radius:999px;font-size:68px;font-weight:700;letter-spacing:-.04em;background:#fff;position:relative}
+.stp:after{content:"";position:absolute;right:-123px;top:72px;width:120px;height:3px;background:var(--ink)}
+.stp:last-child:after{display:none}
+.runner{position:absolute;width:56px;height:56px;border-radius:50%;background:var(--v);left:932px;top:420px}
+
+/* D: question + flip */
+#D{background:#fff;perspective:2200px}
+.flip{position:absolute;left:760px;top:480px;width:400px;height:520px;transform-style:preserve-3d}
+.face{position:absolute;inset:0;border-radius:28px;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.face.front{background:#fff;border:3px solid var(--ink);padding:44px 38px}
+.face.front i{display:block;height:16px;border-radius:8px;background:var(--line);margin-bottom:22px}
+.face.front i.h{width:55%;height:22px;background:var(--ink)}
+.face.back{background:var(--v);color:#fff;transform:rotateY(180deg);display:flex;flex-direction:column;justify-content:flex-end;padding:40px}
+.face.back b{font-size:62px;line-height:1;letter-spacing:-.045em}
+.face.back span{font-family:'Geist Mono',monospace;font-size:22px;opacity:.85;margin-top:16px}
+
+/* E: wordmark */
+#E{background:#fff}
+.wm{position:absolute;left:0;right:0;top:300px;text-align:center;font-size:400px;font-weight:700;letter-spacing:-.065em;line-height:.8}
+.wm .l{display:inline-block}
+.dotw{width:.155em;height:.155em;background:var(--v);margin-left:.04em;position:relative;z-index:3}
+
+/* F: product */
+#F{background:var(--v)}
+.pill{position:absolute;left:64px;top:52px;z-index:9;display:flex;align-items:center;gap:16px;height:66px;padding:0 32px 0 12px;background:#09090B;color:#fff;border-radius:40px;font-size:29px;font-weight:600;letter-spacing:-.02em;white-space:nowrap}
+.pill em{font-style:normal;width:44px;height:44px;border-radius:50%;background:#fff;color:#09090B;display:grid;place-items:center;font-family:'Geist Mono',monospace;font-size:22px}
+.win{position:absolute;left:150px;top:140px;width:1620px;height:880px;border-radius:20px;background:#fff;box-shadow:0 50px 120px rgba(30,10,80,.4);overflow:hidden}
+.bar{height:54px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;padding:0 20px}
+.bar i{width:13px;height:13px;border-radius:50%;background:var(--line)}
+.url{margin-left:20px;height:32px;flex:1;border-radius:8px;background:var(--track);font-family:'Geist Mono',monospace;font-size:16px;color:var(--ink3);display:flex;align-items:center;padding:0 14px}
+.tag{display:inline-flex;align-items:center;height:34px;padding:0 13px;border-radius:8px;font-size:18px;font-weight:500;background:var(--track);color:var(--ink2);margin-right:8px;white-space:nowrap}
+.tag.v{background:var(--soft);color:var(--deep)}
+.tag.est{background:var(--amberbg);color:var(--amber)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:58px;padding:0 28px;border-radius:12px;background:#09090B;color:#fff;font-size:22px;font-weight:600;white-space:nowrap}
+.cursor{position:absolute;width:38px;height:44px;z-index:50;left:0;top:0}
+.ring{position:absolute;width:60px;height:60px;border-radius:50%;border:3px solid #fff;z-index:49;left:0;top:0;opacity:0}
+
+/* the job card */
+.job{position:absolute;left:360px;top:250px;width:1200px;height:580px;border-radius:26px;background:#fff;overflow:hidden;box-shadow:0 40px 100px rgba(30,10,80,.35)}
+.job .cov{position:absolute;left:24px;top:24px;bottom:24px;width:520px;border-radius:18px;background:var(--soft);overflow:hidden}
+.job .info{position:absolute;left:590px;top:56px;right:50px}
+.job h2{font-size:58px;line-height:1.02;letter-spacing:-.045em;margin:22px 0 18px}
+.job p{font-size:23px;line-height:1.45;color:var(--ink2);margin:0 0 22px}
+.job .meta{font-family:'Geist Mono',monospace;font-size:18px;color:var(--ink3);margin-bottom:30px}
+.phone{position:absolute;width:300px;height:600px;border-radius:44px;background:#09090B;padding:12px;box-shadow:0 30px 60px rgba(9,9,11,.25)}
+.phone .scr{width:100%;height:100%;border-radius:34px;background:#fff;overflow:hidden;position:relative;border:1px solid #27272A}
+.bub{position:absolute;max-width:78%;padding:12px 16px;border-radius:18px;font-size:17px;line-height:1.35}
+.bub.me{right:14px;background:#09090B;color:#fff;border-bottom-right-radius:5px}
+.bub.ai{left:14px;background:var(--track);border-bottom-left-radius:5px}
+
+/* ads manager */
+.am{position:absolute;inset:54px 0 0 0}
+.am .col{position:absolute;top:0;bottom:0}
+.am .l{left:0;width:460px;border-right:1px solid var(--line);padding:34px 34px}
+.am .m{left:460px;width:560px;background:#FAFAFA;border-right:1px solid var(--line)}
+.am .r{left:1020px;right:0;padding:34px 40px}
+.am h4{margin:0 0 6px;font-size:15px;font-family:'Geist Mono',monospace;font-weight:500;color:var(--ink3);text-transform:uppercase;letter-spacing:.08em}
+.am .blk{margin-bottom:34px}
+.opt{display:flex;align-items:center;gap:14px;height:56px;border:1.5px solid var(--line);border-radius:12px;padding:0 18px;font-size:20px;font-weight:500;margin-top:10px}
+.opt i{width:20px;height:20px;border-radius:50%;border:2px solid var(--ghost)}
+.opt.sel{border-color:var(--ink)}
+.opt.sel i{border:6px solid var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.chip{height:42px;padding:0 16px;border-radius:21px;border:1.5px solid var(--ink);display:inline-flex;align-items:center;font-size:18px;font-weight:500}
+.slider{position:relative;height:6px;border-radius:3px;background:var(--track);margin:26px 0 12px}
+.slider u{position:absolute;left:0;top:0;bottom:0;background:var(--ink);border-radius:3px;width:100%;transform-origin:left}
+.knob{position:absolute;top:-11px;width:28px;height:28px;border-radius:50%;background:#fff;border:3px solid var(--ink);left:0}
+.adph{position:absolute;left:130px;top:40px;width:300px;height:620px}
+.adph .scr{padding:0}
+.ad-top{display:flex;align-items:center;gap:10px;padding:14px}
+.ad-top b{width:34px;height:34px;border-radius:50%;background:var(--ink);display:grid;place-items:center;color:#fff;font-size:15px}
+.ad-top span{font-size:15px;font-weight:600}
+.ad-top small{display:block;font-size:12px;color:var(--ink3);font-weight:400}
+.ad-img{height:300px;background:var(--soft);position:relative;overflow:hidden}
+.ad-cta{display:flex;align-items:center;justify-content:space-between;padding:14px;border-bottom:1px solid var(--line)}
+.ad-cta b{font-size:17px;letter-spacing:-.02em;max-width:150px;line-height:1.15}
+.ad-cta span{height:36px;padding:0 14px;border-radius:8px;background:#09090B;color:#fff;font-size:14px;font-weight:600;display:grid;place-items:center}
+.kpis{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:22px}
+.kpi{border:1.5px solid var(--line);border-radius:14px;padding:16px}
+.kpi small{font-size:14px;color:var(--ink3)}
+.kpi b{display:block;font-family:'Geist Mono',monospace;font-size:36px;font-weight:500;margin-top:6px}
+.chart{position:relative;height:250px;margin-top:22px;border-bottom:1.5px solid var(--line)}
+.publish{position:absolute;left:34px;right:34px;bottom:34px}
+
+/* three ways */
+.ways{position:absolute;left:0;right:0;top:0;bottom:0}
+.wcard{position:absolute;top:210px;width:440px;height:700px}
+.wcard .who{display:flex;align-items:center;gap:14px;color:#fff;margin-bottom:18px}
+.wcard .who img{width:64px;height:64px;border-radius:50%;background:#fff;object-fit:cover;object-position:top}
+.wcard .who b{font-size:26px;display:block;letter-spacing:-.02em}
+.wcard .who span{font-size:17px;opacity:.85}
+.wcard .creative{width:440px;height:560px;border-radius:26px;overflow:hidden;position:relative;background:#fff;box-shadow:0 30px 70px rgba(30,10,80,.35)}
+.wtitle{position:absolute;left:0;right:0;top:110px;text-align:center;color:#fff;font-size:64px;font-weight:700;letter-spacing:-.045em}
+.wtitle span{color:#DDD6FE}
+
+/* board */
+.brd{position:absolute;inset:54px 0 0 0}
+.brd .side{position:absolute;left:0;top:0;bottom:0;width:260px;border-right:1px solid var(--line);padding:32px 26px}
+.brd .main{position:absolute;left:260px;right:0;top:0;bottom:0;padding:36px 44px}
+.row{position:absolute;left:44px;width:1250px;height:110px;border:1.5px solid var(--line);border-radius:16px;display:flex;align-items:center;padding:0 24px;background:#fff}
+.row img{width:62px;height:62px;border-radius:50%;object-fit:cover;object-position:top;background:var(--track);margin-right:16px}
+.row .n{width:250px}
+.row .n b{display:block;font-size:22px}
+.row .n span{font-size:15px;color:var(--ink3)}
+.row .ap{width:300px;font-size:18px;color:var(--ink2)}
+.row .sc{flex:1;display:flex;align-items:center;gap:16px}
+.row .tr{flex:1;height:10px;border-radius:5px;background:var(--track);overflow:hidden}
+.row .tr u{display:block;height:100%;background:var(--ink);transform-origin:left}
+.row .num{font-family:'Geist Mono',monospace;font-size:24px;width:40px}
+.row .inv{margin-left:28px;height:50px;padding:0 20px;font-size:18px}
+
+/* G: scale */
+#G{background:#fff}
+.mini{position:absolute;width:44px;height:56px;border-radius:7px;border:2px solid var(--ghost);background:#fff}
+
+/* H: close */
+#H{background:#fff}
+.wm2{font-size:360px;font-weight:700;letter-spacing:-.065em;line-height:.8;position:absolute;left:138px;top:330px;padding-right:.2em}
+.wm2 i{position:absolute;right:0;bottom:.035em;width:.15em;height:.15em;background:var(--v)}
+.eyebrow{font-family:'Geist Mono',monospace;font-size:26px;color:var(--deep)}
+.eyebrow span{color:var(--ink3)}
+.fine{position:absolute;right:56px;bottom:36px;font-size:15px;color:var(--ink3)}
+</style>
+</head>
+<body>
+<div id="stage">
+<div id="prog"></div>
+
+<!-- A · Layla is hiring -->
+<section class="layer dk" id="A">
+  <div class="abs mono" id="a-ey" style="left:0;right:0;top:330px;text-align:center;font-size:28px;color:#A1A1AA">Berlin · AI trip planner · now part of Expedia Group</div>
+  <div class="abs kin" style="left:0;right:0;top:400px;text-align:center;font-size:130px">
+    <span class="mask"><span class="word" id="a1">Layla</span></span>
+    <span class="mask"><span class="word" id="a2">is</span></span>
+    <span class="mask"><span class="word acc" id="a3">hiring.</span></span>
+  </div>
+  <div class="roller" id="roller"><div class="list" id="rlist">
+    <div class="item">Sales Expert</div><div class="item">Travel Curator</div><div class="item">Content Writer</div><div class="item on">Senior Growth Marketer</div>
+  </div></div>
+  <div class="abs mono" id="a-src" style="left:0;right:0;top:760px;text-align:center;font-size:20px;color:#71717A">Roles from Layla's public job listings, 2026</div>
+</section>
+
+<!-- B · the CV wall -->
+<section class="layer" id="B">
+  <div id="wall"></div>
+  <div class="scan" id="scan"></div>
+  <div class="over" id="b1" style="top:400px"><span>Applications.</span></div>
+  <div class="over" id="b2" style="top:400px;font-size:132px"><span>Every CV looks <span class="acc">the same.</span></span></div>
+  <div class="tagline-s" id="b3" style="top:620px"><span style="background:#fff;padding:6px 16px">screened by keywords</span></div>
+</section>
+
+<!-- C · round after round -->
+<section class="layer" id="C">
+  <div class="abs kin" id="c1" style="left:150px;top:200px;font-size:110px">Then round <span class="acc">after round.</span></div>
+  <div class="track" id="ctrack">
+    <span class="stp">CV screener</span><span class="stp">Recruiter call</span><span class="stp">Interview 1</span><span class="stp">Interview 2</span><span class="stp">Case study</span><span class="stp">Final round</span>
+  </div>
+  <div class="runner" id="runner"></div>
+</section>
+
+<!-- D · what if they could show you -->
+<section class="layer" id="D">
+  <div class="abs kin" style="left:0;right:0;top:130px;text-align:center;font-size:118px">
+    <span class="mask"><span class="word" id="d1">What if they could</span></span><br>
+    <span class="mask"><span class="word" id="d2">just <span class="acc">show</span> you?</span></span>
+  </div>
+  <div class="flip" id="flip">
+    <div class="face front"><i class="h"></i><i></i><i style="width:80%"></i><i style="width:64%"></i><i></i><i style="width:72%"></i><i style="width:50%"></i><i style="width:85%"></i></div>
+    <div class="face back"><b>Try the<br>real job.</b><span>about an hour · open to everyone</span></div>
+  </div>
+</section>
+
+<!-- E · MAYBE. -->
+<section class="layer" id="E">
+  <div class="wm" id="wm"><span class="l">M</span><span class="l">A</span><span class="l">Y</span><span class="l">B</span><span class="l">E</span><span class="l dotw" id="edot"></span></div>
+  <div class="abs" id="e-tag" style="left:0;right:0;top:720px;text-align:center;font-size:64px;font-weight:600;letter-spacing:-.04em">Try real work before you choose it.</div>
+</section>
+
+<!-- F · product -->
+<section class="layer" id="F">
+  <div class="pill" id="pill"><em id="pn">1</em><span id="pt">A real Layla job, as an experience</span></div>
+
+  <!-- F1 job card -->
+  <div class="job" id="job">
+    <div class="cov">
+      <div class="phone" style="left:110px;top:60px;width:300px;height:560px" id="jphone"><div class="scr">
+        <div class="mono" style="position:absolute;left:0;right:0;top:20px;text-align:center;font-size:13px;color:var(--ink3)">Layla · simulated</div>
+        <div class="bub me" id="jb1" style="top:70px">Plan 3 days in Rome for me and two friends</div>
+        <div class="bub ai" id="jb2" style="top:160px">Day 1: Trastevere at sunset, dinner near Piazza di Santa Maria…</div>
+        <div class="bub ai" id="jb3" style="top:270px">Want me to find hotels for all three of you?</div>
+      </div></div>
+    </div>
+    <div class="info">
+      <div style="font-size:23px;font-weight:600;color:var(--ink2)">Layla <span style="font-weight:400;color:var(--ink3)">· an Expedia Group company</span></div>
+      <div style="margin-top:16px"><span class="tag v">Growth marketing</span><span class="tag">Berlin</span><span class="tag">Simulated scenario</span></div>
+      <h2>Senior Growth Marketer at Layla</h2>
+      <p>Launch Layla in Italy. Build a paid social campaign with a test budget, read the results and pitch your next move.</p>
+      <div class="meta">~60 min · ads manager · creative · results</div>
+      <span class="btn" id="startb">Start the experience →</span>
+    </div>
+  </div>
+
+  <!-- F2..F4 inside a browser window -->
+  <div class="win" id="win">
+    <div class="bar"><i></i><i></i><i></i><div class="url" id="url">maybe.center/experience/layla-growth-marketer</div></div>
+
+    <div class="am" id="am">
+      <div class="col l">
+        <div class="blk"><h4>Objective</h4>
+          <div class="opt" id="o1"><i></i>Awareness</div>
+          <div class="opt" id="o2"><i></i>App installs</div>
+        </div>
+        <div class="blk"><h4>Audience · Italy</h4>
+          <div class="chips"><span class="chip" id="c-1">18–34</span><span class="chip" id="c-2">City breaks</span><span class="chip" id="c-3">Group trips</span><span class="chip" id="c-4">Students</span></div>
+        </div>
+        <div class="blk"><h4>Daily test budget</h4>
+          <div class="slider"><u id="sl"></u><div class="knob" id="knob"></div></div>
+          <div class="mono" style="font-size:20px">€ <span id="bud">10</span> / day <span style="color:var(--ink3)">· simulated</span></div>
+        </div>
+        <div class="publish"><span class="btn" id="pub" style="width:100%">Publish campaign</span></div>
+      </div>
+      <div class="col m">
+        <div class="phone adph" id="adph"><div class="scr">
+          <div class="ad-top"><b>L</b><div><span>Layla</span><small>Sponsored · mockup</small></div></div>
+          <div class="ad-img" id="adimg">
+            <img src="../../deck/img/peep-designer.svg" alt="" style="position:absolute;left:20px;bottom:-30px;height:310px">
+            <div id="pin1" style="position:absolute;right:40px;top:50px;background:#fff;border-radius:12px;padding:10px 12px;font-size:14px;font-weight:600;box-shadow:0 8px 20px rgba(9,9,11,.12)">Rome · 3 days</div>
+            <div id="pin2" style="position:absolute;right:26px;top:110px;background:#09090B;color:#fff;border-radius:12px;padding:10px 12px;font-size:14px;font-weight:600">Planned in 1 chat</div>
+          </div>
+          <div class="ad-cta"><b id="headline"></b><span>Plan my trip</span></div>
+          <div style="padding:14px;font-size:13px;color:var(--ink3);line-height:1.5">Tell Layla where you want to go. It plans the days and finds the hotels.</div>
+        </div></div>
+      </div>
+      <div class="col r">
+        <div style="display:flex;align-items:center;justify-content:space-between"><div style="font-size:30px;font-weight:700;letter-spacing:-.03em">Results · first 7 days</div><span class="tag est">Synthetic estimate</span></div>
+        <div class="kpis">
+          <div class="kpi"><small>Click-through</small><b><span id="k1">0.0</span>%</b></div>
+          <div class="kpi"><small>Installs</small><b id="k2">0</b></div>
+          <div class="kpi"><small>Cost / install</small><b>€<span id="k3">0.00</span></b></div>
+        </div>
+        <div class="chart"><svg width="100%" height="250" viewBox="0 0 540 250" preserveAspectRatio="none">
+          <path id="line" stroke-dasharray="700" stroke-dashoffset="700" d="M0 230 C60 225 90 200 140 190 S230 150 280 140 S380 90 430 70 S510 40 540 30" fill="none" stroke="#09090B" stroke-width="4" stroke-linecap="round"/>
+          <path id="line2" d="M0 236 C80 232 140 222 200 214 S330 196 400 186 S500 176 540 170" fill="none" stroke="#C4B5FD" stroke-width="4" stroke-dasharray="2 10" stroke-linecap="round"/>
+        </svg></div>
+        <div style="display:flex;gap:22px;margin-top:14px;font-size:15px;color:var(--ink3)"><span>━ your campaign</span><span style="color:#8B5CF6">┅ market benchmark (synthetic)</span></div>
+        <div id="ins" style="margin-top:26px;padding:18px 20px;border-left:3px solid var(--v);background:#FAFAFA;font-size:19px;line-height:1.45">“Group-trip angle wins. Next: shift budget to Reels, test a student offer.”<div class="mono" style="font-size:14px;color:var(--ink3);margin-top:8px">Candidate's pitch · AI review attached</div></div>
+      </div>
+    </div>
+
+    <div class="brd" id="brd">
+      <div class="side"><div style="font-weight:700;font-size:24px;letter-spacing:-.03em">MAYBE<i style="display:inline-block;width:8px;height:8px;background:var(--v);margin-left:2px"></i></div><div style="font-size:14px;color:var(--ink3)">for Layla · hiring team</div>
+        <div style="margin-top:40px;font-size:19px;line-height:2.4;color:var(--ink2)"><div>Overview</div><div style="color:var(--ink);font-weight:600">Candidates</div><div>Experiences</div><div>Interviews</div></div></div>
+      <div class="main">
+        <div style="font-size:16px;color:var(--ink3)">Experiences / Senior Growth Marketer</div>
+        <div style="display:flex;align-items:center;gap:16px;margin:8px 0 0"><div style="font-size:40px;font-weight:700;letter-spacing:-.035em">Candidates, ranked by the work</div><span class="tag v">AI review</span><span class="tag">a person decides</span></div>
+        <div id="rows"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- F3 three ways -->
+  <div class="ways" id="ways">
+    <div class="wtitle" id="wt">Same brief. <span>Three ways to shine.</span></div>
+    <div class="wcard" id="w1" style="left:180px">
+      <div class="who"><img src="../../deck/img/peep-student.svg" alt=""><div><b>Lena</b><span>Economics student · no ads job yet</span></div></div>
+      <div class="creative" style="background:#fff">
+        <div style="padding:36px 32px"><div class="mono" style="font-size:15px;color:var(--ink3)">CLEAN · PRODUCT-LED</div>
+        <div style="font-size:54px;font-weight:700;letter-spacing:-.045em;line-height:1;margin-top:20px">Rome in<br>one chat.</div></div>
+        <div class="phone" style="left:120px;top:250px;width:200px;height:400px;border-radius:30px;padding:8px"><div class="scr" style="border-radius:23px"><div class="bub me" style="top:30px;font-size:12px">3 days in Rome?</div><div class="bub ai" style="top:80px;font-size:12px">Done. Here's your plan…</div></div></div>
+      </div>
+    </div>
+    <div class="wcard" id="w2" style="left:740px">
+      <div class="who"><img src="../../deck/img/peep-seller.svg" alt=""><div><b>Jonas</b><span>Career changer · ex-hospitality</span></div></div>
+      <div class="creative" style="background:#09090B;color:#fff">
+        <div style="padding:36px 32px"><div class="mono" style="font-size:15px;color:#A1A1AA">MEME · GROUP CHAT</div>
+        <div style="font-size:44px;font-weight:700;letter-spacing:-.04em;line-height:1.05;margin-top:20px">POV: your group chat finally agrees on a trip.</div></div>
+        <div style="position:absolute;left:32px;right:32px;bottom:40px">
+          <div style="background:#27272A;border-radius:16px;padding:12px 16px;font-size:17px;margin-bottom:10px;width:70%">"where are we going??"</div>
+          <div style="background:#27272A;border-radius:16px;padding:12px 16px;font-size:17px;margin-bottom:10px;width:60%;margin-left:auto">"no idea lol"</div>
+          <div style="background:#C4B5FD;color:#09090B;border-radius:16px;padding:12px 16px;font-size:17px;font-weight:600;width:76%">Layla: Lisbon, 4 days, here's the plan</div>
+        </div>
+      </div>
+    </div>
+    <div class="wcard" id="w3" style="left:1300px">
+      <div class="who"><img src="../../deck/img/peep-designer.svg" alt=""><div><b>Alex</b><span>Design student · hackathon builder</span></div></div>
+      <div class="creative" style="background:var(--soft)">
+        <div style="padding:36px 32px"><div class="mono" style="font-size:15px;color:var(--deep)">UGC · CREATOR STYLE</div>
+        <div style="font-size:44px;font-weight:700;letter-spacing:-.04em;line-height:1.05;margin-top:20px">48h in Milan, planned while the pasta boiled.</div></div>
+        <img src="../../deck/img/peep-thinker.svg" alt="" style="position:absolute;left:60px;bottom:-60px;height:330px">
+        <div style="position:absolute;right:26px;bottom:40px;background:#fff;border-radius:14px;padding:12px 14px;font-size:15px;font-weight:600;box-shadow:0 10px 24px rgba(9,9,11,.12)">▶ 0:15 · Reel</div>
+      </div>
+    </div>
+  </div>
+
+  <svg class="cursor" id="cur" viewBox="0 0 24 28"><path d="M3 2l17 11-8 1.5L8 23z" fill="#09090B" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg>
+  <div class="ring" id="ring"></div>
+  <div class="abs" id="mock" style="right:40px;bottom:22px;font-size:15px;color:#DDD6FE">Mockup only, no partnership implied · candidates, budgets and results simulated</div>
+</section>
+
+<!-- G · at scale -->
+<section class="layer" id="G">
+  <div id="minis"></div>
+  <div class="abs" id="g-txt" style="left:120px;top:330px;width:900px;background:#fff;padding:30px 30px 30px 30px;border-radius:24px">
+    <div class="kin" style="font-size:96px"><span class="mask"><span class="word" id="g1">Not only motivated.</span></span></div>
+    <div class="kin acc" style="font-size:96px;margin-top:10px"><span class="mask"><span class="word" id="g2">Creative problem solvers.</span></span></div>
+    <div id="g3" style="font-size:32px;color:var(--ink2);margin-top:30px;line-height:1.35">One experience, open to every applicant. It runs at scale, not as another interview round.</div>
+  </div>
+</section>
+
+<!-- H · close -->
+<section class="layer" id="H">
+  <div class="abs eyebrow" id="h-ey" style="left:150px;top:160px">Layla × Expedia <span>· a pilot for one role</span></div>
+  <div class="wm2" id="wm2">MAYBE<i id="h-dot"></i></div>
+  <div class="abs" id="h1" style="left:150px;top:740px;font-size:72px;font-weight:600;letter-spacing:-.04em">Try it. Prove it.</div>
+  <div class="abs" id="h2" style="right:150px;top:735px;text-align:right">
+    <div class="mono" style="font-size:20px;color:var(--ink3);letter-spacing:.08em">NEXT</div>
+    <div style="font-size:56px;font-weight:600;letter-spacing:-.035em">Let's pilot it with Layla.</div>
+  </div>
+  <div class="fine">Mockup only, no partnership implied. Candidates, budgets and results are simulated.</div>
+</section>
+</div>
+
+<script>
+// ---------- tiny timeline on top of the Web Animations API ----------
+const EASE = { out: 'cubic-bezier(.16,1,.3,1)', inout: 'cubic-bezier(.65,0,.35,1)', in: 'cubic-bezier(.7,0,.84,0)',
+  spring: 'cubic-bezier(.34,1.56,.64,1)', lin: 'linear', soft: 'cubic-bezier(.25,.8,.25,1)' };
+const seen = new WeakMap();
+window.CUES = [];
+var KEY = [], COUNT = [], INV = [];
+const $ = id => document.getElementById(id);
+function A(el, kf, t, d, ease = 'out', snd) {
+  if (typeof el === 'string') el = $(el);
+  const first = !seen.has(el); seen.set(el, 1);
+  el.animate(kf, { delay: t * 1000, duration: d * 1000, fill: first ? 'both' : 'forwards', easing: EASE[ease] || ease });
+  if (snd) cue(t, ...[].concat(snd));
+}
+function cue(t, type, p = 0) { CUES.push([+t.toFixed(3), type, p]); }
+const show = (el, t0, t1, fade = .25) => A(el, [{ opacity: 0 }, { opacity: 1, offset: fade / (t1 - t0) }, { opacity: 1, offset: 1 - fade / (t1 - t0) }, { opacity: 0 }], t0, t1 - t0, 'lin');
+const up = (el, t, d = .8, dist = 110) => A(el, [{ transform: `translateY(${dist}%)` }, { transform: 'none' }], t, d, 'out');
+const fadeIn = (el, t, d = .5, y = 30) => A(el, [{ opacity: 0, transform: `translateY(${y}px)` }, { opacity: 1, transform: 'none' }], t, d, 'out');
+let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+
+A('prog', [{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }], 0, 30, 'lin');
+
+// ---------- A · Layla is hiring (0 – 3.3) ----------
+A('A', [{ opacity: 1, transform: 'none' }, { opacity: 1, transform: 'none', offset: .88 }, { opacity: 0, transform: 'scale(.92)' }], 0, 3.3, 'lin');
+fadeIn('a-ey', .15, .6);
+up('a1', .3, .7); cue(.3, 'pluck', 0); up('a2', .45, .7); cue(.45, 'pluck', 1); up('a3', .6, .7); cue(.6, 'pluck', 2);
+fadeIn('roller', .9, .4, 20);
+['1.2', '1.55', '1.9'].forEach((s, k) => { A('rlist', [{ transform: `translateY(${-150 * k}px)` }, { transform: `translateY(${-150 * (k + 1)}px)` }], +s, .3, 'out', ['tick', k]); });
+A('roller', [{ transform: 'scale(1)' }, { transform: 'scale(1.08)' }, { transform: 'scale(1)' }], 1.9, .5, 'spring');
+cue(2.0, 'chordS');
+fadeIn('a-src', 2.1, .5, 10);
+cue(3.0, 'whoosh', 1);
+
+// ---------- B · the CV wall (3.1 – 6.9) ----------
+A('B', [{ opacity: 0, transform: 'scale(1.15)' }, { opacity: 1, transform: 'scale(1)', offset: .1 }, { opacity: 1, transform: 'scale(.98)', offset: .92 }, { opacity: 0, transform: 'scale(.9)' }], 3.1, 3.8, 'lin');
+(() => {
+  const wall = $('wall'), cols = 12, rows = 5, keep = new Set([17, 42]);
+  for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+    const k = r * cols + c, d = document.createElement('div'); d.className = 'cv';
+    d.innerHTML = '<b></b><i class="h"></i><i></i><i style="width:80%"></i><i style="width:62%"></i><i style="width:74%"></i><i style="width:55%"></i>';
+    const x = 40 + c * 160, y = 30 + r * 210;
+    d.style.left = x + 'px'; d.style.top = y + 'px'; wall.appendChild(d);
+    const t = 3.15 + (c + r) * .045 + rnd() * .05;
+    A(d, [{ transform: `translate(${(rnd() - .5) * 300}px,${700 + rnd() * 300}px) rotate(${(rnd() - .5) * 40}deg)`, opacity: 0 }, { transform: `rotate(${(rnd() - .5) * 4}deg)`, opacity: 1 }], t, .8, 'out');
+    // the scan: most drop out
+    const ts = 5.0 + c * .085;
+    if (!keep.has(k)) A(d, [{ borderColor: '#09090B', opacity: 1, transform: 'none' }, { borderColor: '#D4D4D8', opacity: .9, transform: 'translateY(0)', offset: .25 }, { borderColor: '#D4D4D8', opacity: 0, transform: `translateY(${260 + rnd() * 200}px) rotate(${(rnd() - .5) * 30}deg)` }], ts, .9, 'in');
+    else A(d, [{ transform: 'none', borderColor: '#09090B' }, { transform: 'scale(1.12)', borderColor: '#7C3AED' }], ts, .4, 'spring');
+  }
+  for (let k = 0; k < 7; k++) cue(3.2 + k * .14, 'tick', k);
+  for (let c = 0; c < 12; c += 2) cue(5.0 + c * .085, 'nudge', c);
+})();
+A('scan', [{ transform: 'translateX(-40px)', opacity: 1 }, { transform: 'translateX(1960px)', opacity: 1 }], 4.9, 1.15, 'inout');
+cue(4.9, 'scan');
+A('b1', [{ opacity: 0, transform: 'scale(.6)' }, { opacity: 1, transform: 'scale(1)', offset: .3 }, { opacity: 1, transform: 'scale(1)', offset: .8 }, { opacity: 0, transform: 'scale(1.1)' }], 3.5, 1.0, 'lin', 'hit');
+A('b2', [{ opacity: 0, transform: 'translateY(40px)' }, { opacity: 1, transform: 'none', offset: .25 }, { opacity: 1, transform: 'none', offset: .85 }, { opacity: 0 }], 4.45, 1.6, 'lin', ['pluck', 3]);
+A('b3', [{ opacity: 0 }, { opacity: 1, offset: .2 }, { opacity: 1, offset: .8 }, { opacity: 0 }], 5.2, 1.4, 'lin');
+
+// ---------- C · round after round (6.7 – 9.0) ----------
+A('C', [{ opacity: 0, transform: 'translateX(300px)' }, { opacity: 1, transform: 'none', offset: .12 }, { opacity: 1, transform: 'none', offset: .9 }, { opacity: 0, transform: 'translateX(-200px)' }], 6.7, 2.4, 'lin');
+cue(6.7, 'whoosh', 0);
+up('c1', 6.8, .6, 40);
+A('ctrack', [{ transform: 'translateX(1920px)' }, { transform: 'translateX(-2900px)' }], 6.75, 2.2, 'inout');
+for (let k = 0; k < 6; k++) cue(7.2 + k * .2, 'pass', k);
+A('runner', [{ transform: 'scale(0)' }, { transform: 'scale(1)' }], 6.9, .3, 'spring');
+A('runner', [{ transform: 'scale(1)' }, { transform: 'scale(1.6)', offset: .5 }, { transform: 'scale(1)' }], 7.4, .5, 'inout');
+
+// ---------- D · show you + flip (8.9 – 11.4) ----------
+A('D', [{ opacity: 0 }, { opacity: 1, offset: .08 }, { opacity: 1, offset: .9 }, { opacity: 0, transform: 'scale(1.05)' }], 8.9, 2.5, 'lin');
+cue(8.9, 'hush');
+up('d1', 9.0, .7); cue(9.0, 'pluck', 2); up('d2', 9.2, .7); cue(9.2, 'pluck', 4);
+A('flip', [{ transform: 'translateY(300px) rotateX(30deg)', opacity: 0 }, { transform: 'none', opacity: 1 }], 9.1, .7, 'out');
+A('flip', [{ transform: 'rotateY(0) scale(1)' }, { transform: 'rotateY(90deg) scale(1.12)', offset: .45 }, { transform: 'rotateY(180deg) scale(1.08)' }], 10.05, .75, 'inout', 'rise');
+cue(10.6, 'chord');
+
+// ---------- E · MAYBE. (11.3 – 13.0) ----------
+A('E', [{ opacity: 0 }, { opacity: 1, offset: .05 }, { opacity: 1 }], 11.3, 1.9, 'lin');
+document.querySelectorAll('#wm .l:not(.dotw)').forEach((l, k) => { A(l, [{ transform: 'translateY(120%) rotate(8deg)', opacity: 0 }, { transform: 'none', opacity: 1 }], 11.35 + k * .06, .6, 'out', ['logo', k]); });
+// the dot lands, then becomes the violet ground
+A('edot', [{ transform: 'translateY(-500px) scale(.4)', opacity: 0 }, { transform: 'none', opacity: 1 }], 11.75, .45, 'spring', 'drop');
+fadeIn('e-tag', 11.9, .5);
+A('edot', [{ transform: 'scale(1)' }, { transform: 'scale(70)' }], 12.6, .55, 'in', 'rise');
+
+// ---------- F · product (13.0 – 24.4) ----------
+A('F', [{ opacity: 0 }, { opacity: 1 }], 13.0, .05, 'lin');
+A('F', [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'scale(.94)' }], 24.1, .4, 'in');
+const pill = (t, n, txt, url) => { A('pill', [{ transform: 'translateY(-20px) scale(.9)', opacity: 0 }, { transform: 'none', opacity: 1 }], t, .45, 'spring', ['pluck', +n + 1]);
+  PILL.push([t, n, txt, url]); };
+const PILL = [];
+pill(13.05, '1', 'A real Layla job, as an experience', 'maybe.center/explore');
+// F1 job card pops, chat types
+A('job', [{ transform: 'translateY(160px) scale(.85)', opacity: 0 }, { transform: 'none', opacity: 1 }], 13.05, .7, 'out');
+fadeIn('jb1', 13.45, .35, 14); cue(13.45, 'pop', 0);
+fadeIn('jb2', 13.75, .35, 14); cue(13.75, 'pop', 1);
+fadeIn('jb3', 14.05, .35, 14); cue(14.05, 'pop', 2);
+// cursor → start button, click, card expands into the window
+A('cur', [{ transform: 'translate(1700px,1100px)' }, { transform: 'translate(1150px,815px)' }], 13.4, .9, 'inout');
+A('startb', [{ transform: 'scale(1)' }, { transform: 'scale(.92)' }, { transform: 'scale(1)' }], 14.35, .25, 'out', 'click');
+A('ring', [{ transform: 'translate(1120px,785px) scale(.3)', opacity: 0 }, { transform: 'translate(1120px,785px) scale(.3)', opacity: 1, offset: .01 }, { transform: 'translate(1120px,785px) scale(1.6)', opacity: 0 }], 14.35, .45, 'out');
+A('job', [{ transform: 'none', opacity: 1 }, { transform: 'scale(1.35)', opacity: 0 }], 14.55, .45, 'in', 'whoosh');
+A('win', [{ opacity: 0, transform: 'scale(.7)' }, { opacity: 1, transform: 'none' }], 14.6, .6, 'out');
+// F2 ads manager
+pill(14.7, '2', 'Build the launch campaign', '');
+A('am', [{ opacity: 1 }, { opacity: 1 }], 14.6, .1, 'lin');
+A('cur', [{ transform: 'translate(1150px,815px)' }, { transform: 'translate(400px,385px)' }], 14.6, .55, 'inout');
+A('o2', [{ transform: 'scale(1)' }, { transform: 'scale(.96)' }, { transform: 'scale(1)' }], 15.2, .2, 'out', 'click');
+A('o2', [{ borderColor: '#E4E4E7' }, { borderColor: '#09090B' }], 15.2, .1, 'lin');
+A(document.querySelector('#o2 i'), [{ border: '2px solid #D4D4D8' }, { border: '6px solid #09090B' }], 15.2, .15, 'out');
+['c-1', 'c-2', 'c-3', 'c-4'].forEach((c, k) => { A(c, [{ transform: 'scale(.4)', opacity: 0, background: '#fff', color: '#09090B' }, { transform: 'none', opacity: 1, background: '#09090B', color: '#fff' }], 15.45 + k * .12, .4, 'spring', ['tick', k + 2]); });
+A('cur', [{ transform: 'translate(400px,385px)' }, { transform: 'translate(170px,655px)' }, { transform: 'translate(330px,655px)' }], 15.6, 1.0, 'inout');
+A('knob', [{ transform: 'translateX(0)' }, { transform: 'translateX(160px)' }], 16.0, .6, 'inout', 'slide');
+A('sl', [{ transform: 'scaleX(.04)' }, { transform: 'scaleX(.42)' }], 16.0, .6, 'inout');
+// headline types on the ad
+const HL = 'Rome in one chat.'; for (let k = 0; k <= HL.length; k++) KEY.push([15.4 + k * .045, HL.slice(0, k)]);
+A('adph', [{ transform: 'translateY(40px)', opacity: .0 }, { transform: 'none', opacity: 1 }], 14.9, .6, 'out');
+A('pin1', [{ transform: 'scale(0)' }, { transform: 'scale(1)' }], 15.9, .4, 'spring', ['pop', 3]);
+A('pin2', [{ transform: 'scale(0)' }, { transform: 'scale(1)' }], 16.1, .4, 'spring', ['pop', 4]);
+// publish
+A('cur', [{ transform: 'translate(330px,655px)' }, { transform: 'translate(260px,960px)' }], 16.65, .45, 'inout');
+A('pub', [{ transform: 'scale(1)', background: '#09090B' }, { transform: 'scale(.95)', background: '#7C3AED' }, { transform: 'scale(1)', background: '#7C3AED' }], 17.1, .3, 'out', 'click');
+cue(17.2, 'chordS');
+A('line', [{ strokeDashoffset: 700 }, { strokeDashoffset: 0 }], 17.25, 1.6, 'soft');
+A('line2', [{ opacity: 0 }, { opacity: 1 }], 17.25, .6, 'lin');
+COUNT.push(['k1', 17.3, 1.4, 0, 2.4, 1], ['k2', 17.3, 1.4, 0, 312, 0], ['k3', 17.3, 1.4, 4.8, 1.6, 2]);
+for (let k = 0; k < 8; k++) cue(17.3 + k * .17, 'tick', k);
+fadeIn('ins', 18.4, .5, 16); cue(18.4, 'pop', 5);
+// camera push into the results
+A('win', [{ transform: 'none' }, { transform: 'scale(1.1) translate(-180px,10px)' }], 17.2, 1.7, 'inout');
+A('win', [{ transform: 'scale(1.1) translate(-180px,10px)' }, { transform: 'scale(.6) translateY(300px)', opacity: 0 }], 19.0, .45, 'in', 'whoosh');
+A('am', [{ opacity: 1 }, { opacity: 0 }], 19.4, .05, 'lin');
+// F3 three ways
+pill(19.3, '3', 'Everyone solves it their own way', '');
+A('ways', [{ opacity: 0 }, { opacity: 1 }], 19.25, .1, 'lin');
+A('cur', [{ transform: 'translate(260px,960px)' }, { transform: 'translate(260px,1200px)' }], 19.0, .4, 'in');
+fadeIn('wt', 19.3, .5, 40);
+['w1', 'w2', 'w3'].forEach((w, k) => A(w, [{ transform: `translateY(900px) rotate(${(k - 1) * 10}deg)` }, { transform: `rotate(${(k - 1) * 2}deg)` }], 19.45 + k * .16, .8, 'out', ['pluck', k + 2]));
+A('ways', [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'scale(1.1)' }], 21.45, .35, 'in');
+// F4 employer board
+pill(21.6, '4', 'Layla sees the work, not just the CV', 'maybe.center/employer/layla/candidates');
+A('win', [{ transform: 'scale(.85)', opacity: 0 }, { transform: 'none', opacity: 1 }], 21.55, .5, 'out', 'whoosh');
+A('brd', [{ opacity: 0 }, { opacity: 1 }], 21.55, .1, 'lin');
+(() => {
+  const host = $('rows');
+  const C = [['peep-seller', 'Jonas', 'Career changer · Berlin', 'Group-chat meme ad', 91],
+             ['peep-student', 'Lena', 'Economics · Munich', 'Product-led, clean', 88],
+             ['peep-designer', 'Alex', 'Design · Lisbon', 'Creator-style Reel', 86],
+             ['peep-thinker', 'Sam', 'Marketing · Milan', 'Discount offer', 74]];
+  // rows start in arrival order, then sort by score
+  const start = [2, 0, 3, 1];
+  C.forEach((c, k) => {
+    const r = document.createElement('div'); r.className = 'row';
+    r.innerHTML = `<img src="../../deck/img/${c[0]}.svg" alt=""><div class="n"><b>${c[1]}</b><span>${c[2]}</span></div><div class="ap">${c[3]}</div><div class="sc"><div class="tr"><u></u></div><span class="num">${c[4]}</span></div>${k === 0 ? '<span class="btn inv" style="position:static;border:0" id="inv">Invite to interview</span>' : '<span class="btn inv" style="position:static;border:0;background:#fff;color:#09090B;box-shadow:inset 0 0 0 1.5px #E4E4E7">View work</span>'}`;
+    r.style.top = (150 + start[k] * 130) + 'px'; host.appendChild(r);
+    A(r, [{ opacity: 0, transform: 'translateX(80px)' }, { opacity: 1, transform: 'none' }], 21.75 + start[k] * .08, .45, 'out');
+    A(r.querySelector('u'), [{ transform: 'scaleX(0)' }, { transform: `scaleX(${c[4] / 100})` }], 22.0 + start[k] * .08, .6, 'out');
+    A(r, [{ transform: 'translateY(0)' }, { transform: `translateY(${(k - start[k]) * 130}px)` }], 22.75, .55, 'inout');
+    if (k === 0) A(r, [{ background: '#fff', borderColor: '#E4E4E7' }, { background: '#F5F3FF', borderColor: '#7C3AED' }], 23.2, .3, 'out');
+  });
+  for (let k = 0; k < 4; k++) cue(22.0 + k * .08, 'tick', k + 3);
+  cue(22.75, 'sort');
+})();
+A('cur', [{ transform: 'translate(1700px,1150px)' }, { transform: 'translate(1525px,445px)' }], 22.5, 1.1, 'inout');
+A('inv', [{ transform: 'scale(1)', background: '#09090B' }, { transform: 'scale(.92)', background: '#7C3AED' }, { transform: 'scale(1)', background: '#7C3AED' }], 23.65, .3, 'out', 'click');
+A('ring', [{ transform: 'translate(1495px,415px) scale(.3)', opacity: 1 }, { transform: 'translate(1495px,415px) scale(1.8)', opacity: 0 }], 23.65, .5, 'out');
+INV.push(23.7); cue(23.75, 'chord');
+
+// ---------- G · at scale (24.3 – 27.3) ----------
+A('G', [{ opacity: 0, transform: 'scale(1.2)' }, { opacity: 1, transform: 'none', offset: .12 }, { opacity: 1, offset: .9 }, { opacity: 0, transform: 'scale(.96)' }], 24.3, 3.0, 'lin');
+(() => {
+  const host = $('minis'), cols = 30, rows = 14;
+  for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+    const m = document.createElement('div'); m.className = 'mini';
+    m.style.left = (40 + c * 62) + 'px'; m.style.top = (40 + r * 72) + 'px'; host.appendChild(m);
+    const dist = Math.hypot(c - 22, r - 7);
+    A(m, [{ transform: 'scale(0)' }, { transform: 'scale(1)' }], 24.35 + dist * .03, .35, 'spring');
+    if (rnd() < .14) A(m, [{ background: '#fff', borderColor: '#D4D4D8' }, { background: '#7C3AED', borderColor: '#7C3AED' }], 25.0 + rnd() * 1.4, .25, 'out');
+  }
+  for (let k = 0; k < 10; k++) cue(24.4 + k * .1, 'tick', k);
+  for (let k = 0; k < 7; k++) cue(25.1 + k * .2, 'pop', k);
+})();
+A('g-txt', [{ opacity: 0, transform: 'translateX(-60px)' }, { opacity: 1, transform: 'none' }], 24.45, .5, 'out');
+up('g1', 24.55, .7); up('g2', 25.0, .7); cue(25.0, 'pluck', 4); fadeIn('g3', 25.5, .6, 20);
+
+// ---------- H · close (27.2 – 30) ----------
+A('H', [{ opacity: 0 }, { opacity: 1 }], 27.2, .25, 'lin');
+fadeIn('h-ey', 27.3, .5, 14);
+A('wm2', [{ opacity: 0, transform: 'translateY(80px)', letterSpacing: '-.02em' }, { opacity: 1, transform: 'none', letterSpacing: '-.065em' }], 27.3, .9, 'out', 'close');
+A('h-dot', [{ transform: 'translateY(-600px)' }, { transform: 'none' }], 27.75, .5, 'spring', 'drop');
+fadeIn('h1', 28.0, .6); fadeIn('h2', 28.2, .6);
+cue(28.1, 'chordEnd');
+
+// ---------- things that are not CSS properties: text, counters, pill labels ----------
+function textAt(t) {
+  let h = ''; for (const [s, v] of KEY) if (t >= s) h = v; $('headline').textContent = h;
+  for (const [id, s, d, a, b, dec] of COUNT) { const p = Math.max(0, Math.min(1, (t - s) / d)); const e = 1 - Math.pow(1 - p, 3); $(id).textContent = (a + (b - a) * e).toFixed(dec); }
+  let cur = PILL[0]; for (const p of PILL) if (t >= p[0]) cur = p; $('pn').textContent = cur[1]; $('pt').textContent = cur[2]; if (cur[3]) $('url').textContent = cur[3];
+  if (t < 15.3) $('url').textContent = 'maybe.center/experience/layla-growth-marketer';
+  const b = Math.round(10 + 40 * Math.max(0, Math.min(1, (t - 16) / .6))); $('bud').textContent = b;
+  $('inv').textContent = t >= INV[0] ? 'Invited ✓' : 'Invite to interview';
+}
+</script>
+<script>
+function seek(t) { for (const a of document.getAnimations()) { a.pause(); a.currentTime = t * 1000; } textAt(t); }
+window.seek = seek;
+function fit() { const k = Math.min(innerWidth / 1920, innerHeight / 1080); stage.style.transform = `translate(-50%,-50%) scale(${k})`; }
+addEventListener('resize', fit); fit();
+const P = new URLSearchParams(location.search);
+if (P.has('render')) seek(+P.get('t') || 0);
+else { let t0 = performance.now(); const loop = () => { seek(((performance.now() - t0) / 1000) % 31); requestAnimationFrame(loop); };
+  addEventListener('click', () => t0 = performance.now()); document.fonts.ready.then(() => { t0 = performance.now(); loop(); }); }
+</script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-// Usage: node tools/demo-video/shoot.mjs <outdir> t1 t2 ...   (stills of demo/leyla-expedia at given seconds)
+// Usage: node tools/demo-video/shoot.mjs <outdir> t1 t2 ...   (stills of demo/<DEMO, default layla> at given seconds)
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 let chromium; try { ({ chromium } = require('playwright')); } catch { ({ chromium } = require(process.env.PLAYWRIGHT_PATH || '/opt/node-tools/node_modules/playwright')); }
@@ -16,7 +16,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   const [out, ...ts] = process.argv.slice(2);
   const srv = await serve(); const port = srv.address().port;
   const b = await chromium.launch(); const pg = await b.newPage({ viewport: { width: 1920, height: 1080 } });
-  await pg.goto(`http://localhost:${port}/demo/leyla-expedia/index.html?render&t=0`); await pg.evaluate(() => document.fonts.ready);
+  await pg.goto(`http://localhost:${port}/demo/${process.env.DEMO || 'layla'}/index.html?render&t=0`); await pg.evaluate(() => document.fonts.ready);
   for (const t of ts) { await pg.evaluate(t => window.seek(t), +t); await pg.screenshot({ path: `${out}/t${t}.jpg`, quality: 80 }); }
   await b.close(); srv.close();
 }
