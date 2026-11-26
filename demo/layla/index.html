@@ -162,6 +162,18 @@ body{font-family:Geist,system-ui,sans-serif;color:var(--ink);-webkit-font-smooth
 #G{background:#fff}
 .mini{position:absolute;width:44px;height:56px;border-radius:7px;border:2px solid var(--ghost);background:#fff}
 
+/* F0: any role */
+#roles{position:absolute;inset:0}
+.rt{position:absolute;left:150px;top:150px;color:#fff;font-size:74px;font-weight:700;letter-spacing:-.045em}
+.rt span{color:#DDD6FE}
+.rc{position:absolute;top:330px;width:300px;height:420px;border-radius:24px;background:#fff;padding:30px 28px;box-shadow:0 30px 70px rgba(30,10,80,.3)}
+.rc .rk{font-family:'Geist Mono',monospace;font-size:15px;color:var(--deep);letter-spacing:.08em;text-transform:uppercase}
+.rc b{display:block;font-size:34px;line-height:1.05;letter-spacing:-.035em;margin:18px 0 16px}
+.rc p{margin:0;font-size:21px;line-height:1.4;color:var(--ink2)}
+.rc .rm{position:absolute;left:28px;bottom:26px;font-family:'Geist Mono',monospace;font-size:15px;color:var(--ink3)}
+.rc.new{background:transparent;border:3px dashed rgba(255,255,255,.75);box-shadow:none;color:#fff}
+.rc.new .rk,.rc.new p,.rc.new .rm{color:#EDE9FE}
+.rsub{position:absolute;left:150px;top:810px;color:#EDE9FE;font-family:'Geist Mono',monospace;font-size:24px}
 /* G: value prop */
 .vp{position:absolute;left:150px;right:150px;top:300px}
 .vph{display:grid;grid-template-columns:1fr 1fr;gap:80px;font-family:'Geist Mono',monospace;font-size:24px;color:var(--ink3);letter-spacing:.06em;text-transform:uppercase;padding-bottom:18px}
@@ -238,6 +250,17 @@ body{font-family:Geist,system-ui,sans-serif;color:var(--ink);-webkit-font-smooth
 <!-- F · product -->
 <section class="layer" id="F">
   <div class="pill" id="pill"><em id="pn">1</em><span id="pt">A real Layla job, as an experience</span></div>
+
+  <!-- F0 any role -->
+  <div id="roles">
+    <div class="rt" id="rt">Any role you hire for <span>becomes an experience.</span></div>
+    <div class="rc" id="r0" style="left:150px"><div class="rk">Sales</div><b>Sales Expert</b><p>Pitch Layla to a hotel partner on a live call.</p><span class="rm">voice call · ~45 min</span></div>
+    <div class="rc" id="r1" style="left:480px"><div class="rk">Operations</div><b>Travel Curator</b><p>Fix an AI itinerary before it reaches a traveller.</p><span class="rm">review · ~40 min</span></div>
+    <div class="rc" id="r2" style="left:810px"><div class="rk">Content</div><b>SEO Content Writer</b><p>Write the Rome guide that ranks.</p><span class="rm">writing · ~60 min</span></div>
+    <div class="rc" id="r3" style="left:1140px"><div class="rk">Growth</div><b>Senior Growth Marketer</b><p>Launch Layla in Italy with a test budget.</p><span class="rm">ads manager · ~60 min</span></div>
+    <div class="rc new" id="r4" style="left:1470px"><div class="rk">Your next role</div><b>+ Any role</b><p>Design, product, data, support. We build the experience with you.</p><span class="rm">same brief for everyone</span></div>
+    <div class="rsub" id="rsub">Layla's open roles, each as a simulated hour of the real work</div>
+  </div>
 
   <!-- F1 job card -->
   <div class="job" id="job">
@@ -378,6 +401,7 @@ body{font-family:Geist,system-ui,sans-serif;color:var(--ink);-webkit-font-smooth
   <div class="wm2" id="wm2">MAYBE<i id="h-dot"></i></div>
   <div class="abs" id="h1" style="left:150px;top:760px;font-size:76px;font-weight:600;letter-spacing:-.04em">Try it. Prove it.</div>
   <div class="cta" id="h2">Let's pilot one role with Layla</div>
+  <div class="abs" id="h3" style="right:150px;top:890px;text-align:right;font-size:30px;color:var(--ink2)">Sales, curation, content, growth: you pick the role.</div>
   <div class="fine">Mockup only, no partnership implied. Candidates, budgets and results are simulated.</div>
  </div>
 </section>
@@ -391,20 +415,23 @@ const seen = new WeakMap();
 window.CUES = [];
 var KEY = [], COUNT = [], INV = [];
 const $ = id => document.getElementById(id);
+const SHIFT = 1.6, SH = t => t > 12.91 ? t + SHIFT : t;
+let RAW = false;
 function A(el, kf, t, d, ease = 'out', snd) {
+  if (!RAW) t = SH(t);
   if (typeof el === 'string') el = $(el);
   const first = !seen.has(el); seen.set(el, 1);
   el.animate(kf, { delay: t * 1000, duration: d * 1000, fill: first ? 'both' : 'forwards', easing: EASE[ease] || ease });
-  if (snd) cue(t, ...[].concat(snd));
+  if (snd) { cue.inA = true; cue(t, ...[].concat(snd)); cue.inA = false; }
   return el;
 }
-function cue(t, type, p = 0) { if (type) CUES.push([+t.toFixed(3), type, p]); }
+function cue(t, type, p = 0) { if (!type) return; if (!RAW && !cue.inA) t = SH(t); CUES.push([+t.toFixed(3), type, p]); }
 const show = (el, t0, t1, fade = .25) => A(el, [{ opacity: 0 }, { opacity: 1, offset: fade / (t1 - t0) }, { opacity: 1, offset: 1 - fade / (t1 - t0) }, { opacity: 0 }], t0, t1 - t0, 'lin');
 const up = (el, t, d = .8, dist = 110) => A(el, [{ transform: `translateY(${dist}%)` }, { transform: 'none' }], t, d, 'out');
 const fadeIn = (el, t, d = .5, y = 30) => A(el, [{ opacity: 0, transform: `translateY(${y}px)` }, { opacity: 1, transform: 'none' }], t, d, 'out');
 let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
 
-const END = 31.0;
+const END = 31.0 + SHIFT;
 A('prog', [{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }], 0, END, 'lin');
 const cut = (el, t0, t1) => A(el, [{ opacity: 0 }, { opacity: 1, offset: .001 }, { opacity: 1, offset: .999 }, { opacity: 0 }], t0, t1 - t0, 'lin');
 
@@ -415,7 +442,7 @@ fadeIn('a-ey', .35, .5);
 A('roller', [{ opacity: 0, transform: 'translateY(40px)' }, { opacity: 1, transform: 'none' }], .2, .4, 'out');
 [.5, .78, 1.06].forEach((s, k) => A('rlist', [{ transform: `translateY(${-150 * k}px)` }, { transform: `translateY(${-150 * (k + 1)}px)` }], s, .26, 'out', ['tick', k]));
 A('roller', [{ transform: 'scale(1)' }, { transform: 'scale(1.1)' }, { transform: 'scale(1)' }], 1.06, .5, 'spring');
-cue(1.1, 'motif', 3);
+cue(1.1, 'motif', 3); cue(1.15, 'chordS');
 A('a3', [{ color: '#C4B5FD' }, { color: '#fff' }, { color: '#C4B5FD' }], 2.2, .5, 'lin');
 cue(2.75, 'riser', .3);
 
@@ -477,14 +504,27 @@ A('edot', [{ transform: 'scale(1)' }, { transform: 'scale(80)' }], 12.4, .5, 'in
 // ---------- F · product (12.9 – 24.9) ----------
 A('F', [{ opacity: 0 }, { opacity: 1 }], 12.9, .02, 'lin', 'impact');
 A('F', [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'scale(.94)' }], 24.6, .3, 'in');
+// F0 · any role becomes an experience (raw times, 12.9 – 14.55)
+RAW = true;
+up('rt', 12.98, .55, 60); cue(12.98, 'pluck', 0);
+['r0', 'r1', 'r2', 'r3', 'r4'].forEach((r, k) => A(r, [{ transform: `translateY(700px) rotate(${(k - 2) * 6}deg)` }, { transform: 'none' }], 13.08 + k * .09, .6, 'out', ['pluck', k + 1]));
+fadeIn('rsub', 13.55, .4, 14);
+A('cur', [{ transform: 'translate(1700px,1100px)' }, { transform: 'translate(1300px,600px)' }], 13.45, .45, 'inout');
+A('r3', [{ transform: 'none', outline: '0px solid #09090B' }, { transform: 'scale(.96)', outline: '6px solid #09090B', offset: .3 }, { transform: 'scale(1.06)', outline: '6px solid #09090B' }], 13.95, .3, 'out', 'click');
+A('ring', [{ transform: 'translate(1270px,570px) scale(.3)', opacity: 0 }, { transform: 'translate(1270px,570px) scale(.3)', opacity: 1, offset: .01 }, { transform: 'translate(1270px,570px) scale(1.8)', opacity: 0 }], 13.95, .45, 'out');
+['r0', 'r1', 'r2', 'r4'].forEach((r, k) => A(r, [{ opacity: 1 }, { opacity: 0, transform: 'translateY(60px) scale(.9)' }], 14.15 + k * .03, .3, 'in'));
+A('r3', [{ transform: 'scale(1.06)', opacity: 1 }, { transform: 'translate(-330px,-10px) scale(1.5)', opacity: 0 }], 14.25, .35, 'in', 'whoosh');
+A('rt', [{ transform: 'none', opacity: 1 }, { transform: 'translateY(-40px)', opacity: 0 }], 14.15, .3, 'in');
+A('rsub', [{ opacity: 1 }, { opacity: 0 }], 14.15, .2, 'lin');
+RAW = false;
 const PILL = [];
 const pill = (t, n, txt, url) => { A('pill', [{ transform: 'translateY(-20px) scale(.9)', opacity: 0 }, { transform: 'none', opacity: 1 }], t, .45, 'spring', ['pluck', +n]); PILL.push([t, n, txt, url]); };
-pill(13.0, '1', 'A real Layla job, as an experience', 'maybe.center/explore');
+pill(13.0, '1', 'Pick a role: Senior Growth Marketer', 'maybe.center/explore');
 A('job', [{ transform: 'translateY(160px) scale(.85)', opacity: 0 }, { transform: 'none', opacity: 1 }], 12.95, .6, 'out');
 fadeIn('jb1', 13.3, .3, 14); cue(13.375, 'pop', 0);
 fadeIn('jb2', 13.55, .3, 14); cue(13.625, 'pop', 1);
 fadeIn('jb3', 13.8, .3, 14); cue(13.875, 'pop', 2);
-A('cur', [{ transform: 'translate(1700px,1100px)' }, { transform: 'translate(1080px,742px)' }], 13.3, .8, 'inout');
+A('cur', [{ transform: 'translate(1300px,600px)' }, { transform: 'translate(1080px,742px)' }], 13.3, .8, 'inout');
 A('startb', [{ transform: 'scale(1)' }, { transform: 'scale(.92)' }, { transform: 'scale(1)' }], 14.125, .25, 'out', 'click');
 A('ring', [{ transform: 'translate(1050px,712px) scale(.3)', opacity: 0 }, { transform: 'translate(1050px,712px) scale(.3)', opacity: 1, offset: .01 }, { transform: 'translate(1050px,712px) scale(1.6)', opacity: 0 }], 14.125, .45, 'out');
 // card grows into the window (same centre and size at the hand-off)
@@ -590,15 +630,18 @@ fadeIn('h-ey', 27.75, .4, 14);
 A('h-dot', [{ transform: 'translateY(-600px)' }, { transform: 'none' }], 28.0, .45, 'spring', 'resolve');
 fadeIn('h1', 28.35, .5);
 A('h2', [{ opacity: 0, transform: 'translateY(30px) scale(.9)' }, { opacity: 1, transform: 'none' }], 28.75, .55, 'spring', ['pluck', 0]);
+fadeIn('h3', 29.2, .5, 12);
 cue(28.0, 'chordEnd');
 
+KEY = KEY.map(([t, v]) => [SH(t), v]); COUNT = COUNT.map(c => [c[0], SH(c[1]), ...c.slice(2)]); INV = INV.map(SH);
+PILL.forEach(p => p[0] = SH(p[0]));
 // ---------- things that are not CSS properties: text, counters, pill labels ----------
 function textAt(t) {
   let h = ''; for (const [s, v] of KEY) if (t >= s) h = v; $('headline').textContent = h;
   for (const [id, s, d, a, b, dec] of COUNT) { const p = Math.max(0, Math.min(1, (t - s) / d)); const e = 1 - Math.pow(1 - p, 3); $(id).textContent = (id === 'k3' && t < s) ? '—' : (a + (b - a) * e).toFixed(dec); }
   let cur = PILL[0]; for (const p of PILL) if (t >= p[0]) cur = p; $('pn').textContent = cur[1]; $('pt').textContent = cur[2]; if (cur[3]) $('url').textContent = cur[3];
-  if (t < 14.4) $('url').textContent = 'maybe.center/experience/layla-growth-marketer';
-  const b = Math.round(10 + 40 * Math.max(0, Math.min(1, (t - 16) / .6))); $('bud').textContent = b;
+  if (t < SH(14.4)) $('url').textContent = 'maybe.center/experience/layla-growth-marketer';
+  const b = Math.round(10 + 40 * Math.max(0, Math.min(1, (t - SH(16)) / .5))); $('bud').textContent = b;
   $('inv').textContent = t >= INV[0] ? 'Invited ✓' : 'Invite to interview';
 }
 </script>
@@ -609,7 +652,7 @@ function fit() { const k = Math.min(innerWidth / 1920, innerHeight / 1080); stag
 addEventListener('resize', fit); fit();
 const P = new URLSearchParams(location.search);
 if (P.has('render')) seek(+P.get('t') || 0);
-else { let t0 = performance.now(); const loop = () => { seek(((performance.now() - t0) / 1000) % 31.5); requestAnimationFrame(loop); };
+else { let t0 = performance.now(); const loop = () => { seek(((performance.now() - t0) / 1000) % 33); requestAnimationFrame(loop); };
   addEventListener('click', () => t0 = performance.now()); document.fonts.ready.then(() => { t0 = performance.now(); loop(); }); }
 </script>
 </body>

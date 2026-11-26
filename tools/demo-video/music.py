@@ -1,10 +1,6 @@
-"""Sound design for the MAYBE demo films (no voice, no samples, no licences).
-
-Musical spine: A major, 120 bpm, a four-note hook A5-C#6-E6-B5 that ends open (the "maybe")
-and resolves B5->A5 on the final dot. UI sounds come from the film's own cue list and use the
-deck's vocabulary (assets/careers.js): plucks, ticks, air, rises, the arrival chord, here with
-FM plucks, detuned-saw chords, a kick with click and body, sidechain ducking, a decorrelated
-stereo room and a gentle bus compressor.
+"""Sound design for the MAYBE demo films (the "v2" sound the team picked), built from the same recipes as the deck's Web Audio sound
+(assets/careers.js): soft pentatonic sines with a small made-up room, filtered air, rises and chords.
+Plus a light beat so it moves like a launch film. No samples, no voice, no licences.
 
 Usage: python3 -I tools/demo-video/music.py cues.json out.wav [seconds]
 cues.json comes from tools/demo-video/cues.mjs: [[time, type, param], ...]"""
@@ -12,229 +8,172 @@ import sys, json, wave, numpy as np
 
 SR = 48000
 cues = json.load(open(sys.argv[1]))
-T = float(sys.argv[3]) if len(sys.argv) > 3 else 31.0
+T = float(sys.argv[3]) if len(sys.argv) > 3 else 30.4
 N = int(SR * T)
-rng = np.random.default_rng(5)
-BPM = 120; B = 60 / BPM; S16 = B / 4
+dry = np.zeros(N); send = np.zeros(N); beat = np.zeros(N)
+rng = np.random.default_rng(3)
+NOTES = [392, 440, 523.25, 587.33, 659.25, 783.99]
 
-# buses: mono centre, stereo (L,R) for panned UI, a room send, a ducked music bus, the beat
-C = np.zeros(N); L = np.zeros(N); R = np.zeros(N); SEND = np.zeros(N); PAD = np.zeros(N); BEAT = np.zeros(N)
-
-NOTES = [440, 493.88, 554.37, 659.25, 739.99, 880]        # A major pentatonic
-MOTIF = [880, 1108.73, 1318.51, 987.77]                    # A5 C#6 E6 B5 -> resolves to A5
-KICKS = []
+# soft noise like the deck's (air, not hiss)
+w = rng.uniform(-1, 1, SR * 3); soft = np.zeros_like(w); acc = 0.0
+for i in range(len(w)): acc = acc * .86 + w[i] * .14; soft[i] = acc * 2.4
 
 def place(buf, at, sig):
-    i = int(round(at * SR))
-    if i >= N or i + len(sig) <= 0: return
-    if i < 0: sig = sig[-i:]; i = 0
+    i = int(at * SR)
+    if i >= N: return
     j = min(N, i + len(sig)); buf[i:j] += sig[: j - i]
 
 def env(n, attack, dur):
     t = np.arange(n) / SR
-    return np.minimum(t / max(attack, 1e-4), 1) * np.exp(-6.9 * np.maximum(t - attack, 0) / max(dur - attack, 1e-3))
+    a = np.minimum(t / max(attack, 1e-4), 1)
+    return a * np.exp(-6.9 * np.maximum(t - attack, 0) / max(dur - attack, 1e-3))
 
-def put(at, s, pan=0.0, send=0.0):
-    if pan == 0: place(C, at, s)
-    else:
-        place(L, at, s * np.sqrt((1 - pan) / 2) * 1.414); place(R, at, s * np.sqrt((1 + pan) / 2) * 1.414)
-    if send: place(SEND, at, s * send)
-
-def sine(f, n, to=None, dur=None):
-    t = np.arange(n) / SR
-    fr = f * (to / f) ** np.minimum(t / ((dur or n / SR) * .7), 1) if to else np.full(n, f)
-    return np.sin(2 * np.pi * np.cumsum(fr) / SR)
-
-def fm(at, f, dur, gain, ratio=3.5, index=3.0, pan=0, send=.3):
+def tone(at, f, dur, gain, to=None, attack=.004, snd=0, typ='sine'):
     n = int((dur + .05) * SR); t = np.arange(n) / SR
-    idx = index * np.exp(-t / .08)
-    s = np.sin(2 * np.pi * f * t + idx * np.sin(2 * np.pi * f * ratio * t))
-    put(at, s * env(n, .003, dur) * gain, pan, send)
+    if to: fr = f * (to / f) ** np.minimum(t / (dur * .7), 1)
+    else: fr = np.full(n, f)
+    ph = 2 * np.pi * np.cumsum(fr) / SR
+    s = np.sin(ph) if typ == 'sine' else np.sign(np.sin(ph)) * .3
+    s = s * env(n, attack, dur) * gain
+    place(dry, at, s)
+    if snd: place(send, at, s * snd)
 
-def saw(f, n, cutoff, detune=7):
-    """band-limited saw, three voices detuned +-cents, harmonics above cutoff dropped"""
-    t = np.arange(n) / SR; out = np.zeros(n)
-    for c in (-detune, 0, detune):
-        ff = f * 2 ** (c / 1200); k = 1
-        while k * ff < min(cutoff, SR / 2.2):
-            out += np.sin(2 * np.pi * k * ff * t + rng.uniform(0, 6.28)) / k * (1 - (k * ff / cutoff) ** 2); k += 1
-    return out / 3
+def bandnoise(n, f0, f1, q):
+    """crude moving band-pass: two one-pole filters with a sweeping cutoff"""
+    x = soft[(np.arange(n) + rng.integers(0, SR)) % len(soft)]
+    fc = np.geomspace(f0, f1 if f1 else f0, n)
+    a = np.exp(-2 * np.pi * fc / SR)
+    lp = np.zeros(n); hp_in = np.zeros(n); y1 = y2 = 0.0
+    bw = fc / max(q, .3)
+    al = np.exp(-2 * np.pi * np.maximum(fc - bw / 2, 20) / SR)
+    for i in range(n):
+        y1 = (1 - a[i]) * x[i] + a[i] * y1           # low-pass at fc
+        y2 = (1 - al[i]) * x[i] + al[i] * y2         # low-pass below the band
+        lp[i] = y1 - y2 * .9
+    return lp
 
-def noise_band(n, lo, hi):
-    x = rng.standard_normal(n); X = np.fft.rfft(x); fr = np.fft.rfftfreq(n, 1 / SR)
-    X[(fr < lo) | (fr > hi)] = 0; y = np.fft.irfft(X, n); return y / (np.max(np.abs(y)) + 1e-9)
-
-def air(at, f0, f1, dur, gain, rise=.01, pan=0, send=0):
+def air(at, freq, dur, gain, to=None, q=1, rise=.004, snd=0):
     n = int((dur + .05) * SR)
-    # a sweep made from short band slices
-    segs = 24; out = np.zeros(n); fr = np.geomspace(f0, f1, segs)
-    for k in range(segs):
-        a, b = k * n // segs, (k + 1) * n // segs + 400
-        b = min(b, n); seg = noise_band(b - a, fr[k] * .7, fr[k] * 1.4)
-        w = np.hanning(b - a); out[a:b] += seg * w
-    put(at, out * env(n, rise, dur) * gain, pan, send)
+    s = bandnoise(n, freq, to, q)
+    s = s / (np.max(np.abs(s)) + 1e-9) * env(n, rise, dur) * gain
+    place(dry, at, s)
+    if snd: place(send, at, s * snd)
 
 def kick(at, g=.5):
-    n = int(.35 * SR); t = np.arange(n) / SR
-    sub = np.sin(2 * np.pi * np.cumsum(46 + 120 * np.exp(-t * 30)) / SR) * np.exp(-t * 7)
-    body = np.sin(2 * np.pi * 120 * t) * np.exp(-t * 28) * .5
-    click = np.zeros(n); m = int(.004 * SR); click[:m] = noise_band(m, 2000, 5000) * np.linspace(1, 0, m) * .25
-    place(BEAT, at, np.tanh((sub + body + click) * 1.4) * g); KICKS.append(at)
+    n = int(.4 * SR); t = np.arange(n) / SR
+    s = np.sin(2 * np.pi * np.cumsum(48 + 110 * np.exp(-t * 32)) / SR) * np.exp(-t * 8) * g
+    place(beat, at, s)
 
-def hat(at, g=.05, pan=0):
-    n = int(.06 * SR); x = noise_band(n, 7000, 14000) * np.exp(-np.arange(n) / SR * 70) * g
-    place(L, at, x * (1 - pan) * .7); place(R, at, x * (1 + pan) * .7)
+def hat(at, g=.06):
+    n = int(.07 * SR); t = np.arange(n) / SR
+    x = rng.standard_normal(n); x = np.diff(np.concatenate([[0], x]))
+    place(beat, at, x * np.exp(-t * 60) * g)
 
 def clap(at, g=.12):
-    n = int(.22 * SR); t = np.arange(n) / SR; x = noise_band(n, 900, 3500)
-    e = np.exp(-t * 20); e[: int(.012 * SR)] *= 1.6
-    place(BEAT, at, x * e * g); place(SEND, at, x * e * g * .5)
+    n = int(.2 * SR); t = np.arange(n) / SR
+    x = bandnoise(n, 1500, None, 1.2); x /= np.max(np.abs(x)) + 1e-9
+    e = np.exp(-t * 22) * (1 + .6 * (np.sin(2 * np.pi * 90 * t) > 0) * (t < .03))
+    place(beat, at, x * e * g); place(send, at, x * e * g * .4)
 
-def crash(at, g=.18, dur=1.6):
-    n = int(dur * SR); x = noise_band(n, 3000, 15000) * np.exp(-np.arange(n) / SR * 2.6) * g
-    place(L, at, x); place(R, at, np.roll(x, 300)); place(SEND, at, x * .3)
-
-def chord(at, notes, dur, gain, cutoff=2000, attack=.02, bus='pad', send=.6):
-    n = int((dur + .1) * SR); t = np.arange(n) / SR
-    s = sum(saw(f, n, cutoff) for f in notes) / len(notes) ** .5
-    s = s * np.minimum(t / attack, 1) * np.exp(-np.maximum(t - dur * .55, 0) / (dur * .3)) * gain
-    if bus == 'pad': place(PAD, at, s)
-    else: put(at, s)
-    if send: place(SEND, at, s * send)
-
-# ---------- cue vocabulary ----------
+# ---- the cue vocabulary (same names and recipes as the deck) ----
 def do(at, typ, p):
-    k = int(p) if isinstance(p, (int, float)) and float(p).is_integer() else 0
-    pan = ((k % 5) - 2) * .15
-    if typ == 'motif':
-        f = MOTIF[k % 4]; fm(at, f, .5, .16, ratio=2, index=2.2, send=.45); fm(at, f / 2, .3, .05, ratio=3.5, index=1.5)
-    elif typ == 'resolve':
-        fm(at - .12, MOTIF[3], .25, .12, ratio=2, index=2, send=.4); fm(at + .1, 880, 1.6, .18, ratio=2, index=2.4, send=.6)
-    elif typ == 'pluck':
-        fm(at, NOTES[k % 6] * 2, .3, .11, pan=pan, send=.35)
-    elif typ in ('tick', 'logo'):
-        fm(at, NOTES[k % 6] * 2, .14, .06, ratio=3.5, index=2.5, pan=pan, send=.25)
+    p = int(p) if isinstance(p, (int, float)) else 0
+    if typ == 'pluck':
+        f = NOTES[p % 6] * 2
+        tone(at, f, .25, .14, snd=.35); tone(at, f * 2.01, .06, .03)
+        air(at, 2800, .04, .12, q=1.3)
+    elif typ == 'tick' or typ == 'logo':
+        f = 440 * 2 ** ([0, 2, 4, 7, 9, 12, 14, 16, 19, 21][p % 10] / 12)
+        tone(at, f, .18, .1, snd=.35); tone(at, f * 2.01, .05, .024)
+        air(at, 3000, .03, .1, q=1.4)
     elif typ == 'pass':
-        fm(at, NOTES[k % 6] * 2, .2, .08, pan=pan, send=.3); air(at - .12, 400, 2600, .28, .1, rise=.18, pan=pan)
+        f = NOTES[p % 6] * 2
+        tone(at, f, .2, .1, snd=.3); air(at, 2800, .05, .14, q=1.3)
+        air(at - .1, 300, .3, .12, to=1800, q=.8, rise=.2)
     elif typ == 'pop':
-        fm(at, NOTES[(k + 2) % 6] * 4, .09, .05, ratio=1.5, index=1.5, pan=-pan, send=.2)
+        f = NOTES[(p + 2) % 6] * 4
+        tone(at, f, .09, .07, snd=.25); tone(at, f / 2, .12, .05, to=f / 2 * 1.5)
     elif typ == 'click':
-        put(at, noise_band(int(.012 * SR), 2500, 6000) * np.linspace(1, 0, int(.012 * SR)) * .18)
-        put(at, sine(190, int(.06 * SR), to=120, dur=.06) * env(int(.06 * SR), .002, .05) * .12)
+        tone(at, 1900, .03, .12); air(at, 4000, .02, .16, q=2); tone(at, 180, .06, .12, to=120)
     elif typ == 'nudge':
-        put(at, sine(170, int(.1 * SR), to=120, dur=.1) * env(int(.1 * SR), .003, .09) * .12, pan)
+        tone(at, 170, .1, .12, to=120); air(at, 900, .08, .06, q=1)
     elif typ == 'scan':
-        air(at, 400, 6000, 1.1, .16, rise=.7, send=.3); fm(at, 1760, .9, .03, ratio=1.01, index=.5, send=.4)
+        air(at, 400, 1.2, .2, to=5000, q=1.5, rise=.6, snd=.3)
+        tone(at, 880, 1.1, .03, to=1760, attack=.5, snd=.4)
     elif typ == 'whoosh':
-        air(at - .25, 300, 4000, .5, .2, rise=.35, send=.2)
+        air(at - .25, 260, .55, .26, to=3600, q=.8, rise=.4, snd=.3)
     elif typ == 'hit':
-        g = float(p) if p else 1
-        kick(at, .55 * g); crash(at, .08 * g, 1.0)
-    elif typ == 'impact':
-        kick(at, .65); put(at, sine(40, int(1.2 * SR)) * env(int(1.2 * SR), .005, 1.1) * .45); crash(at, .2, 2.2)
+        tone(at, 55, .7, .5, to=40, attack=.005); air(at, 1200, .25, .18, to=300, q=.7, snd=.4)
+    elif typ == 'rise':
+        air(at, 280, .55, .26, to=3200, q=.8, rise=.35, snd=.3)
+        tone(at, 58, .6, .3, to=96, attack=.1)
+    elif typ == 'drop':
+        tone(at, 660, .12, .1, to=330); tone(at + .05, 70, .35, .4, to=45)
+    elif typ == 'slide':
+        tone(at, 300, .6, .05, to=600, attack=.2, snd=.3)
+    elif typ == 'sort':
+        for k in range(4): tone(at + k * .07, NOTES[(k * 2) % 6] * 2, .15, .07, snd=.3)
+        air(at, 600, .5, .12, to=2000, q=.8, rise=.25)
+    elif typ in ('chord', 'chordS', 'chordEnd'):
+        notes = [[220, 0], [329.63, .05], [440, .1], [554.37, .16], [659.25, .23], [987.77, .32]]
+        g = {'chord': 1, 'chordS': .6, 'chordEnd': 1.2}[typ]; L = {'chord': 2.3, 'chordS': 1.4, 'chordEnd': 3.2}[typ]
+        for k, (f, d) in enumerate(notes):
+            tone(at + d, f, L - d * 2, (.1 - .009 * k) * g, attack=.014, snd=.75)
+            tone(at + d, f * 2.003, .8, .02 * g, attack=.006, snd=.6)
+    elif typ == 'close':
+        air(at, 2600, .5, .16, to=320, q=.8, rise=.12)
+        tone(at + .18, 659.25, .9, .07, attack=.01, snd=.6); tone(at + .28, 440, 1.1, .08, attack=.01, snd=.6)
+    elif typ == 'hush':
+        pass
+    # cue names added later in the film map onto the same vocabulary
+    elif typ == 'motif':
+        do(at, 'logo' if 11.3 < at < 11.9 else 'pluck', p)
     elif typ == 'riser':
         d = float(p) or .5
-        air(at, 300, 6000, d, .22, rise=d * .95, send=.25)
-        put(at, sine(45, int(d * SR), to=90, dur=d / .7) * np.linspace(0, 1, int(d * SR)) ** 2 * .25)
-    elif typ == 'rise':
-        air(at, 280, 3200, .55, .2, rise=.35, send=.3)
-    elif typ == 'drop':
-        fm(at, 660, .12, .08, ratio=1, index=.5); put(at + .05, sine(70, int(.35 * SR), to=45, dur=.35) * env(int(.35 * SR), .004, .33) * .35)
-    elif typ == 'slide':
-        put(at, sine(330, int(.5 * SR), to=660, dur=.5) * env(int(.5 * SR), .2, .5) * .04, .2, .3)
-    elif typ == 'sort':
-        for j in range(4): fm(at + j * S16, NOTES[(j * 2) % 6] * 2, .15, .06, pan=(j - 1.5) * .2, send=.3)
-    elif typ == 'chord':
-        chord(at, [220, 277.18, 329.63, 440, 554.37], 2.2, .22, cutoff=2400, bus='put')
-    elif typ == 'chordS':
-        chord(at, [220, 329.63, 440, 554.37], 1.2, .14, cutoff=1800, bus='put')
-    elif typ == 'chordEnd':
-        chord(at, [110, 220, 277.18, 329.63, 440, 554.37, 659.25], 3.0, .3, cutoff=5000, bus='put', send=.8)
+        air(at, 280, d, .24, to=3600, q=.8, rise=d * .8, snd=.3)
+        tone(at, 58, d + .05, .22, to=96, attack=d * .6)
+    elif typ == 'impact':
+        do(at, 'hit', 0)
+        if at > 28: do(at, 'close', 0)
+    elif typ == 'resolve':
+        do(at, 'drop', 0)
 
-# snap UI sounds in the product section to the 16th grid so they sit with the hats
-for at, typ, p in cues:
-    if 12.9 < at < 24.6 and typ in ('tick', 'pop', 'pluck', 'click', 'sort'):
-        at = 12.9 + round((at - 12.9) / S16) * S16
-    do(at, typ, p)
+for at, typ, p in cues: do(at, typ, p)
 
-# ---------- the groove and the harmony ----------
-def groove(t0, t1, kg, full, four=False):
-    t = t0; k = 0
-    while t < t1 - 1e-6:
-        kick(t, kg)
-        hat(t + B / 2, .045, .3)
-        if full:
-            if k % 2 == 1: clap(t, .1)
-            hat(t + B / 4, .02, -.3); hat(t + 3 * B / 4, .02, .3)
-        t += B; k += 1
+# ---- the beat: tension under the problem, lift under the product, silence for the question ----
+bpm = 120; b = 60 / bpm
+def groove(t0, t1, full):
+    t = t0
+    k = 0
+    while t < t1:
+        kick(t, .42 if full else .3)
+        hat(t + b / 2, .05)
+        if full and k % 2 == 1: clap(t, .1)
+        if full: hat(t + b / 4, .025); hat(t + 3 * b / 4, .025)
+        t += b; k += 1
+# section times of the film (demo/layla/index.html, with the 1.6 s roles beat after 12.9)
+groove(3.0, 8.9, False)                  # the CV wall and the rounds
+groove(12.9, 26.2, True)                 # the product, from the dot fill to the invite
+# sub pad under the product section
+for at, f in [(12.9, 55), (15.9, 49), (18.9, 61.7), (21.9, 55), (24.9, 49)]:
+    tone(at, f, 3.2, .12, attack=.4, snd=.2); tone(at, f * 2, 3.2, .05, attack=.6, snd=.4)
 
-groove(3.0, 8.9, .3, False)                 # tension under the problem
-groove(12.9, 24.6, .5, True)                # lift under the product
-groove(24.85, 27.35, .3, False)             # build under the value prop
-# progression under the product: A  F#m  D  E  A  F#m  (one bar each, 2 s)
-PROG = [[220, 277.18, 329.63], [185, 220, 277.18], [146.83, 220, 293.66], [164.81, 246.94, 329.63], [220, 277.18, 329.63], [185, 220, 277.18]]
-ROOT = [55, 46.25, 36.71, 41.2, 55, 46.25]
-for i, (ch, r) in enumerate(zip(PROG, ROOT)):
-    at = 12.9 + i * 2 * B * 2
-    chord(at, ch, 2.1, .05, cutoff=1500, attack=.08)
-    n = int(2.05 * SR); sub = np.tanh(sine(r * 2, n) * 2.5) * env(n, .05, 2.0) * .16
-    place(PAD, at, sub)
-# opening bed: the A chord breathing in, a heartbeat pulse once the role lands
-chord(0.0, [220, 277.18, 329.63, 440], 3.1, .05, cutoff=1400, attack=.3)
-for k in range(4): kick(1.1 + k * B, .18); hat(1.1 + k * B + B / 2, .03, .2)
-# soft bed under the problem and the question
-chord(3.0, [220, 329.63, 440], 5.8, .035, cutoff=900, attack=.6)
-chord(8.95, [146.83, 220, 293.66, 369.99], 2.6, .05, cutoff=1200, attack=.5)
-# value-prop build: pad opens up into the riser
-n = int(2.6 * SR); t = np.arange(n) / SR
-build = sum(saw(f, n, 4000) for f in [220, 277.18, 329.63, 440]) / 2
-lp = np.zeros(n); y = 0.0; fc = np.geomspace(500, 4000, n); a = np.exp(-2 * np.pi * fc / SR)
-for i in range(n): y = (1 - a[i]) * build[i] + a[i] * y; lp[i] = y
-place(PAD, 24.85, lp * np.minimum(t / .4, 1) * .09)
-# silences before the two big hits
-for s0, s1 in [(12.84, 12.9), (27.45, 27.6)]:
-    for buf in (C, L, R, SEND, PAD, BEAT):
-        buf[int(s0 * SR):int(s1 * SR)] *= np.linspace(1, 0, int(s1 * SR) - int(s0 * SR)) ** 4
+# soft pad and a pulse of hats under 'why it beats normal hiring'
+for f in [220, 277.18, 329.63, 440]:
+    tone(26.45, f, 2.8, .04, attack=.8, snd=.6)
+for k in range(11): hat(26.5 + k * .25, .03)
 
-# ---------- sidechain: pad and room duck on every kick ----------
-duck = np.ones(N)
-for k in KICKS:
-    i = int(k * SR); m = min(N - i, int(.5 * SR))
-    if m > 0: duck[i:i + m] = np.minimum(duck[i:i + m], 1 - .6 * np.exp(-np.arange(m) / SR / .12))
-
-# ---------- room: two decorrelated impulses, 20 ms pre-delay, send high-passed at 300 Hz ----------
-X = np.fft.rfft(SEND); fr = np.fft.rfftfreq(N, 1 / SR); X[fr < 300] *= (fr[fr < 300] / 300) ** 2; SEND = np.fft.irfft(X, N)
-Lr = int(SR * 1.8); pre = int(.02 * SR)
-def ir():
-    x = rng.uniform(-1, 1, Lr) * (1 - np.arange(Lr) / Lr) ** 3.2; return np.concatenate([np.zeros(pre), x])
-def conv(x, h):
-    m = len(x) + len(h); return np.fft.irfft(np.fft.rfft(x, m) * np.fft.rfft(h, m))[: len(x)]
-wl, wr = conv(SEND, ir()), conv(SEND, ir())
-sc = np.max(np.abs(SEND)) / (max(np.max(np.abs(wl)), 1e-9)) * 1.1
-wl *= sc; wr *= sc
-
-mono = C + BEAT + PAD * duck
-outL = mono + L + wl * duck * .45
-outR = mono + R + wr * duck * .45
-# high-pass the master at 30 Hz
-for ch in (outL, outR):
-    Y = np.fft.rfft(ch); Y[fr < 30] = 0; ch[:] = np.fft.irfft(Y, N)
-
-# ---------- section levels, then a gentle 2:1 bus compressor ----------
-lvl = np.ones(N); tt = np.arange(N) / SR
-lvl[(tt >= 3.0) & (tt < 8.95)] = .8
-lvl[(tt >= 8.95) & (tt < 11.45)] = .7
-lvl[(tt >= 24.85) & (tt < 27.45)] = np.linspace(.85, 1.1, ((tt >= 24.85) & (tt < 27.45)).sum())
-outL *= lvl; outR *= lvl
-mid = (np.abs(outL) + np.abs(outR)) / 2
-w = int(.01 * SR); envl = np.convolve(mid, np.ones(w) / w, 'same')
-thr = np.percentile(envl, 80)
-gr = np.where(envl > thr, (thr / np.maximum(envl, 1e-9)) ** .5, 1)
-gr = np.convolve(gr, np.ones(int(.05 * SR)) / int(.05 * SR), 'same')
-outL *= gr; outR *= gr
-fade = np.clip((T - tt) / .3, 0, 1); outL *= fade; outR *= fade
-pk = max(np.max(np.abs(outL)), np.max(np.abs(outR))) * 1.1
-st = np.stack([outL / pk, outR / pk], 1)
+# ---- the room: noise impulse that dies away, like the deck ----
+L = int(SR * 1.9)
+ir = rng.uniform(-1, 1, L) * (1 - np.arange(L) / L) ** 3.4
+wet = np.fft.irfft(np.fft.rfft(send, N + L) * np.fft.rfft(ir, N + L))[:N]
+wet = wet / (np.max(np.abs(wet)) + 1e-9) * np.max(np.abs(send)) * 1.2
+mix = dry + wet * .5 + beat
+# gentle compressor-ish: soft clip
+mix = np.tanh(mix * 1.6) / 1.6
+mix *= np.clip((T - np.arange(N) / SR) / .6, 0, 1)
+mix /= np.max(np.abs(mix)) * 1.12
+st = np.stack([mix, np.roll(mix, 180) * .97 + mix * .03], 1)
 with wave.open(sys.argv[2], 'wb') as wv:
     wv.setnchannels(2); wv.setsampwidth(2); wv.setframerate(SR)
     wv.writeframes((st * 32767).astype('<i2').tobytes())
